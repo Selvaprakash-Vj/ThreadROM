@@ -1,0 +1,23 @@
+[project]
+name = "ThreadROM"
+phase = 1
+work_package = "WP1"
+
+[conventions]
+canonical_length_unit = "m"
+canonical_force_unit = "N"
+axial_axis = "Z"
+coordinate_handedness = "right"
+
+[geometry]
+backend = "CadQuery"
+version = "2.8"
+
+[mesher]
+backend = "Gmsh"
+version = "4.15"
+
+[solver.calculix]
+version = "2.23"
+relative_executable = "tools/calculix/2.23.0/CalculiX-2.23.0-win-x64/bin/ccx.exe"
+environment_override = "THREADROM_CCX"
