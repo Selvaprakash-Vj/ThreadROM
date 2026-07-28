@@ -1,0 +1,62 @@
+[identity]
+assembly_id = "TRM-ASM-000001"
+geometry_id = "TRM-GEO-000001"
+simulation_id = "TRM-SIM-000001"
+status = "proposed"
+
+[bolt]
+nominal_length_mm = 30.0
+nominal_diameter_mm = 10.0
+pitch_mm = 1.5
+
+[clamped_members]
+member_count = 2
+upper_member_thickness_mm = 10.0
+lower_member_thickness_mm = 10.0
+total_grip_length_mm = 20.0
+outer_diameter_mm = 30.0
+clearance_hole_diameter_mm = 11.0
+geometry = "coaxial_cylindrical_members"
+
+[nut]
+nominal_thickness_mm = 8.0
+thread_engagement_length_mm = 8.0
+
+[thread_protrusion]
+length_mm = 2.0
+minimum_pitch_count = 1.0
+
+[loading]
+target_preload_n = 20000.0
+external_axial_load_n = 8000.0
+load_sequence = "preload_then_external_tension"
+
+[interfaces]
+thread_contact = "frictional"
+bearing_contact = "frictional"
+member_interface = "frictional"
+friction_coefficient = 0.15
+
+[boundary_conditions]
+global_axial_axis = "Z"
+symmetry_reduction = false
+external_load_application = "distributed_on_remote_member_faces"
+
+[scope]
+include_clamped_members = true
+include_bolt_head_bearing_contact = true
+include_nut_bearing_contact = true
+include_member_interface_contact = true
+include_washers = false
+
+[approval]
+decision_status = "proposed"
+review_required_before = "baseline geometry generation"
+
+[analytical_stiffness]
+bolt_head_participation_factor = 0.5
+nut_participation_factor = 0.5
+member_model = "uniform_annular_cylinder"
+member_youngs_modulus_pa = 2.10e11
+status = "preliminary_analytical_model"
+review_required_before = "baseline FEM execution"

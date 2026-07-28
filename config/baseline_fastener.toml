@@ -19,7 +19,7 @@ reference_standard = "ISO 724:2023"
 [bolt]
 product_standard = "ISO 4017:2022"
 property_class = "8.8"
-nominal_length_mm = 50.0
+nominal_length_mm = 30.0
 threaded_length_model = "fully_threaded"
 
 [nut]
@@ -45,3 +45,10 @@ include_damage = false
 [approval]
 decision_status = "proposed"
 review_required_before = "baseline geometry generation"
+[strength_reference]
+property_class = "8.8"
+proof_stress_pa = 5.80e8
+yield_strength_pa = 6.40e8
+ultimate_tensile_strength_pa = 8.00e8
+status = "provisional_standard_reference"
+review_required_before = "TRM-MAT-000001 approval"
