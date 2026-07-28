@@ -1,0 +1,36 @@
+[build-system]
+requires = ["setuptools>=75", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "threadrom"
+version = "0.1.0"
+description = "Verified threaded-joint FEM, knowledge-base and reduced-order modelling platform"
+readme = "README.md"
+requires-python = ">=3.12,<3.13"
+authors = [
+    { name = "Selvaprakash-Vj" }
+]
+dependencies = []
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "ruff>=0.5",
+    "mypy>=1.10"
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+
+[tool.ruff]
+src = ["src", "tests"]
+line-length = 100
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
