@@ -1,0 +1,101 @@
+﻿# Python
+__pycache__/
+*.py[cod]
+*.pyd
+*.so
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# IDE and editor files
+.vscode/
+.idea/
+*.code-workspace
+*.swp
+*.swo
+
+# Operating-system files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+
+# Logs and temporary files
+*.log
+*.tmp
+*.temp
+~$*
+logs/*
+!logs/.gitkeep
+
+# Generated FEM working files
+simulations/staging/*
+!simulations/staging/.gitkeep
+
+# Generated processed data
+data/processed/*
+!data/processed/.gitkeep
+
+# Released datasets are added deliberately
+data/releases/*
+
+# Model artefacts are added deliberately
+models/*
+
+# Generated reports
+reports/*
+!reports/.gitkeep
+
+# Solver-specific temporary and result files
+*.lock
+*.lck
+*.err
+*.out
+*.sta
+*.msg
+*.rdb
+*.rst
+*.rth
+*.emat
+*.esav
+*.full
+*.mode
+*.mntr
+*.page
+*.dbb
+*.bak
+*.frd
+*.dat
+*.cvg
+*.12d
+*.prt
+
+# Mesh and geometry artefacts generated during runs
+*.msh
+*.med
+*.vtk
+*.vtu
+*.xdmf
+*.h5
+
+# Archives
+*.zip
+*.7z
+*.tar
+*.gz
+!data/releases/.gitkeep
+!models/.gitkeep
