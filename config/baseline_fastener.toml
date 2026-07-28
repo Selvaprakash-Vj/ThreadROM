@@ -1,0 +1,47 @@
+[identity]
+geometry_id = "TRM-GEO-000001"
+material_id = "TRM-MAT-000001"
+mesh_id = "TRM-MSH-000001"
+simulation_id = "TRM-SIM-000001"
+knowledge_object_id = "TRM-KO-000001"
+status = "proposed"
+
+[thread]
+designation = "M10x1.5"
+nominal_diameter_mm = 10.0
+pitch_mm = 1.5
+handedness = "right"
+starts = 1
+external_tolerance_class = "6g"
+internal_tolerance_class = "6H"
+reference_standard = "ISO 724:2023"
+
+[bolt]
+product_standard = "ISO 4017:2022"
+property_class = "8.8"
+nominal_length_mm = 50.0
+threaded_length_model = "fully_threaded"
+
+[nut]
+product_standard = "ISO 4032:2023"
+style = 1
+property_class = "8"
+
+[material]
+model = "linear_elastic_isotropic"
+youngs_modulus_pa = 2.10e11
+poissons_ratio = 0.30
+density_kg_per_m3 = 7850.0
+
+[scope]
+include_full_helical_threads = true
+include_bolt_head = true
+include_hexagonal_nut_body = true
+include_thread_runout = false
+include_manufacturing_tolerances = false
+include_plasticity = false
+include_damage = false
+
+[approval]
+decision_status = "proposed"
+review_required_before = "baseline geometry generation"
