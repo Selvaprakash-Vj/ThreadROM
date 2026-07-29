@@ -492,6 +492,38 @@ def _register_physical_groups(
     return tuple(registrations)
 
 
+def classify_current_model_surfaces(
+    blank_definition: BoltBlankDefinition,
+    definition: SurfaceClassificationDefinition,
+) -> SurfaceClassificationResult:
+    """Classify and register surfaces in the active Gmsh model."""
+
+    volume_entities = gmsh.model.getEntities(3)
+
+    surfaces = _measure_and_classify_surfaces(
+        blank_definition,
+        definition,
+    )
+
+    physical_groups = _register_physical_groups(
+        surfaces,
+        definition,
+    )
+
+    result = SurfaceClassificationResult(
+        imported_volume_count=len(volume_entities),
+        surfaces=surfaces,
+        physical_groups=physical_groups,
+    )
+
+    validate_surface_classification(
+        result,
+        definition,
+    )
+
+    return result
+
+
 def classify_step_surfaces(
     step_path: Path,
     blank_definition: BoltBlankDefinition,

@@ -232,7 +232,7 @@ def load_gmsh_mesh_definition(
     return definition
 
 
-def _configure_gmsh(
+def configure_gmsh(
     definition: GmshMeshDefinition,
 ) -> None:
     """Apply controlled Gmsh options."""
@@ -400,7 +400,7 @@ def generate_step_tetrahedral_mesh(
         gmsh.logger.start()
         logger_started = True
 
-        _configure_gmsh(definition)
+        configure_gmsh(definition)
 
         gmsh.model.add(definition.mesh_id)
 
