@@ -1,0 +1,22 @@
+[identity]
+geometry_id = "TRM-GEO-000001"
+status = "development"
+
+[units]
+length = "mm"
+
+[bolt_blank]
+nominal_diameter_mm = 10.0
+underhead_length_mm = 30.0
+head_across_flats_mm = 16.0
+head_height_mm = 6.4
+bearing_face_z_mm = 0.0
+axial_axis = "Z"
+head_direction = "-Z"
+body_direction = "+Z"
+thread_state = "unthreaded_control_blank"
+
+[verification]
+volume_relative_tolerance = 1.0e-6
+dimension_absolute_tolerance_mm = 1.0e-6
+review_required_before = "external thread generation"
