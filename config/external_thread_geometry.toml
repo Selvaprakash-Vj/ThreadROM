@@ -1,0 +1,15 @@
+[identity]
+geometry_id = "TRM-GEO-000001"
+artefact = "external_thread_cutter"
+status = "development"
+
+[cutter]
+thread_length_mm = 30.0
+overshoot_pitches = 1.0
+radial_clearance_mm = 0.05
+handedness = "right"
+use_frenet_frame = true
+
+[verification]
+expected_solid_count = 1
+review_required_before = "cutting bolt control blank"
