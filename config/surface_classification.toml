@@ -1,0 +1,22 @@
+[identity]
+mesh_id = "TRM-MSH-000001"
+geometry_id = "TRM-GEO-000001"
+status = "development"
+
+[classification]
+plane_tolerance_mm = 0.005
+
+[physical_groups]
+head_top = "BOLT_HEAD_TOP"
+under_head_bearing = "BOLT_UNDER_HEAD_BEARING"
+head_sides = "BOLT_HEAD_SIDES"
+thread_surfaces = "BOLT_THREAD_SURFACES"
+bolt_tip = "BOLT_TIP"
+transition_surfaces = "BOLT_TRANSITION_SURFACES"
+
+[verification]
+minimum_head_top_surface_count = 1
+minimum_under_head_surface_count = 1
+minimum_head_side_surface_count = 6
+minimum_thread_surface_count = 1
+minimum_tip_surface_count = 1
