@@ -27,6 +27,7 @@ class AxialComparisonDefinition:
     mesh_id: str
     node_set_name: str
     applied_force_n: float
+    maximum_global_response_difference_percent: float
     report_relative_path: Path
     cases: tuple[AxialCaseDefinition, ...]
 
@@ -169,6 +170,16 @@ def load_axial_comparison_definition(
     if applied_force_n == 0.0:
         raise ValueError("Applied axial force cannot be zero.")
 
+    maximum_global_response_difference_percent = _number(
+        analysis,
+        "maximum_global_response_difference_percent",
+    )
+
+    if maximum_global_response_difference_percent <= 0.0:
+        raise ValueError(
+            "Maximum global-response difference must be positive."
+        )
+
     return AxialComparisonDefinition(
         mesh_id=_string(
             identity,
@@ -179,6 +190,9 @@ def load_axial_comparison_definition(
             "node_set_name",
         ),
         applied_force_n=applied_force_n,
+        maximum_global_response_difference_percent=(
+            maximum_global_response_difference_percent
+        ),
         report_relative_path=Path(
             _string(
                 output,

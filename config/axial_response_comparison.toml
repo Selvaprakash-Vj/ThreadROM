@@ -4,6 +4,7 @@ mesh_id = "TRM-MSH-000001"
 [analysis]
 node_set_name = "BOLT_HEAD_TOP"
 applied_force_n = -1000.0
+maximum_global_response_difference_percent = 2.0
 
 [output]
 report_relative_path = "docs/verification/TRM-MSH-000001_AXIAL_RESPONSE_COMPARISON.md"
@@ -17,3 +18,8 @@ dat_relative_path = "simulations/staging/TRM-SIM-000001/mesh_transfer/coarse/trm
 level = "medium"
 simulation_id = "TRM-SIM-000002"
 dat_relative_path = "simulations/staging/TRM-SIM-000002/mesh_transfer/medium/trm_msh_000001_medium_transfer.dat"
+
+[[cases]]
+level = "fine"
+simulation_id = "TRM-SIM-000003"
+dat_relative_path = "simulations/staging/TRM-SIM-000003/mesh_transfer/fine/trm_msh_000001_fine_transfer.dat"

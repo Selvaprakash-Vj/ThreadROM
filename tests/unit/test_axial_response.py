@@ -7,6 +7,7 @@ import pytest
 from threadrom.postprocessing.axial_response import (
     AxialCaseDefinition,
     finer_relative_change_percent,
+    load_axial_comparison_definition,
     read_displacement_block,
     summarize_axial_response,
 )
@@ -91,4 +92,46 @@ def test_relative_change_uses_finer_reference() -> None:
     assert result == pytest.approx(
         0.556319,
         abs=1.0e-6,
+    )
+
+def test_comparison_definition_loads_acceptance_threshold(
+    tmp_path: Path,
+) -> None:
+    """The governed global-response threshold is loaded from TOML."""
+
+    config_path = tmp_path / "comparison.toml"
+
+    config_path.write_text(
+        """
+[identity]
+mesh_id = "TRM-MSH-TEST"
+
+[analysis]
+node_set_name = "BOLT_HEAD_TOP"
+applied_force_n = -1000.0
+maximum_global_response_difference_percent = 2.0
+
+[output]
+report_relative_path = "comparison.md"
+
+[[cases]]
+level = "coarse"
+simulation_id = "TRM-SIM-001"
+dat_relative_path = "coarse.dat"
+
+[[cases]]
+level = "fine"
+simulation_id = "TRM-SIM-002"
+dat_relative_path = "fine.dat"
+""".strip()
+        + "\n",
+        encoding="utf-8",
+        newline="\n",
+    )
+
+    definition = load_axial_comparison_definition(config_path)
+
+    assert (
+        definition.maximum_global_response_difference_percent
+        == pytest.approx(2.0)
     )

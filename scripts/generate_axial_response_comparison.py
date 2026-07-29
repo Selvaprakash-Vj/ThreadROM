@@ -72,6 +72,46 @@ def main() -> None:
 
     comparison_table = "\n".join(comparison_rows)
 
+    candidate = summaries[-2]
+    reference = summaries[-1]
+
+    candidate_displacement_difference = finer_relative_change_percent(
+        abs(candidate.mean_vz_mm),
+        abs(reference.mean_vz_mm),
+    )
+
+    candidate_stiffness_difference = finer_relative_change_percent(
+        candidate.apparent_stiffness_n_per_mm,
+        reference.apparent_stiffness_n_per_mm,
+    )
+
+    candidate_maximum_difference = max(
+        abs(candidate_displacement_difference),
+        abs(candidate_stiffness_difference),
+    )
+
+    candidate_is_accepted = (
+        candidate_maximum_difference
+        <= definition.maximum_global_response_difference_percent
+    )
+
+    acceptance_status = (
+        "ACCEPTED"
+        if candidate_is_accepted
+        else "REJECTED"
+    )
+
+    baseline_statement = (
+        f"The {candidate.level} mesh is accepted as the global-response "
+        f"engineering baseline."
+        if candidate_is_accepted
+        else (
+            f"The {candidate.level} mesh is not accepted as the "
+            f"global-response engineering baseline; the {reference.level} "
+            "mesh is retained."
+        )
+    )
+
     report = f"""# {definition.mesh_id} Axial Response Comparison
 
 ## Purpose
@@ -101,13 +141,21 @@ Changes are calculated relative to the finer result.
 |---|---:|---:|---:|
 {comparison_table}
 
-## Interpretation
+## Governed baseline decision
 
-The coarse and medium meshes agree to approximately 0.56 percent for the
-global axial displacement and apparent stiffness of this bolt-only model.
+The global-response acceptance criterion is a maximum difference of
+{definition.maximum_global_response_difference_percent:.3f}% between the
+candidate mesh and the next finer reference mesh.
 
-The medium mesh is therefore retained as the provisional engineering
-baseline for global response.
+| Candidate | Reference | Maximum global-response difference | Limit | Status |
+|---|---|---:|---:|---|
+| {candidate.level} | {reference.level} | {candidate_maximum_difference:.6f}% | {definition.maximum_global_response_difference_percent:.6f}% | {acceptance_status} |
+
+{baseline_statement}
+
+The fine mesh is used as the reference for this bolt-only global-response
+decision. The accepted baseline is intended for efficient global stiffness
+and displacement studies.
 
 This comparison does not establish convergence for:
 
@@ -124,8 +172,10 @@ local mesh-convergence studies.
 
 ## Next verification gate
 
-Run the same controlled model with the fine mesh and extend this report with
-a medium-to-fine reference comparison.
+Use the accepted global-response baseline while developing the parametric
+internally threaded nut and the first complete bolt-nut assembly. Separate
+local convergence studies remain mandatory for thread stress and contact
+outputs.
 """
 
     report_path = root / definition.report_relative_path

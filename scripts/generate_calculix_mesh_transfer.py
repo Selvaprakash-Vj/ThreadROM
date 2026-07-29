@@ -1,4 +1,4 @@
-"""Generate and solve the first grouped-mesh CalculiX deck."""
+"""Generate and solve one governed grouped-mesh CalculiX deck."""
 
 from __future__ import annotations
 
@@ -14,7 +14,7 @@ from threadrom.solver.calculix_mesh_transfer import (
 
 
 def main() -> None:
-    """Convert the coarse grouped mesh and verify it in CalculiX."""
+    """Convert the configured grouped mesh and verify it in CalculiX."""
 
     project_root = Path(__file__).resolve().parents[1]
 
@@ -69,7 +69,7 @@ def main() -> None:
         for name, node_ids in sorted(mesh_data.boundary_node_sets.items())
     )
 
-    report = f"""# TRM-SIM-000001 CalculiX Mesh-Transfer Check
+    report = f"""# {definition.simulation_id} CalculiX Mesh-Transfer Check
 
 ## Status
 
@@ -146,17 +146,20 @@ The transfer gate requires:
 The complete parametric bolt mesh can now move from CadQuery through STEP,
 Gmsh, Meshio and into a successfully solved CalculiX model.
 
-The medium mesh remains the provisional engineering baseline. It will be
-transferred after this coarse development gate is accepted.
+The verified result is eligible for inclusion in the governed
+global axial-response mesh comparison.
 
 ## Next gate
 
-Run the same verified deck-generation path using the medium mesh and extract
-the resulting displacement and reaction-force balance.
+Use the verified DAT result in the governed axial-response comparison
+for the configured mesh level.
 """
 
     report_path = (
-        project_root / "docs" / "verification" / "TRM-SIM-000001_CALCULIX_MESH_TRANSFER.md"
+        project_root
+        / "docs"
+        / "verification"
+        / f"{definition.simulation_id}_CALCULIX_MESH_TRANSFER.md"
     )
 
     report_path.write_text(

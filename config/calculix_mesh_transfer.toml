@@ -1,16 +1,16 @@
 [identity]
-simulation_id = "TRM-SIM-000001"
+simulation_id = "TRM-SIM-000003"
 mesh_id = "TRM-MSH-000001"
 geometry_id = "TRM-GEO-000001"
 status = "development"
 
 [input]
-mesh_level = "coarse"
+mesh_level = "fine"
 
 [solver]
 executable_relative_path = "tools/calculix/2.23.0/CalculiX-2.23.0-win-x64/bin/ccx.exe"
-job_name = "trm_msh_000001_coarse_transfer"
-timeout_seconds = 300
+job_name = "trm_msh_000001_fine_transfer"
+timeout_seconds = 1800
 
 [model]
 volume_group = "BOLT"
