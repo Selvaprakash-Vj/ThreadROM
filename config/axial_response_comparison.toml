@@ -1,0 +1,19 @@
+[identity]
+mesh_id = "TRM-MSH-000001"
+
+[analysis]
+node_set_name = "BOLT_HEAD_TOP"
+applied_force_n = -1000.0
+
+[output]
+report_relative_path = "docs/verification/TRM-MSH-000001_AXIAL_RESPONSE_COMPARISON.md"
+
+[[cases]]
+level = "coarse"
+simulation_id = "TRM-SIM-000001"
+dat_relative_path = "simulations/staging/TRM-SIM-000001/mesh_transfer/coarse/trm_msh_000001_coarse_transfer.dat"
+
+[[cases]]
+level = "medium"
+simulation_id = "TRM-SIM-000002"
+dat_relative_path = "simulations/staging/TRM-SIM-000002/mesh_transfer/medium/trm_msh_000001_medium_transfer.dat"
