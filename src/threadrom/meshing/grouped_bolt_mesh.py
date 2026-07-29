@@ -14,6 +14,7 @@ from threadrom.meshing.gmsh_step import (
     configure_gmsh,
 )
 from threadrom.meshing.surface_classification import (
+    THREAD_SURFACES,
     SurfaceClassificationDefinition,
     SurfaceClassificationResult,
     classify_current_model_surfaces,
@@ -216,6 +217,7 @@ def generate_grouped_bolt_mesh(
     blank_definition: BoltBlankDefinition,
     mesh_definition: GmshMeshDefinition,
     classification_definition: SurfaceClassificationDefinition,
+    thread_surface_size_mm: float | None = None,
 ) -> GroupedBoltMeshResult:
     """Generate a tetrahedral mesh with named engineering boundaries."""
 
@@ -288,6 +290,40 @@ def generate_grouped_bolt_mesh(
             point_entities,
             mesh_definition.mesh_size_max_mm,
         )
+
+        if thread_surface_size_mm is not None:
+            if thread_surface_size_mm <= 0.0:
+                raise ValueError("Thread-surface mesh size must be positive.")
+
+            if thread_surface_size_mm > (mesh_definition.mesh_size_max_mm):
+                raise ValueError(
+                    "Thread-surface mesh size cannot exceed the global maximum mesh size."
+                )
+
+            thread_surface_entities = [
+                (2, tag) for tag in classification_result.tags_for(THREAD_SURFACES)
+            ]
+
+            thread_boundary_entities = gmsh.model.getBoundary(
+                thread_surface_entities,
+                combined=False,
+                oriented=False,
+                recursive=True,
+            )
+
+            thread_point_entities = sorted(
+                {(dimension, tag) for dimension, tag in thread_boundary_entities if dimension == 0}
+            )
+
+            if not thread_point_entities:
+                raise RuntimeError(
+                    "No thread-region CAD points were found for local mesh refinement."
+                )
+
+            gmsh.model.mesh.setSize(
+                thread_point_entities,
+                thread_surface_size_mm,
+            )
 
         gmsh.model.mesh.generate(3)
 
