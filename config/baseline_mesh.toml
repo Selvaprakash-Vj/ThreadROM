@@ -1,0 +1,23 @@
+[identity]
+mesh_id = "TRM-MSH-000001"
+geometry_id = "TRM-GEO-000001"
+status = "development"
+
+[gmsh]
+element_order = 1
+algorithm_2d = 6
+algorithm_3d = 1
+mesh_size_min_mm = 0.30
+mesh_size_max_mm = 1.00
+msh_file_version = 4.1
+binary_output = false
+save_all_elements = false
+
+[physical_groups]
+volume_name = "BOLT"
+surface_name = "BOLT_SURFACE"
+
+[verification]
+expected_volume_count = 1
+minimum_node_count = 100
+minimum_tetrahedron_count = 100
