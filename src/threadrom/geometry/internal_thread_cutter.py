@@ -26,7 +26,6 @@ class InternalThreadCutterDefinition:
     pitch_mm: float
     minor_diameter_mm: float
     thread_length_mm: float
-    overshoot_pitches: float
     radial_overlap_mm: float
     handedness: str
     use_frenet_frame: bool
@@ -51,18 +50,15 @@ class InternalThreadCutterDefinition:
 
     @property
     def start_z_mm(self) -> float:
-        """Return the sweep start below the nut."""
+        """Return the internal-thread path start at the lower nut face."""
 
-        return -self.overshoot_pitches * self.pitch_mm
+        return 0.0
 
     @property
     def sweep_height_mm(self) -> float:
-        """Return the complete cutter sweep height."""
+        """Return the internal-thread path height through the nut."""
 
-        return (
-            self.thread_length_mm
-            + 2.0 * self.overshoot_pitches * self.pitch_mm
-        )
+        return self.thread_length_mm
 
     @property
     def turn_count(self) -> float:
@@ -202,10 +198,6 @@ def load_internal_thread_cutter_definition(
             thread,
             "thread_length_mm",
         ),
-        overshoot_pitches=_number(
-            thread,
-            "overshoot_pitches",
-        ),
         radial_overlap_mm=_number(
             thread,
             "radial_overlap_mm",
@@ -236,11 +228,6 @@ def load_internal_thread_cutter_definition(
     ):
         raise ValueError(
             "Internal thread length must equal the nut thickness."
-        )
-
-    if definition.overshoot_pitches <= 0.0:
-        raise ValueError(
-            "Cutter overshoot must be positive."
         )
 
     if definition.radial_overlap_mm <= 0.0:
@@ -305,7 +292,7 @@ def build_internal_thread_path(
     return cq.Wire.makeHelix(
         pitch=definition.pitch_mm,
         height=definition.sweep_height_mm,
-        radius=definition.major_radius_mm,
+        radius=definition.minor_radius_mm,
         center=cq.Vector(
             0.0,
             0.0,
@@ -327,7 +314,7 @@ def build_internal_thread_cutter(
     profile = (
         cq.Workplane("XZ")
         .center(
-            definition.major_radius_mm,
+            definition.minor_radius_mm,
             definition.start_z_mm,
         )
         .polyline(

@@ -31,7 +31,7 @@ export and re-import round trip.
 | Basic internal minor diameter | 8.376202 mm |
 | Internal-thread radial depth | 0.811899 mm |
 | Thread handedness | right |
-| Helical sweep turns | 7.333333 |
+| Helical sweep turns | 5.333333 |
 
 ## Native CAD measurements
 
@@ -44,21 +44,21 @@ export and re-import round trip.
 | Minimum Z | -0.000000 mm |
 | Maximum Z | 8.000000 mm |
 | Plain-bore blank volume | 1332.786932 mm^3 |
-| Helical cutter volume | 58.633604 mm^3 |
-| Removed thread volume | 42.642449 mm^3 |
-| Complete nut volume | 1290.144483 mm^3 |
-| Face count | 13 |
-| Edge count | 33 |
+| Helical cutter volume | 36.200414 mm^3 |
+| Removed thread volume | 35.872602 mm^3 |
+| Complete nut volume | 1296.914330 mm^3 |
+| Face count | 20 |
+| Edge count | 53 |
 
 ## STEP round-trip measurements
 
 | Quantity | Value |
 |---|---:|
-| STEP file size | 151839 bytes |
+| STEP file size | 231779 bytes |
 | Re-imported solid count | 1 |
 | Re-imported valid shape | True |
-| Re-imported volume | 1290.144483 mm^3 |
-| Relative volume error | 3.436659016e-14 |
+| Re-imported volume | 1296.914371 mm^3 |
+| Relative volume error | 3.105054640e-08 |
 | Maximum bounds error | 1.746158773e-12 mm |
 
 ## Verification gates

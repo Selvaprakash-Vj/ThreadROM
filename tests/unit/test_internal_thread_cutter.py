@@ -46,8 +46,11 @@ def test_baseline_internal_cutter_definition() -> None:
     assert definition.radial_thread_depth_mm == pytest.approx(
         0.81189881605,
     )
-    assert definition.start_z_mm == pytest.approx(-1.5)
-    assert definition.sweep_height_mm == pytest.approx(11.0)
+    assert definition.start_z_mm == pytest.approx(0.0)
+    assert definition.sweep_height_mm == pytest.approx(8.0)
+    assert definition.turn_count == pytest.approx(
+        8.0 / 1.5
+    )
 
 
 def test_internal_cutter_profile_matches_basic_thread() -> None:
