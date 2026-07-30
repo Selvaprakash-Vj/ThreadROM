@@ -1,0 +1,11 @@
+[identity]
+geometry_id = "TRM-GEO-000001"
+assembly_id = "TRM-ASM-000001"
+component_name = "baseline_internal_thread"
+
+[thread]
+thread_length_mm = 8.0
+overshoot_pitches = 1.0
+radial_overlap_mm = 0.03
+handedness = "right"
+use_frenet_frame = true

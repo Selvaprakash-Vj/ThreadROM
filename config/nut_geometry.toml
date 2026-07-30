@@ -1,0 +1,12 @@
+[identity]
+geometry_id = "TRM-GEO-000001"
+assembly_id = "TRM-ASM-000001"
+component_name = "baseline_hex_nut"
+
+[nut]
+across_flats_mm = 16.0
+thickness_mm = 8.0
+
+[construction]
+bore_basis = "basic_internal_minor_diameter"
+chamfer_included = false
