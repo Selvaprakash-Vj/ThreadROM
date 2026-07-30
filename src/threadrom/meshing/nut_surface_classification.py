@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import tomllib
-from collections.abc import Mapping
+from collections.abc import Collection, Mapping
 from dataclasses import dataclass
 from pathlib import Path
 from typing import cast
@@ -448,15 +448,39 @@ def _sample_surface_radial_bounds(
 def _measure_and_classify_nut_surfaces(
     nut_definition: NutBlankDefinition,
     definition: NutSurfaceClassificationDefinition,
+    surface_tags: Collection[int] | None = None,
+    axial_offset_mm: float = 0.0,
 ) -> tuple[ClassifiedNutSurface, ...]:
     """Measure and classify all active Gmsh surfaces."""
 
     surfaces: list[ClassifiedNutSurface] = []
 
-    for dimension, tag in gmsh.model.getEntities(2):
-        if dimension != 2:
-            continue
+    available_tags = {
+        int(tag)
+        for dimension, tag in gmsh.model.getEntities(2)
+        if dimension == 2
+    }
 
+    selected_tags = (
+        available_tags
+        if surface_tags is None
+        else {int(tag) for tag in surface_tags}
+    )
+
+    unknown_tags = selected_tags - available_tags
+
+    if unknown_tags:
+        raise ValueError(
+            "Unknown nut surface tags: "
+            f"{sorted(unknown_tags)}."
+        )
+
+    if not selected_tags:
+        raise ValueError(
+            "At least one nut surface tag is required."
+        )
+
+    for tag in sorted(selected_tags):
         (
             x_min_mm,
             y_min_mm,
@@ -486,8 +510,12 @@ def _measure_and_classify_nut_surfaces(
             x_max_mm=float(x_max_mm),
             y_min_mm=float(y_min_mm),
             y_max_mm=float(y_max_mm),
-            z_min_mm=float(z_min_mm),
-            z_max_mm=float(z_max_mm),
+            z_min_mm=(
+                float(z_min_mm) - axial_offset_mm
+            ),
+            z_max_mm=(
+                float(z_max_mm) - axial_offset_mm
+            ),
             sampled_radial_max_mm=(
                 sampled_radial_max_mm
             ),
@@ -652,6 +680,41 @@ def validate_nut_surface_classification(
         raise RuntimeError(
             "Registered nut groups do not match regions."
         )
+
+
+def classify_selected_model_nut_surfaces(
+    surface_tags: Collection[int],
+    nut_definition: NutBlankDefinition,
+    definition: NutSurfaceClassificationDefinition,
+    *,
+    axial_offset_mm: float = 0.0,
+) -> NutSurfaceClassificationResult:
+    """Classify surfaces belonging to one positioned nut volume."""
+
+    surfaces = _measure_and_classify_nut_surfaces(
+        nut_definition,
+        definition,
+        surface_tags,
+        axial_offset_mm,
+    )
+
+    physical_groups = _register_nut_physical_groups(
+        surfaces,
+        definition,
+    )
+
+    result = NutSurfaceClassificationResult(
+        imported_volume_count=1,
+        surfaces=surfaces,
+        physical_groups=physical_groups,
+    )
+
+    validate_nut_surface_classification(
+        result,
+        definition,
+    )
+
+    return result
 
 
 def classify_current_model_nut_surfaces(

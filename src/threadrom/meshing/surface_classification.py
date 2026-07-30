@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import tomllib
-from collections.abc import Mapping
+from collections.abc import Collection, Mapping
 from dataclasses import dataclass
 from pathlib import Path
 from typing import cast
@@ -326,15 +326,38 @@ def classify_surface_region(
 def _measure_and_classify_surfaces(
     blank_definition: BoltBlankDefinition,
     definition: SurfaceClassificationDefinition,
+    surface_tags: Collection[int] | None = None,
 ) -> tuple[ClassifiedSurface, ...]:
     """Measure and classify all current Gmsh model surfaces."""
 
     classified_surfaces: list[ClassifiedSurface] = []
 
-    for dimension, tag in gmsh.model.getEntities(2):
-        if dimension != 2:
-            continue
+    available_tags = {
+        int(tag)
+        for dimension, tag in gmsh.model.getEntities(2)
+        if dimension == 2
+    }
 
+    selected_tags = (
+        available_tags
+        if surface_tags is None
+        else {int(tag) for tag in surface_tags}
+    )
+
+    unknown_tags = selected_tags - available_tags
+
+    if unknown_tags:
+        raise ValueError(
+            "Unknown bolt surface tags: "
+            f"{sorted(unknown_tags)}."
+        )
+
+    if not selected_tags:
+        raise ValueError(
+            "At least one bolt surface tag is required."
+        )
+
+    for tag in sorted(selected_tags):
         (
             x_min_mm,
             y_min_mm,
@@ -490,6 +513,38 @@ def _register_physical_groups(
         )
 
     return tuple(registrations)
+
+
+def classify_selected_model_surfaces(
+    surface_tags: Collection[int],
+    blank_definition: BoltBlankDefinition,
+    definition: SurfaceClassificationDefinition,
+) -> SurfaceClassificationResult:
+    """Classify surfaces belonging to one selected bolt volume."""
+
+    surfaces = _measure_and_classify_surfaces(
+        blank_definition,
+        definition,
+        surface_tags,
+    )
+
+    physical_groups = _register_physical_groups(
+        surfaces,
+        definition,
+    )
+
+    result = SurfaceClassificationResult(
+        imported_volume_count=1,
+        surfaces=surfaces,
+        physical_groups=physical_groups,
+    )
+
+    validate_surface_classification(
+        result,
+        definition,
+    )
+
+    return result
 
 
 def classify_current_model_surfaces(

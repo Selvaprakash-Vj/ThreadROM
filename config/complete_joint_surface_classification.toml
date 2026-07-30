@@ -1,0 +1,29 @@
+[identity]
+classification_id = "TRM-JSC-000001"
+assembly_id = "TRM-ASM-000001"
+geometry_id = "TRM-GEO-000001"
+status = "development"
+
+[classification]
+plane_tolerance_mm = 0.00001
+radial_tolerance_mm = 0.05
+
+[volume_groups]
+bolt = "BOLT"
+nut = "NUT"
+head_side_member = "HEAD_SIDE_MEMBER"
+nut_side_member = "NUT_SIDE_MEMBER"
+
+[member_surface_groups]
+head_member_head_bearing = "HEAD_MEMBER_HEAD_BEARING"
+head_member_interface = "HEAD_MEMBER_INTERFACE"
+head_member_outer = "HEAD_MEMBER_OUTER"
+head_member_clearance_hole = "HEAD_MEMBER_CLEARANCE_HOLE"
+nut_member_interface = "NUT_MEMBER_INTERFACE"
+nut_member_nut_bearing = "NUT_MEMBER_NUT_BEARING"
+nut_member_outer = "NUT_MEMBER_OUTER"
+nut_member_clearance_hole = "NUT_MEMBER_CLEARANCE_HOLE"
+
+[verification]
+expected_volume_count = 4
+expected_member_surface_count = 8
