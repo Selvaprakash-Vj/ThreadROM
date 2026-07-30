@@ -58,23 +58,22 @@ def test_internal_cutter_profile_matches_basic_thread() -> None:
 
     assert len(points) == 4
 
+    outward_coordinate_mm = (
+        definition.radial_thread_depth_mm
+        + definition.radial_overlap_mm
+    )
+
     assert points[0] == pytest.approx(
-        (-0.03, -0.09375)
+        (0.0, -0.1875)
     )
     assert points[1] == pytest.approx(
-        (
-            definition.radial_thread_depth_mm,
-            -0.1875,
-        )
+        (outward_coordinate_mm, -0.09375)
     )
     assert points[2] == pytest.approx(
-        (
-            definition.radial_thread_depth_mm,
-            0.1875,
-        )
+        (outward_coordinate_mm, 0.09375)
     )
     assert points[3] == pytest.approx(
-        (-0.03, 0.09375)
+        (0.0, 0.1875)
     )
 
 

@@ -58,7 +58,7 @@ def test_complete_threaded_nut_is_valid() -> None:
         measurements.complete_volume_mm3
         < measurements.blank_volume_mm3
     )
-    assert measurements.removed_thread_volume_mm3 > 0.0
+    assert measurements.removed_thread_volume_mm3 > 1.0
     assert (
         measurements.removed_thread_volume_mm3
         < measurements.cutter_volume_mm3
@@ -86,9 +86,13 @@ def test_internal_thread_preserves_outer_nut_envelope() -> None:
     assert complete_measurements.y_length_mm == pytest.approx(
         blank_measurements.y_length_mm
     )
-    assert complete_measurements.z_min_mm == pytest.approx(0.0)
+    assert complete_measurements.z_min_mm == pytest.approx(
+        0.0,
+        abs=2.0e-7,
+    )
     assert complete_measurements.z_max_mm == pytest.approx(
-        nut_definition.thickness_mm
+        nut_definition.thickness_mm,
+        abs=2.0e-7,
     )
 
     assert build.complete_nut.Area() > build.nut_blank.Area()

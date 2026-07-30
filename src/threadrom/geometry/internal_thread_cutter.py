@@ -272,25 +272,27 @@ def internal_cutter_profile_points(
     crest_half_width_mm = definition.pitch_mm / 16.0
     root_half_width_mm = definition.pitch_mm / 8.0
 
-    inward_overlap_mm = -definition.radial_overlap_mm
-    outward_depth_mm = definition.radial_thread_depth_mm
+    outward_coordinate_mm = (
+        definition.radial_thread_depth_mm
+        + definition.radial_overlap_mm
+    )
 
     return (
         (
-            inward_overlap_mm,
-            -crest_half_width_mm,
-        ),
-        (
-            outward_depth_mm,
+            0.0,
             -root_half_width_mm,
         ),
         (
-            outward_depth_mm,
-            root_half_width_mm,
+            outward_coordinate_mm,
+            -crest_half_width_mm,
         ),
         (
-            inward_overlap_mm,
+            outward_coordinate_mm,
             crest_half_width_mm,
+        ),
+        (
+            0.0,
+            root_half_width_mm,
         ),
     )
 
@@ -303,7 +305,7 @@ def build_internal_thread_path(
     return cq.Wire.makeHelix(
         pitch=definition.pitch_mm,
         height=definition.sweep_height_mm,
-        radius=definition.minor_radius_mm,
+        radius=definition.major_radius_mm,
         center=cq.Vector(
             0.0,
             0.0,
@@ -325,7 +327,7 @@ def build_internal_thread_cutter(
     profile = (
         cq.Workplane("XZ")
         .center(
-            definition.minor_radius_mm,
+            definition.major_radius_mm,
             definition.start_z_mm,
         )
         .polyline(

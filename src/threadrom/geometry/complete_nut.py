@@ -179,9 +179,14 @@ def build_complete_nut(
         - complete_nut.Volume()
     )
 
-    if removed_volume_mm3 <= 0.0:
+    minimum_removed_volume_mm3 = (
+        1.0e-6 * nut_blank.Volume()
+    )
+
+    if removed_volume_mm3 <= minimum_removed_volume_mm3:
         raise RuntimeError(
-            "Internal-thread cutter removed no nut material."
+            "Internal-thread cutter removed no meaningful "
+            "nut material."
         )
 
     return CompleteNutBuild(
