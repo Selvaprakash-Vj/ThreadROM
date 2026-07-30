@@ -1,0 +1,20 @@
+[identity]
+mesh_id = "TRM-MSH-000004"
+geometry_id = "TRM-GEO-000001"
+
+[classification]
+plane_tolerance_mm = 0.00001
+radial_tolerance_mm = 0.05
+
+[physical_groups]
+lower_bearing = "nut_lower_bearing"
+upper_bearing = "nut_upper_bearing"
+outer_hex = "nut_outer_hex"
+internal_thread = "nut_internal_thread"
+transition_surfaces = "nut_transition_surfaces"
+
+[verification]
+minimum_lower_bearing_surface_count = 1
+minimum_upper_bearing_surface_count = 1
+minimum_outer_hex_surface_count = 6
+minimum_internal_thread_surface_count = 1
