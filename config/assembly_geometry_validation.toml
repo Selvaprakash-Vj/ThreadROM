@@ -1,0 +1,14 @@
+[identity]
+validation_id = "TRM-AGV-000001"
+assembly_id = "TRM-ASM-000001"
+status = "development"
+
+[topology]
+expected_component_count = 4
+expected_solids_per_component = 1
+
+[placement]
+coordinate_tolerance_mm = 1.0e-8
+
+[interference]
+maximum_pairwise_volume_mm3 = 1.0e-8
