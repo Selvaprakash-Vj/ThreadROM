@@ -1,0 +1,21 @@
+[identity]
+policy_id = "TRM-MLP-000002"
+mesh_id = "TRM-MSH-000004"
+geometry_id = "TRM-GEO-000001"
+status = "development"
+level_order = ["coarse", "medium", "fine"]
+
+[levels.coarse]
+maximum_size_pitch_factor = 1.00
+minimum_size_thread_depth_factor = 0.50
+thread_surface_size_depth_factor = 0.50
+
+[levels.medium]
+maximum_size_pitch_factor = 0.67
+minimum_size_thread_depth_factor = 0.33
+thread_surface_size_depth_factor = 0.33
+
+[levels.fine]
+maximum_size_pitch_factor = 0.45
+minimum_size_thread_depth_factor = 0.22
+thread_surface_size_depth_factor = 0.22

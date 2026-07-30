@@ -6,11 +6,23 @@ import tomllib
 from collections.abc import Mapping
 from dataclasses import dataclass
 from pathlib import Path
-from typing import cast
+from typing import Protocol, cast
 
-from threadrom.geometry.helical_thread_cutter import (
-    HelicalThreadCutterDefinition,
-)
+
+class ThreadGeometryDefinition(Protocol):
+    """Thread dimensions required by the mesh-level resolver."""
+
+    @property
+    def pitch_mm(self) -> float:
+        """Return the axial thread pitch."""
+
+        ...
+
+    @property
+    def radial_thread_depth_mm(self) -> float:
+        """Return the radial thread depth."""
+
+        ...
 
 
 @dataclass(frozen=True)
@@ -173,7 +185,7 @@ def load_mesh_level_policy(
 
 def resolve_mesh_levels(
     policy: MeshLevelPolicy,
-    thread_definition: HelicalThreadCutterDefinition,
+    thread_definition: ThreadGeometryDefinition,
 ) -> tuple[ResolvedMeshLevel, ...]:
     """Resolve dimensionless level factors into millimetres."""
 
