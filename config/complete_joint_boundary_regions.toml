@@ -1,0 +1,29 @@
+[identity]
+boundary_region_id = "TRM-BCR-000001"
+simulation_id = "TRM-SIM-000006"
+mesh_id = "TRM-MSH-000005"
+assembly_id = "TRM-ASM-000001"
+contact_model_id = "TRM-CNT-000001"
+status = "development"
+
+[geometry]
+outer_band_inner_radius_mm = 12.0
+member_outer_radius_mm = 15.0
+coordinate_tolerance_mm = 1.0e-6
+
+[regions.head_support]
+name = "HEAD_MEMBER_SUPPORT_BAND"
+source_boundary = "HEAD_MEMBER_HEAD_BEARING"
+excluded_boundary = "BOLT_UNDER_HEAD_BEARING"
+
+[regions.nut_load]
+name = "NUT_MEMBER_LOAD_BAND"
+source_boundary = "NUT_MEMBER_NUT_BEARING"
+excluded_boundary = "NUT_LOWER_BEARING"
+
+[verification]
+expected_region_count = 2
+expected_head_support_node_count = 360
+expected_nut_load_node_count = 360
+require_zero_bearing_overlap = true
+require_equal_region_node_counts = true
