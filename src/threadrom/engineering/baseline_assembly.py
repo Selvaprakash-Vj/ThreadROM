@@ -44,6 +44,49 @@ class BaselineAssembly:
             + self.protrusion_length_mm
         )
 
+    @property
+    def nut_translation_z_mm(self) -> float:
+        """Return the nut translation from the bolt-head datum."""
+
+        return self.total_grip_length_mm
+
+    @property
+    def nut_rotation_deg(self) -> float:
+        """Return the governed right-hand helical phase rotation."""
+
+        completed_turns = (
+            self.nut_translation_z_mm
+            / self.pitch_mm
+        )
+
+        fractional_turn = completed_turns % 1.0
+
+        return 360.0 * fractional_turn
+
+    @property
+    def nut_lower_bearing_z_mm(self) -> float:
+        """Return the lower nut-bearing-plane coordinate."""
+
+        return self.nut_translation_z_mm
+
+    @property
+    def nut_upper_bearing_z_mm(self) -> float:
+        """Return the upper nut-bearing-plane coordinate."""
+
+        return (
+            self.nut_translation_z_mm
+            + self.nut_thickness_mm
+        )
+
+    @property
+    def calculated_protrusion_length_mm(self) -> float:
+        """Return protrusion implied by the positioned nut."""
+
+        return (
+            self.bolt_length_mm
+            - self.nut_upper_bearing_z_mm
+        )
+
 
 def _section(
     data: Mapping[str, object],
