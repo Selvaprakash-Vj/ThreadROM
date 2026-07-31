@@ -265,3 +265,51 @@ def test_map_complete_joint_boundary_faces() -> None:
             1 <= face.element_id <= 333439
             for face in mapped[physical_name]
         )
+
+
+
+def test_map_internal_pretension_section_faces() -> None:
+    """The shared section resolves to its governed positive-Z side."""
+
+    definition = (
+        load_complete_joint_calculix_transfer_definition(
+            PROJECT_ROOT
+            / "config"
+            / "complete_joint_pretension_calculix_transfer.toml"
+        )
+    )
+
+    mesh_data = read_grouped_complete_joint_mesh(
+        PROJECT_ROOT
+        / "simulations"
+        / "staging"
+        / definition.mesh_id
+        / "mesh"
+        / definition.source_mesh_name,
+        definition,
+    )
+
+    mapped = map_complete_joint_boundary_faces(
+        mesh_data,
+        internal_surface_normals={
+            "BOLT_PRETENSION_SECTION": (
+                0.0,
+                0.0,
+                1.0,
+            ),
+        },
+    )
+
+    assert len(mapped) == 18
+
+    assert (
+        len(mapped["BOLT_PRETENSION_SECTION"])
+        == 1701
+    )
+
+    assert sum(
+        len(faces)
+        for faces in mapped.values()
+    ) == mesh_data.boundary_triangle_count
+
+    assert mesh_data.boundary_triangle_count == 78963

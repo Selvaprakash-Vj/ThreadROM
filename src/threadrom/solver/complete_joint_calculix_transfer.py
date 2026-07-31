@@ -760,12 +760,19 @@ def write_complete_joint_calculix_transfer_deck(
     mesh_data: CompleteJointCalculixMeshData,
     definition: CompleteJointCalculixTransferDefinition,
     input_path: Path,
+    *,
+    internal_surface_normals: (
+        Mapping[str, tuple[float, float, float]] | None
+    ) = None,
 ) -> CompleteJointCalculixDeckSummary:
     """Write nodes, component ELSETs and boundary NSETs."""
 
     mapped_boundary_faces = (
         map_complete_joint_boundary_faces(
-            mesh_data
+            mesh_data,
+            internal_surface_normals=(
+                internal_surface_normals
+            ),
         )
     )
 
@@ -1026,10 +1033,124 @@ def _c3d4_faces(
     )
 
 
+def _outward_c3d4_face_normal(
+    points_mm: NDArray[np.float64],
+    connectivity: NDArray[np.int64],
+    face_nodes: tuple[int, int, int],
+) -> NDArray[np.float64]:
+    """Return the unit outward normal of one C3D4 face."""
+
+    point_1 = points_mm[face_nodes[0]]
+    point_2 = points_mm[face_nodes[1]]
+    point_3 = points_mm[face_nodes[2]]
+
+    normal = np.cross(
+        point_2 - point_1,
+        point_3 - point_1,
+    )
+
+    magnitude = float(np.linalg.norm(normal))
+
+    if magnitude <= 0.0:
+        raise RuntimeError(
+            "A C3D4 face has zero geometric area."
+        )
+
+    face_node_set = set(face_nodes)
+
+    opposite_nodes = [
+        int(node_index)
+        for node_index in connectivity
+        if int(node_index) not in face_node_set
+    ]
+
+    if len(opposite_nodes) != 1:
+        raise RuntimeError(
+            "Could not identify the opposite C3D4 node."
+        )
+
+    face_centroid = (
+        point_1 + point_2 + point_3
+    ) / 3.0
+
+    opposite_direction = (
+        points_mm[opposite_nodes[0]]
+        - face_centroid
+    )
+
+    if float(np.dot(normal, opposite_direction)) > 0.0:
+        normal = -normal
+
+    return np.asarray(
+        normal / magnitude,
+        dtype=np.float64,
+    )
+
+
 def map_complete_joint_boundary_faces(
     mesh_data: CompleteJointCalculixMeshData,
+    *,
+    internal_surface_normals: (
+        Mapping[str, tuple[float, float, float]] | None
+    ) = None,
 ) -> Mapping[str, tuple[CalculixElementFace, ...]]:
-    """Map every physical boundary triangle to a C3D4 face."""
+    """Map physical triangles to governed C3D4 faces.
+
+    External triangles must match exactly one tetrahedral face.
+    A governed internal triangle must match exactly two faces;
+    the face whose outward normal follows the requested direction
+    is selected.
+    """
+
+    requested_normals = (
+        {}
+        if internal_surface_normals is None
+        else dict(internal_surface_normals)
+    )
+
+    unknown_internal_surfaces = set(
+        requested_normals
+    ).difference(mesh_data.boundary_triangles)
+
+    if unknown_internal_surfaces:
+        raise ValueError(
+            "Internal-surface directions reference unknown "
+            "physical groups: "
+            + ", ".join(
+                sorted(unknown_internal_surfaces)
+            )
+        )
+
+    normalized_directions: dict[
+        str,
+        NDArray[np.float64],
+    ] = {}
+
+    for physical_name, direction in (
+        requested_normals.items()
+    ):
+        vector = np.asarray(
+            direction,
+            dtype=np.float64,
+        )
+
+        if vector.shape != (3,):
+            raise ValueError(
+                "Internal-surface direction must contain "
+                f"three components: {physical_name}."
+            )
+
+        magnitude = float(np.linalg.norm(vector))
+
+        if magnitude <= 0.0:
+            raise ValueError(
+                "Internal-surface direction cannot be zero: "
+                f"{physical_name}."
+            )
+
+        normalized_directions[physical_name] = (
+            vector / magnitude
+        )
 
     target_lookup: dict[
         tuple[int, int, int],
@@ -1067,15 +1188,18 @@ def map_complete_joint_boundary_faces(
 
             target_lookup[key] = physical_name
 
-    mapped_faces: dict[
-        str,
-        list[CalculixElementFace],
+    candidate_lookup: dict[
+        tuple[int, int, int],
+        list[
+            tuple[
+                CalculixElementFace,
+                NDArray[np.float64],
+            ]
+        ],
     ] = {
-        physical_name: []
-        for physical_name in mesh_data.boundary_triangles
+        key: []
+        for key in target_lookup
     }
-
-    matched_keys: set[tuple[int, int, int]] = set()
 
     next_element_id = 1
 
@@ -1100,41 +1224,99 @@ def map_complete_joint_boundary_faces(
                     sorted_face_nodes[2],
                 )
 
-                matched_physical_name = target_lookup.get(
-                    key
-                )
-
-                if matched_physical_name is None:
+                if key not in target_lookup:
                     continue
 
-                if key in matched_keys:
-                    raise RuntimeError(
-                        "A physical boundary triangle was "
-                        "matched to multiple tetrahedral faces."
-                    )
-
-                mapped_faces[
-                    matched_physical_name
-                ].append(
-                    CalculixElementFace(
-                        element_id=element_id,
-                        face_label=face_label,
+                candidate_lookup[key].append(
+                    (
+                        CalculixElementFace(
+                            element_id=element_id,
+                            face_label=face_label,
+                        ),
+                        _outward_c3d4_face_normal(
+                            mesh_data.points_mm,
+                            connectivity,
+                            face_nodes,
+                        ),
                     )
                 )
-
-                matched_keys.add(key)
 
         next_element_id += len(tetrahedra)
 
-    missing_keys = set(target_lookup).difference(
-        matched_keys
-    )
+    mapped_faces: dict[
+        str,
+        list[CalculixElementFace],
+    ] = {
+        physical_name: []
+        for physical_name in mesh_data.boundary_triangles
+    }
 
-    if missing_keys:
-        raise RuntimeError(
-            "Some physical boundary triangles could not "
-            "be mapped to C3D4 element faces: "
-            f"{len(missing_keys)} missing."
+    for key, physical_name in target_lookup.items():
+        candidates = candidate_lookup[key]
+
+        requested_direction = (
+            normalized_directions.get(physical_name)
+        )
+
+        if requested_direction is None:
+            if len(candidates) != 1:
+                raise RuntimeError(
+                    "An external physical boundary triangle "
+                    "did not match exactly one tetrahedral face: "
+                    f"{physical_name} matched {len(candidates)}."
+                )
+
+            selected_face = candidates[0][0]
+
+        else:
+            if len(candidates) != 2:
+                raise RuntimeError(
+                    "A governed internal physical triangle "
+                    "did not match exactly two tetrahedral faces: "
+                    f"{physical_name} matched {len(candidates)}."
+                )
+
+            scored_candidates = sorted(
+                (
+                    (
+                        float(
+                            np.dot(
+                                normal,
+                                requested_direction,
+                            )
+                        ),
+                        face,
+                    )
+                    for face, normal in candidates
+                ),
+                key=lambda item: item[0],
+                reverse=True,
+            )
+
+            best_score, selected_face = (
+                scored_candidates[0]
+            )
+            opposite_score = scored_candidates[1][0]
+
+            tolerance = 1.0e-8
+
+            if best_score < 1.0 - tolerance:
+                raise RuntimeError(
+                    "No internal tetrahedral face follows the "
+                    "governed surface-normal direction: "
+                    f"{physical_name}, score={best_score:.12e}."
+                )
+
+            if opposite_score > -1.0 + tolerance:
+                raise RuntimeError(
+                    "Internal-surface face normals are not "
+                    "oppositely directed: "
+                    f"{physical_name}, "
+                    f"score={opposite_score:.12e}."
+                )
+
+        mapped_faces[physical_name].append(
+            selected_face
         )
 
     resolved = {
