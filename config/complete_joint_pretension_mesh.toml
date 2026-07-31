@@ -1,0 +1,25 @@
+[identity]
+mesh_id = "TRM-MSH-000006"
+assembly_id = "TRM-ASM-000001"
+geometry_id = "TRM-GEO-000001"
+classification_id = "TRM-JSC-000001"
+status = "development"
+
+[gmsh]
+element_order = 1
+algorithm_2d = 6
+algorithm_3d = 1
+msh_file_version = 4.1
+binary_output = false
+save_all_elements = false
+
+[refinement]
+selected_level = "medium"
+bolt_mesh_level_policy = "mesh_levels.toml"
+nut_mesh_level_policy = "nut_mesh_levels.toml"
+
+[verification]
+expected_volume_count = 5
+minimum_node_count = 1000
+minimum_tetrahedron_count = 1000
+minimum_boundary_triangle_count = 1000

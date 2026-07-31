@@ -8,6 +8,10 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import cast
 
+from threadrom.meshing.complete_joint_mesh_definition import (
+    CompleteJointMeshDefinition,
+)
+
 
 @dataclass(frozen=True)
 class CompleteJointPretensionDefinition:
@@ -231,3 +235,60 @@ def load_complete_joint_pretension_definition(
         )
 
     return definition
+
+
+
+def validate_complete_joint_pretension_mesh(
+    pretension: CompleteJointPretensionDefinition,
+    mesh: CompleteJointMeshDefinition,
+) -> None:
+    """Verify pretension and mesh configurations are compatible."""
+
+    if pretension.pretension_mesh_id != mesh.mesh_id:
+        raise ValueError(
+            "Pretension and mesh IDs differ."
+        )
+
+    if pretension.assembly_id != mesh.assembly_id:
+        raise ValueError(
+            "Pretension and mesh assembly IDs differ."
+        )
+
+    if pretension.geometry_id != mesh.geometry_id:
+        raise ValueError(
+            "Pretension and mesh geometry IDs differ."
+        )
+
+    if (
+        pretension.expected_total_cad_volume_count
+        != mesh.expected_volume_count
+    ):
+        raise ValueError(
+            "Pretension and mesh volume expectations differ."
+        )
+
+    expected_volume_count = (
+        pretension.bolt_fragment_count + 3
+    )
+
+    if (
+        pretension.expected_total_cad_volume_count
+        != expected_volume_count
+    ):
+        raise ValueError(
+            "Pretension volume count is inconsistent with "
+            "the bolt fragments and three remaining components."
+        )
+
+    if (
+        pretension.source_mesh_id
+        == pretension.pretension_mesh_id
+    ):
+        raise ValueError(
+            "Source and pretension mesh IDs must differ."
+        )
+
+    if not pretension.group_bolt_fragments_together:
+        raise ValueError(
+            "Bolt fragments must share one physical group."
+        )
