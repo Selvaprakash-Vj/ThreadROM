@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import tomllib
-from collections.abc import Mapping
+from collections.abc import Callable, Mapping
 from dataclasses import dataclass
 from pathlib import Path
 from typing import cast
@@ -184,9 +184,7 @@ def load_complete_joint_calculix_transfer_definition(
     """Load and validate the joint transfer configuration."""
 
     with config_path.open("rb") as config_file:
-        data: dict[str, object] = tomllib.load(
-            config_file
-        )
+        data: dict[str, object] = tomllib.load(config_file)
 
     identity = _section(data, "identity")
     input_section = _section(data, "input")
@@ -310,75 +308,69 @@ def load_complete_joint_calculix_transfer_definition(
         "medium",
         "fine",
     }:
-        raise ValueError(
-            "Mesh level must be coarse, medium or fine."
-        )
+        raise ValueError("Mesh level must be coarse, medium or fine.")
 
     if definition.timeout_seconds <= 0:
-        raise ValueError(
-            "Solver timeout must be positive."
-        )
+        raise ValueError("Solver timeout must be positive.")
 
-    if definition.element_type != "C3D4":
-        raise ValueError(
-            "Complete-joint transfer currently requires C3D4."
-        )
+    if definition.element_type not in {
+        "C3D4",
+        "C3D10",
+    }:
+        raise ValueError("Complete-joint transfer supports only C3D4 and C3D10.")
 
     if definition.youngs_modulus_mpa <= 0.0:
-        raise ValueError(
-            "Young's modulus must be positive."
-        )
+        raise ValueError("Young's modulus must be positive.")
 
     if not -1.0 < definition.poissons_ratio < 0.5:
+        raise ValueError("Poisson's ratio must lie between -1 and 0.5.")
+
+    if definition.smoke_test_output_node_group not in definition.required_boundary_groups:
         raise ValueError(
-            "Poisson's ratio must lie between -1 and 0.5."
+            "Smoke-test output group must be one of the required engineering boundaries."
         )
 
-    if (
-        definition.smoke_test_output_node_group
-        not in definition.required_boundary_groups
-    ):
-        raise ValueError(
-            "Smoke-test output group must be one of the "
-            "required engineering boundaries."
-        )
-
-    volume_names = tuple(
-        name
-        for _, name in definition.volume_groups
-    )
+    volume_names = tuple(name for _, name in definition.volume_groups)
 
     if len(set(volume_names)) != len(volume_names):
-        raise ValueError(
-            "Volume physical-group names must be unique."
-        )
+        raise ValueError("Volume physical-group names must be unique.")
 
-    if (
-        len(volume_names)
-        != definition.expected_volume_group_count
-    ):
-        raise ValueError(
-            "Configured volume-group count does not match "
-            "the governed expectation."
-        )
+    if len(volume_names) != definition.expected_volume_group_count:
+        raise ValueError("Configured volume-group count does not match the governed expectation.")
 
-    if (
-        len(definition.required_boundary_groups)
-        != definition.expected_boundary_group_count
-    ):
-        raise ValueError(
-            "Required boundary-group count does not match "
-            "the governed expectation."
-        )
+    if len(definition.required_boundary_groups) != definition.expected_boundary_group_count:
+        raise ValueError("Required boundary-group count does not match the governed expectation.")
 
-    if len(
-        set(definition.required_boundary_groups)
-    ) != len(definition.required_boundary_groups):
-        raise ValueError(
-            "Required boundary-group names must be unique."
-        )
+    if len(set(definition.required_boundary_groups)) != len(definition.required_boundary_groups):
+        raise ValueError("Required boundary-group names must be unique.")
 
     return definition
+
+
+def _meshio_topology(
+    element_type: str,
+) -> tuple[str, str, int, int]:
+    """Return governed Meshio topology for one CalculiX element."""
+
+    topology_by_element_type = {
+        "C3D4": (
+            "tetra",
+            "triangle",
+            4,
+            3,
+        ),
+        "C3D10": (
+            "tetra10",
+            "triangle6",
+            10,
+            6,
+        ),
+    }
+
+    try:
+        return topology_by_element_type[element_type]
+    except KeyError as error:
+        raise ValueError(f"Unsupported complete-joint element type: {element_type}.") from error
 
 
 @dataclass(frozen=True)
@@ -459,23 +451,24 @@ def read_grouped_complete_joint_mesh(
     """Read all joint volumes and boundaries from Gmsh MSH."""
 
     if not msh_path.exists() or msh_path.stat().st_size <= 0:
-        raise FileNotFoundError(
-            f"Valid grouped joint mesh not found: {msh_path}"
-        )
+        raise FileNotFoundError(f"Valid grouped joint mesh not found: {msh_path}")
 
     mesh = meshio.read(msh_path)
+
+    (
+        volume_cell_type,
+        boundary_cell_type,
+        volume_node_count,
+        boundary_node_count,
+    ) = _meshio_topology(definition.element_type)
 
     physical_data = mesh.cell_data.get("gmsh:physical")
 
     if physical_data is None:
-        raise RuntimeError(
-            "Grouped joint mesh contains no gmsh:physical data."
-        )
+        raise RuntimeError("Grouped joint mesh contains no gmsh:physical data.")
 
     if len(physical_data) != len(mesh.cells):
-        raise RuntimeError(
-            "Physical data does not align with mesh cell blocks."
-        )
+        raise RuntimeError("Physical data does not align with mesh cell blocks.")
 
     field_lookup: dict[tuple[int, int], str] = {}
 
@@ -483,34 +476,21 @@ def read_grouped_complete_joint_mesh(
         physical_tag = int(values[0])
         dimension = int(values[1])
 
-        field_lookup[
-            (physical_tag, dimension)
-        ] = name
+        field_lookup[(physical_tag, dimension)] = name
 
-    volume_lookup = {
-        definition.volume_name(component): component
-        for component in COMPONENT_ORDER
-    }
+    volume_lookup = {definition.volume_name(component): component for component in COMPONENT_ORDER}
 
-    required_boundaries = set(
-        definition.required_boundary_groups
-    )
+    required_boundaries = set(definition.required_boundary_groups)
 
     component_blocks: dict[
         str,
         list[NDArray[np.int64]],
-    ] = {
-        component: []
-        for component in COMPONENT_ORDER
-    }
+    ] = {component: [] for component in COMPONENT_ORDER}
 
     boundary_blocks: dict[
         str,
         list[NDArray[np.int64]],
-    ] = {
-        name: []
-        for name in definition.required_boundary_groups
-    }
+    ] = {name: [] for name in definition.required_boundary_groups}
 
     recovered_tetrahedron_count = 0
     recovered_triangle_count = 0
@@ -525,81 +505,73 @@ def read_grouped_complete_joint_mesh(
             dtype=np.int64,
         )
 
-        if cell_block.type == "tetra":
+        if cell_block.type == volume_cell_type:
             connectivity = np.asarray(
                 cell_block.data,
                 dtype=np.int64,
             )
 
+            if connectivity.ndim != 2 or connectivity.shape[1] != volume_node_count:
+                raise RuntimeError(
+                    f"{volume_cell_type} connectivity must "
+                    f"contain {volume_node_count} nodes "
+                    "per element."
+                )
+
             if len(connectivity) != len(physical_tags):
                 raise RuntimeError(
-                    "Tetrahedral connectivity and physical "
-                    "tags have different lengths."
+                    f"{volume_cell_type} connectivity and physical tags have different lengths."
                 )
 
             recovered_tetrahedron_count += len(connectivity)
 
             for physical_tag in np.unique(physical_tags):
-                physical_name = field_lookup.get(
-                    (int(physical_tag), 3)
-                )
+                physical_name = field_lookup.get((int(physical_tag), 3))
 
                 if physical_name is None:
-                    raise RuntimeError(
-                        "A tetrahedral block belongs to an "
-                        "unnamed physical volume."
-                    )
+                    raise RuntimeError("A tetrahedral block belongs to an unnamed physical volume.")
 
                 component = volume_lookup.get(physical_name)
 
                 if component is None:
-                    raise RuntimeError(
-                        "Unexpected tetrahedral volume group: "
-                        f"{physical_name}."
-                    )
+                    raise RuntimeError(f"Unexpected tetrahedral volume group: {physical_name}.")
 
                 mask = physical_tags == physical_tag
 
-                component_blocks[component].append(
-                    connectivity[mask]
-                )
+                component_blocks[component].append(connectivity[mask])
 
-        elif cell_block.type == "triangle":
+        elif cell_block.type == boundary_cell_type:
             connectivity = np.asarray(
                 cell_block.data,
                 dtype=np.int64,
             )
 
+            if connectivity.ndim != 2 or connectivity.shape[1] != boundary_node_count:
+                raise RuntimeError(
+                    f"{boundary_cell_type} connectivity must "
+                    f"contain {boundary_node_count} nodes "
+                    "per element."
+                )
+
             if len(connectivity) != len(physical_tags):
                 raise RuntimeError(
-                    "Triangle connectivity and physical "
-                    "tags have different lengths."
+                    f"{boundary_cell_type} connectivity and physical tags have different lengths."
                 )
 
             recovered_triangle_count += len(connectivity)
 
             for physical_tag in np.unique(physical_tags):
-                physical_name = field_lookup.get(
-                    (int(physical_tag), 2)
-                )
+                physical_name = field_lookup.get((int(physical_tag), 2))
 
                 if physical_name is None:
-                    raise RuntimeError(
-                        "A boundary block belongs to an "
-                        "unnamed physical surface."
-                    )
+                    raise RuntimeError("A boundary block belongs to an unnamed physical surface.")
 
                 if physical_name not in required_boundaries:
-                    raise RuntimeError(
-                        "Unexpected boundary physical group: "
-                        f"{physical_name}."
-                    )
+                    raise RuntimeError(f"Unexpected boundary physical group: {physical_name}.")
 
                 mask = physical_tags == physical_tag
 
-                boundary_blocks[physical_name].append(
-                    connectivity[mask]
-                )
+                boundary_blocks[physical_name].append(connectivity[mask])
 
     component_tetrahedra: dict[
         str,
@@ -610,14 +582,9 @@ def read_grouped_complete_joint_mesh(
         blocks = component_blocks[component]
 
         if not blocks:
-            raise RuntimeError(
-                "No tetrahedra recovered for joint component: "
-                f"{component}."
-            )
+            raise RuntimeError(f"No tetrahedra recovered for joint component: {component}.")
 
-        component_tetrahedra[component] = np.vstack(
-            blocks
-        )
+        component_tetrahedra[component] = np.vstack(blocks)
 
     boundary_triangles: dict[
         str,
@@ -629,24 +596,18 @@ def read_grouped_complete_joint_mesh(
         tuple[int, ...],
     ] = {}
 
-    for physical_name in (
-        definition.required_boundary_groups
-    ):
+    for physical_name in definition.required_boundary_groups:
         blocks = boundary_blocks[physical_name]
 
         if not blocks:
-            raise RuntimeError(
-                "Required joint boundary was not recovered: "
-                f"{physical_name}."
-            )
+            raise RuntimeError(f"Required joint boundary was not recovered: {physical_name}.")
 
         triangles = np.vstack(blocks)
 
         boundary_triangles[physical_name] = triangles
 
         boundary_node_sets[physical_name] = tuple(
-            int(node_index) + 1
-            for node_index in np.unique(triangles)
+            int(node_index) + 1 for node_index in np.unique(triangles)
         )
 
     points = np.asarray(
@@ -654,71 +615,39 @@ def read_grouped_complete_joint_mesh(
         dtype=np.float64,
     )
 
-    element_count = sum(
-        len(tetrahedra)
-        for tetrahedra in component_tetrahedra.values()
-    )
+    element_count = sum(len(tetrahedra) for tetrahedra in component_tetrahedra.values())
 
-    boundary_triangle_count = sum(
-        len(triangles)
-        for triangles in boundary_triangles.values()
-    )
+    boundary_triangle_count = sum(len(triangles) for triangles in boundary_triangles.values())
 
     if element_count != recovered_tetrahedron_count:
         raise RuntimeError(
-            "Component element total does not match the "
-            "recovered tetrahedron total."
+            "Component element total does not match the recovered tetrahedron total."
         )
 
     if boundary_triangle_count != recovered_triangle_count:
-        raise RuntimeError(
-            "Boundary-group total does not match the "
-            "recovered triangle total."
-        )
+        raise RuntimeError("Boundary-group total does not match the recovered triangle total.")
 
     if len(points) < definition.minimum_node_count:
-        raise RuntimeError(
-            "Transferred node count is below the "
-            "controlled minimum."
-        )
+        raise RuntimeError("Transferred node count is below the controlled minimum.")
 
     if element_count < definition.minimum_element_count:
-        raise RuntimeError(
-            "Transferred element count is below the "
-            "controlled minimum."
-        )
+        raise RuntimeError("Transferred element count is below the controlled minimum.")
 
-    all_tetrahedra = np.vstack(
-        tuple(component_tetrahedra.values())
-    )
+    all_tetrahedra = np.vstack(tuple(component_tetrahedra.values()))
 
-    all_triangles = np.vstack(
-        tuple(boundary_triangles.values())
-    )
+    all_triangles = np.vstack(tuple(boundary_triangles.values()))
 
     if np.min(all_tetrahedra) < 0:
-        raise RuntimeError(
-            "Tetrahedral connectivity contains a "
-            "negative node index."
-        )
+        raise RuntimeError("Tetrahedral connectivity contains a negative node index.")
 
     if np.max(all_tetrahedra) >= len(points):
-        raise RuntimeError(
-            "Tetrahedral connectivity references a "
-            "missing node."
-        )
+        raise RuntimeError("Tetrahedral connectivity references a missing node.")
 
     if np.min(all_triangles) < 0:
-        raise RuntimeError(
-            "Boundary connectivity contains a "
-            "negative node index."
-        )
+        raise RuntimeError("Boundary connectivity contains a negative node index.")
 
     if np.max(all_triangles) >= len(points):
-        raise RuntimeError(
-            "Boundary connectivity references a "
-            "missing node."
-        )
+        raise RuntimeError("Boundary connectivity references a missing node.")
 
     return CompleteJointCalculixMeshData(
         points_mm=points,
@@ -1033,16 +962,103 @@ def _c3d4_faces(
     )
 
 
-def _outward_c3d4_face_normal(
+def _c3d10_faces(
+    connectivity: NDArray[np.int64],
+) -> tuple[
+    tuple[
+        str,
+        tuple[int, int, int, int, int, int],
+    ],
+    ...,
+]:
+    """Return CalculiX C3D10 face labels and node indices."""
+
+    if connectivity.shape != (10,):
+        raise ValueError("C3D10 connectivity must contain ten nodes.")
+
+    nodes = tuple(int(node_index) for node_index in connectivity)
+
+    (
+        node_1,
+        node_2,
+        node_3,
+        node_4,
+        node_5,
+        node_6,
+        node_7,
+        node_8,
+        node_9,
+        node_10,
+    ) = nodes
+
+    return (
+        (
+            "S1",
+            (
+                node_1,
+                node_2,
+                node_3,
+                node_5,
+                node_6,
+                node_7,
+            ),
+        ),
+        (
+            "S2",
+            (
+                node_1,
+                node_4,
+                node_2,
+                node_8,
+                node_9,
+                node_5,
+            ),
+        ),
+        (
+            "S3",
+            (
+                node_2,
+                node_4,
+                node_3,
+                node_9,
+                node_10,
+                node_6,
+            ),
+        ),
+        (
+            "S4",
+            (
+                node_3,
+                node_4,
+                node_1,
+                node_10,
+                node_8,
+                node_7,
+            ),
+        ),
+    )
+
+
+def _outward_tetrahedral_face_normal(
     points_mm: NDArray[np.float64],
     connectivity: NDArray[np.int64],
-    face_nodes: tuple[int, int, int],
+    face_nodes: tuple[int, ...],
 ) -> NDArray[np.float64]:
-    """Return the unit outward normal of one C3D4 face."""
+    """Return the outward normal of a linear or quadratic tetrahedral face."""
 
-    point_1 = points_mm[face_nodes[0]]
-    point_2 = points_mm[face_nodes[1]]
-    point_3 = points_mm[face_nodes[2]]
+    if len(connectivity) not in {4, 10}:
+        raise ValueError("Tetrahedral connectivity must contain four or ten nodes.")
+
+    if len(face_nodes) not in {3, 6}:
+        raise ValueError("Tetrahedral face connectivity must contain three or six nodes.")
+
+    corner_nodes = tuple(int(node_index) for node_index in connectivity[:4])
+
+    face_corner_nodes = tuple(int(node_index) for node_index in face_nodes[:3])
+
+    point_1 = points_mm[face_corner_nodes[0]]
+    point_2 = points_mm[face_corner_nodes[1]]
+    point_3 = points_mm[face_corner_nodes[2]]
 
     normal = np.cross(
         point_2 - point_1,
@@ -1052,33 +1068,30 @@ def _outward_c3d4_face_normal(
     magnitude = float(np.linalg.norm(normal))
 
     if magnitude <= 0.0:
-        raise RuntimeError(
-            "A C3D4 face has zero geometric area."
-        )
+        raise RuntimeError("A tetrahedral face has zero geometric area.")
 
-    face_node_set = set(face_nodes)
+    face_corner_set = set(face_corner_nodes)
 
     opposite_nodes = [
-        int(node_index)
-        for node_index in connectivity
-        if int(node_index) not in face_node_set
+        node_index for node_index in corner_nodes if node_index not in face_corner_set
     ]
 
     if len(opposite_nodes) != 1:
-        raise RuntimeError(
-            "Could not identify the opposite C3D4 node."
+        raise RuntimeError("Could not identify the opposite tetrahedral corner node.")
+
+    face_centroid = (point_1 + point_2 + point_3) / 3.0
+
+    opposite_direction = points_mm[opposite_nodes[0]] - face_centroid
+
+    if (
+        float(
+            np.dot(
+                normal,
+                opposite_direction,
+            )
         )
-
-    face_centroid = (
-        point_1 + point_2 + point_3
-    ) / 3.0
-
-    opposite_direction = (
-        points_mm[opposite_nodes[0]]
-        - face_centroid
-    )
-
-    if float(np.dot(normal, opposite_direction)) > 0.0:
+        > 0.0
+    ):
         normal = -normal
 
     return np.asarray(
@@ -1091,34 +1104,82 @@ def map_complete_joint_boundary_faces(
     mesh_data: CompleteJointCalculixMeshData,
     *,
     internal_surface_normals: (
-        Mapping[str, tuple[float, float, float]] | None
+        Mapping[
+            str,
+            tuple[float, float, float],
+        ]
+        | None
     ) = None,
-) -> Mapping[str, tuple[CalculixElementFace, ...]]:
-    """Map physical triangles to governed C3D4 faces.
+) -> Mapping[
+    str,
+    tuple[CalculixElementFace, ...],
+]:
+    """Map physical facets to governed tetrahedral faces.
 
-    External triangles must match exactly one tetrahedral face.
-    A governed internal triangle must match exactly two faces;
-    the face whose outward normal follows the requested direction
-    is selected.
+    External facets must match exactly one tetrahedral face.
+    A governed internal facet must match exactly two faces;
+    the face whose outward normal follows the requested
+    direction is selected.
     """
 
-    requested_normals = (
-        {}
-        if internal_surface_normals is None
-        else dict(internal_surface_normals)
-    )
+    requested_normals = {} if internal_surface_normals is None else dict(internal_surface_normals)
 
-    unknown_internal_surfaces = set(
-        requested_normals
-    ).difference(mesh_data.boundary_triangles)
+    unknown_internal_surfaces = set(requested_normals).difference(mesh_data.boundary_triangles)
 
     if unknown_internal_surfaces:
         raise ValueError(
             "Internal-surface directions reference unknown "
-            "physical groups: "
-            + ", ".join(
-                sorted(unknown_internal_surfaces)
-            )
+            "physical groups: " + ", ".join(sorted(unknown_internal_surfaces))
+        )
+
+    volume_node_counts = {
+        int(tetrahedra.shape[1])
+        for tetrahedra in (mesh_data.component_tetrahedra.values())
+        if tetrahedra.ndim == 2
+    }
+
+    boundary_node_counts = {
+        int(triangles.shape[1])
+        for triangles in (mesh_data.boundary_triangles.values())
+        if triangles.ndim == 2
+    }
+
+    if len(volume_node_counts) != 1:
+        raise RuntimeError("Joint components do not share one tetrahedral element topology.")
+
+    if len(boundary_node_counts) != 1:
+        raise RuntimeError("Joint boundaries do not share one surface-element topology.")
+
+    volume_node_count = next(iter(volume_node_counts))
+
+    boundary_node_count = next(iter(boundary_node_counts))
+
+    face_builder: Callable[
+        [NDArray[np.int64]],
+        tuple[
+            tuple[
+                str,
+                tuple[int, ...],
+            ],
+            ...,
+        ],
+    ]
+
+    if (
+        volume_node_count,
+        boundary_node_count,
+    ) == (4, 3):
+        face_builder = _c3d4_faces
+    elif (
+        volume_node_count,
+        boundary_node_count,
+    ) == (10, 6):
+        face_builder = _c3d10_faces
+    else:
+        raise RuntimeError(
+            "Unsupported or mismatched joint topology: "
+            f"{volume_node_count}-node tetrahedra and "
+            f"{boundary_node_count}-node boundary facets."
         )
 
     normalized_directions: dict[
@@ -1126,9 +1187,7 @@ def map_complete_joint_boundary_faces(
         NDArray[np.float64],
     ] = {}
 
-    for physical_name, direction in (
-        requested_normals.items()
-    ):
+    for physical_name, direction in requested_normals.items():
         vector = np.asarray(
             direction,
             dtype=np.float64,
@@ -1136,93 +1195,65 @@ def map_complete_joint_boundary_faces(
 
         if vector.shape != (3,):
             raise ValueError(
-                "Internal-surface direction must contain "
-                f"three components: {physical_name}."
+                f"Internal-surface direction must contain three components: {physical_name}."
             )
 
         magnitude = float(np.linalg.norm(vector))
 
         if magnitude <= 0.0:
-            raise ValueError(
-                "Internal-surface direction cannot be zero: "
-                f"{physical_name}."
-            )
+            raise ValueError(f"Internal-surface direction cannot be zero: {physical_name}.")
 
-        normalized_directions[physical_name] = (
-            vector / magnitude
-        )
+        normalized_directions[physical_name] = vector / magnitude
 
     target_lookup: dict[
-        tuple[int, int, int],
+        tuple[int, ...],
         str,
     ] = {}
 
-    for physical_name, triangles in (
-        mesh_data.boundary_triangles.items()
-    ):
+    for physical_name, triangles in mesh_data.boundary_triangles.items():
         for triangle in triangles:
-            sorted_nodes = sorted(
-                int(node_index)
-                for node_index in triangle
-            )
+            nodes = tuple(int(node_index) for node_index in triangle)
 
-            if len(sorted_nodes) != 3:
-                raise RuntimeError(
-                    "Boundary triangle must contain three nodes."
-                )
+            if len(nodes) != boundary_node_count:
+                raise RuntimeError("Boundary facet has an unexpected node count.")
 
-            key = (
-                sorted_nodes[0],
-                sorted_nodes[1],
-                sorted_nodes[2],
-            )
+            key = tuple(sorted(nodes))
 
             existing_name = target_lookup.get(key)
 
             if existing_name is not None:
                 raise RuntimeError(
-                    "One boundary triangle belongs to multiple "
+                    "One boundary facet belongs to multiple "
                     "physical groups: "
-                    f"{existing_name} and {physical_name}."
+                    f"{existing_name} and "
+                    f"{physical_name}."
                 )
 
             target_lookup[key] = physical_name
 
     candidate_lookup: dict[
-        tuple[int, int, int],
+        tuple[int, ...],
         list[
             tuple[
                 CalculixElementFace,
                 NDArray[np.float64],
             ]
         ],
-    ] = {
-        key: []
-        for key in target_lookup
-    }
+    ] = {key: [] for key in target_lookup}
 
     next_element_id = 1
 
     for component in COMPONENT_ORDER:
-        tetrahedra = mesh_data.component_tetrahedra[
-            component
-        ]
+        tetrahedra = mesh_data.component_tetrahedra[component]
 
-        for local_index, connectivity in enumerate(
-            tetrahedra
-        ):
+        for local_index, connectivity in enumerate(tetrahedra):
+            if len(connectivity) != volume_node_count:
+                raise RuntimeError("Tetrahedral element has an unexpected node count.")
+
             element_id = next_element_id + local_index
 
-            for face_label, face_nodes in _c3d4_faces(
-                connectivity
-            ):
-                sorted_face_nodes = sorted(face_nodes)
-
-                key = (
-                    sorted_face_nodes[0],
-                    sorted_face_nodes[1],
-                    sorted_face_nodes[2],
-                )
+            for face_label, face_nodes in face_builder(connectivity):
+                key = tuple(sorted(face_nodes))
 
                 if key not in target_lookup:
                     continue
@@ -1233,7 +1264,7 @@ def map_complete_joint_boundary_faces(
                             element_id=element_id,
                             face_label=face_label,
                         ),
-                        _outward_c3d4_face_normal(
+                        _outward_tetrahedral_face_normal(
                             mesh_data.points_mm,
                             connectivity,
                             face_nodes,
@@ -1246,24 +1277,21 @@ def map_complete_joint_boundary_faces(
     mapped_faces: dict[
         str,
         list[CalculixElementFace],
-    ] = {
-        physical_name: []
-        for physical_name in mesh_data.boundary_triangles
-    }
+    ] = {physical_name: [] for physical_name in (mesh_data.boundary_triangles)}
 
     for key, physical_name in target_lookup.items():
         candidates = candidate_lookup[key]
 
-        requested_direction = (
-            normalized_directions.get(physical_name)
-        )
+        requested_direction = normalized_directions.get(physical_name)
 
         if requested_direction is None:
             if len(candidates) != 1:
                 raise RuntimeError(
-                    "An external physical boundary triangle "
-                    "did not match exactly one tetrahedral face: "
-                    f"{physical_name} matched {len(candidates)}."
+                    "An external physical boundary facet "
+                    "did not match exactly one "
+                    "tetrahedral face: "
+                    f"{physical_name} matched "
+                    f"{len(candidates)}."
                 )
 
             selected_face = candidates[0][0]
@@ -1271,9 +1299,11 @@ def map_complete_joint_boundary_faces(
         else:
             if len(candidates) != 2:
                 raise RuntimeError(
-                    "A governed internal physical triangle "
-                    "did not match exactly two tetrahedral faces: "
-                    f"{physical_name} matched {len(candidates)}."
+                    "A governed internal physical facet "
+                    "did not match exactly two "
+                    "tetrahedral faces: "
+                    f"{physical_name} matched "
+                    f"{len(candidates)}."
                 )
 
             scored_candidates = sorted(
@@ -1293,18 +1323,21 @@ def map_complete_joint_boundary_faces(
                 reverse=True,
             )
 
-            best_score, selected_face = (
-                scored_candidates[0]
-            )
+            (
+                best_score,
+                selected_face,
+            ) = scored_candidates[0]
+
             opposite_score = scored_candidates[1][0]
 
             tolerance = 1.0e-8
 
             if best_score < 1.0 - tolerance:
                 raise RuntimeError(
-                    "No internal tetrahedral face follows the "
-                    "governed surface-normal direction: "
-                    f"{physical_name}, score={best_score:.12e}."
+                    "No internal tetrahedral face follows "
+                    "the governed surface-normal direction: "
+                    f"{physical_name}, "
+                    f"score={best_score:.12e}."
                 )
 
             if opposite_score > -1.0 + tolerance:
@@ -1315,9 +1348,7 @@ def map_complete_joint_boundary_faces(
                     f"score={opposite_score:.12e}."
                 )
 
-        mapped_faces[physical_name].append(
-            selected_face
-        )
+        mapped_faces[physical_name].append(selected_face)
 
     resolved = {
         physical_name: tuple(
@@ -1329,27 +1360,22 @@ def map_complete_joint_boundary_faces(
                 ),
             )
         )
-        for physical_name, faces in mapped_faces.items()
+        for physical_name, faces in (mapped_faces.items())
     }
 
-    mapped_count = sum(
-        len(faces)
-        for faces in resolved.values()
-    )
+    mapped_count = sum(len(faces) for faces in resolved.values())
 
     if mapped_count != mesh_data.boundary_triangle_count:
         raise RuntimeError(
-            "Mapped C3D4 face total does not match the "
-            "physical boundary-triangle total."
+            "Mapped tetrahedral-face total does not match the physical boundary-facet total."
         )
 
-    for physical_name, triangles in (
-        mesh_data.boundary_triangles.items()
-    ):
+    for physical_name, triangles in mesh_data.boundary_triangles.items():
         if len(resolved[physical_name]) != len(triangles):
             raise RuntimeError(
                 "Mapped face count differs from the source "
-                f"triangle count for {physical_name}."
+                "boundary-facet count for "
+                f"{physical_name}."
             )
 
     return resolved

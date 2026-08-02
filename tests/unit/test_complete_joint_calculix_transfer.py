@@ -4,6 +4,11 @@ from __future__ import annotations
 
 from pathlib import Path
 
+import numpy as np
+
+from threadrom.solver import (
+    complete_joint_calculix_transfer as transfer,
+)
 from threadrom.solver.complete_joint_calculix_transfer import (
     BOLT,
     HEAD_SIDE_MEMBER,
@@ -16,6 +21,147 @@ from threadrom.solver.complete_joint_calculix_transfer import (
 )
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
+
+
+def test_meshio_topology_for_calculix_element_types() -> None:
+    """Each CalculiX element uses the matching Meshio cells."""
+
+    assert transfer._meshio_topology("C3D4") == (
+        "tetra",
+        "triangle",
+        4,
+        3,
+    )
+
+    assert transfer._meshio_topology("C3D10") == (
+        "tetra10",
+        "triangle6",
+        10,
+        6,
+    )
+
+
+def test_c3d10_face_topology_matches_calculix() -> None:
+    """Quadratic tetrahedral faces preserve all six nodes."""
+
+    connectivity = np.arange(
+        10,
+        dtype=np.int64,
+    )
+
+    assert transfer._c3d10_faces(connectivity) == (
+        (
+            "S1",
+            (0, 1, 2, 4, 5, 6),
+        ),
+        (
+            "S2",
+            (0, 3, 1, 7, 8, 4),
+        ),
+        (
+            "S3",
+            (1, 3, 2, 8, 9, 5),
+        ),
+        (
+            "S4",
+            (2, 3, 0, 9, 7, 6),
+        ),
+    )
+
+
+def test_map_c3d10_boundary_faces() -> None:
+    """Six-node physical facets map to C3D10 faces."""
+
+    points = np.asarray(
+        [
+            (0.0, 0.0, 0.0),
+            (1.0, 0.0, 0.0),
+            (0.0, 1.0, 0.0),
+            (0.0, 0.0, 1.0),
+            (0.5, 0.0, 0.0),
+            (0.5, 0.5, 0.0),
+            (0.0, 0.5, 0.0),
+            (0.0, 0.0, 0.5),
+            (0.5, 0.0, 0.5),
+            (0.0, 0.5, 0.5),
+        ],
+        dtype=np.float64,
+    )
+
+    tetrahedron = np.arange(
+        10,
+        dtype=np.int64,
+    ).reshape(1, 10)
+
+    empty = np.empty(
+        (0, 10),
+        dtype=np.int64,
+    )
+
+    mesh_data = transfer.CompleteJointCalculixMeshData(
+        points_mm=points,
+        component_tetrahedra={
+            BOLT: tetrahedron,
+            NUT: empty,
+            HEAD_SIDE_MEMBER: empty,
+            NUT_SIDE_MEMBER: empty,
+        },
+        boundary_triangles={
+            "FACE_1": np.asarray(
+                [(0, 1, 2, 4, 5, 6)],
+                dtype=np.int64,
+            ),
+            "FACE_2": np.asarray(
+                [(0, 3, 1, 7, 8, 4)],
+                dtype=np.int64,
+            ),
+            "FACE_3": np.asarray(
+                [(1, 3, 2, 8, 9, 5)],
+                dtype=np.int64,
+            ),
+            "FACE_4": np.asarray(
+                [(2, 3, 0, 9, 7, 6)],
+                dtype=np.int64,
+            ),
+        },
+        boundary_node_sets={},
+    )
+
+    mapped = map_complete_joint_boundary_faces(mesh_data)
+
+    assert {name: faces[0].face_label for name, faces in mapped.items()} == {
+        "FACE_1": "S1",
+        "FACE_2": "S2",
+        "FACE_3": "S3",
+        "FACE_4": "S4",
+    }
+
+
+def test_complete_joint_transfer_definition_accepts_c3d10(
+    tmp_path: Path,
+) -> None:
+    """The governed transfer definition supports C3D10."""
+
+    source_path = PROJECT_ROOT / "config" / "complete_joint_calculix_transfer.toml"
+
+    config_text = source_path.read_text(
+        encoding="utf-8",
+    ).replace(
+        'element_type = "C3D4"',
+        'element_type = "C3D10"',
+        1,
+    )
+
+    config_path = tmp_path / "c3d10_transfer.toml"
+
+    config_path.write_text(
+        config_text,
+        encoding="utf-8",
+    )
+
+    definition = load_complete_joint_calculix_transfer_definition(config_path)
+
+    assert definition.element_type == "C3D10"
 
 
 def test_complete_joint_transfer_definition() -> None:
