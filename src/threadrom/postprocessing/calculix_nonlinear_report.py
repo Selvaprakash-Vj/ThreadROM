@@ -169,6 +169,8 @@ def write_nonlinear_progress_report(
     convergence_figure_path: Path,
     output_path: Path,
     context: NonlinearReportContext,
+    *,
+    pretension_validation_json_path: Path | None = None,
 ) -> Path:
     """Write a governed nonlinear-progress Markdown report."""
 
@@ -178,12 +180,27 @@ def write_nonlinear_progress_report(
     if not convergence_figure_path.exists():
         raise FileNotFoundError(convergence_figure_path)
 
+    if pretension_validation_json_path is not None and not pretension_validation_json_path.exists():
+        raise FileNotFoundError(pretension_validation_json_path)
+
     raw_payload: object = json.loads(progress_json_path.read_text(encoding="utf-8"))
 
     payload = _require_mapping(
         raw_payload,
         "Progress payload",
     )
+
+    validation_payload = None
+
+    if pretension_validation_json_path is not None:
+        raw_validation_payload: object = json.loads(
+            pretension_validation_json_path.read_text(encoding="utf-8")
+        )
+
+        validation_payload = _require_mapping(
+            raw_validation_payload,
+            "Pretension validation payload",
+        )
 
     accepted_count = _require_int(
         payload,
@@ -264,6 +281,156 @@ def write_nonlinear_progress_report(
             ]
         )
 
+    validation_lines = [
+        "| Quantity | Value |",
+        "|---|---:|",
+    ]
+
+    if validation_payload is None:
+        validation_lines.append("| Validation status | Not supplied |")
+        validation_lines.extend(
+            [
+                "",
+                ("No governed pretension-validation artifact was supplied to this report."),
+            ]
+        )
+    else:
+        overall_status_value = validation_payload.get("overall_status")
+
+        if not isinstance(overall_status_value, str):
+            raise TypeError("Expected 'overall_status' to be a string.")
+
+        passed_count = _require_int(
+            validation_payload,
+            "passed_count",
+        )
+
+        failed_count = _require_int(
+            validation_payload,
+            "failed_count",
+        )
+
+        pending_count = _require_int(
+            validation_payload,
+            "pending_count",
+        )
+
+        validation_lines.extend(
+            [
+                (f"| Validation status | {overall_status_value.capitalize()} |"),
+                f"| Passed increments | {passed_count} |",
+                f"| Failed increments | {failed_count} |",
+                f"| Pending increments | {pending_count} |",
+            ]
+        )
+
+        validation_records = _require_list(
+            validation_payload.get("validations"),
+            "validations",
+        )
+
+        if validation_records:
+            latest_validation = _require_mapping(
+                validation_records[-1],
+                "latest pretension validation",
+            )
+
+            latest_status_value = latest_validation.get("status")
+
+            if not isinstance(
+                latest_status_value,
+                str,
+            ):
+                raise TypeError("Expected validation 'status' to be a string.")
+
+            validation_step = _require_int(
+                latest_validation,
+                "step",
+            )
+
+            validation_increment = _require_int(
+                latest_validation,
+                "increment",
+            )
+
+            expected_preload_n = _require_float(
+                latest_validation,
+                "expected_preload_n",
+            )
+
+            actual_preload_value = latest_validation.get("actual_preload_n")
+
+            if isinstance(actual_preload_value, bool) or not isinstance(
+                actual_preload_value,
+                (int, float),
+            ):
+                actual_preload_text = "Pending"
+            else:
+                actual_preload_text = f"{float(actual_preload_value):.6f} N"
+
+            force_error_value = latest_validation.get("force_error_n")
+
+            if isinstance(force_error_value, bool) or not isinstance(
+                force_error_value,
+                (int, float),
+            ):
+                force_error_text = "Pending"
+            else:
+                force_error_text = f"{float(force_error_value):.6g} N"
+
+            displacement_value = latest_validation.get("control_displacement_mm")
+
+            if isinstance(displacement_value, bool) or not isinstance(
+                displacement_value,
+                (int, float),
+            ):
+                displacement_text = "Not available"
+            else:
+                displacement_text = f"{float(displacement_value):.9g} mm"
+
+            validation_lines.extend(
+                [
+                    (
+                        "| Latest validated increment | "
+                        f"{validation_step} / "
+                        f"{validation_increment} |"
+                    ),
+                    (f"| Latest record status | {latest_status_value.capitalize()} |"),
+                    (f"| Expected ramped preload | {expected_preload_n:.6f} N |"),
+                    (f"| Extracted pretension force | {actual_preload_text} |"),
+                    (f"| Pretension-force error | {force_error_text} |"),
+                    (f"| Pretension-control displacement | {displacement_text} |"),
+                ]
+            )
+
+        validation_lines.extend(
+            [
+                "",
+                (
+                    "This check compares the extracted "
+                    "pretension-reference force with the "
+                    "configured linear load ramp at each "
+                    "accepted increment."
+                ),
+                "",
+                (
+                    "It does not establish support-reaction "
+                    "equilibrium, physical joint stiffness, "
+                    "or final structural validation."
+                ),
+            ]
+        )
+
+    artifact_rows = [
+        (f"| Progress JSON | `{progress_json_path.resolve()}` |"),
+        (f"| Convergence figure | `{convergence_figure_path.resolve()}` |"),
+    ]
+
+    if pretension_validation_json_path is not None:
+        artifact_rows.append(
+            f"| Pretension validation JSON | `{pretension_validation_json_path.resolve()}` |"
+        )
+
     lines = [
         (f"# {context.simulation_id} Nonlinear Pretension Progress Report"),
         "",
@@ -309,6 +476,10 @@ def write_nonlinear_progress_report(
         ("| Step | Increment | Attempt | Iterations | Step time | Increment time | Nominal load |"),
         "|---:|---:|---:|---:|---:|---:|---:|",
         *accepted_rows,
+        "",
+        "## Pretension ramp validation",
+        "",
+        *validation_lines,
         "",
         "## Latest nonlinear state",
         "",
@@ -375,8 +546,7 @@ def write_nonlinear_progress_report(
             "",
             "| Artifact | Path |",
             "|---|---|",
-            (f"| Progress JSON | `{progress_json_path.resolve()}` |"),
-            (f"| Convergence figure | `{convergence_figure_path.resolve()}` |"),
+            *artifact_rows,
             "",
             "## Next gate",
             "",

@@ -14,6 +14,39 @@ from threadrom.meshing.complete_joint_mesh_definition import (
 
 
 @dataclass(frozen=True)
+class CompleteJointPretensionLoadSchedule:
+    """Governed multi-step preload and nonlinear controls."""
+
+    checkpoint_count: int
+    maximum_increments_per_step: int
+    initial_time_increment: float
+    step_time: float
+    minimum_time_increment: float
+    maximum_time_increment: float
+
+    @property
+    def checkpoint_fractions(self) -> tuple[float, ...]:
+        """Return monotonically increasing checkpoint fractions."""
+
+        return tuple(
+            checkpoint_index / self.checkpoint_count
+            for checkpoint_index in range(
+                1,
+                self.checkpoint_count + 1,
+            )
+        )
+
+
+@dataclass(frozen=True)
+class CompleteJointPretensionRestartPolicy:
+    """Governed CalculiX restart-write controls."""
+
+    write_enabled: bool
+    write_frequency_steps: int
+    overlay_latest: bool
+
+
+@dataclass(frozen=True)
 class CompleteJointPretensionDefinition:
     """Controlled settings for the pretension-capable joint model."""
 
@@ -35,6 +68,9 @@ class CompleteJointPretensionDefinition:
     preload_force_n: float
     loading_mode: str
 
+    load_schedule: CompleteJointPretensionLoadSchedule
+    restart_policy: CompleteJointPretensionRestartPolicy
+
     bolt_fragment_count: int
     expected_total_cad_volume_count: int
     physical_bolt_group_name: str
@@ -54,9 +90,7 @@ def _section(
     value = data.get(key)
 
     if not isinstance(value, dict):
-        raise TypeError(
-            f"Missing or invalid configuration section: {key}"
-        )
+        raise TypeError(f"Missing or invalid configuration section: {key}")
 
     return cast(Mapping[str, object], value)
 
@@ -68,9 +102,7 @@ def _string(
     value = data.get(key)
 
     if not isinstance(value, str) or not value.strip():
-        raise TypeError(
-            f"Missing or invalid string value: {key}"
-        )
+        raise TypeError(f"Missing or invalid string value: {key}")
 
     return value.strip()
 
@@ -81,13 +113,8 @@ def _number(
 ) -> float:
     value = data.get(key)
 
-    if (
-        isinstance(value, bool)
-        or not isinstance(value, (int, float))
-    ):
-        raise TypeError(
-            f"Missing or invalid numeric value: {key}"
-        )
+    if isinstance(value, bool) or not isinstance(value, (int, float)):
+        raise TypeError(f"Missing or invalid numeric value: {key}")
 
     return float(value)
 
@@ -99,9 +126,7 @@ def _integer(
     value = data.get(key)
 
     if isinstance(value, bool) or not isinstance(value, int):
-        raise TypeError(
-            f"Missing or invalid integer value: {key}"
-        )
+        raise TypeError(f"Missing or invalid integer value: {key}")
 
     return value
 
@@ -113,9 +138,7 @@ def _boolean(
     value = data.get(key)
 
     if not isinstance(value, bool):
-        raise TypeError(
-            f"Missing or invalid Boolean value: {key}"
-        )
+        raise TypeError(f"Missing or invalid Boolean value: {key}")
 
     return value
 
@@ -131,6 +154,8 @@ def load_complete_joint_pretension_definition(
     identity = _section(data, "identity")
     section = _section(data, "section")
     load = _section(data, "load")
+    load_schedule_config = _section(data, "load_schedule")
+    restart = _section(data, "restart")
     volume_model = _section(data, "volume_model")
     verification = _section(data, "verification")
 
@@ -171,6 +196,46 @@ def load_complete_joint_pretension_definition(
             load,
             "loading_mode",
         ).upper(),
+        load_schedule=CompleteJointPretensionLoadSchedule(
+            checkpoint_count=_integer(
+                load_schedule_config,
+                "checkpoint_count",
+            ),
+            maximum_increments_per_step=_integer(
+                load_schedule_config,
+                "maximum_increments_per_step",
+            ),
+            initial_time_increment=_number(
+                load_schedule_config,
+                "initial_time_increment",
+            ),
+            step_time=_number(
+                load_schedule_config,
+                "step_time",
+            ),
+            minimum_time_increment=_number(
+                load_schedule_config,
+                "minimum_time_increment",
+            ),
+            maximum_time_increment=_number(
+                load_schedule_config,
+                "maximum_time_increment",
+            ),
+        ),
+        restart_policy=CompleteJointPretensionRestartPolicy(
+            write_enabled=_boolean(
+                restart,
+                "write_enabled",
+            ),
+            write_frequency_steps=_integer(
+                restart,
+                "write_frequency_steps",
+            ),
+            overlay_latest=_boolean(
+                restart,
+                "overlay_latest",
+            ),
+        ),
         bolt_fragment_count=_integer(
             volume_model,
             "bolt_fragment_count",
@@ -210,32 +275,49 @@ def load_complete_joint_pretension_definition(
     )
 
     if definition.axial_position_mm <= 0.0:
-        raise ValueError(
-            "Pretension section position must be positive."
-        )
+        raise ValueError("Pretension section position must be positive.")
 
     if definition.preload_force_n <= 0.0:
+        raise ValueError("Pretension force must be positive.")
+
+    load_schedule = definition.load_schedule
+
+    if load_schedule.checkpoint_count <= 0:
+        raise ValueError("Pretension checkpoint count must be positive.")
+
+    if load_schedule.maximum_increments_per_step <= 0:
+        raise ValueError("Maximum increments per preload step must be positive.")
+
+    if not (
+        0.0
+        < load_schedule.minimum_time_increment
+        <= load_schedule.initial_time_increment
+        <= load_schedule.maximum_time_increment
+        <= load_schedule.step_time
+    ):
         raise ValueError(
-            "Pretension force must be positive."
+            "Pretension increment controls must satisfy "
+            "0 < minimum <= initial <= maximum <= step time."
         )
+
+    restart_policy = definition.restart_policy
+
+    if restart_policy.write_frequency_steps <= 0:
+        raise ValueError("Restart-write frequency must be positive.")
+
+    if restart_policy.write_frequency_steps > load_schedule.checkpoint_count:
+        raise ValueError("Restart-write frequency cannot exceed the preload checkpoint count.")
 
     if definition.normal_axis != "Z":
-        raise ValueError(
-            "The baseline pretension normal axis must be Z."
-        )
+        raise ValueError("The baseline pretension normal axis must be Z.")
 
     if definition.surface_type != "ELEMENT":
-        raise ValueError(
-            "Pretension surface type must be ELEMENT."
-        )
+        raise ValueError("Pretension surface type must be ELEMENT.")
 
     if definition.bolt_fragment_count != 2:
-        raise ValueError(
-            "The pretension bolt must contain two fragments."
-        )
+        raise ValueError("The pretension bolt must contain two fragments.")
 
     return definition
-
 
 
 def validate_complete_joint_pretension_mesh(
@@ -245,50 +327,27 @@ def validate_complete_joint_pretension_mesh(
     """Verify pretension and mesh configurations are compatible."""
 
     if pretension.pretension_mesh_id != mesh.mesh_id:
-        raise ValueError(
-            "Pretension and mesh IDs differ."
-        )
+        raise ValueError("Pretension and mesh IDs differ.")
 
     if pretension.assembly_id != mesh.assembly_id:
-        raise ValueError(
-            "Pretension and mesh assembly IDs differ."
-        )
+        raise ValueError("Pretension and mesh assembly IDs differ.")
 
     if pretension.geometry_id != mesh.geometry_id:
-        raise ValueError(
-            "Pretension and mesh geometry IDs differ."
-        )
+        raise ValueError("Pretension and mesh geometry IDs differ.")
 
-    if (
-        pretension.expected_total_cad_volume_count
-        != mesh.expected_volume_count
-    ):
-        raise ValueError(
-            "Pretension and mesh volume expectations differ."
-        )
+    if pretension.expected_total_cad_volume_count != mesh.expected_volume_count:
+        raise ValueError("Pretension and mesh volume expectations differ.")
 
-    expected_volume_count = (
-        pretension.bolt_fragment_count + 3
-    )
+    expected_volume_count = pretension.bolt_fragment_count + 3
 
-    if (
-        pretension.expected_total_cad_volume_count
-        != expected_volume_count
-    ):
+    if pretension.expected_total_cad_volume_count != expected_volume_count:
         raise ValueError(
             "Pretension volume count is inconsistent with "
             "the bolt fragments and three remaining components."
         )
 
-    if (
-        pretension.source_mesh_id
-        == pretension.pretension_mesh_id
-    ):
-        raise ValueError(
-            "Source and pretension mesh IDs must differ."
-        )
+    if pretension.source_mesh_id == pretension.pretension_mesh_id:
+        raise ValueError("Source and pretension mesh IDs must differ.")
 
     if not pretension.group_bolt_fragments_together:
-        raise ValueError(
-            "Bolt fragments must share one physical group."
-        )
+        raise ValueError("Bolt fragments must share one physical group.")

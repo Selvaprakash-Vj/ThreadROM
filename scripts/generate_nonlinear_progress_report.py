@@ -31,6 +31,12 @@ def _parse_arguments() -> argparse.Namespace:
     )
 
     parser.add_argument(
+        "--pretension-validation-json",
+        type=Path,
+        required=True,
+    )
+
+    parser.add_argument(
         "--output",
         type=Path,
         required=True,
@@ -130,6 +136,7 @@ def main() -> None:
         arguments.figure,
         arguments.output,
         context,
+        pretension_validation_json_path=(arguments.pretension_validation_json),
     )
 
     print("NONLINEAR PROGRESS REPORT: GENERATED")

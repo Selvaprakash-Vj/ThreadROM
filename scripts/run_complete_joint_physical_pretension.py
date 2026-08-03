@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import subprocess
 from pathlib import Path
 
@@ -49,7 +50,26 @@ def _parse_arguments() -> argparse.Namespace:
     parser.add_argument(
         "--timeout-seconds",
         type=int,
-        default=43200,
+        default=0,
+        help=("Maximum solver runtime in seconds. Use 0 to disable the timeout."),
+    )
+
+    parser.add_argument(
+        "--stiffness-threads",
+        type=int,
+        default=1,
+    )
+
+    parser.add_argument(
+        "--equation-solver-threads",
+        type=int,
+        default=1,
+    )
+
+    parser.add_argument(
+        "--results-threads",
+        type=int,
+        default=1,
     )
     parser.add_argument(
         "--write-only",
@@ -143,6 +163,53 @@ def main() -> None:
     if not executable_path.exists():
         raise FileNotFoundError(f"CalculiX executable not found: {executable_path}")
 
+    if arguments.timeout_seconds < 0:
+        raise ValueError("Timeout must be zero or a positive number.")
+
+    logical_cpu_count = os.cpu_count() or 1
+
+    thread_counts = {
+        "stiffness": arguments.stiffness_threads,
+        "equation_solver": (arguments.equation_solver_threads),
+        "results": arguments.results_threads,
+    }
+
+    for stage, thread_count in thread_counts.items():
+        if thread_count < 1:
+            raise ValueError(f"{stage} thread count must be positive.")
+
+        if thread_count > logical_cpu_count:
+            raise ValueError(
+                f"{stage} thread count {thread_count} "
+                f"exceeds the detected logical CPU count "
+                f"{logical_cpu_count}."
+            )
+
+    timeout_seconds: int | None = (
+        None if arguments.timeout_seconds == 0 else arguments.timeout_seconds
+    )
+
+    maximum_requested_threads = max(thread_counts.values())
+
+    solver_environment = os.environ.copy()
+
+    solver_environment.update(
+        {
+            "OMP_NUM_THREADS": str(maximum_requested_threads),
+            "CCX_NPROC_STIFFNESS": str(arguments.stiffness_threads),
+            "CCX_NPROC_EQUATION_SOLVER": str(arguments.equation_solver_threads),
+            "CCX_NPROC_RESULTS": str(arguments.results_threads),
+            "NUMBER_OF_CPUS": str(logical_cpu_count),
+        }
+    )
+
+    print("CalculiX runtime controls:")
+    print("  Timeout: " + ("disabled" if timeout_seconds is None else f"{timeout_seconds} seconds"))
+    print(f"  Stiffness threads: {arguments.stiffness_threads}")
+    print(f"  Equation-solver threads: {arguments.equation_solver_threads}")
+    print(f"  Results threads: {arguments.results_threads}")
+    print(f"  Detected logical CPUs: {logical_cpu_count}")
+
     output_suffixes = (
         ".12d",
         ".cvg",
@@ -183,7 +250,8 @@ def main() -> None:
             cwd=working_directory,
             stdout=stdout_stream,
             stderr=stderr_stream,
-            timeout=arguments.timeout_seconds,
+            timeout=timeout_seconds,
+            env=solver_environment,
             check=False,
             text=True,
         )
@@ -195,6 +263,15 @@ def main() -> None:
         "mesh_id": transfer.mesh_id,
         "element_type": transfer.element_type,
         "preload_force_n": pretension.preload_force_n,
+        "timeout_seconds": arguments.timeout_seconds,
+        "timeout_enabled": timeout_seconds is not None,
+        "threading": {
+            "stiffness_threads": (arguments.stiffness_threads),
+            "equation_solver_threads": (arguments.equation_solver_threads),
+            "results_threads": (arguments.results_threads),
+            "omp_num_threads": (maximum_requested_threads),
+            "detected_logical_cpus": (logical_cpu_count),
+        },
         "return_code": completed.returncode,
         "input_path": str(input_path),
         "stdout_path": str(solver_stdout_path),

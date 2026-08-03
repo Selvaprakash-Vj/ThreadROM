@@ -187,6 +187,8 @@ def test_write_complete_joint_physical_pretension_deck(
     assert summary.interaction_count == 1
     assert summary.pretension_section_count == 1
     assert summary.preload_force_n == 20000.0
+    assert summary.preload_checkpoint_count == 20
+    assert summary.restart_write_count == 1
     assert summary.guidance_reference_node_count == 8
     assert summary.guidance_sample_node_count == 304
     assert summary.distributing_coupling_count == 3
@@ -197,7 +199,10 @@ def test_write_complete_joint_physical_pretension_deck(
     assert "HEAD_MEMBER_SUPPORT_BAND, 1, 3, 0.0" in text
 
     assert "76066, 1, 2.000000000000e+04" in text
-    assert "*STEP, NLGEOM=YES, INC=100" in text
+    assert text.count("*STEP, NLGEOM=YES, INC=100") == 20
+    assert text.count("*RESTART,WRITE,FREQUENCY=1,OVERLAY") == 1
+    assert text.count("*END STEP") == 20
+    assert "76066, 1, 1.000000000000e+03" in text
     assert text.count("*CONTACT PAIR,") == 4
     assert text.count("*ELEMENT, TYPE=DCOUP3D") == 3
     assert text.count("*DISTRIBUTING COUPLING,") == 3

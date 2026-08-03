@@ -1,4 +1,4 @@
-﻿from pathlib import Path
+from pathlib import Path
 
 from threadrom.meshing.complete_joint_mesh_definition import (
     load_complete_joint_mesh_definition,
@@ -13,9 +13,7 @@ PROJECT_ROOT = Path(__file__).resolve().parents[2]
 
 def test_load_complete_joint_pretension_definition() -> None:
     definition = load_complete_joint_pretension_definition(
-        PROJECT_ROOT
-        / "config"
-        / "complete_joint_pretension.toml"
+        PROJECT_ROOT / "config" / "complete_joint_pretension.toml"
     )
 
     assert definition.pretension_model_id == "TRM-PTN-000001"
@@ -23,6 +21,13 @@ def test_load_complete_joint_pretension_definition() -> None:
     assert definition.pretension_mesh_id == "TRM-MSH-000006"
     assert definition.axial_position_mm == 5.0
     assert definition.preload_force_n == 20000.0
+    assert definition.load_schedule.checkpoint_count == 20
+    assert definition.load_schedule.maximum_increments_per_step == 100
+    assert definition.load_schedule.checkpoint_fractions[0] == 0.05
+    assert definition.load_schedule.checkpoint_fractions[-1] == 1.0
+    assert definition.restart_policy.write_enabled is True
+    assert definition.restart_policy.write_frequency_steps == 1
+    assert definition.restart_policy.overlay_latest is True
     assert definition.normal_axis == "Z"
     assert definition.surface_type == "ELEMENT"
     assert definition.bolt_fragment_count == 2
@@ -30,18 +35,13 @@ def test_load_complete_joint_pretension_definition() -> None:
     assert definition.group_bolt_fragments_together is True
 
 
-
 def test_validate_complete_joint_pretension_mesh() -> None:
     pretension = load_complete_joint_pretension_definition(
-        PROJECT_ROOT
-        / "config"
-        / "complete_joint_pretension.toml"
+        PROJECT_ROOT / "config" / "complete_joint_pretension.toml"
     )
 
     mesh = load_complete_joint_mesh_definition(
-        PROJECT_ROOT
-        / "config"
-        / "complete_joint_pretension_mesh.toml"
+        PROJECT_ROOT / "config" / "complete_joint_pretension_mesh.toml"
     )
 
     validate_complete_joint_pretension_mesh(

@@ -53,6 +53,33 @@ def _write_progress(
     )
 
 
+def _write_validation(
+    path: Path,
+) -> None:
+    payload = {
+        "overall_status": "pass",
+        "passed_count": 1,
+        "failed_count": 0,
+        "pending_count": 0,
+        "validations": [
+            {
+                "step": 1,
+                "increment": 1,
+                "status": "pass",
+                "expected_preload_n": 250.0,
+                "actual_preload_n": 250.0,
+                "force_error_n": 0.0,
+                "control_displacement_mm": 1.512816e-5,
+            }
+        ],
+    }
+
+    path.write_text(
+        json.dumps(payload),
+        encoding="utf-8",
+    )
+
+
 def _context(
     *,
     analysis_complete: bool = False,
@@ -80,6 +107,7 @@ def test_write_live_progress_report(
 
     progress_path = tmp_path / "progress.json"
     figure_path = tmp_path / "convergence.svg"
+    validation_path = tmp_path / "pretension_validation.json"
     report_path = tmp_path / "report.md"
 
     _write_progress(
@@ -92,11 +120,14 @@ def test_write_live_progress_report(
         encoding="utf-8",
     )
 
+    _write_validation(validation_path)
+
     write_nonlinear_progress_report(
         progress_path,
         figure_path,
         report_path,
         _context(),
+        pretension_validation_json_path=(validation_path),
     )
 
     report = report_path.read_text(encoding="utf-8")
@@ -104,6 +135,11 @@ def test_write_live_progress_report(
     assert "| Status | In progress |" in report
     assert "| Accepted step progress | 5.00% |" in report
     assert "| Nominal ramped preload | 250.000 N |" in report
+    assert "## Pretension ramp validation" in report
+    assert "| Validation status | Pass |" in report
+    assert "| Expected ramped preload | 250.000000 N |" in report
+    assert "| Extracted pretension force | 250.000000 N |" in report
+    assert "| Pretension-force error | 0 N |" in report
     assert "not an equilibrium verification" in report
     assert "independent thread-turn result sets" in report
 

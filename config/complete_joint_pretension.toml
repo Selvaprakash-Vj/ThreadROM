@@ -19,6 +19,19 @@ surface_type = "ELEMENT"
 preload_force_n = 20000.0
 loading_mode = "FORCE"
 
+[load_schedule]
+checkpoint_count = 20
+maximum_increments_per_step = 100
+initial_time_increment = 1.0
+step_time = 1.0
+minimum_time_increment = 1.0e-6
+maximum_time_increment = 1.0
+
+[restart]
+write_enabled = true
+write_frequency_steps = 1
+overlay_latest = true
+
 [volume_model]
 bolt_fragment_count = 2
 expected_total_cad_volume_count = 5

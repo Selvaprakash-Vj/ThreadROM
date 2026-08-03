@@ -69,6 +69,8 @@ class CompleteJointPhysicalPretensionDeckSummary:
     interaction_count: int
     pretension_section_count: int
     preload_force_n: float
+    preload_checkpoint_count: int
+    restart_write_count: int
     guidance_reference_node_count: int
     guidance_sample_node_count: int
     distributing_coupling_count: int
@@ -686,6 +688,86 @@ def validate_physical_pretension_identities(
         )
 
 
+def _render_preload_checkpoint_steps(
+    pretension: CompleteJointPretensionDefinition,
+    reference_node_id: int,
+) -> tuple[str, ...]:
+    """Render governed preload steps with restart checkpoints."""
+
+    schedule = pretension.load_schedule
+    restart_policy = pretension.restart_policy
+
+    boundary_lines = (
+        "*BOUNDARY",
+        "HEAD_MEMBER_SUPPORT_BAND, 1, 3, 0.0",
+        f"{BOLT_HEAD_GUIDANCE_REFERENCE}, 1, 2, 0.0",
+        f"{NUT_TRANSLATION_GUIDANCE_REFERENCE}, 1, 2, 0.0",
+        f"{NUT_MEMBER_GUIDANCE_REFERENCE}, 1, 2, 0.0",
+        f"{NUT_ROTATION_GUIDANCE_REFERENCE}, 1, 1, 0.0",
+        f"{BOLT_HEAD_ROTATION_X_REFERENCE}, 1, 1, 0.0",
+        f"{BOLT_HEAD_ROTATION_Y_REFERENCE}, 1, 1, 0.0",
+        f"{NUT_ROTATION_X_REFERENCE}, 1, 1, 0.0",
+        f"{NUT_ROTATION_Y_REFERENCE}, 1, 1, 0.0",
+    )
+
+    output_lines = (
+        f"*NODE PRINT, NSET={PRETENSION_REFERENCE_SET}",
+        "U",
+        "RF",
+        "*NODE PRINT, NSET=HEAD_MEMBER_SUPPORT_BAND, TOTALS=ONLY",
+        "RF",
+        "*NODE FILE",
+        "U, RF",
+        "*EL FILE",
+        "S, E",
+    )
+
+    restart_keyword = f"*RESTART,WRITE,FREQUENCY={restart_policy.write_frequency_steps}"
+
+    if restart_policy.overlay_latest:
+        restart_keyword += ",OVERLAY"
+
+    lines: list[str] = []
+
+    for checkpoint_index, checkpoint_fraction in enumerate(
+        schedule.checkpoint_fractions,
+        start=1,
+    ):
+        target_force_n = pretension.preload_force_n * checkpoint_fraction
+
+        lines.extend(
+            (
+                (f"** Step {checkpoint_index}: preload checkpoint {checkpoint_fraction:.6f}"),
+                (f"*STEP, NLGEOM=YES, INC={schedule.maximum_increments_per_step}"),
+                "*STATIC",
+                (
+                    f"{schedule.initial_time_increment:.12e}, "
+                    f"{schedule.step_time:.12e}, "
+                    f"{schedule.minimum_time_increment:.12e}, "
+                    f"{schedule.maximum_time_increment:.12e}"
+                ),
+            )
+        )
+
+        if checkpoint_index == 1:
+            if restart_policy.write_enabled:
+                lines.append(restart_keyword)
+
+            lines.extend(boundary_lines)
+
+        lines.extend(
+            (
+                "*CLOAD",
+                (f"{reference_node_id}, 1, {target_force_n:.12e}"),
+                *output_lines,
+                "*END STEP",
+                "",
+            )
+        )
+
+    return tuple(lines)
+
+
 def write_complete_joint_physical_pretension_deck(
     mesh_data: CompleteJointCalculixMeshData,
     transfer: CompleteJointCalculixTransferDefinition,
@@ -760,6 +842,11 @@ def write_complete_joint_physical_pretension_deck(
     if smoke_marker not in text:
         raise RuntimeError("Transfer smoke-step replacement marker was not found.")
 
+    preload_step_lines = _render_preload_checkpoint_steps(
+        pretension,
+        reference_node_id,
+    )
+
     physical_lines = [
         "** Physical complete-joint pretension model",
         "**",
@@ -767,7 +854,7 @@ def write_complete_joint_physical_pretension_deck(
         "**",
         *guidance.lines,
         "**",
-        (f"*NODE, NSET={PRETENSION_REFERENCE_SET}"),
+        f"*NODE, NSET={PRETENSION_REFERENCE_SET}",
         (
             f"{reference_node_id}, "
             f"0.000000000000e+00, "
@@ -780,33 +867,7 @@ def write_complete_joint_physical_pretension_deck(
         "** Complete-joint nonlinear contact model",
         *contact_lines,
         "**",
-        "** Step 1: establish governed bolt preload",
-        "*STEP, NLGEOM=YES, INC=100",
-        "*STATIC",
-        ("5.000000000000e-02, 1.000000000000e+00, 1.000000000000e-06, 1.000000000000e-01"),
-        "*BOUNDARY",
-        "HEAD_MEMBER_SUPPORT_BAND, 1, 3, 0.0",
-        (f"{BOLT_HEAD_GUIDANCE_REFERENCE}, 1, 2, 0.0"),
-        (f"{NUT_TRANSLATION_GUIDANCE_REFERENCE}, 1, 2, 0.0"),
-        (f"{NUT_MEMBER_GUIDANCE_REFERENCE}, 1, 2, 0.0"),
-        (f"{NUT_ROTATION_GUIDANCE_REFERENCE}, 1, 1, 0.0"),
-        (f"{BOLT_HEAD_ROTATION_X_REFERENCE}, 1, 1, 0.0"),
-        (f"{BOLT_HEAD_ROTATION_Y_REFERENCE}, 1, 1, 0.0"),
-        (f"{NUT_ROTATION_X_REFERENCE}, 1, 1, 0.0"),
-        (f"{NUT_ROTATION_Y_REFERENCE}, 1, 1, 0.0"),
-        "*CLOAD",
-        (f"{reference_node_id}, 1, {pretension.preload_force_n:.12e}"),
-        (f"*NODE PRINT, NSET={PRETENSION_REFERENCE_SET}"),
-        "U",
-        "RF",
-        ("*NODE PRINT, NSET=HEAD_MEMBER_SUPPORT_BAND, TOTALS=ONLY"),
-        "RF",
-        "*NODE FILE",
-        "U, RF",
-        "*EL FILE",
-        "S, E",
-        "*END STEP",
-        "",
+        *preload_step_lines,
     ]
 
     marker_index = text.index(smoke_marker)
@@ -823,6 +884,7 @@ def write_complete_joint_physical_pretension_deck(
     interaction_count = text.count("*SURFACE INTERACTION,")
     pretension_section_count = text.count("*PRE-TENSION SECTION,")
     step_count = text.count("*STEP,")
+    restart_write_count = text.count("*RESTART,WRITE")
 
     if contact_pair_count != contact.expected_contact_pair_count:
         raise RuntimeError("Written contact-pair count does not match the governed expectation.")
@@ -833,9 +895,16 @@ def write_complete_joint_physical_pretension_deck(
     if pretension_section_count != 1:
         raise RuntimeError("Physical deck must contain exactly one pretension-section definition.")
 
-    if step_count != 1:
+    if step_count != pretension.load_schedule.checkpoint_count:
         raise RuntimeError(
-            "The initial physical preload deck must contain exactly one analysis step."
+            "Written preload-step count does not match the governed checkpoint count."
+        )
+
+    expected_restart_write_count = int(pretension.restart_policy.write_enabled)
+
+    if restart_write_count != expected_restart_write_count:
+        raise RuntimeError(
+            "Written restart-keyword count does not match the governed restart policy."
         )
 
     if "ALL_NODES, 1, 3, 0.0" in text:
@@ -852,6 +921,8 @@ def write_complete_joint_physical_pretension_deck(
         interaction_count=interaction_count,
         pretension_section_count=(pretension_section_count),
         preload_force_n=pretension.preload_force_n,
+        preload_checkpoint_count=step_count,
+        restart_write_count=restart_write_count,
         guidance_reference_node_count=(guidance.reference_node_count),
         guidance_sample_node_count=(guidance.sample_node_count),
         distributing_coupling_count=(guidance.distributing_coupling_count),
