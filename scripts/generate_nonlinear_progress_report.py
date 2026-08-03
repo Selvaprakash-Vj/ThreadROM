@@ -37,6 +37,11 @@ def _parse_arguments() -> argparse.Namespace:
     )
 
     parser.add_argument(
+        "--external-equilibrium-json",
+        type=Path,
+    )
+
+    parser.add_argument(
         "--output",
         type=Path,
         required=True,
@@ -137,6 +142,7 @@ def main() -> None:
         arguments.output,
         context,
         pretension_validation_json_path=(arguments.pretension_validation_json),
+        external_equilibrium_json_path=(arguments.external_equilibrium_json),
     )
 
     print("NONLINEAR PROGRESS REPORT: GENERATED")

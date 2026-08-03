@@ -175,3 +175,84 @@ def test_write_completed_report(
     assert "| Status | Completed |" in report
     assert "| Accepted step progress | 100.00% |" in report
     assert "| Nominal ramped preload | 5000.000 N |" in report
+
+
+def test_write_report_with_external_equilibrium(
+    tmp_path: Path,
+) -> None:
+    """External-equilibrium evidence is governed and rendered."""
+
+    progress_path = tmp_path / "progress.json"
+    figure_path = tmp_path / "convergence.svg"
+    equilibrium_path = tmp_path / "external_equilibrium.json"
+    report_path = tmp_path / "report.md"
+
+    _write_progress(
+        progress_path,
+        step_time=0.05,
+    )
+
+    figure_path.write_text(
+        "<svg></svg>",
+        encoding="utf-8",
+    )
+
+    equilibrium_path.write_text(
+        """
+{
+  "overall_status": "pending",
+  "support_set_name": "HEAD_MEMBER_SUPPORT_BAND",
+  "passed_count": 1,
+  "failed_count": 0,
+  "pending_count": 1,
+  "validations": [
+    {
+      "step": 1,
+      "increment": 1,
+      "accepted_time": 0.05,
+      "status": "pass",
+      "force_components_n": [
+        6.355773e-08,
+        3.999832e-08,
+        -3.253635e-11
+      ],
+      "maximum_absolute_component_n": 6.355773e-08
+    },
+    {
+      "step": 1,
+      "increment": 2,
+      "accepted_time": 0.10,
+      "status": "pending",
+      "reason": "No matching complete DAT record."
+    }
+  ]
+}
+""".strip()
+        + "\n",
+        encoding="utf-8",
+        newline="\n",
+    )
+
+    write_nonlinear_progress_report(
+        progress_path,
+        figure_path,
+        report_path,
+        _context(),
+        external_equilibrium_json_path=(equilibrium_path),
+    )
+
+    report = report_path.read_text(encoding="utf-8")
+
+    assert "## External support equilibrium" in report
+
+    assert "| Validation status | Pending |" in report
+
+    assert "| Support set | `HEAD_MEMBER_SUPPORT_BAND` |" in report
+
+    assert "| Pending increments | 1 |" in report
+
+    assert "| Latest record status | Pending |" in report
+
+    assert "| Support-force vector | Pending |" in report
+
+    assert "| External-equilibrium JSON |" in report

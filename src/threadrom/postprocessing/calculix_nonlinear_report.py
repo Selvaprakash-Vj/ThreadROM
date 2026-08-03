@@ -171,6 +171,7 @@ def write_nonlinear_progress_report(
     context: NonlinearReportContext,
     *,
     pretension_validation_json_path: Path | None = None,
+    external_equilibrium_json_path: Path | None = None,
 ) -> Path:
     """Write a governed nonlinear-progress Markdown report."""
 
@@ -182,6 +183,9 @@ def write_nonlinear_progress_report(
 
     if pretension_validation_json_path is not None and not pretension_validation_json_path.exists():
         raise FileNotFoundError(pretension_validation_json_path)
+
+    if external_equilibrium_json_path is not None and not external_equilibrium_json_path.exists():
+        raise FileNotFoundError(external_equilibrium_json_path)
 
     raw_payload: object = json.loads(progress_json_path.read_text(encoding="utf-8"))
 
@@ -200,6 +204,18 @@ def write_nonlinear_progress_report(
         validation_payload = _require_mapping(
             raw_validation_payload,
             "Pretension validation payload",
+        )
+
+    equilibrium_payload = None
+
+    if external_equilibrium_json_path is not None:
+        raw_equilibrium_payload: object = json.loads(
+            external_equilibrium_json_path.read_text(encoding="utf-8")
+        )
+
+        equilibrium_payload = _require_mapping(
+            raw_equilibrium_payload,
+            "External-equilibrium payload",
         )
 
     accepted_count = _require_int(
@@ -421,6 +437,175 @@ def write_nonlinear_progress_report(
             ]
         )
 
+    equilibrium_lines = [
+        "| Quantity | Value |",
+        "|---|---:|",
+    ]
+
+    if equilibrium_payload is None:
+        equilibrium_lines.append("| Validation status | Not supplied |")
+        equilibrium_lines.extend(
+            [
+                "",
+                ("No governed external-equilibrium artifact was supplied to this report."),
+            ]
+        )
+    else:
+        equilibrium_status_value = equilibrium_payload.get("overall_status")
+
+        if not isinstance(
+            equilibrium_status_value,
+            str,
+        ):
+            raise TypeError("Expected external-equilibrium 'overall_status' to be a string.")
+
+        equilibrium_passed_count = _require_int(
+            equilibrium_payload,
+            "passed_count",
+        )
+
+        equilibrium_failed_count = _require_int(
+            equilibrium_payload,
+            "failed_count",
+        )
+
+        equilibrium_pending_count = _require_int(
+            equilibrium_payload,
+            "pending_count",
+        )
+
+        equilibrium_support_set = equilibrium_payload.get("support_set_name")
+
+        if not isinstance(
+            equilibrium_support_set,
+            str,
+        ):
+            raise TypeError("Expected external-equilibrium 'support_set_name' to be a string.")
+
+        equilibrium_lines.extend(
+            [
+                (f"| Validation status | {equilibrium_status_value.capitalize()} |"),
+                (f"| Support set | `{equilibrium_support_set}` |"),
+                (f"| Passed increments | {equilibrium_passed_count} |"),
+                (f"| Failed increments | {equilibrium_failed_count} |"),
+                (f"| Pending increments | {equilibrium_pending_count} |"),
+            ]
+        )
+
+        equilibrium_records = _require_list(
+            equilibrium_payload.get("validations"),
+            "external-equilibrium validations",
+        )
+
+        if equilibrium_records:
+            latest_equilibrium = _require_mapping(
+                equilibrium_records[-1],
+                "latest external-equilibrium validation",
+            )
+
+            latest_equilibrium_status = latest_equilibrium.get("status")
+
+            if not isinstance(
+                latest_equilibrium_status,
+                str,
+            ):
+                raise TypeError("Expected latest external-equilibrium 'status' to be a string.")
+
+            equilibrium_step = _require_int(
+                latest_equilibrium,
+                "step",
+            )
+
+            equilibrium_increment = _require_int(
+                latest_equilibrium,
+                "increment",
+            )
+
+            equilibrium_time = _require_float(
+                latest_equilibrium,
+                "accepted_time",
+            )
+
+            force_components_value = latest_equilibrium.get("force_components_n")
+
+            force_components_text = "Pending"
+
+            if (
+                isinstance(
+                    force_components_value,
+                    list,
+                )
+                and len(force_components_value) == 3
+                and all(
+                    not isinstance(component, bool)
+                    and isinstance(
+                        component,
+                        (int, float),
+                    )
+                    for component in force_components_value
+                )
+            ):
+                force_components_text = (
+                    "("
+                    f"{float(force_components_value[0]):.6g}, "
+                    f"{float(force_components_value[1]):.6g}, "
+                    f"{float(force_components_value[2]):.6g}"
+                    ") N"
+                )
+
+            maximum_component_value = latest_equilibrium.get("maximum_absolute_component_n")
+
+            if isinstance(
+                maximum_component_value,
+                bool,
+            ) or not isinstance(
+                maximum_component_value,
+                (int, float),
+            ):
+                maximum_component_text = "Pending"
+            else:
+                maximum_component_text = f"{float(maximum_component_value):.6g} N"
+
+            equilibrium_lines.extend(
+                [
+                    (
+                        "| Latest evaluated increment | "
+                        f"{equilibrium_step} / "
+                        f"{equilibrium_increment} |"
+                    ),
+                    (f"| Latest record status | {latest_equilibrium_status.capitalize()} |"),
+                    (f"| Accepted step time | {equilibrium_time:.9g} |"),
+                    (f"| Support-force vector | {force_components_text} |"),
+                    (f"| Maximum absolute component | {maximum_component_text} |"),
+                ]
+            )
+
+        equilibrium_lines.extend(
+            [
+                "",
+                (
+                    "This check verifies that the printed "
+                    "external support reaction remains near "
+                    "zero during preload-only loading."
+                ),
+                "",
+                (
+                    "The pretension-reference force is an "
+                    "internal control quantity and is not "
+                    "balanced directly against this support "
+                    "reaction."
+                ),
+                "",
+                (
+                    "The current validation covers only the "
+                    "printed support set. It does not yet "
+                    "establish equilibrium across every "
+                    "guidance reference or internal contact "
+                    "interface."
+                ),
+            ]
+        )
+
     artifact_rows = [
         (f"| Progress JSON | `{progress_json_path.resolve()}` |"),
         (f"| Convergence figure | `{convergence_figure_path.resolve()}` |"),
@@ -429,6 +614,11 @@ def write_nonlinear_progress_report(
     if pretension_validation_json_path is not None:
         artifact_rows.append(
             f"| Pretension validation JSON | `{pretension_validation_json_path.resolve()}` |"
+        )
+
+    if external_equilibrium_json_path is not None:
+        artifact_rows.append(
+            f"| External-equilibrium JSON | `{external_equilibrium_json_path.resolve()}` |"
         )
 
     lines = [
@@ -481,6 +671,10 @@ def write_nonlinear_progress_report(
         "",
         *validation_lines,
         "",
+        "## External support equilibrium",
+        "",
+        *equilibrium_lines,
+        "",
         "## Latest nonlinear state",
         "",
         *latest_iteration_lines,
@@ -528,8 +722,10 @@ def write_nonlinear_progress_report(
                 "completion and a CalculiX return code of zero."
             ),
             (
-                "- Reaction-force equilibrium has not yet been "
-                "evaluated from the completed result output."
+                "- External support equilibrium is evaluated "
+                "only for complete DAT records and the printed "
+                "support set; pending records and unprinted "
+                "guidance reactions remain outside this check."
             ),
             (
                 "- The current deck does not contain independent "
