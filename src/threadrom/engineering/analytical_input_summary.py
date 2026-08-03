@@ -159,6 +159,10 @@ def render_analytical_input_summary(
             "",
             (f"- Bolt compliance: {joint.methods.bolt_compliance.value}"),
             (f"- Member compression: {joint.methods.member_compression.value}"),
+            (
+                "- Compression-cone half-angle: "
+                f"{joint.methods.compression_cone_half_angle_deg:.9f} deg"
+            ),
             (f"- External-load treatment: {joint.methods.external_load.value}"),
             (f"- Thread-load distribution: {joint.methods.thread_load_distribution.value}"),
             (f"- Head participation factor: {joint.methods.head_participation_factor:.6f}"),

@@ -68,6 +68,7 @@
 
 - Bolt compliance: segmented
 - Member compression: uniform_annular_cylinder
+- Compression-cone half-angle: 30.000000000 deg
 - External-load treatment: basic_spring_ratio
 - Thread-load distribution: discrete_spring
 - Head participation factor: 0.500000

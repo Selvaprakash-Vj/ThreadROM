@@ -134,6 +134,7 @@ class AnalyticalMethodSelection:
     head_participation_factor: float
     nut_participation_factor: float
     load_introduction_factor: float = 1.0
+    compression_cone_half_angle_deg: float = 30.0
 
     def __post_init__(self) -> None:
         if self.head_participation_factor < 0.0:
@@ -144,6 +145,11 @@ class AnalyticalMethodSelection:
 
         if not 0.0 <= self.load_introduction_factor <= 1.0:
             raise ValueError("Load-introduction factor must lie in [0, 1].")
+
+        if not 0.0 < self.compression_cone_half_angle_deg < 90.0:
+            raise ValueError(
+                "Compression-cone half-angle must lie strictly between 0 and 90 degrees."
+            )
 
 
 @dataclass(frozen=True)

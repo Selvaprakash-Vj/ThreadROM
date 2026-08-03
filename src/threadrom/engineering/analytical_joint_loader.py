@@ -207,6 +207,11 @@ def load_analytical_joint_input(
             "load_introduction_factor",
             default=1.0,
         ),
+        compression_cone_half_angle_deg=_optional_number(
+            methods_data,
+            "compression_cone_half_angle_deg",
+            default=30.0,
+        ),
     )
 
     return AnalyticalJointInput(

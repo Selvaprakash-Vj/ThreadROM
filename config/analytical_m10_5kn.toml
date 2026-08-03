@@ -71,6 +71,7 @@ preload_scatter_fraction = 0.0
 [methods]
 bolt_compliance = "segmented"
 member_compression = "uniform_annular_cylinder"
+compression_cone_half_angle_deg = 30.0
 external_load = "basic_spring_ratio"
 thread_load_distribution = "discrete_spring"
 head_participation_factor = 0.5
