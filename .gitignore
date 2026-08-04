@@ -102,3 +102,6 @@ reports/*
 
 # Locally installed engineering tools
 /tools/
+
+# Governed local solver evidence archives
+/simulations/archive/
