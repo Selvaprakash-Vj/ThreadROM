@@ -66,6 +66,7 @@ class CompleteJointPretensionDefinition:
     surface_type: str
 
     preload_force_n: float
+    reference_force_sign: int
     loading_mode: str
 
     load_schedule: CompleteJointPretensionLoadSchedule
@@ -81,6 +82,12 @@ class CompleteJointPretensionDefinition:
     require_single_boundary_loop: bool
     require_zero_nonmanifold_edges: bool
     require_shared_section_mesh: bool
+
+    @property
+    def signed_preload_force_n(self) -> float:
+        """Return the signed CalculiX pretension-reference force."""
+
+        return self.reference_force_sign * self.preload_force_n
 
 
 def _section(
@@ -127,6 +134,28 @@ def _integer(
 
     if isinstance(value, bool) or not isinstance(value, int):
         raise TypeError(f"Missing or invalid integer value: {key}")
+
+    return value
+
+
+def _optional_integer(
+    data: Mapping[str, object],
+    key: str,
+    *,
+    default: int,
+) -> int:
+    """Return one optional integer configuration value."""
+
+    value = data.get(
+        key,
+        default,
+    )
+
+    if isinstance(value, bool) or not isinstance(
+        value,
+        int,
+    ):
+        raise TypeError(f"Invalid integer value: {key}")
 
     return value
 
@@ -192,6 +221,11 @@ def load_complete_joint_pretension_definition(
             "surface_type",
         ).upper(),
         preload_force_n=_number(load, "preload_force_n"),
+        reference_force_sign=_optional_integer(
+            load,
+            "reference_force_sign",
+            default=1,
+        ),
         loading_mode=_string(
             load,
             "loading_mode",
@@ -279,6 +313,12 @@ def load_complete_joint_pretension_definition(
 
     if definition.preload_force_n <= 0.0:
         raise ValueError("Pretension force must be positive.")
+
+    if definition.reference_force_sign not in {
+        -1,
+        1,
+    }:
+        raise ValueError("Pretension reference-force sign must be -1 or +1.")
 
     load_schedule = definition.load_schedule
 

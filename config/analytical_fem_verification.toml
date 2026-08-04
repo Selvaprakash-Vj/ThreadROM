@@ -1,0 +1,114 @@
+[identity]
+verification_id = "TRM-VER-000001"
+analytical_joint_id = "TRM-ANL-000001"
+simulation_id = "TRM-SIM-000010"
+mesh_level = "coarse"
+element_type = "C3D10"
+
+[output]
+json_relative_path = "docs/verification/TRM-VER-000001_ANALYTICAL_FEM_MATRIX.json"
+report_relative_path = "docs/verification/TRM-VER-000001_ANALYTICAL_FEM_MATRIX.md"
+
+[[targets]]
+target_id = "pretension_ramp"
+quantity = "Commanded pretension-force ramp"
+analytical_value = 5000.0
+unit = "N"
+fem_observable = "BOLT_PRETENSION_REFERENCE RF1 at every accepted increment"
+extraction_source = "CalculiX DAT and STA accepted-increment history"
+evidence_status = "inconclusive_solver"
+acceptance_metric = "relative_or_absolute"
+relative_tolerance = 1.0e-6
+absolute_tolerance = 1.0e-6
+evidence_artifact = "docs/verification/TRM-SIM-000010_CLAMP_SMOKE_OUTCOME.json"
+notes = "The corrected deck commanded -250 N, -500 N and -750 N, but no equilibrium increment was accepted. The commanded deck contract is verified; the accepted physical force ramp is not."
+
+[[targets]]
+target_id = "external_support_equilibrium"
+quantity = "Preload-only external support reaction"
+analytical_value = 0.0
+unit = "N"
+fem_observable = "Maximum absolute component of HEAD_MEMBER_SUPPORT_BAND total reaction"
+extraction_source = "CalculiX DAT TOTALS=ONLY records"
+evidence_status = "inconclusive_solver"
+acceptance_metric = "absolute"
+absolute_tolerance = 0.001
+evidence_artifact = "docs/verification/TRM-SIM-000010_CLAMP_SMOKE_OUTCOME.json"
+notes = "No accepted equilibrium state exists from which a governed external-support reaction can be extracted."
+
+[[targets]]
+target_id = "final_preload_force"
+quantity = "Final governed preload force"
+analytical_value = 5000.0
+unit = "N"
+fem_observable = "BOLT_PRETENSION_REFERENCE RF1 at accepted step time 1.0"
+extraction_source = "CalculiX DAT and STA accepted final increment"
+evidence_status = "inconclusive_solver"
+acceptance_metric = "relative_or_absolute"
+relative_tolerance = 1.0e-6
+absolute_tolerance = 1.0e-6
+evidence_artifact = "docs/verification/TRM-SIM-000010_CLAMP_SMOKE_OUTCOME.json"
+notes = "The corrected 750 N smoke model diverged before its first accepted increment. The governed 5 kN final preload was therefore not reached."
+
+[[targets]]
+target_id = "nominal_bolt_stress"
+quantity = "Nominal bolt tensile stress at 5 kN"
+analytical_value = 86.2223617188293
+unit = "MPa"
+fem_observable = "Section-averaged axial stress over a governed threaded bolt section"
+extraction_source = "CalculiX FRD element stress field"
+evidence_status = "inconclusive_solver"
+acceptance_metric = "relative"
+relative_tolerance = 0.10
+evidence_artifact = "docs/verification/TRM-SIM-000010_CLAMP_SMOKE_OUTCOME.json"
+notes = "No accepted physical pretension state exists. Stress values from unconverged Newton iterations are not admissible verification evidence."
+
+[[targets]]
+target_id = "bolt_stiffness"
+quantity = "Bolt axial stiffness"
+analytical_value = 405927.1783129164
+unit = "N/mm"
+fem_observable = "Preload increment divided by governed bolt reference-plane elongation"
+extraction_source = "CalculiX FRD displacement field at accepted increments"
+evidence_status = "inconclusive_solver"
+acceptance_metric = "relative"
+relative_tolerance = 0.10
+evidence_artifact = "docs/verification/TRM-SIM-000010_CLAMP_SMOKE_OUTCOME.json"
+notes = "The corrected nonlinear model produced no accepted preload-displacement state. Bolt stiffness cannot be calculated from unconverged iteration fields."
+
+[[targets]]
+target_id = "member_stiffness"
+quantity = "Clamped-member axial stiffness"
+analytical_value = 6424164.277509429
+unit = "N/mm"
+fem_observable = "Preload increment divided by governed member-stack shortening"
+extraction_source = "CalculiX FRD displacement field at accepted increments"
+evidence_status = "inconclusive_solver"
+acceptance_metric = "relative"
+relative_tolerance = 0.15
+evidence_artifact = "docs/verification/TRM-SIM-000010_CLAMP_SMOKE_OUTCOME.json"
+notes = "The corrected nonlinear model produced no accepted member-compression state. Member stiffness cannot be verified."
+
+[[targets]]
+target_id = "separation_load"
+quantity = "Joint separation load"
+analytical_value = 5315.937731958412
+unit = "N"
+fem_observable = "First governed loss of compressive member-interface contact under external separation loading"
+extraction_source = "Dedicated nonlinear separation-load simulation"
+evidence_status = "dedicated_simulation_required"
+acceptance_metric = "relative"
+relative_tolerance = 0.10
+notes = "A preload-only smoke simulation cannot observe joint separation. A stabilised preload state and dedicated external-separation simulation are required."
+
+[[targets]]
+target_id = "first_thread_load_share"
+quantity = "First engaged thread-turn load share"
+analytical_value = 21.447097340508284
+unit = "%"
+fem_observable = "Integrated normal contact force on turn 1 divided by total engaged-thread flank force"
+extraction_source = "Dedicated contact-output simulation with per-turn flank groups"
+evidence_status = "dedicated_simulation_required"
+acceptance_metric = "absolute"
+absolute_tolerance = 5.0
+notes = "The current deck does not request governed per-turn integrated contact forces. A stabilised contact solution and dedicated per-turn output groups are required."

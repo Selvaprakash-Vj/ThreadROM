@@ -1,0 +1,59 @@
+{
+  "archive": {
+    "manifest_relative_path": "simulations/archive/TRM-SIM-000010_clamp_smoke_divergence_20260804_163943/manifest.json",
+    "manifest_sha256": "D0A4D8B002206E96A6A48ABD903026E4C8274953A183EB3A0972A60641B710B5",
+    "post_termination_file_count": 12,
+    "pre_termination_file_count": 11,
+    "relative_path": "simulations/archive/TRM-SIM-000010_clamp_smoke_divergence_20260804_163943"
+  },
+  "classification": "inconclusive_solver",
+  "decision": {
+    "analytical_comparison_permitted": false,
+    "analytical_prediction_failed": false,
+    "clamp_direction_physically_validated": false,
+    "reason": "No equilibrium increment was accepted. Residual force and displacement correction diverged while the active contact population collapsed.",
+    "required_follow_up": "A dedicated nonlinear-contact stabilisation workflow is required before physical clamp behaviour can be compared against the analytical model."
+  },
+  "governed_input": {
+    "commanded_checkpoint_forces_n": [
+      -250.0,
+      -500.0,
+      -750.0
+    ],
+    "engineering_preload_magnitude_n": 750.0,
+    "pretension_section_vector": [
+      0.0,
+      0.0,
+      1.0
+    ],
+    "reference_force_sign": -1,
+    "sha256": "4D1D16EE88D34B08C8485D682922677CA7770FC48752892ED1D0968C9C10FE58"
+  },
+  "mesh_id": "TRM-MSH-000008",
+  "observed_state": {
+    "accepted_increments": 0,
+    "active_contact_elements": [
+      511110,
+      274894,
+      171109
+    ],
+    "completed_newton_iterations": 3,
+    "iteration_3_largest_displacement_correction_mm": 5.529698,
+    "residual_force_percent": [
+      39160.0,
+      210700.0,
+      69620000.0
+    ]
+  },
+  "pretension_model_id": "TRM-PTN-000005",
+  "purpose": "Corrected 750 N physical-pretension clamp-action smoke test.",
+  "schema_version": 1,
+  "simulation_id": "TRM-SIM-000010",
+  "solver": {
+    "element_count": 166445,
+    "element_type": "C3D10",
+    "name": "CalculiX",
+    "node_count": 259267,
+    "version": "2.23"
+  }
+}

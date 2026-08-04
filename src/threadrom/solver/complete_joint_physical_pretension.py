@@ -733,7 +733,7 @@ def _render_preload_checkpoint_steps(
         schedule.checkpoint_fractions,
         start=1,
     ):
-        target_force_n = pretension.preload_force_n * checkpoint_fraction
+        target_force_n = pretension.signed_preload_force_n * checkpoint_fraction
 
         lines.extend(
             (
