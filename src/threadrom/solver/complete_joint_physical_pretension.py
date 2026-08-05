@@ -57,6 +57,80 @@ NUT_ROTATION_X_REFERENCE = "NUT_ROTATION_X_REFERENCE"
 NUT_ROTATION_Y_REFERENCE = "NUT_ROTATION_Y_REFERENCE"
 
 
+def _exclude_boundary_faces_touching_protected_nodes(
+    mesh_data: CompleteJointCalculixMeshData,
+    *,
+    protected_boundary: str,
+    filtered_boundary: str,
+) -> tuple[CompleteJointCalculixMeshData, int]:
+    """Remove contact faces touching a protected internal cut."""
+
+    try:
+        protected_nodes = set(
+            mesh_data.boundary_node_sets[protected_boundary]
+        )
+        contact_triangles = mesh_data.boundary_triangles[
+            filtered_boundary
+        ]
+    except KeyError as error:
+        raise ValueError(
+            f"Unknown boundary required for exclusion: {error.args[0]}"
+        ) from error
+
+    kept_indices = [
+        index
+        for index, triangle in enumerate(contact_triangles)
+        if all(
+            int(node_index) + 1 not in protected_nodes
+            for node_index in triangle
+        )
+    ]
+
+    removed_count = len(contact_triangles) - len(kept_indices)
+
+    if removed_count == 0:
+        return mesh_data, 0
+
+    filtered_triangles = contact_triangles[kept_indices]
+
+    if len(filtered_triangles) == 0:
+        raise RuntimeError(
+            "Pretension exclusion removed the complete contact surface."
+        )
+
+    filtered_nodes = tuple(
+        sorted(
+            {
+                int(node_index) + 1
+                for triangle in filtered_triangles
+                for node_index in triangle
+            }
+        )
+    )
+
+    updated_triangles = dict(mesh_data.boundary_triangles)
+    updated_triangles[filtered_boundary] = filtered_triangles
+
+    updated_node_sets = dict(mesh_data.boundary_node_sets)
+    updated_node_sets[filtered_boundary] = filtered_nodes
+
+    updated_mesh = CompleteJointCalculixMeshData(
+        points_mm=mesh_data.points_mm,
+        component_tetrahedra=mesh_data.component_tetrahedra,
+        boundary_triangles=updated_triangles,
+        boundary_node_sets=updated_node_sets,
+    )
+
+    remaining_overlap = protected_nodes.intersection(filtered_nodes)
+
+    if remaining_overlap:
+        raise RuntimeError(
+            "Pretension nodes remain in the filtered contact surface."
+        )
+
+    return updated_mesh, removed_count
+
+
 @dataclass(frozen=True)
 class CompleteJointPhysicalPretensionDeckSummary:
     """Summary of one physical nonlinear pretension deck."""
@@ -792,8 +866,25 @@ def write_complete_joint_physical_pretension_deck(
         contact,
     )
 
+    thread_surface_name = contact.pair("thread").master_surface
+
+    if not thread_surface_name.startswith("SURF_"):
+        raise ValueError(
+            "Thread-contact master surface must use the SURF_ prefix."
+        )
+
+    thread_boundary_name = thread_surface_name[5:]
+
+    transfer_mesh_data, _ = (
+        _exclude_boundary_faces_touching_protected_nodes(
+            mesh_data,
+            protected_boundary=pretension.section_name,
+            filtered_boundary=thread_boundary_name,
+        )
+    )
+
     transfer_summary = write_complete_joint_calculix_transfer_deck(
-        mesh_data,
+        transfer_mesh_data,
         transfer,
         input_path,
         internal_surface_normals={
