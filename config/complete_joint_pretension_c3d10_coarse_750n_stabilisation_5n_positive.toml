@@ -1,0 +1,47 @@
+[identity]
+pretension_model_id = "TRM-PTN-000007"
+simulation_id = "TRM-SIM-000012"
+source_mesh_id = "TRM-MSH-000005"
+pretension_mesh_id = "TRM-MSH-000008"
+assembly_id = "TRM-ASM-000001"
+geometry_id = "TRM-GEO-000001"
+contact_model_id = "TRM-CNT-000002"
+boundary_region_id = "TRM-BCR-000002"
+status = "development"
+
+[section]
+name = "BOLT_PRETENSION_SECTION"
+axial_position_mm = 5.0
+normal_axis = "Z"
+surface_type = "ELEMENT"
+
+[load]
+preload_force_n = 750.0
+reference_force_sign = 1
+loading_mode = "FORCE"
+
+[load_schedule]
+checkpoint_count = 3
+maximum_increments_per_step = 100
+initial_time_increment = 0.02
+step_time = 1.0
+minimum_time_increment = 1.0e-6
+maximum_time_increment = 0.02
+
+[restart]
+write_enabled = true
+write_frequency_steps = 1
+overlay_latest = true
+
+[volume_model]
+bolt_fragment_count = 2
+expected_total_cad_volume_count = 5
+physical_bolt_group_name = "BOLT"
+group_bolt_fragments_together = true
+
+[verification]
+require_planar_section = true
+require_single_connected_section = true
+require_single_boundary_loop = true
+require_zero_nonmanifold_edges = true
+require_shared_section_mesh = true
