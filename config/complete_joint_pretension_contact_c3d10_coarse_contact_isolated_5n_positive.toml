@@ -1,0 +1,40 @@
+[identity]
+contact_model_id = "TRM-CNT-000002"
+simulation_id = "TRM-SIM-000013"
+mesh_id = "TRM-MSH-000008"
+assembly_id = "TRM-ASM-000001"
+geometry_id = "TRM-GEO-000001"
+classification_id = "TRM-JSC-000001"
+status = "development"
+
+[solver]
+job_name = "trm_cnt_000002_c3d10_coarse_contact_isolated_5n_positive"
+
+[interaction]
+name = "JOINT_CONTACT"
+contact_type = "SURFACE TO SURFACE"
+pressure_overclosure = "LINEAR"
+normal_stiffness_scale_per_mm = 10.0
+friction_coefficient = 0.15
+friction_stick_slope_ratio = 0.01
+
+[contact_pairs.thread]
+slave_surface = "SURF_NUT_INTERNAL_THREAD"
+master_surface = "SURF_BOLT_THREAD_SURFACES"
+
+[contact_pairs.under_head]
+slave_surface = "SURF_HEAD_MEMBER_HEAD_BEARING"
+master_surface = "SURF_BOLT_UNDER_HEAD_BEARING"
+
+[contact_pairs.nut_bearing]
+slave_surface = "SURF_NUT_MEMBER_NUT_BEARING"
+master_surface = "SURF_NUT_LOWER_BEARING"
+
+[contact_pairs.member_interface]
+slave_surface = "SURF_HEAD_MEMBER_INTERFACE"
+master_surface = "SURF_NUT_MEMBER_INTERFACE"
+
+[verification]
+expected_contact_pair_count = 4
+expected_unique_surface_count = 8
+require_common_contact_type = true
