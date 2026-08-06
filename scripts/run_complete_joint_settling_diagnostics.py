@@ -1,4 +1,4 @@
-"""Run the governed complete-joint A0-A3 settling diagnostics."""
+"""Run the governed complete-joint A0-A3 and A0T settling diagnostics."""
 
 from __future__ import annotations
 
@@ -32,7 +32,7 @@ DEFAULT_CONTACT_CONFIG = "complete_joint_pretension_contact_c3d4_coarse_diagnost
 DEFAULT_BOUNDARY_CONFIG = "complete_joint_pretension_boundary_regions_c3d4_coarse_diagnostic.toml"
 DEFAULT_PRETENSION_CONFIG = "complete_joint_pretension_c3d4_coarse_diagnostic.toml"
 
-CASE_IDS = ("A0", "A1", "A2", "A3")
+CASE_IDS = ("A0", "A0T", "A1", "A2", "A3")
 
 OUTPUT_SUFFIXES = (
     ".12d",
@@ -48,7 +48,7 @@ def _parse_arguments() -> argparse.Namespace:
     """Parse governed diagnostic-run arguments."""
 
     parser = argparse.ArgumentParser(
-        description=("Run the governed complete-joint A0-A3 settling diagnostics.")
+        description=("Run the governed complete-joint A0-A3 and A0T settling diagnostics.")
     )
 
     parser.add_argument(
@@ -195,7 +195,7 @@ def _write_manifest(
 
 
 def main() -> None:
-    """Generate and optionally run selected A0-A3 cases."""
+    """Generate and optionally run selected A0-A3 and A0T cases."""
 
     arguments = _parse_arguments()
 
@@ -308,6 +308,14 @@ def main() -> None:
         print(f"  Pretension section: {summary.pretension_section_count}")
         print(f"  Reference force:    {summary.applied_reference_force_n:+.3f} N")
         print(f"  Contact pairs:      {summary.contact_pair_count}")
+        print(
+            "  Excluded pairs:     "
+            + (
+                ", ".join(summary.excluded_contact_pair_names)
+                if summary.excluded_contact_pair_names
+                else "none"
+            )
+        )
         print(f"  Guidance samples:   {summary.guidance_sample_node_count}")
         print(f"  Excluded faces:     {summary.excluded_thread_contact_face_count}")
         print(f"  Input deck:         {input_path}")
@@ -374,6 +382,7 @@ def main() -> None:
             "pretension_section_count": (summary.pretension_section_count),
             "applied_reference_force_n": (summary.applied_reference_force_n),
             "contact_pair_count": (summary.contact_pair_count),
+            "excluded_contact_pair_names": list(summary.excluded_contact_pair_names),
             "guidance_sample_node_count": (summary.guidance_sample_node_count),
             "excluded_thread_contact_face_count": (summary.excluded_thread_contact_face_count),
             "timeout_seconds": (arguments.timeout_seconds),

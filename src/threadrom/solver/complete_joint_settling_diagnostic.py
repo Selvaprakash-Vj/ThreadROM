@@ -1,4 +1,4 @@
-"""Reduced A0-A3 settling diagnostics for the complete joint."""
+"""Reduced A0-A3 and A0T settling diagnostics for the complete joint."""
 
 from __future__ import annotations
 
@@ -19,6 +19,7 @@ from threadrom.solver.complete_joint_calculix_transfer import (
     write_complete_joint_calculix_transfer_deck,
 )
 from threadrom.solver.complete_joint_contact import (
+    THREAD,
     CompleteJointContactDefinition,
     render_complete_joint_contact_keywords,
 )
@@ -51,18 +52,20 @@ DIAGNOSTIC_MAXIMUM_TIME_INCREMENT = 5.0e-2
 
 @dataclass(frozen=True)
 class CompleteJointSettlingDiagnosticCase:
-    """One governed member of the A0-A3 diagnostic matrix."""
+    """One governed member of the A0-A3 and A0T diagnostic matrix."""
 
     case_id: str
     include_pretension_section: bool
     reference_force_n: float
+    excluded_contact_pair_names: tuple[str, ...] = ()
 
     def __post_init__(self) -> None:
         expected = {
-            "A0": (False, 0.0),
-            "A1": (True, 0.0),
-            "A2": (True, 1.0),
-            "A3": (True, -1.0),
+            "A0": (False, 0.0, ()),
+            "A0T": (False, 0.0, (THREAD,)),
+            "A1": (True, 0.0, ()),
+            "A2": (True, 1.0, ()),
+            "A3": (True, -1.0, ()),
         }
 
         if self.case_id not in expected:
@@ -71,11 +74,16 @@ class CompleteJointSettlingDiagnosticCase:
         if not math.isfinite(self.reference_force_n):
             raise ValueError("Diagnostic reference force must be finite.")
 
-        expected_section, expected_force = expected[self.case_id]
+        (
+            expected_section,
+            expected_force,
+            expected_excluded_pairs,
+        ) = expected[self.case_id]
 
         if (
             self.include_pretension_section != expected_section
             or self.reference_force_n != expected_force
+            or self.excluded_contact_pair_names != expected_excluded_pairs
         ):
             raise ValueError(
                 f"Diagnostic case {self.case_id} does not match its governed definition."
@@ -87,6 +95,12 @@ SETTLING_DIAGNOSTIC_CASES = (
         case_id="A0",
         include_pretension_section=False,
         reference_force_n=0.0,
+    ),
+    CompleteJointSettlingDiagnosticCase(
+        case_id="A0T",
+        include_pretension_section=False,
+        reference_force_n=0.0,
+        excluded_contact_pair_names=(THREAD,),
     ),
     CompleteJointSettlingDiagnosticCase(
         case_id="A1",
@@ -117,6 +131,7 @@ class CompleteJointSettlingDiagnosticDeckSummary:
     boundary_region_count: int
     boundary_region_node_count: int
     contact_pair_count: int
+    excluded_contact_pair_names: tuple[str, ...]
     interaction_count: int
     pretension_section_count: int
     step_count: int
@@ -153,7 +168,9 @@ def _render_settling_diagnostic_step(
         if reference_node_id is None:
             raise ValueError("Pretension diagnostic requires a reference node.")
     elif reference_node_id is not None:
-        raise ValueError("A0 must not contain a pretension reference node.")
+        raise ValueError(
+            "A diagnostic without pretension must not contain a pretension reference node."
+        )
 
     lines: list[str] = [
         f"** Settling diagnostic {case.case_id}",
@@ -213,6 +230,55 @@ def _render_settling_diagnostic_step(
     return tuple(lines)
 
 
+def _exclude_contact_pair_keywords(
+    contact_lines: tuple[str, ...],
+    *,
+    excluded_pair_names: tuple[str, ...],
+) -> tuple[str, ...]:
+    """Remove explicitly governed contact-pair keyword blocks."""
+
+    if not excluded_pair_names:
+        return contact_lines
+
+    excluded_names = frozenset(excluded_pair_names)
+
+    if len(excluded_names) != len(excluded_pair_names):
+        raise ValueError("Excluded diagnostic contact-pair names must be unique.")
+
+    result: list[str] = []
+    removed_names: set[str] = set()
+    line_index = 0
+
+    while line_index < len(contact_lines):
+        line = contact_lines[line_index]
+
+        if line.startswith("** Contact pair: "):
+            pair_name = line.removeprefix("** Contact pair: ")
+
+            if pair_name in excluded_names:
+                block = contact_lines[line_index : line_index + 3]
+
+                if len(block) != 3 or not block[1].startswith("*CONTACT PAIR,"):
+                    raise RuntimeError(f"Unexpected rendered contact-pair block for {pair_name!r}.")
+
+                removed_names.add(pair_name)
+                line_index += 3
+                continue
+
+        result.append(line)
+        line_index += 1
+
+    missing_names = excluded_names.difference(removed_names)
+
+    if missing_names:
+        raise RuntimeError(
+            "Requested diagnostic contact-pair exclusions "
+            "were not found: " + ", ".join(sorted(missing_names))
+        )
+
+    return tuple(result)
+
+
 def write_complete_joint_settling_diagnostic_deck(
     mesh_data: CompleteJointCalculixMeshData,
     transfer: CompleteJointCalculixTransferDefinition,
@@ -222,7 +288,7 @@ def write_complete_joint_settling_diagnostic_deck(
     case: CompleteJointSettlingDiagnosticCase,
     input_path: Path,
 ) -> CompleteJointSettlingDiagnosticDeckSummary:
-    """Write one governed A0-A3 complete-joint diagnostic deck."""
+    """Write one governed complete-joint diagnostic deck."""
 
     validate_physical_pretension_identities(
         transfer,
@@ -266,9 +332,12 @@ def write_complete_joint_settling_diagnostic_deck(
 
     boundary_lines = render_complete_joint_boundary_region_nsets(boundary_regions)
 
-    contact_lines = render_complete_joint_contact_keywords(
-        contact,
-        transfer,
+    contact_lines = _exclude_contact_pair_keywords(
+        render_complete_joint_contact_keywords(
+            contact,
+            transfer,
+        ),
+        excluded_pair_names=(case.excluded_contact_pair_names),
     )
 
     reference_node_id = mesh_data.node_count + 1 if case.include_pretension_section else None
@@ -367,8 +436,11 @@ def write_complete_joint_settling_diagnostic_deck(
 
     expected_pretension_count = int(case.include_pretension_section)
     expected_cload_count = int(case.reference_force_n != 0.0)
+    expected_contact_pair_count = contact.expected_contact_pair_count - len(
+        case.excluded_contact_pair_names
+    )
 
-    if contact_pair_count != contact.expected_contact_pair_count:
+    if contact_pair_count != expected_contact_pair_count:
         raise RuntimeError("Written contact-pair count does not match the governed expectation.")
 
     if interaction_count != 1:
@@ -399,6 +471,7 @@ def write_complete_joint_settling_diagnostic_deck(
         boundary_region_count=len(boundary_regions.regions),
         boundary_region_node_count=boundary_region_node_count,
         contact_pair_count=contact_pair_count,
+        excluded_contact_pair_names=(case.excluded_contact_pair_names),
         interaction_count=interaction_count,
         pretension_section_count=pretension_section_count,
         step_count=step_count,

@@ -28,13 +28,14 @@ PROJECT_ROOT = Path(__file__).resolve().parents[2]
 
 
 def test_settling_diagnostic_case_matrix_is_governed() -> None:
-    """A0-A3 resolve to the approved section and force matrix."""
+    """A0-A3 and A0T resolve to the approved section and force matrix."""
 
     expected = {
-        "A0": (False, 0.0),
-        "A1": (True, 0.0),
-        "A2": (True, 1.0),
-        "A3": (True, -1.0),
+        "A0": (False, 0.0, ()),
+        "A0T": (False, 0.0, ("thread",)),
+        "A1": (True, 0.0, ()),
+        "A2": (True, 1.0, ()),
+        "A3": (True, -1.0, ()),
     }
 
     assert tuple(case.case_id for case in SETTLING_DIAGNOSTIC_CASES) == tuple(expected)
@@ -45,6 +46,7 @@ def test_settling_diagnostic_case_matrix_is_governed() -> None:
         assert (
             case.include_pretension_section,
             case.reference_force_n,
+            case.excluded_contact_pair_names,
         ) == governed_values
 
 
@@ -81,7 +83,7 @@ def test_settling_diagnostic_case_rejects_invalid_definition() -> None:
 def test_write_complete_joint_settling_diagnostic_decks(
     tmp_path: Path,
 ) -> None:
-    """A0-A3 differ only through governed pretension controls."""
+    """A0-A3 and A0T differ only through governed pretension controls."""
 
     config = PROJECT_ROOT / "config"
 
@@ -117,6 +119,12 @@ def test_write_complete_joint_settling_diagnostic_decks(
 
     expected = {
         "A0": {
+            "pretension_count": 0,
+            "cload_count": 0,
+            "reference_node_id": None,
+            "reference_force_n": 0.0,
+        },
+        "A0T": {
             "pretension_count": 0,
             "cload_count": 0,
             "reference_node_id": None,
@@ -166,7 +174,10 @@ def test_write_complete_joint_settling_diagnostic_decks(
         assert summary.reference_node_id == governed["reference_node_id"]
         assert summary.applied_reference_force_n == governed["reference_force_n"]
 
-        assert summary.contact_pair_count == 4
+        expected_contact_pair_count = 4 - len(case.excluded_contact_pair_names)
+
+        assert summary.contact_pair_count == expected_contact_pair_count
+        assert summary.excluded_contact_pair_names == case.excluded_contact_pair_names
         assert summary.interaction_count == 1
         assert summary.step_count == 1
         assert summary.restart_write_count == 0
@@ -182,8 +193,17 @@ def test_write_complete_joint_settling_diagnostic_decks(
         assert summary.excluded_thread_contact_face_count == 271
         assert summary.input_file_size_bytes > 8_000_000
 
-        assert text.count("*CONTACT PAIR,") == 4
+        assert text.count("*CONTACT PAIR,") == expected_contact_pair_count
         assert text.count("*SURFACE INTERACTION,") == 1
+
+        thread_pair = "SURF_NUT_INTERNAL_THREAD, SURF_BOLT_THREAD_SURFACES"
+
+        if case.case_id == "A0T":
+            assert "** Contact pair: thread" not in text
+            assert thread_pair not in text
+        else:
+            assert "** Contact pair: thread" in text
+            assert thread_pair in text
         assert text.count("*STEP,") == 1
         assert text.count("*END STEP") == 1
         assert text.count("*ELEMENT, TYPE=DCOUP3D") == 3
@@ -194,7 +214,7 @@ def test_write_complete_joint_settling_diagnostic_decks(
         assert "ALL_NODES, 1, 3, 0.0" not in text
         assert "*RESTART,WRITE" not in text
 
-        if case.case_id == "A0":
+        if not case.include_pretension_section:
             assert "*PRE-TENSION SECTION," not in text
             assert "BOLT_PRETENSION_REFERENCE" not in text
             assert "*CLOAD" not in text
