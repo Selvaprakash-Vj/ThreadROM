@@ -66,24 +66,15 @@ def _exclude_boundary_faces_touching_protected_nodes(
     """Remove contact faces touching a protected internal cut."""
 
     try:
-        protected_nodes = set(
-            mesh_data.boundary_node_sets[protected_boundary]
-        )
-        contact_triangles = mesh_data.boundary_triangles[
-            filtered_boundary
-        ]
+        protected_nodes = set(mesh_data.boundary_node_sets[protected_boundary])
+        contact_triangles = mesh_data.boundary_triangles[filtered_boundary]
     except KeyError as error:
-        raise ValueError(
-            f"Unknown boundary required for exclusion: {error.args[0]}"
-        ) from error
+        raise ValueError(f"Unknown boundary required for exclusion: {error.args[0]}") from error
 
     kept_indices = [
         index
         for index, triangle in enumerate(contact_triangles)
-        if all(
-            int(node_index) + 1 not in protected_nodes
-            for node_index in triangle
-        )
+        if all(int(node_index) + 1 not in protected_nodes for node_index in triangle)
     ]
 
     removed_count = len(contact_triangles) - len(kept_indices)
@@ -94,18 +85,10 @@ def _exclude_boundary_faces_touching_protected_nodes(
     filtered_triangles = contact_triangles[kept_indices]
 
     if len(filtered_triangles) == 0:
-        raise RuntimeError(
-            "Pretension exclusion removed the complete contact surface."
-        )
+        raise RuntimeError("Pretension exclusion removed the complete contact surface.")
 
     filtered_nodes = tuple(
-        sorted(
-            {
-                int(node_index) + 1
-                for triangle in filtered_triangles
-                for node_index in triangle
-            }
-        )
+        sorted({int(node_index) + 1 for triangle in filtered_triangles for node_index in triangle})
     )
 
     updated_triangles = dict(mesh_data.boundary_triangles)
@@ -124,9 +107,7 @@ def _exclude_boundary_faces_touching_protected_nodes(
     remaining_overlap = protected_nodes.intersection(filtered_nodes)
 
     if remaining_overlap:
-        raise RuntimeError(
-            "Pretension nodes remain in the filtered contact surface."
-        )
+        raise RuntimeError("Pretension nodes remain in the filtered contact surface.")
 
     return updated_mesh, removed_count
 
@@ -362,8 +343,17 @@ def _render_distributed_guidance_keywords(
     nut_member_node_ids: tuple[int, ...],
     first_reference_node_id: int,
     first_element_id: int,
+    *,
+    translation_sample_node_count: int = GUIDANCE_SAMPLE_NODE_COUNT,
+    rotation_sample_node_count: int = ROTATION_GUIDANCE_SAMPLE_NODE_COUNT,
 ) -> DistributedGuidanceDeck:
     """Render distributed rigid-mode guidance fixtures."""
+
+    if translation_sample_node_count <= 0:
+        raise ValueError("Translation guidance sample count must be positive.")
+
+    if rotation_sample_node_count <= 0:
+        raise ValueError("Rotation guidance sample count must be positive.")
 
     bolt_head_nodes = _resolve_boundary_node_ids(
         mesh_data,
@@ -396,13 +386,9 @@ def _render_distributed_guidance_keywords(
         sorted(set(nut_upper_nodes) - set(nut_internal_thread_nodes) - set(nut_outer_hex_nodes))
     )
 
-    required_bolt_guidance_nodes = (
-        GUIDANCE_SAMPLE_NODE_COUNT + 2 * ROTATION_GUIDANCE_SAMPLE_NODE_COUNT
-    )
+    required_bolt_guidance_nodes = translation_sample_node_count + 2 * rotation_sample_node_count
 
-    required_nut_guidance_nodes = (
-        2 * GUIDANCE_SAMPLE_NODE_COUNT + 2 * ROTATION_GUIDANCE_SAMPLE_NODE_COUNT
-    )
+    required_nut_guidance_nodes = 2 * translation_sample_node_count + 2 * rotation_sample_node_count
 
     bolt_head_safe_nodes = _filter_node_ids_by_radius(
         mesh_data,
@@ -435,11 +421,11 @@ def _render_distributed_guidance_keywords(
     bolt_head_sample = _sample_spatially_distributed_node_ids(
         mesh_data,
         bolt_head_safe_nodes,
-        (GUIDANCE_SAMPLE_NODE_COUNT + 2 * ROTATION_GUIDANCE_SAMPLE_NODE_COUNT),
+        (translation_sample_node_count + 2 * rotation_sample_node_count),
     )
 
-    bolt_translation_end = GUIDANCE_SAMPLE_NODE_COUNT
-    bolt_rotation_x_end = bolt_translation_end + ROTATION_GUIDANCE_SAMPLE_NODE_COUNT
+    bolt_translation_end = translation_sample_node_count
+    bolt_rotation_x_end = bolt_translation_end + rotation_sample_node_count
 
     bolt_translation_sample = bolt_head_sample[:bolt_translation_end]
 
@@ -450,14 +436,14 @@ def _render_distributed_guidance_keywords(
     nut_upper_sample = _sample_spatially_distributed_node_ids(
         mesh_data,
         nut_upper_safe_nodes,
-        (2 * GUIDANCE_SAMPLE_NODE_COUNT + 2 * ROTATION_GUIDANCE_SAMPLE_NODE_COUNT),
+        (2 * translation_sample_node_count + 2 * rotation_sample_node_count),
     )
 
-    nut_translation_end = GUIDANCE_SAMPLE_NODE_COUNT
+    nut_translation_end = translation_sample_node_count
 
-    nut_rotation_z_end = nut_translation_end + GUIDANCE_SAMPLE_NODE_COUNT
+    nut_rotation_z_end = nut_translation_end + translation_sample_node_count
 
-    nut_rotation_x_end = nut_rotation_z_end + ROTATION_GUIDANCE_SAMPLE_NODE_COUNT
+    nut_rotation_x_end = nut_rotation_z_end + rotation_sample_node_count
 
     nut_translation_sample = nut_upper_sample[:nut_translation_end]
 
@@ -470,7 +456,7 @@ def _render_distributed_guidance_keywords(
     nut_member_sample = _sample_spatially_distributed_node_ids(
         mesh_data,
         nut_member_node_ids,
-        GUIDANCE_SAMPLE_NODE_COUNT,
+        translation_sample_node_count,
     )
 
     sample_sets = (
@@ -510,8 +496,12 @@ def _render_distributed_guidance_keywords(
 
     all_sample_nodes = tuple(node_id for _, node_ids in sample_sets for node_id in node_ids)
 
-    if len(all_sample_nodes) != 304:
-        raise RuntimeError("Distributed guidance must contain exactly 304 sampled node references.")
+    expected_sample_node_count = 4 * (translation_sample_node_count + rotation_sample_node_count)
+
+    if len(all_sample_nodes) != expected_sample_node_count:
+        raise RuntimeError(
+            "Distributed guidance sampled-node count does not match the configured guidance counts."
+        )
 
     bolt_surface_samples = bolt_translation_sample + bolt_rotation_x_sample + bolt_rotation_y_sample
 
@@ -869,18 +859,14 @@ def write_complete_joint_physical_pretension_deck(
     thread_surface_name = contact.pair("thread").master_surface
 
     if not thread_surface_name.startswith("SURF_"):
-        raise ValueError(
-            "Thread-contact master surface must use the SURF_ prefix."
-        )
+        raise ValueError("Thread-contact master surface must use the SURF_ prefix.")
 
     thread_boundary_name = thread_surface_name[5:]
 
-    transfer_mesh_data, _ = (
-        _exclude_boundary_faces_touching_protected_nodes(
-            mesh_data,
-            protected_boundary=pretension.section_name,
-            filtered_boundary=thread_boundary_name,
-        )
+    transfer_mesh_data, _ = _exclude_boundary_faces_touching_protected_nodes(
+        mesh_data,
+        protected_boundary=pretension.section_name,
+        filtered_boundary=thread_boundary_name,
     )
 
     transfer_summary = write_complete_joint_calculix_transfer_deck(

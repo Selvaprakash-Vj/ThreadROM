@@ -1,0 +1,64 @@
+[identity]
+simulation_id = "TRM-SIM-000014"
+mesh_id = "TRM-MSH-000009"
+assembly_id = "TRM-ASM-000001"
+geometry_id = "TRM-GEO-000001"
+classification_id = "TRM-JSC-000001"
+status = "development"
+
+[input]
+mesh_level = "coarse"
+source_mesh_name = "complete_joint_pretension_grouped_coarse_first_order.msh"
+
+[solver]
+executable_relative_path = "tools/calculix/2.23.0/CalculiX-2.23.0-win-x64/bin/ccx.exe"
+job_name = "trm_msh_000009_coarse_diagnostic_transfer"
+timeout_seconds = 1800
+element_type = "C3D4"
+
+[smoke_test]
+fixed_node_set = "ALL_NODES"
+output_node_group = "BOLT_HEAD_TOP"
+
+[volume_groups]
+bolt = "BOLT"
+nut = "NUT"
+head_side_member = "HEAD_SIDE_MEMBER"
+nut_side_member = "NUT_SIDE_MEMBER"
+
+[materials]
+bolt = "BOLT_STEEL"
+nut = "NUT_STEEL"
+members = "MEMBER_STEEL"
+youngs_modulus_mpa = 210000.0
+poissons_ratio = 0.30
+
+[verification]
+expected_volume_group_count = 4
+expected_boundary_group_count = 18
+minimum_node_count = 1000
+minimum_element_count = 1000
+
+required_boundary_groups = [
+    "BOLT_HEAD_SIDES",
+    "BOLT_HEAD_TOP",
+    "BOLT_PRETENSION_SECTION",
+    "BOLT_THREAD_SURFACES",
+    "BOLT_TIP",
+    "BOLT_UNDER_HEAD_BEARING",
+
+    "nut_internal_thread",
+    "nut_lower_bearing",
+    "nut_outer_hex",
+    "nut_upper_bearing",
+
+    "HEAD_MEMBER_CLEARANCE_HOLE",
+    "HEAD_MEMBER_HEAD_BEARING",
+    "HEAD_MEMBER_INTERFACE",
+    "HEAD_MEMBER_OUTER",
+
+    "NUT_MEMBER_CLEARANCE_HOLE",
+    "NUT_MEMBER_INTERFACE",
+    "NUT_MEMBER_NUT_BEARING",
+    "NUT_MEMBER_OUTER",
+]
