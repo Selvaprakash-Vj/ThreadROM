@@ -85,8 +85,8 @@ def test_complete_joint_surface_classification() -> None:
     )
 
     assert len(result.volumes.items()) == 4
-    assert len(result.bolt.surfaces) == 34
-    assert len(result.nut.surfaces) == 20
+    assert len(result.bolt.surfaces) == 33
+    assert len(result.nut.surfaces) == 32
     assert len(result.member_surfaces) == 8
 
     for region in MEMBER_REGION_ORDER:

@@ -15,6 +15,7 @@ class GeometryQualityPolicy:
 
     policy_id: str
     boolean_tolerance_mm: float
+    thread_boolean_overlap_mm: float
     fusion_bridge_half_height_mm: float
     fusion_bridge_radius_fraction: float
     cad_envelope_tolerance_mm: float
@@ -88,6 +89,10 @@ def load_geometry_quality_policy(
             boolean_operations,
             "tolerance_mm",
         ),
+        thread_boolean_overlap_mm=_number(
+            boolean_operations,
+            "thread_boolean_overlap_mm",
+        ),
         fusion_bridge_half_height_mm=_number(
             boolean_operations,
             "fusion_bridge_half_height_mm",
@@ -112,6 +117,7 @@ def load_geometry_quality_policy(
 
     positive_values = (
         policy.boolean_tolerance_mm,
+        policy.thread_boolean_overlap_mm,
         policy.fusion_bridge_half_height_mm,
         policy.cad_envelope_tolerance_mm,
         policy.step_bounds_tolerance_mm,

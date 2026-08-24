@@ -31,6 +31,7 @@ class AssemblyGeometryValidationPolicy:
     expected_solids_per_component: int
     coordinate_tolerance_mm: float
     maximum_pairwise_volume_mm3: float
+    maximum_mating_pair_volume_mm3: float
 
 
 @dataclass(frozen=True)
@@ -202,6 +203,10 @@ def load_assembly_geometry_validation_policy(
         maximum_pairwise_volume_mm3=_number(
             interference,
             "maximum_pairwise_volume_mm3",
+        ),
+        maximum_mating_pair_volume_mm3=_number(
+            interference,
+            "maximum_mating_pair_volume_mm3",
         ),
     )
 
@@ -451,15 +456,34 @@ def validate_complete_joint_assembly(
             )
 
     for result in measurements.interferences:
+        component_pair = frozenset(
+            (
+                result.first_component,
+                result.second_component,
+            )
+        )
+
+        if component_pair == frozenset(
+            ("bolt", "nut")
+        ):
+            maximum_volume_mm3 = (
+                policy.maximum_mating_pair_volume_mm3
+            )
+        else:
+            maximum_volume_mm3 = (
+                policy.maximum_pairwise_volume_mm3
+            )
+
         if (
             result.intersection_volume_mm3
-            > policy.maximum_pairwise_volume_mm3
+            > maximum_volume_mm3
         ):
             raise RuntimeError(
                 "Material interference exceeds policy: "
                 f"{result.first_component} vs "
                 f"{result.second_component} = "
-                f"{result.intersection_volume_mm3} mm^3."
+                f"{result.intersection_volume_mm3} mm^3 "
+                f"(limit {maximum_volume_mm3} mm^3)."
             )
 
 

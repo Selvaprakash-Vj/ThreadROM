@@ -3,7 +3,7 @@
 ## Status
 
 The complete bolt and internally threaded nut were positioned using
-the governed right-hand helical phase relation and exported as a
+the governed parametric thread-pair registration law and exported as a
 two-solid STEP assembly.
 
 ## Governed placement
@@ -11,7 +11,10 @@ two-solid STEP assembly.
 | Quantity | Value |
 |---|---:|
 | Nut translation | 20.000000000 mm |
-| Nut rotation | 120.000000000 deg |
+| Registration pitch | 1.500000000 mm |
+| Registration handedness | right |
+| Applied nut rotation | 120.000000000 deg |
+| Registration basis | canonical rigid screw datum |
 | Lower nut bearing plane | 20.000000000 mm |
 | Upper nut bearing plane | 28.000000000 mm |
 | Thread protrusion | 2.000000000 mm |
@@ -23,10 +26,10 @@ two-solid STEP assembly.
 | Bolt solids | 1 |
 | Nut solids | 1 |
 | Assembly solids | 2 |
-| Bolt volume | 3337.480816997 mm^3 |
-| Nut volume | 1296.914330392 mm^3 |
-| Component-volume sum | 4634.395147388 mm^3 |
-| Axial bounds | -6.400000000 to 30.000000605 mm |
+| Bolt volume | 3344.740848714 mm^3 |
+| Nut volume | 1252.487467318 mm^3 |
+| Component-volume sum | 4597.228316032 mm^3 |
+| Axial bounds | -6.400000000 to 30.000000100 mm |
 
 ## STEP round-trip
 
@@ -34,8 +37,8 @@ two-solid STEP assembly.
 |---|---:|
 | Native solids | 2 |
 | Reimported solids | 2 |
-| Relative volume error | 9.945942563929e-08 |
-| Maximum bounds error | 5.049542082247e-07 mm |
+| Relative volume error | 1.669755672899e-09 |
+| Maximum bounds error | 1.762145984685e-12 mm |
 
 ## Acceptance gates
 
@@ -44,7 +47,7 @@ The STEP assembly must preserve:
 - Exactly one bolt solid
 - Exactly one nut solid
 - Exactly two assembly volumes
-- Governed right-hand nut phase
+- Governed parametric thread-pair phase
 - STEP volume error within policy
 - STEP bounds error within policy
 

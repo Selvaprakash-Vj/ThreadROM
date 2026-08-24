@@ -309,6 +309,157 @@ def generate_grouped_complete_joint_pretension_mesh(
             sizes.nut_thread_surface_size_mm,
         )
 
+        # CP5 contact-focused flat-interface refinement.
+        #
+        # The existing point-based thread refinement is retained.
+        # A Distance -> Threshold background field additionally
+        # refines the full area and near-surface volume around the
+        # three nominally flat contact interfaces.
+        flat_contact_physical_names = (
+            "BOLT_UNDER_HEAD_BEARING",
+            "HEAD_MEMBER_HEAD_BEARING",
+            "nut_lower_bearing",
+            "NUT_MEMBER_NUT_BEARING",
+            "HEAD_MEMBER_INTERFACE",
+            "NUT_MEMBER_INTERFACE",
+        )
+
+        found_flat_contact_names: set[str] = set()
+        flat_contact_surface_tags: list[int] = []
+
+        for (
+            physical_dimension,
+            physical_tag,
+        ) in gmsh.model.getPhysicalGroups(2):
+            physical_name = gmsh.model.getPhysicalName(
+                physical_dimension,
+                physical_tag,
+            )
+
+            if (
+                physical_name
+                not in flat_contact_physical_names
+            ):
+                continue
+
+            found_flat_contact_names.add(
+                physical_name
+            )
+
+            flat_contact_surface_tags.extend(
+                int(surface_tag)
+                for surface_tag in (
+                    gmsh.model.getEntitiesForPhysicalGroup(
+                        physical_dimension,
+                        physical_tag,
+                    )
+                )
+            )
+
+        missing_flat_contact_names = sorted(
+            set(flat_contact_physical_names)
+            - found_flat_contact_names
+        )
+
+        if missing_flat_contact_names:
+            raise RuntimeError(
+                "Missing flat contact physical groups for "
+                "contact-focused refinement: "
+                + ", ".join(
+                    missing_flat_contact_names
+                )
+            )
+
+        flat_contact_surface_tags = sorted(
+            set(flat_contact_surface_tags)
+        )
+
+        if not flat_contact_surface_tags:
+            raise RuntimeError(
+                "Contact-focused refinement resolved no "
+                "CAD surfaces."
+            )
+
+        contact_surface_size_mm = (
+            0.50 * sizes.mesh_size_max_mm
+        )
+
+        if contact_surface_size_mm <= 0.0:
+            raise RuntimeError(
+                "Contact-refinement size must be positive."
+            )
+
+        if (
+            contact_surface_size_mm
+            > sizes.mesh_size_max_mm
+        ):
+            raise RuntimeError(
+                "Contact-refinement size cannot exceed "
+                "the global maximum mesh size."
+            )
+
+        contact_transition_distance_mm = (
+            0.15 * sizes.mesh_size_max_mm
+        )
+
+        distance_field = (
+            gmsh.model.mesh.field.add(
+                "Distance"
+            )
+        )
+
+        gmsh.model.mesh.field.setNumbers(
+            distance_field,
+            "SurfacesList",
+            flat_contact_surface_tags,
+        )
+
+        gmsh.model.mesh.field.setNumber(
+            distance_field,
+            "Sampling",
+            30,
+        )
+
+        threshold_field = (
+            gmsh.model.mesh.field.add(
+                "Threshold"
+            )
+        )
+
+        gmsh.model.mesh.field.setNumber(
+            threshold_field,
+            "InField",
+            distance_field,
+        )
+
+        gmsh.model.mesh.field.setNumber(
+            threshold_field,
+            "SizeMin",
+            contact_surface_size_mm,
+        )
+
+        gmsh.model.mesh.field.setNumber(
+            threshold_field,
+            "SizeMax",
+            sizes.mesh_size_max_mm,
+        )
+
+        gmsh.model.mesh.field.setNumber(
+            threshold_field,
+            "DistMin",
+            0.0,
+        )
+
+        gmsh.model.mesh.field.setNumber(
+            threshold_field,
+            "DistMax",
+            contact_transition_distance_mm,
+        )
+
+        gmsh.model.mesh.field.setAsBackgroundMesh(
+            threshold_field
+        )
+
         gmsh.model.mesh.generate(3)
 
         (

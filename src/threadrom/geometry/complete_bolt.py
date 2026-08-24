@@ -126,6 +126,7 @@ def build_complete_bolt(
     blank_definition: BoltBlankDefinition,
     thread_definition: HelicalThreadCutterDefinition,
     quality_policy: GeometryQualityPolicy,
+    mating_clearance_mm: float = 0.0,
 ) -> CompleteBoltBuild:
     """Fuse the parametric head and threaded shank into one bolt."""
 
@@ -134,6 +135,8 @@ def build_complete_bolt(
     threaded_build = build_threaded_shank(
         blank_definition,
         thread_definition,
+        quality_policy,
+        mating_clearance_mm,
     )
 
     threaded_shank = threaded_build.threaded_shank

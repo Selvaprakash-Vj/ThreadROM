@@ -19,6 +19,8 @@ from threadrom.solver.complete_joint_contact import (
     load_complete_joint_contact_definition,
 )
 from threadrom.solver.complete_joint_physical_pretension import (
+    GUIDANCE_SAMPLE_NODE_COUNT,
+    ROTATION_GUIDANCE_SAMPLE_NODE_COUNT,
     write_complete_joint_physical_pretension_deck,
 )
 from threadrom.solver.complete_joint_pretension import (
@@ -70,6 +72,16 @@ def _parse_arguments() -> argparse.Namespace:
         "--results-threads",
         type=int,
         default=1,
+    )
+    parser.add_argument(
+        "--translation-guidance-samples",
+        type=int,
+        default=GUIDANCE_SAMPLE_NODE_COUNT,
+    )
+    parser.add_argument(
+        "--rotation-guidance-samples",
+        type=int,
+        default=ROTATION_GUIDANCE_SAMPLE_NODE_COUNT,
     )
     parser.add_argument(
         "--write-only",
@@ -142,6 +154,12 @@ def main() -> None:
         boundary,
         pretension,
         input_path,
+        translation_sample_node_count=(
+            arguments.translation_guidance_samples
+        ),
+        rotation_sample_node_count=(
+            arguments.rotation_guidance_samples
+        ),
     )
 
     print("PHYSICAL PRETENSION DECK: VERIFIED")

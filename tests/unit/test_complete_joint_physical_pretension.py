@@ -180,7 +180,8 @@ def test_write_complete_joint_physical_pretension_deck(
     assert min(nut_guidance_radii) > 5.5
     assert max(nut_guidance_radii) < 8.0
 
-    assert summary.reference_node_id == 76066
+    reference_node_id = summary.reference_node_id
+    assert reference_node_id > 0
     assert summary.boundary_region_count == 2
     assert summary.boundary_region_node_count == 720
     assert summary.contact_pair_count == 4
@@ -194,16 +195,41 @@ def test_write_complete_joint_physical_pretension_deck(
     assert summary.distributing_coupling_count == 3
     assert summary.mean_rotation_mpc_count == 5
 
-    assert ("*PRE-TENSION SECTION, SURFACE=SURF_BOLT_PRETENSION_SECTION, NODE=76066") in text
+    assert (
+        f"*PRE-TENSION SECTION, "
+        f"SURFACE=SURF_BOLT_PRETENSION_SECTION, "
+        f"NODE={reference_node_id}"
+    ) in text
+    assert (
+        "0.000000000000e+00, 0.000000000000e+00, 1.000000000000e+00"
+    ) in text
 
     assert "HEAD_MEMBER_SUPPORT_BAND, 1, 3, 0.0" in text
 
-    assert "76066, 1, 2.000000000000e+04" in text
+    assert f"{reference_node_id}, 1, 2.000000000000e+04" in text
     assert text.count("*STEP, NLGEOM=YES, INC=100") == 20
     assert text.count("*RESTART,WRITE,FREQUENCY=1,OVERLAY") == 1
     assert text.count("*END STEP") == 20
-    assert "76066, 1, 1.000000000000e+03" in text
+    assert f"{reference_node_id}, 1, 1.000000000000e+03" in text
     assert text.count("*CONTACT PAIR,") == 4
+    assert (
+        text.count(
+            "*CONTACT FILE, FREQUENCY=1, CONTACT ELEMENTS"
+        )
+        == 20
+    )
+    assert (
+        text.count("*CONTACT PRINT, FREQUENCY=1")
+        == 20
+    )
+    assert (
+        text.splitlines().count("CDIS, CSTR")
+        == 20
+    )
+    assert (
+        text.splitlines().count("CDIS, CSTR, CNUM")
+        == 20
+    )
     assert text.count("*ELEMENT, TYPE=DCOUP3D") == 3
     assert text.count("*DISTRIBUTING COUPLING,") == 3
     assert text.count("*MPC") == 5

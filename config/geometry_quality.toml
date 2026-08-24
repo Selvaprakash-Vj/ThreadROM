@@ -4,6 +4,7 @@ status = "development"
 
 [boolean_operations]
 tolerance_mm = 0.000001
+thread_boolean_overlap_mm = 0.03
 fusion_bridge_half_height_mm = 0.02
 fusion_bridge_radius_fraction = 0.75
 

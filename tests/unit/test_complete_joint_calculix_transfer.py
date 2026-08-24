@@ -230,25 +230,25 @@ def test_read_grouped_complete_joint_mesh() -> None:
         definition,
     )
 
-    assert mesh_data.node_count == 73360
-    assert mesh_data.element_count == 333439
-    assert mesh_data.boundary_triangle_count == 76978
+    assert mesh_data.node_count == 101493
+    assert mesh_data.element_count == 509115
+    assert mesh_data.boundary_triangle_count == 78390
 
-    assert mesh_data.component_element_count(BOLT) == 199243
-    assert mesh_data.component_element_count(NUT) == 76524
+    assert mesh_data.component_element_count(BOLT) == 392486
+    assert mesh_data.component_element_count(NUT) == 58757
 
     assert (
         mesh_data.component_element_count(
             HEAD_SIDE_MEMBER
         )
-        == 28948
+        == 29037
     )
 
     assert (
         mesh_data.component_element_count(
             NUT_SIDE_MEMBER
         )
-        == 28724
+        == 28835
     )
 
     assert len(mesh_data.component_tetrahedra) == 4
@@ -302,13 +302,13 @@ def test_write_complete_joint_transfer_deck(
         input_path,
     )
 
-    assert summary.node_count == 73360
-    assert summary.element_count == 333439
+    assert summary.node_count == 101493
+    assert summary.element_count == 509115
     assert summary.volume_element_set_count == 4
     assert summary.boundary_node_set_count == 17
     assert summary.element_surface_count == 17
-    assert summary.mapped_element_face_count == 76978
-    assert summary.smoke_test_fixed_node_count == 73360
+    assert summary.mapped_element_face_count == 78390
+    assert summary.smoke_test_fixed_node_count == 101493
     assert summary.input_file_size_bytes > 0
 
     text = input_path.read_text(encoding="utf-8")
@@ -356,7 +356,7 @@ def test_write_complete_joint_transfer_deck(
         "*NSET, NSET=ALL_NODES, GENERATE"
         in text
     )
-    assert "1, 73360, 1" in text
+    assert "1, 101493, 1" in text
     assert "ALL_NODES, 1, 3, 0.0" in text
     assert "*STEP, NLGEOM=NO" in text
     assert "*END STEP" in text
@@ -393,7 +393,7 @@ def test_map_complete_joint_boundary_faces() -> None:
     assert sum(
         len(faces)
         for faces in mapped.values()
-    ) == 76978
+    ) == 78390
 
     for physical_name, triangles in (
         mesh_data.boundary_triangles.items()
@@ -408,7 +408,7 @@ def test_map_complete_joint_boundary_faces() -> None:
         )
 
         assert all(
-            1 <= face.element_id <= 333439
+            1 <= face.element_id <= 509115
             for face in mapped[physical_name]
         )
 
@@ -450,7 +450,7 @@ def test_map_internal_pretension_section_faces() -> None:
 
     assert (
         len(mapped["BOLT_PRETENSION_SECTION"])
-        == 1701
+        == 1746
     )
 
     assert sum(
@@ -458,4 +458,4 @@ def test_map_internal_pretension_section_faces() -> None:
         for faces in mapped.values()
     ) == mesh_data.boundary_triangle_count
 
-    assert mesh_data.boundary_triangle_count == 78963
+    assert mesh_data.boundary_triangle_count == 172640

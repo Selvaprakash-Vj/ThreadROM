@@ -66,12 +66,16 @@ def main() -> None:
     nut_build = build_complete_nut(
         nut_blank,
         nut_thread,
+        quality_policy,
     )
 
     assembly_build = build_bolt_nut_assembly(
         bolt_build.complete_bolt,
         nut_build.complete_nut,
         assembly_definition,
+        bolt_thread,
+        nut_thread,
+        quality_policy.thread_boolean_overlap_mm,
     )
 
     native = measure_bolt_nut_assembly(
@@ -106,7 +110,7 @@ def main() -> None:
 ## Status
 
 The complete bolt and internally threaded nut were positioned using
-the governed right-hand helical phase relation and exported as a
+the governed parametric thread-pair registration law and exported as a
 two-solid STEP assembly.
 
 ## Governed placement
@@ -114,7 +118,10 @@ two-solid STEP assembly.
 | Quantity | Value |
 |---|---:|
 | Nut translation | {assembly_definition.nut_translation_z_mm:.9f} mm |
-| Nut rotation | {assembly_definition.nut_rotation_deg:.9f} deg |
+| Registration pitch | {assembly_build.registration.pitch_mm:.9f} mm |
+| Registration handedness | {assembly_build.registration.handedness} |
+| Applied nut rotation | {assembly_build.registration.nut_rotation_deg:.9f} deg |
+| Registration basis | canonical rigid screw datum |
 | Lower nut bearing plane | {assembly_definition.nut_lower_bearing_z_mm:.9f} mm |
 | Upper nut bearing plane | {assembly_definition.nut_upper_bearing_z_mm:.9f} mm |
 | Thread protrusion | {assembly_definition.calculated_protrusion_length_mm:.9f} mm |
@@ -147,7 +154,7 @@ The STEP assembly must preserve:
 - Exactly one bolt solid
 - Exactly one nut solid
 - Exactly two assembly volumes
-- Governed right-hand nut phase
+- Governed parametric thread-pair phase
 - STEP volume error within policy
 - STEP bounds error within policy
 
@@ -181,7 +188,7 @@ four-component joint stack before contact meshing.
     print(
         "Nut placement: "
         f"Z +{assembly_definition.nut_translation_z_mm:.6f} mm, "
-        f"rotation +{assembly_definition.nut_rotation_deg:.6f} deg"
+        f"rotation +{assembly_build.registration.nut_rotation_deg:.6f} deg"
     )
     print(
         "Relative volume error: "

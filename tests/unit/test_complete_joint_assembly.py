@@ -84,12 +84,16 @@ def build_test_joint() -> tuple[
     nut_build = build_complete_nut(
         nut_blank,
         nut_thread,
+        quality_policy,
     )
 
     bolt_nut = build_bolt_nut_assembly(
         bolt_build.complete_bolt,
         nut_build.complete_nut,
         assembly_definition,
+        bolt_thread,
+        nut_thread,
+        quality_policy.thread_boolean_overlap_mm,
     )
 
     joint = build_complete_joint_assembly(
@@ -138,12 +142,28 @@ def test_complete_joint_passes_geometry_gates() -> None:
         policy,
     )
 
-    assert (
-        measurements.maximum_interference_volume_mm3
-        <= policy.maximum_pairwise_volume_mm3
-    )
-
     assert len(measurements.interferences) == 6
+
+    for result in measurements.interferences:
+        component_pair = frozenset(
+            (
+                result.first_component,
+                result.second_component,
+            )
+        )
+
+        if component_pair == frozenset(
+            ("bolt", "nut")
+        ):
+            assert (
+                result.intersection_volume_mm3
+                <= policy.maximum_mating_pair_volume_mm3
+            )
+        else:
+            assert (
+                result.intersection_volume_mm3
+                <= policy.maximum_pairwise_volume_mm3
+            )
 
 
 def test_complete_joint_step_round_trip(

@@ -12,3 +12,8 @@ coordinate_tolerance_mm = 1.0e-8
 
 [interference]
 maximum_pairwise_volume_mm3 = 1.0e-8
+
+# Exact zero-clearance threaded tangency can leave a tiny
+# OCC Boolean residue. This allowance applies only to the
+# governed bolt-nut mating pair.
+maximum_mating_pair_volume_mm3 = 1.0e-5

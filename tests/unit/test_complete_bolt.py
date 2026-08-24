@@ -27,6 +27,7 @@ def test_geometry_quality_policy_loads() -> None:
 
     assert policy.policy_id == "TRM-GQP-000001"
     assert policy.boolean_tolerance_mm > 0.0
+    assert policy.thread_boolean_overlap_mm == pytest.approx(0.03)
     assert policy.cad_envelope_tolerance_mm > 0.0
     assert 0.0 < policy.fusion_bridge_radius_fraction < 1.0
 

@@ -5,6 +5,5 @@ component_name = "baseline_internal_thread"
 
 [thread]
 thread_length_mm = 8.0
-radial_overlap_mm = 0.03
 handedness = "right"
 use_frenet_frame = true

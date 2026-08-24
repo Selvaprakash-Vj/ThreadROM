@@ -13,6 +13,9 @@ import cadquery as cq
 from threadrom.geometry.nut_blank import (
     load_nut_blank_definition,
 )
+from threadrom.geometry.thread_flank_geometry import (
+    boolean_overlap_axial_extension_mm,
+)
 
 
 @dataclass(frozen=True)
@@ -26,7 +29,6 @@ class InternalThreadCutterDefinition:
     pitch_mm: float
     minor_diameter_mm: float
     thread_length_mm: float
-    radial_overlap_mm: float
     handedness: str
     use_frenet_frame: bool
 
@@ -198,10 +200,6 @@ def load_internal_thread_cutter_definition(
             thread,
             "thread_length_mm",
         ),
-        radial_overlap_mm=_number(
-            thread,
-            "radial_overlap_mm",
-        ),
         handedness=handedness,
         use_frenet_frame=_boolean(
             thread,
@@ -230,19 +228,6 @@ def load_internal_thread_cutter_definition(
             "Internal thread length must equal the nut thickness."
         )
 
-    if definition.radial_overlap_mm <= 0.0:
-        raise ValueError(
-            "Cutter radial overlap must be positive."
-        )
-
-    if (
-        definition.radial_overlap_mm
-        >= definition.minor_radius_mm
-    ):
-        raise ValueError(
-            "Radial overlap must remain below the minor radius."
-        )
-
     if definition.radial_thread_depth_mm <= 0.0:
         raise ValueError(
             "Internal radial thread depth must be positive."
@@ -253,33 +238,68 @@ def load_internal_thread_cutter_definition(
 
 def internal_cutter_profile_points(
     definition: InternalThreadCutterDefinition,
+    radial_overlap_mm: float,
 ) -> tuple[tuple[float, float], ...]:
-    """Return the cutter profile relative to the helix path."""
+    """Return the complementary female-thread groove cutter profile.
 
-    crest_half_width_mm = definition.pitch_mm / 16.0
-    root_half_width_mm = definition.pitch_mm / 8.0
+    The physical internal ISO thread is open at the minor-radius bore
+    and narrows toward its major-radius root.  Construction overlap is
+    extended along the existing 60-degree flank so that the nominal
+    physical flank itself remains unchanged.
+    """
+
+    if radial_overlap_mm <= 0.0:
+        raise ValueError(
+            "Thread Boolean radial overlap must be positive."
+        )
+
+    pitch_mm = definition.pitch_mm
+
+    axial_overlap_mm = (
+        boolean_overlap_axial_extension_mm(
+            radial_overlap_mm
+        )
+    )
+
+    bore_opening_half_width_mm = (
+        7.0 * pitch_mm / 16.0
+        + axial_overlap_mm
+    )
+
+    deep_root_half_width_mm = (
+        pitch_mm / 8.0
+        - axial_overlap_mm
+    )
+
+    if deep_root_half_width_mm <= 0.0:
+        raise ValueError(
+            "Thread Boolean overlap collapses the "
+            "internal-thread root width."
+        )
+
+    inward_coordinate_mm = -radial_overlap_mm
 
     outward_coordinate_mm = (
         definition.radial_thread_depth_mm
-        + definition.radial_overlap_mm
+        + radial_overlap_mm
     )
 
     return (
         (
-            0.0,
-            -root_half_width_mm,
+            inward_coordinate_mm,
+            -bore_opening_half_width_mm,
         ),
         (
             outward_coordinate_mm,
-            -crest_half_width_mm,
+            -deep_root_half_width_mm,
         ),
         (
             outward_coordinate_mm,
-            crest_half_width_mm,
+            deep_root_half_width_mm,
         ),
         (
-            0.0,
-            root_half_width_mm,
+            inward_coordinate_mm,
+            bore_opening_half_width_mm,
         ),
     )
 
@@ -305,6 +325,7 @@ def build_internal_thread_path(
 
 def build_internal_thread_cutter(
     definition: InternalThreadCutterDefinition,
+    radial_overlap_mm: float,
 ) -> cq.Shape:
     """Sweep the internal-thread groove cutter along the helix."""
 
@@ -320,7 +341,8 @@ def build_internal_thread_cutter(
         .polyline(
             list(
                 internal_cutter_profile_points(
-                    definition
+                    definition,
+                    radial_overlap_mm,
                 )
             )
         )

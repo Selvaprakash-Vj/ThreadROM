@@ -50,18 +50,6 @@ class BaselineAssembly:
 
         return self.total_grip_length_mm
 
-    @property
-    def nut_rotation_deg(self) -> float:
-        """Return the governed right-hand helical phase rotation."""
-
-        completed_turns = (
-            self.nut_translation_z_mm
-            / self.pitch_mm
-        )
-
-        fractional_turn = completed_turns % 1.0
-
-        return 360.0 * fractional_turn
 
     @property
     def nut_lower_bearing_z_mm(self) -> float:

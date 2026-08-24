@@ -4,6 +4,7 @@ from pathlib import Path
 
 import cadquery as cq
 
+from threadrom.geometry.geometry_quality import load_geometry_quality_policy
 from threadrom.geometry.threaded_shank import (
     build_threaded_shank,
     load_threaded_shank_definitions,
@@ -20,9 +21,14 @@ def main() -> None:
         load_threaded_shank_definitions(project_root)
     )
 
+    quality_policy = load_geometry_quality_policy(
+        project_root / "config" / "geometry_quality.toml"
+    )
+
     build = build_threaded_shank(
         blank_definition,
         thread_definition,
+        quality_policy,
     )
 
     measurements = measure_threaded_shank(

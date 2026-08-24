@@ -54,8 +54,8 @@ def test_inconsistent_bolt_stack_is_rejected() -> None:
     with pytest.raises(ValueError):
         validate_baseline_assembly(invalid)
 
-def test_baseline_nut_placement_is_phase_aligned() -> None:
-    """Nut placement follows the governed right-hand thread phase."""
+def test_baseline_nut_axial_placement_is_governed() -> None:
+    """Assembly definition governs the nut bearing-plane placement."""
 
     project_root = Path(__file__).resolve().parents[2]
 
@@ -66,7 +66,6 @@ def test_baseline_nut_placement_is_phase_aligned() -> None:
     )
 
     assert assembly.nut_translation_z_mm == 20.0
-    assert abs(assembly.nut_rotation_deg - 120.0) < 1.0e-9
     assert assembly.nut_lower_bearing_z_mm == 20.0
     assert assembly.nut_upper_bearing_z_mm == 28.0
     assert assembly.calculated_protrusion_length_mm == 2.0

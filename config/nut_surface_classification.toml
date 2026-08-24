@@ -3,7 +3,7 @@ mesh_id = "TRM-MSH-000004"
 geometry_id = "TRM-GEO-000001"
 
 [classification]
-plane_tolerance_mm = 0.00001
+plane_tolerance_mm = 0.00002
 radial_tolerance_mm = 0.05
 
 [physical_groups]

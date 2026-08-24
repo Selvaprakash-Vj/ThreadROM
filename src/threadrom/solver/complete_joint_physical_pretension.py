@@ -6,6 +6,8 @@ import math
 from dataclasses import dataclass
 from pathlib import Path
 
+import numpy as np
+
 from threadrom.solver.complete_joint_boundary_regions import (
     CompleteJointBoundaryRegionDefinition,
     derive_complete_joint_boundary_regions,
@@ -35,6 +37,10 @@ BOLT_HEAD_GUIDANCE_MAX_RADIUS_MM = 7.5
 NUT_GUIDANCE_MIN_RADIUS_MM = 5.5
 NUT_GUIDANCE_MAX_RADIUS_MM = 8.0
 
+THREAD_MATING_FLANK_MIN_ABS_RADIAL_NORMAL = 0.4
+THREAD_MATING_FLANK_MAX_ABS_RADIAL_NORMAL = 0.6
+THREAD_NONMATING_CYLINDRICAL_MIN_ABS_RADIAL_NORMAL = 0.995
+
 BOLT_HEAD_GUIDANCE_SAMPLE = "BOLT_HEAD_GUIDANCE_SAMPLE"
 BOLT_HEAD_ROTATION_X_SAMPLE = "BOLT_HEAD_ROTATION_X_SAMPLE"
 BOLT_HEAD_ROTATION_Y_SAMPLE = "BOLT_HEAD_ROTATION_Y_SAMPLE"
@@ -55,6 +61,233 @@ BOLT_HEAD_ROTATION_X_REFERENCE = "BOLT_HEAD_ROTATION_X_REFERENCE"
 BOLT_HEAD_ROTATION_Y_REFERENCE = "BOLT_HEAD_ROTATION_Y_REFERENCE"
 NUT_ROTATION_X_REFERENCE = "NUT_ROTATION_X_REFERENCE"
 NUT_ROTATION_Y_REFERENCE = "NUT_ROTATION_Y_REFERENCE"
+
+
+def _retain_thread_mating_flank_faces(
+    mesh_data: CompleteJointCalculixMeshData,
+    *,
+    filtered_boundary: str,
+    flank_family: str | None = None,
+) -> tuple[CompleteJointCalculixMeshData, int]:
+    """Retain non-cylindrical candidate mating faces of a thread boundary.
+
+    The complete nut internal-thread physical group contains both
+    inclined/helical thread faces and near-cylindrical crest/root
+    surfaces. CalculiX must not receive the latter as thread-contact
+    slave faces.
+
+    The governed geometry has a deliberately clean normal-orientation
+    separation:
+
+    - mating flanks: ``0.4 <= |n . radial| < 0.6``
+    - end/transition faces: ``|n . radial| < 0.4``
+    - non-mating cylindrical faces: ``|n . radial| >= 0.995``
+
+    Any population from ``0.6`` to ``0.995`` is rejected rather
+    than silently classified.
+    """
+
+    matching_boundaries = [
+        physical_name
+        for physical_name in mesh_data.boundary_triangles
+        if physical_name.upper() == filtered_boundary.upper()
+    ]
+
+    if len(matching_boundaries) != 1:
+        raise ValueError(
+            "Thread boundary required for flank filtering "
+            "must resolve to exactly one physical group: "
+            f"{filtered_boundary}; matches={matching_boundaries}."
+        )
+
+    physical_boundary = matching_boundaries[0]
+
+    contact_triangles = mesh_data.boundary_triangles[
+        physical_boundary
+    ]
+
+    if (
+        contact_triangles.ndim != 2
+        or contact_triangles.shape[1] != 3
+    ):
+        raise RuntimeError(
+            "Thread flank filtering requires linear triangular "
+            "boundary facets."
+        )
+
+    if len(contact_triangles) == 0:
+        raise RuntimeError(
+            "Thread contact boundary contains no facets."
+        )
+
+    triangle_points = mesh_data.points_mm[
+        contact_triangles
+    ]
+
+    point_0 = triangle_points[:, 0, :]
+    point_1 = triangle_points[:, 1, :]
+    point_2 = triangle_points[:, 2, :]
+
+    normals = np.cross(
+        point_1 - point_0,
+        point_2 - point_0,
+    )
+
+    normal_magnitudes = np.linalg.norm(
+        normals,
+        axis=1,
+    )
+
+    if np.any(normal_magnitudes <= 0.0):
+        raise RuntimeError(
+            "Thread contact boundary contains a "
+            "zero-area triangle."
+        )
+
+    normals = (
+        normals
+        / normal_magnitudes[:, None]
+    )
+
+    centroids = np.mean(
+        triangle_points,
+        axis=1,
+    )
+
+    centroid_radii = np.hypot(
+        centroids[:, 0],
+        centroids[:, 1],
+    )
+
+    if np.any(centroid_radii <= 0.0):
+        raise RuntimeError(
+            "Thread contact facet centroid lies on "
+            "the fastener axis."
+        )
+
+    radial_directions = np.zeros_like(
+        centroids
+    )
+
+    radial_directions[:, :2] = (
+        centroids[:, :2]
+        / centroid_radii[:, None]
+    )
+
+    radial_projection = np.sum(
+        normals * radial_directions,
+        axis=1,
+    )
+
+    radial_alignment = np.abs(
+        radial_projection
+    )
+
+    ambiguous = (
+        radial_alignment
+        >= THREAD_MATING_FLANK_MAX_ABS_RADIAL_NORMAL
+    ) & (
+        radial_alignment
+        < THREAD_NONMATING_CYLINDRICAL_MIN_ABS_RADIAL_NORMAL
+    )
+
+    if flank_family is None and np.any(ambiguous):
+        ambiguous_values = radial_alignment[
+            ambiguous
+        ]
+
+        raise RuntimeError(
+            "Thread contact surface contains facets "
+            "with ambiguous radial-normal alignment: "
+            f"min={float(np.min(ambiguous_values)):.12f}, "
+            f"max={float(np.max(ambiguous_values)):.12f}."
+        )
+
+    keep = (
+        radial_alignment
+        >= THREAD_MATING_FLANK_MIN_ABS_RADIAL_NORMAL
+    ) & (
+        radial_alignment
+        < THREAD_MATING_FLANK_MAX_ABS_RADIAL_NORMAL
+    )
+
+    if flank_family is not None:
+        family = flank_family.upper()
+
+        family_metric = (
+            normals[:, 2]
+            * radial_projection
+        )
+
+        if family == "POSITIVE":
+            keep = keep & (
+                family_metric > 1.0e-12
+            )
+        elif family == "NEGATIVE":
+            keep = keep & (
+                family_metric < -1.0e-12
+            )
+        else:
+            raise ValueError(
+                "Thread flank family must be "
+                "POSITIVE or NEGATIVE."
+            )
+
+    if not np.any(keep):
+        raise RuntimeError(
+            "Thread flank filtering removed the "
+            "complete contact surface."
+        )
+
+    filtered_triangles = contact_triangles[
+        keep
+    ]
+
+    removed_count = (
+        len(contact_triangles)
+        - len(filtered_triangles)
+    )
+
+    if removed_count == 0:
+        return mesh_data, 0
+
+    filtered_nodes = tuple(
+        sorted(
+            {
+                int(node_index) + 1
+                for triangle in filtered_triangles
+                for node_index in triangle
+            }
+        )
+    )
+
+    updated_triangles = dict(
+        mesh_data.boundary_triangles
+    )
+
+    updated_triangles[
+        physical_boundary
+    ] = filtered_triangles
+
+    updated_node_sets = dict(
+        mesh_data.boundary_node_sets
+    )
+
+    updated_node_sets[
+        physical_boundary
+    ] = filtered_nodes
+
+    return (
+        CompleteJointCalculixMeshData(
+            points_mm=mesh_data.points_mm,
+            component_tetrahedra=(
+                mesh_data.component_tetrahedra
+            ),
+            boundary_triangles=updated_triangles,
+            boundary_node_sets=updated_node_sets,
+        ),
+        removed_count,
+    )
 
 
 def _exclude_boundary_faces_touching_protected_nodes(
@@ -780,6 +1013,10 @@ def _render_preload_checkpoint_steps(
         "RF",
         "*NODE PRINT, NSET=HEAD_MEMBER_SUPPORT_BAND, TOTALS=ONLY",
         "RF",
+        "*CONTACT FILE, FREQUENCY=1, CONTACT ELEMENTS",
+        "CDIS, CSTR",
+        "*CONTACT PRINT, FREQUENCY=1",
+        "CDIS, CSTR, CNUM",
         "*NODE FILE",
         "U, RF",
         "*EL FILE",
@@ -839,6 +1076,9 @@ def write_complete_joint_physical_pretension_deck(
     boundary: CompleteJointBoundaryRegionDefinition,
     pretension: CompleteJointPretensionDefinition,
     input_path: Path,
+    *,
+    translation_sample_node_count: int = GUIDANCE_SAMPLE_NODE_COUNT,
+    rotation_sample_node_count: int = ROTATION_GUIDANCE_SAMPLE_NODE_COUNT,
 ) -> CompleteJointPhysicalPretensionDeckSummary:
     """Write the first nonlinear complete-joint preload model."""
 
@@ -856,17 +1096,41 @@ def write_complete_joint_physical_pretension_deck(
         contact,
     )
 
-    thread_surface_name = contact.pair("thread").master_surface
+    thread_pair = contact.pair("thread")
+
+    thread_slave_surface_name = thread_pair.slave_surface
+
+    if not thread_slave_surface_name.startswith("SURF_"):
+        raise ValueError(
+            "Thread-contact slave surface must use "
+            "the SURF_ prefix."
+        )
+
+    thread_slave_boundary_name = (
+        thread_slave_surface_name[5:]
+    )
+
+    flank_mesh_data, _ = _retain_thread_mating_flank_faces(
+        mesh_data,
+        filtered_boundary=thread_slave_boundary_name,
+    )
+
+    thread_surface_name = thread_pair.master_surface
 
     if not thread_surface_name.startswith("SURF_"):
-        raise ValueError("Thread-contact master surface must use the SURF_ prefix.")
+        raise ValueError(
+            "Thread-contact master surface must use "
+            "the SURF_ prefix."
+        )
 
     thread_boundary_name = thread_surface_name[5:]
 
-    transfer_mesh_data, _ = _exclude_boundary_faces_touching_protected_nodes(
-        mesh_data,
-        protected_boundary=pretension.section_name,
-        filtered_boundary=thread_boundary_name,
+    transfer_mesh_data, _ = (
+        _exclude_boundary_faces_touching_protected_nodes(
+            flank_mesh_data,
+            protected_boundary=pretension.section_name,
+            filtered_boundary=thread_boundary_name,
+        )
     )
 
     transfer_summary = write_complete_joint_calculix_transfer_deck(
@@ -896,6 +1160,8 @@ def write_complete_joint_physical_pretension_deck(
         boundary_regions.region("nut_load").node_ids,
         reference_node_id + 1,
         mesh_data.element_count + 1,
+        translation_sample_node_count=translation_sample_node_count,
+        rotation_sample_node_count=rotation_sample_node_count,
     )
 
     pretension_surface_name = _calculix_surface_name(pretension.section_name)

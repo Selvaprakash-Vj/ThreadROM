@@ -63,6 +63,15 @@ def _parse_arguments() -> argparse.Namespace:
         ),
     )
 
+    parser.add_argument(
+        "--geometry-step-name",
+        default="complete_joint_assembly.step",
+        help=(
+            "STEP filename inside the governed assembly geometry "
+            "directory. Defaults to the baseline geometry."
+        ),
+    )
+
     return parser.parse_args()
 
 
@@ -120,8 +129,13 @@ def main() -> None:
         / "staging"
         / assembly.assembly_id
         / "geometry"
-        / "complete_joint_assembly.step"
+        / arguments.geometry_step_name
     )
+
+    if not step_path.exists():
+        raise FileNotFoundError(
+            f"Complete-joint STEP does not exist: {step_path}"
+        )
 
     order_metadata = {
         1: ("first_order", "C3D4"),

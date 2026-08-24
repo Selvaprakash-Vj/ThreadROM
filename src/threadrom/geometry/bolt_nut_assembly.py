@@ -13,6 +13,12 @@ from threadrom.engineering.baseline_assembly import (
 from threadrom.geometry.geometry_quality import (
     GeometryQualityPolicy,
 )
+from threadrom.geometry.thread_registration import (
+    ExternalThreadRegistrationDefinition,
+    InternalThreadRegistrationDefinition,
+    ThreadPairRegistration,
+    calculate_thread_pair_registration_from_definitions,
+)
 
 
 @dataclass(frozen=True)
@@ -22,6 +28,7 @@ class BoltNutAssemblyBuild:
     bolt: cq.Shape
     positioned_nut: cq.Shape
     assembly: cq.Compound
+    registration: ThreadPairRegistration
 
 
 @dataclass(frozen=True)
@@ -58,6 +65,10 @@ def build_bolt_nut_assembly(
     bolt: cq.Shape,
     nut: cq.Shape,
     definition: BaselineAssembly,
+    external_thread: ExternalThreadRegistrationDefinition,
+    internal_thread: InternalThreadRegistrationDefinition,
+    thread_boolean_overlap_mm: float,
+    mating_phase_offset_deg: float = 0.0,
 ) -> BoltNutAssemblyBuild:
     """Position the nut and create a two-solid assembly compound."""
 
@@ -74,11 +85,21 @@ def build_bolt_nut_assembly(
             "Bolt-nut assembly requires exactly one nut solid."
         )
 
+    registration = (
+        calculate_thread_pair_registration_from_definitions(
+            nut_translation_z_mm=definition.nut_translation_z_mm,
+            external=external_thread,
+            internal=internal_thread,
+            thread_boolean_overlap_mm=thread_boolean_overlap_mm,
+        )
+    )
+
     positioned_nut = (
         nut.rotate(
             (0.0, 0.0, 0.0),
             (0.0, 0.0, 1.0),
-            definition.nut_rotation_deg,
+            registration.nut_rotation_deg
+            + mating_phase_offset_deg,
         )
         .translate(
             (
@@ -121,6 +142,7 @@ def build_bolt_nut_assembly(
         bolt=bolt,
         positioned_nut=positioned_nut,
         assembly=assembly,
+        registration=registration,
     )
 
 

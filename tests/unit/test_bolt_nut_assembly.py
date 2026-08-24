@@ -71,12 +71,16 @@ def build_test_assembly() -> tuple[
     nut_build = build_complete_nut(
         nut_blank,
         nut_thread,
+        quality_policy,
     )
 
     assembly_build = build_bolt_nut_assembly(
         bolt_build.complete_bolt,
         nut_build.complete_nut,
         assembly_definition,
+        bolt_thread,
+        nut_thread,
+        quality_policy.thread_boolean_overlap_mm,
     )
 
     return assembly_build, quality_policy

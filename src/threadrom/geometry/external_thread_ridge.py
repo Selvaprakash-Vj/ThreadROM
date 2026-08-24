@@ -1,15 +1,23 @@
-"""Additive helical ridge for the baseline external metric thread."""
+"""Additive canonical screw-motion ridge for the external metric thread."""
 
 from __future__ import annotations
 
+import math
 from dataclasses import dataclass
-from typing import cast
 
 import cadquery as cq
+import numpy as np
+from OCP.BRepOffsetAPI import BRepOffsetAPI_ThruSections  # type: ignore[import-untyped]
 
+from threadrom.geometry.canonical_screw_geometry import (
+    canonical_flank_half_width_mm,
+    screw_point_xyz,
+)
 from threadrom.geometry.helical_thread_cutter import (
     HelicalThreadCutterDefinition,
 )
+
+_SECTIONS_PER_TURN = 32
 
 
 @dataclass(frozen=True)
@@ -30,20 +38,88 @@ class HelicalThreadRidgeMeasurements:
 def ridge_profile_points(
     definition: HelicalThreadCutterDefinition,
     radial_overlap_mm: float,
+    mating_clearance_mm: float = 0.0,
 ) -> tuple[tuple[float, float], ...]:
-    """Return the additive ridge profile relative to the helix path."""
+    """Return canonical ridge points relative to the major cylinder.
+
+    The physical 60-degree flank comes from the shared canonical
+    screw-profile contract.
+
+    ``radial_overlap_mm`` extends the additive ridge inward for
+    robust fusion with the thread core without moving the physical
+    flank datum.
+
+    ``mating_clearance_mm`` shifts the complete external profile
+    radially inward while preserving its axial flank coordinates.
+    """
 
     if radial_overlap_mm <= 0.0:
-        raise ValueError("Radial overlap must be positive.")
+        raise ValueError(
+            "Radial overlap must be positive."
+        )
 
-    pitch = definition.pitch_mm
+    if mating_clearance_mm < 0.0:
+        raise ValueError(
+            "Mating clearance must be non-negative."
+        )
 
-    crest_half_width_mm = pitch / 16.0
-    base_half_width_mm = 5.0 * pitch / 12.0
+    unshifted_base_radius_mm = (
+        definition.minor_radius_mm
+        - radial_overlap_mm
+    )
 
-    inward_coordinate_mm = -(
-        definition.radial_thread_depth_mm
-        + radial_overlap_mm
+    if unshifted_base_radius_mm <= 0.0:
+        raise ValueError(
+            "Radial overlap collapses the external-thread radius."
+        )
+
+    shifted_base_radius_mm = (
+        unshifted_base_radius_mm
+        - mating_clearance_mm
+    )
+
+    shifted_crest_radius_mm = (
+        definition.major_radius_mm
+        - mating_clearance_mm
+    )
+
+    if shifted_base_radius_mm <= 0.0:
+        raise ValueError(
+            "Mating clearance collapses the external-thread radius."
+        )
+
+    if (
+        shifted_base_radius_mm
+        >= shifted_crest_radius_mm
+    ):
+        raise ValueError(
+            "External ridge base must remain inside the crest radius."
+        )
+
+    base_half_width_mm = (
+        canonical_flank_half_width_mm(
+            unshifted_base_radius_mm,
+            definition.nominal_diameter_mm,
+            definition.pitch_mm,
+        )
+    )
+
+    crest_half_width_mm = (
+        canonical_flank_half_width_mm(
+            definition.major_radius_mm,
+            definition.nominal_diameter_mm,
+            definition.pitch_mm,
+        )
+    )
+
+    inward_coordinate_mm = (
+        shifted_base_radius_mm
+        - definition.major_radius_mm
+    )
+
+    crest_coordinate_mm = (
+        shifted_crest_radius_mm
+        - definition.major_radius_mm
     )
 
     return (
@@ -52,11 +128,11 @@ def ridge_profile_points(
             -base_half_width_mm,
         ),
         (
-            0.0,
+            crest_coordinate_mm,
             -crest_half_width_mm,
         ),
         (
-            0.0,
+            crest_coordinate_mm,
             crest_half_width_mm,
         ),
         (
@@ -66,17 +142,74 @@ def ridge_profile_points(
     )
 
 
+def _screw_section_wire(
+    definition: HelicalThreadCutterDefinition,
+    profile_points: tuple[tuple[float, float], ...],
+    theta_rad: float,
+    axial_origin_mm: float,
+) -> cq.Wire:
+    """Create one rigidly screw-transformed ridge section."""
+
+    points: list[cq.Vector] = []
+
+    for radial_offset_mm, axial_offset_mm in profile_points:
+        radius_mm = (
+            definition.major_radius_mm
+            + radial_offset_mm
+        )
+
+        x_mm, y_mm, z_relative_mm = (
+            screw_point_xyz(
+                radius_mm,
+                axial_offset_mm,
+                theta_rad,
+                definition.pitch_mm,
+                definition.handedness,
+            )
+        )
+
+        points.append(
+            cq.Vector(
+                x_mm,
+                y_mm,
+                axial_origin_mm
+                + z_relative_mm,
+            )
+        )
+
+    return cq.Wire.makePolygon(
+        points,
+        close=True,
+    )
+
+
 def build_helical_thread_ridge(
     definition: HelicalThreadCutterDefinition,
-    radial_overlap_mm: float = 0.03,
+    radial_overlap_mm: float,
+    mating_clearance_mm: float = 0.0,
 ) -> cq.Shape:
-    """Sweep an additive trapezoidal thread ridge along a right-hand helix."""
+    """Build the external ridge using one canonical rigid screw motion.
 
-    pitch = definition.pitch_mm
+    Unlike the former pipe sweep, profile orientation is not controlled
+    by a radius-dependent Frenet frame. Every profile point follows the
+    same screw transformation:
 
-    base_half_width_mm = 5.0 * pitch / 12.0
+        z = a +/- P*theta/(2*pi)
 
-    path_start_z_mm = base_half_width_mm
+    with the sign determined solely by thread handedness.
+    """
+
+    profile_points = ridge_profile_points(
+        definition,
+        radial_overlap_mm,
+        mating_clearance_mm,
+    )
+
+    base_half_width_mm = max(
+        abs(point[1])
+        for point in profile_points
+        if point[0] == profile_points[0][0]
+    )
 
     path_height_mm = (
         definition.thread_length_mm
@@ -88,66 +221,117 @@ def build_helical_thread_ridge(
             "Thread length is insufficient for the ridge profile."
         )
 
-    helix = cq.Wire.makeHelix(
-        pitch=definition.pitch_mm,
-        height=path_height_mm,
-        radius=definition.major_radius_mm,
-        center=cq.Vector(
-            0.0,
-            0.0,
-            path_start_z_mm,
-        ),
-        dir=cq.Vector(0.0, 0.0, 1.0),
-        lefthand=definition.is_left_hand,
+    hand_sign = (
+        -1.0
+        if definition.is_left_hand
+        else 1.0
     )
 
-    helix_workplane = cq.Workplane(obj=helix)
+    # Preserve the canonical rigid-screw datum while keeping the
+    # finite ridge inside the governed 0..thread_length envelope.
+    #
+    # z = a + hand_sign * P*theta/(2*pi)
+    #
+    # At the first section the lowest profile point a=-base_half
+    # must lie at z=0. At the last section the highest profile point
+    # a=+base_half must lie at z=thread_length.
+    theta_start_rad = (
+        hand_sign
+        * 2.0
+        * math.pi
+        * base_half_width_mm
+        / definition.pitch_mm
+    )
 
-    profile = (
-        cq.Workplane("XZ")
-        .center(
-            definition.major_radius_mm,
-            path_start_z_mm,
+    theta_end_rad = (
+        hand_sign
+        * 2.0
+        * math.pi
+        * (
+            definition.thread_length_mm
+            - base_half_width_mm
         )
-        .polyline(
-            list(
-                ridge_profile_points(
-                    definition,
-                    radial_overlap_mm,
-                )
-            )
+        / definition.pitch_mm
+    )
+
+    turn_count = (
+        path_height_mm
+        / definition.pitch_mm
+    )
+
+    section_count = max(
+        9,
+        math.ceil(
+            turn_count
+            * _SECTIONS_PER_TURN
         )
-        .close()
+        + 1,
     )
 
-    swept = profile.sweep(
-        helix_workplane,
-        isFrenet=definition.use_frenet_frame,
-        transition="transformed",
-        combine=False,
-        clean=True,
+    builder = BRepOffsetAPI_ThruSections(
+        True,
+        False,
+        1.0e-7,
     )
 
-    ridge = cast(cq.Shape, swept.val())
+    builder.CheckCompatibility(
+        False
+    )
+
+    for theta_rad in np.linspace(
+        theta_start_rad,
+        theta_end_rad,
+        section_count,
+    ):
+        wire = _screw_section_wire(
+            definition,
+            profile_points,
+            float(theta_rad),
+            0.0,
+        )
+
+        builder.AddWire(
+            wire.wrapped
+        )
+
+    builder.Build()
+
+    if not builder.IsDone():
+        raise RuntimeError(
+            "Canonical screw-motion loft failed to build the ridge."
+        )
+
+    shape = cq.Shape.cast(
+        builder.Shape()
+    )
+
+    solids = list(
+        shape.Solids()
+    )
+
+    if len(solids) != 1:
+        raise RuntimeError(
+            "Canonical screw-motion loft did not produce "
+            "exactly one ridge solid."
+        )
+
+    ridge = solids[0]
 
     if ridge.isNull():
         raise RuntimeError(
-            "Helical sweep produced a null thread ridge."
+            "Canonical screw-motion loft produced a null ridge."
         )
 
     if ridge.Volume() <= 0.0:
         raise RuntimeError(
-            "Helical sweep produced a zero-volume thread ridge."
-        )
-
-    if len(ridge.Solids()) != 1:
-        raise RuntimeError(
-            "Helical sweep did not produce exactly one ridge solid."
+            "Canonical screw-motion loft produced "
+            "a zero-volume ridge."
         )
 
     if not ridge.isValid():
         raise RuntimeError(
-            "Helical sweep produced an invalid ridge solid."
+            "Canonical screw-motion loft produced "
+            "an invalid ridge solid."
         )
 
     return ridge
@@ -156,10 +340,12 @@ def build_helical_thread_ridge(
 def measure_helical_thread_ridge(
     ridge: cq.Shape,
 ) -> HelicalThreadRidgeMeasurements:
-    """Measure the generated additive helical ridge."""
+    """Measure the generated additive canonical ridge."""
 
     if ridge.isNull():
-        raise RuntimeError("Cannot measure a null thread ridge.")
+        raise RuntimeError(
+            "Cannot measure a null thread ridge."
+        )
 
     bounding_box = ridge.BoundingBox()
 

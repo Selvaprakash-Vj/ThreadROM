@@ -16,12 +16,11 @@ from threadrom.geometry.bolt_blank import (
 from threadrom.geometry.external_thread_ridge import (
     build_helical_thread_ridge,
 )
+from threadrom.geometry.geometry_quality import GeometryQualityPolicy
 from threadrom.geometry.helical_thread_cutter import (
     HelicalThreadCutterDefinition,
     load_helical_thread_cutter_definition,
 )
-
-RADIAL_OVERLAP_MM = 0.03
 
 
 @dataclass(frozen=True)
@@ -98,7 +97,7 @@ def load_threaded_shank_definitions(
 
 def build_thread_core(
     definition: HelicalThreadCutterDefinition,
-    radial_overlap_mm: float = RADIAL_OVERLAP_MM,
+    radial_overlap_mm: float,
 ) -> cq.Shape:
     """Build the minor-diameter core with controlled ridge overlap."""
 
@@ -132,17 +131,24 @@ def build_thread_core(
 def build_threaded_shank(
     blank_definition: BoltBlankDefinition,
     thread_definition: HelicalThreadCutterDefinition,
+    quality_policy: GeometryQualityPolicy,
+    mating_clearance_mm: float = 0.0,
 ) -> ThreadedShankBuild:
     """Fuse a minor-diameter core with an additive helical ridge."""
 
+    thread_boolean_overlap_mm = (
+        quality_policy.thread_boolean_overlap_mm
+    )
+
     core = build_thread_core(
         thread_definition,
-        RADIAL_OVERLAP_MM,
+        thread_boolean_overlap_mm,
     )
 
     ridge = build_helical_thread_ridge(
         thread_definition,
-        RADIAL_OVERLAP_MM,
+        thread_boolean_overlap_mm,
+        mating_clearance_mm,
     )
 
     threaded_shank = core.fuse(

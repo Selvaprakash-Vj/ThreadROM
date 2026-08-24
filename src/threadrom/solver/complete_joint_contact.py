@@ -489,11 +489,25 @@ def write_complete_joint_contact_smoke_deck(
         transfer,
     )
 
+    internal_surface_normals = (
+        {
+            "BOLT_PRETENSION_SECTION": (
+                0.0,
+                0.0,
+                1.0,
+            )
+        }
+        if "BOLT_PRETENSION_SECTION"
+        in transfer.required_boundary_groups
+        else None
+    )
+
     transfer_summary = (
         write_complete_joint_calculix_transfer_deck(
             mesh_data,
             transfer,
             input_path,
+            internal_surface_normals=internal_surface_normals,
         )
     )
 

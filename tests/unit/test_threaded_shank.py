@@ -9,11 +9,24 @@ from threadrom.geometry.external_thread_ridge import (
     measure_helical_thread_ridge,
     ridge_profile_points,
 )
+from threadrom.geometry.geometry_quality import load_geometry_quality_policy
+from threadrom.geometry.thread_flank_geometry import (
+    boolean_overlap_axial_extension_mm,
+)
 from threadrom.geometry.threaded_shank import (
-    RADIAL_OVERLAP_MM,
     build_threaded_shank,
     load_threaded_shank_definitions,
     measure_threaded_shank,
+)
+
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
+
+GEOMETRY_QUALITY_POLICY = load_geometry_quality_policy(
+    PROJECT_ROOT / "config" / "geometry_quality.toml"
+)
+
+THREAD_BOOLEAN_OVERLAP_MM = (
+    GEOMETRY_QUALITY_POLICY.thread_boolean_overlap_mm
 )
 
 
@@ -28,7 +41,7 @@ def test_additive_ridge_profile_is_dimensionally_consistent() -> None:
 
     points = ridge_profile_points(
         thread_definition,
-        RADIAL_OVERLAP_MM,
+        THREAD_BOOLEAN_OVERLAP_MM,
     )
 
     assert len(points) == 4
@@ -36,8 +49,16 @@ def test_additive_ridge_profile_is_dimensionally_consistent() -> None:
     base_width_mm = points[3][1] - points[0][1]
     crest_width_mm = points[2][1] - points[1][1]
 
-    assert base_width_mm == pytest.approx(
+    expected_base_width_mm = (
         5.0 * thread_definition.pitch_mm / 6.0
+        + 2.0
+        * boolean_overlap_axial_extension_mm(
+            THREAD_BOOLEAN_OVERLAP_MM
+        )
+    )
+
+    assert base_width_mm == pytest.approx(
+        expected_base_width_mm
     )
 
     assert crest_width_mm == pytest.approx(
@@ -45,6 +66,59 @@ def test_additive_ridge_profile_is_dimensionally_consistent() -> None:
     )
 
     assert base_width_mm > crest_width_mm
+
+
+def test_mating_clearance_shifts_ridge_radially_inward() -> None:
+    """Diagnostic mating clearance offsets the ridge without changing pitch."""
+
+    project_root = Path(__file__).resolve().parents[2]
+
+    _, thread_definition = load_threaded_shank_definitions(
+        project_root
+    )
+
+    baseline = ridge_profile_points(
+        thread_definition,
+        THREAD_BOOLEAN_OVERLAP_MM,
+    )
+
+    clearance_mm = 0.05
+
+    cleared = ridge_profile_points(
+        thread_definition,
+        THREAD_BOOLEAN_OVERLAP_MM,
+        clearance_mm,
+    )
+
+    for baseline_point, cleared_point in zip(
+        baseline,
+        cleared,
+        strict=True,
+    ):
+        assert cleared_point[0] == pytest.approx(
+            baseline_point[0] - clearance_mm
+        )
+        assert cleared_point[1] == pytest.approx(
+            baseline_point[1]
+        )
+
+
+def test_negative_mating_clearance_is_rejected() -> None:
+    """A diagnostic mating clearance cannot enlarge the bolt thread."""
+
+    project_root = Path(__file__).resolve().parents[2]
+
+    _, thread_definition = load_threaded_shank_definitions(
+        project_root
+    )
+
+    with pytest.raises(ValueError):
+        ridge_profile_points(
+            thread_definition,
+            THREAD_BOOLEAN_OVERLAP_MM,
+            -0.01,
+        )
+
 
 
 def test_additive_helical_ridge_is_valid() -> None:
@@ -58,7 +132,7 @@ def test_additive_helical_ridge_is_valid() -> None:
 
     ridge = build_helical_thread_ridge(
         thread_definition,
-        RADIAL_OVERLAP_MM,
+        THREAD_BOOLEAN_OVERLAP_MM,
     )
 
     measurements = measure_helical_thread_ridge(ridge)
@@ -90,6 +164,7 @@ def test_additive_threaded_shank_is_valid() -> None:
     build = build_threaded_shank(
         blank_definition,
         thread_definition,
+        GEOMETRY_QUALITY_POLICY,
     )
 
     measurements = measure_threaded_shank(

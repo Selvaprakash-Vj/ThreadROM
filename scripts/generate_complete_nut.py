@@ -12,6 +12,7 @@ from threadrom.geometry.complete_nut import (
     load_complete_nut_definitions,
     measure_complete_nut,
 )
+from threadrom.geometry.geometry_quality import load_geometry_quality_policy
 
 
 def main() -> None:
@@ -23,9 +24,14 @@ def main() -> None:
         load_complete_nut_definitions(project_root)
     )
 
+    quality_policy = load_geometry_quality_policy(
+        project_root / "config" / "geometry_quality.toml"
+    )
+
     build = build_complete_nut(
         nut_definition,
         thread_definition,
+        quality_policy,
     )
 
     measurements = measure_complete_nut(build)

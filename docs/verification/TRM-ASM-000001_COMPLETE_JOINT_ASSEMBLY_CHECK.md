@@ -46,10 +46,10 @@ round-trip gates passed.
 |---|---:|
 | Native solids | 4 |
 | Reimported solids | 4 |
-| Native component-volume sum | 16870.898533121 mm^3 |
-| Reimported component-volume sum | 16870.898168798 mm^3 |
-| Relative volume error | 2.159472139831e-08 |
-| Maximum bounds error | 5.049542082247e-07 mm |
+| Native component-volume sum | 16833.732044685 mm^3 |
+| Reimported component-volume sum | 16833.732056234 mm^3 |
+| Relative volume error | 6.860532442855e-10 |
+| Maximum bounds error | 0.000000000000e+00 mm |
 
 ## Automated parametric gate
 

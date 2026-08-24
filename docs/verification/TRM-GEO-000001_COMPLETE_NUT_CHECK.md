@@ -44,9 +44,9 @@ export and re-import round trip.
 | Minimum Z | -0.000000 mm |
 | Maximum Z | 8.000000 mm |
 | Plain-bore blank volume | 1332.786932 mm^3 |
-| Helical cutter volume | 36.200414 mm^3 |
-| Removed thread volume | 35.872602 mm^3 |
-| Complete nut volume | 1296.914330 mm^3 |
+| Helical cutter volume | 87.189263 mm^3 |
+| Removed thread volume | 85.066487 mm^3 |
+| Complete nut volume | 1247.720445 mm^3 |
 | Face count | 20 |
 | Edge count | 53 |
 
@@ -54,11 +54,11 @@ export and re-import round trip.
 
 | Quantity | Value |
 |---|---:|
-| STEP file size | 231779 bytes |
+| STEP file size | 239751 bytes |
 | Re-imported solid count | 1 |
 | Re-imported valid shape | True |
-| Re-imported volume | 1296.914371 mm^3 |
-| Relative volume error | 3.105054640e-08 |
+| Re-imported volume | 1247.720497 mm^3 |
+| Relative volume error | 4.193592492e-08 |
 | Maximum bounds error | 1.746158773e-12 mm |
 
 ## Verification gates

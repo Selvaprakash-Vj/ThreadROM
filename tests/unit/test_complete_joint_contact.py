@@ -155,14 +155,14 @@ def test_write_complete_joint_contact_smoke_deck(
     contact = load_complete_joint_contact_definition(
         PROJECT_ROOT
         / "config"
-        / "complete_joint_contact.toml"
+        / "complete_joint_pretension_contact.toml"
     )
 
     transfer = (
         load_complete_joint_calculix_transfer_definition(
             PROJECT_ROOT
             / "config"
-            / "complete_joint_calculix_transfer.toml"
+            / "complete_joint_pretension_calculix_transfer.toml"
         )
     )
 
@@ -188,8 +188,8 @@ def test_write_complete_joint_contact_smoke_deck(
         input_path,
     )
 
-    assert summary.transfer.node_count == 73360
-    assert summary.transfer.element_count == 333439
+    assert summary.transfer.node_count == 153382
+    assert summary.transfer.element_count == 651984
     assert summary.contact_pair_count == 4
     assert summary.interaction_count == 1
     assert (

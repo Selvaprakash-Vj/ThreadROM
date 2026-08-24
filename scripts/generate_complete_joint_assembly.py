@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import argparse
 from pathlib import Path
 
 from threadrom.engineering.baseline_assembly import (
@@ -33,8 +34,68 @@ from threadrom.geometry.threaded_shank import (
 )
 
 
+def _parse_arguments() -> argparse.Namespace:
+    """Parse optional diagnostic geometry arguments."""
+
+    parser = argparse.ArgumentParser(
+        description="Generate and verify the complete joint."
+    )
+
+    parser.add_argument(
+        "--mating-clearance-mm",
+        type=float,
+        default=0.0,
+        help=(
+            "Diagnostic inward radial offset applied to the "
+            "external bolt thread. Default: 0.0 mm."
+        ),
+    )
+
+    parser.add_argument(
+        "--mating-phase-offset-deg",
+        type=float,
+        default=0.0,
+        help=(
+            "Diagnostic independent nut rotation added after "
+            "canonical screw registration. Default: 0.0 deg."
+        ),
+    )
+
+    return parser.parse_args()
+
+
+def _clearance_token(clearance_mm: float) -> str:
+    """Return a stable filename token for diagnostic clearance."""
+
+    return f"{clearance_mm:.6f}".replace(".", "p")
+
+
+def _phase_token(phase_deg: float) -> str:
+    """Return a stable signed filename token for diagnostic phase."""
+
+    sign = "p" if phase_deg >= 0.0 else "m"
+    magnitude = f"{abs(phase_deg):.6f}".replace(".", "p")
+    return f"{sign}{magnitude}"
+
+
 def main() -> None:
     """Generate and verify the governed complete joint."""
+
+    arguments = _parse_arguments()
+
+    if arguments.mating_clearance_mm < 0.0:
+        raise ValueError(
+            "Mating clearance must be non-negative."
+        )
+
+    if not (
+        -180.0
+        <= arguments.mating_phase_offset_deg
+        <= 180.0
+    ):
+        raise ValueError(
+            "Mating phase offset must lie within [-180, 180] deg."
+        )
 
     project_root = Path(__file__).resolve().parents[1]
 
@@ -74,17 +135,27 @@ def main() -> None:
         bolt_blank,
         bolt_thread,
         quality_policy,
+        mating_clearance_mm=(
+            arguments.mating_clearance_mm
+        ),
     )
 
     nut_build = build_complete_nut(
         nut_blank,
         nut_thread,
+        quality_policy,
     )
 
     bolt_nut = build_bolt_nut_assembly(
         bolt_build.complete_bolt,
         nut_build.complete_nut,
         assembly_definition,
+        bolt_thread,
+        nut_thread,
+        quality_policy.thread_boolean_overlap_mm,
+        mating_phase_offset_deg=(
+            arguments.mating_phase_offset_deg
+        ),
     )
 
     joint = build_complete_joint_assembly(
@@ -110,10 +181,40 @@ def main() -> None:
         / "geometry"
     )
 
-    step_path = (
-        output_directory
-        / "complete_joint_assembly.step"
-    )
+    if arguments.mating_clearance_mm == 0.0:
+        step_name = "complete_joint_assembly.step"
+        report_suffix = "COMPLETE_JOINT_ASSEMBLY_CHECK"
+    else:
+        token = _clearance_token(
+            arguments.mating_clearance_mm
+        )
+
+        step_name = (
+            "complete_joint_assembly"
+            f"_clearance_{token}.step"
+        )
+
+        report_suffix = (
+            "COMPLETE_JOINT_ASSEMBLY"
+            f"_CLEARANCE_{token}_CHECK"
+        )
+
+    if arguments.mating_phase_offset_deg != 0.0:
+        phase_token = _phase_token(
+            arguments.mating_phase_offset_deg
+        )
+
+        step_name = (
+            step_name.removesuffix(".step")
+            + f"_phase_{phase_token}.step"
+        )
+
+        report_suffix = (
+            report_suffix
+            + f"_PHASE_{phase_token.upper()}"
+        )
+
+    step_path = output_directory / step_name
 
     _, step = export_and_reimport_complete_joint_assembly(
         joint,
@@ -158,6 +259,13 @@ round-trip gates passed.
 |---|---:|
 | Complete assembly solids | {native.assembly_solid_count} |
 | Maximum pairwise interference | {native.maximum_interference_volume_mm3:.12e} mm^3 |
+
+## Diagnostic thread fit
+
+| Quantity | Value |
+|---|---:|
+| Mating radial clearance | {arguments.mating_clearance_mm:.9f} mm |
+| Independent nut phase offset | {arguments.mating_phase_offset_deg:.9f} deg |
 
 ## Member placement
 
@@ -205,8 +313,8 @@ Classify the complete-joint contact and boundary surfaces:
         / "docs"
         / "verification"
         / (
-            f"{assembly_definition.assembly_id}"
-            "_COMPLETE_JOINT_ASSEMBLY_CHECK.md"
+            f"{assembly_definition.assembly_id}_"
+            f"{report_suffix}.md"
         )
     )
 
@@ -217,6 +325,14 @@ Classify the complete-joint contact and boundary surfaces:
     )
 
     print("Complete joint assembly geometry: VERIFIED")
+    print(
+        "Mating clearance: "
+        f"{arguments.mating_clearance_mm:.9f} mm"
+    )
+    print(
+        "Mating phase offset: "
+        f"{arguments.mating_phase_offset_deg:.9f} deg"
+    )
     print(
         f"Native solids: {step.native_solid_count}"
     )

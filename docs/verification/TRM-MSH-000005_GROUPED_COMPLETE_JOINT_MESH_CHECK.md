@@ -25,9 +25,9 @@ Meshio independently recovered the exported groups and element totals.
 
 | Quantity | Gmsh | Meshio |
 |---|---:|---:|
-| Nodes | 73360 | 73360 |
-| Tetrahedra | 333439 | 333439 |
-| Boundary triangles | 76978 | 76978 |
+| Nodes | 101493 | 101493 |
+| Tetrahedra | 509115 | 509115 |
+| Boundary triangles | 78390 | 78390 |
 
 ## Preserved physical groups
 
@@ -35,25 +35,25 @@ Meshio independently recovered the exported groups and element totals.
 |---|---:|---|---:|---:|
 | BOLT_HEAD_SIDES | 2 | triangle | 7 | 996 |
 | BOLT_HEAD_TOP | 2 | triangle | 5 | 600 |
-| BOLT_THREAD_SURFACES | 2 | triangle | 8 | 40770 |
+| BOLT_THREAD_SURFACES | 2 | triangle | 8 | 43762 |
 | BOLT_TIP | 2 | triangle | 9 | 1406 |
 | BOLT_UNDER_HEAD_BEARING | 2 | triangle | 6 | 1276 |
-| HEAD_MEMBER_CLEARANCE_HOLE | 2 | triangle | 17 | 836 |
+| HEAD_MEMBER_CLEARANCE_HOLE | 2 | triangle | 17 | 840 |
 | HEAD_MEMBER_HEAD_BEARING | 2 | triangle | 14 | 1497 |
 | HEAD_MEMBER_INTERFACE | 2 | triangle | 15 | 1497 |
-| HEAD_MEMBER_OUTER | 2 | triangle | 16 | 2220 |
-| NUT_MEMBER_CLEARANCE_HOLE | 2 | triangle | 21 | 838 |
+| HEAD_MEMBER_OUTER | 2 | triangle | 16 | 2224 |
+| NUT_MEMBER_CLEARANCE_HOLE | 2 | triangle | 21 | 844 |
 | NUT_MEMBER_INTERFACE | 2 | triangle | 18 | 1497 |
 | NUT_MEMBER_NUT_BEARING | 2 | triangle | 19 | 1497 |
 | NUT_MEMBER_OUTER | 2 | triangle | 20 | 2226 |
-| nut_internal_thread | 2 | triangle | 13 | 15717 |
-| nut_lower_bearing | 2 | triangle | 10 | 1450 |
+| nut_internal_thread | 2 | triangle | 13 | 14142 |
+| nut_lower_bearing | 2 | triangle | 10 | 1440 |
 | nut_outer_hex | 2 | triangle | 12 | 1200 |
-| nut_upper_bearing | 2 | triangle | 11 | 1455 |
-| BOLT | 3 | tetra | 1 | 199243 |
-| HEAD_SIDE_MEMBER | 3 | tetra | 3 | 28948 |
-| NUT | 3 | tetra | 2 | 76524 |
-| NUT_SIDE_MEMBER | 3 | tetra | 4 | 28724 |
+| nut_upper_bearing | 2 | triangle | 11 | 1446 |
+| BOLT | 3 | tetra | 1 | 392486 |
+| HEAD_SIDE_MEMBER | 3 | tetra | 3 | 29037 |
+| NUT | 3 | tetra | 2 | 58757 |
+| NUT_SIDE_MEMBER | 3 | tetra | 4 | 28835 |
 
 ## Verification gates
 
