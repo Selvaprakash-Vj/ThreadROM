@@ -1,0 +1,202 @@
+{
+  "envelope": {
+    "any_separation": false,
+    "cyclic_responses": [],
+    "highest_bolt_force_n": 20000.0,
+    "joint_id": "TRM-ANL-000002",
+    "lowest_member_compression_force_n": 20000.0,
+    "maximum_joint_opening_mm": 0.0,
+    "maximum_preload_n": 20000.0,
+    "minimum_preload_n": 20000.0,
+    "minimum_separation_margin_n": 21263.750927833647,
+    "nominal_preload_n": 20000.0,
+    "points": [
+      {
+        "external_load_case": "static",
+        "point_id": "minimum_preload:static",
+        "preload_case": "minimum_preload",
+        "state": {
+          "basic_load_fraction": 0.05943217319101662,
+          "bolt_additional_elongation_mm": 0.0,
+          "bolt_external_increment_n": 0.0,
+          "bolt_force_n": 20000.0,
+          "bolt_stiffness_n_per_mm": 405927.1783129164,
+          "bolt_total_elongation_mm": 0.04926992098218817,
+          "effective_load_fraction": 0.05943217319101662,
+          "external_axial_load_n": 0.0,
+          "external_load_equilibrium_error_n": 0.0,
+          "joint_id": "TRM-ANL-000002",
+          "joint_opening_mm": 0.0,
+          "load_introduction_factor": 1.0,
+          "member_compression_force_n": 20000.0,
+          "member_compression_recovery_mm": 0.0,
+          "member_shortening_mm": 0.0031132454177765453,
+          "member_stiffness_n_per_mm": 6424164.277509429,
+          "member_unloading_n": 0.0,
+          "method": "basic_spring_ratio",
+          "preload_n": 20000.0,
+          "regime": "clamped",
+          "separation_load_n": 21263.750927833647,
+          "separation_margin_n": 21263.750927833647
+        }
+      },
+      {
+        "external_load_case": "static",
+        "point_id": "nominal_preload:static",
+        "preload_case": "nominal_preload",
+        "state": {
+          "basic_load_fraction": 0.05943217319101662,
+          "bolt_additional_elongation_mm": 0.0,
+          "bolt_external_increment_n": 0.0,
+          "bolt_force_n": 20000.0,
+          "bolt_stiffness_n_per_mm": 405927.1783129164,
+          "bolt_total_elongation_mm": 0.04926992098218817,
+          "effective_load_fraction": 0.05943217319101662,
+          "external_axial_load_n": 0.0,
+          "external_load_equilibrium_error_n": 0.0,
+          "joint_id": "TRM-ANL-000002",
+          "joint_opening_mm": 0.0,
+          "load_introduction_factor": 1.0,
+          "member_compression_force_n": 20000.0,
+          "member_compression_recovery_mm": 0.0,
+          "member_shortening_mm": 0.0031132454177765453,
+          "member_stiffness_n_per_mm": 6424164.277509429,
+          "member_unloading_n": 0.0,
+          "method": "basic_spring_ratio",
+          "preload_n": 20000.0,
+          "regime": "clamped",
+          "separation_load_n": 21263.750927833647,
+          "separation_margin_n": 21263.750927833647
+        }
+      },
+      {
+        "external_load_case": "static",
+        "point_id": "maximum_preload:static",
+        "preload_case": "maximum_preload",
+        "state": {
+          "basic_load_fraction": 0.05943217319101662,
+          "bolt_additional_elongation_mm": 0.0,
+          "bolt_external_increment_n": 0.0,
+          "bolt_force_n": 20000.0,
+          "bolt_stiffness_n_per_mm": 405927.1783129164,
+          "bolt_total_elongation_mm": 0.04926992098218817,
+          "effective_load_fraction": 0.05943217319101662,
+          "external_axial_load_n": 0.0,
+          "external_load_equilibrium_error_n": 0.0,
+          "joint_id": "TRM-ANL-000002",
+          "joint_opening_mm": 0.0,
+          "load_introduction_factor": 1.0,
+          "member_compression_force_n": 20000.0,
+          "member_compression_recovery_mm": 0.0,
+          "member_shortening_mm": 0.0031132454177765453,
+          "member_stiffness_n_per_mm": 6424164.277509429,
+          "member_unloading_n": 0.0,
+          "method": "basic_spring_ratio",
+          "preload_n": 20000.0,
+          "regime": "clamped",
+          "separation_load_n": 21263.750927833647,
+          "separation_margin_n": 21263.750927833647
+        }
+      }
+    ],
+    "preload_scatter_fraction": 0.0
+  },
+  "joint_id": "TRM-ANL-000002",
+  "strength": {
+    "any_separation": false,
+    "bolt_id": "TRM-BLT-000001",
+    "bolt_material_id": "steel_8_8",
+    "cyclic_responses": [],
+    "external_root_area_mm2": 52.29231165845568,
+    "governing_point_id": "minimum_preload:static",
+    "highest_bolt_force_n": 20000.0,
+    "highest_nominal_tensile_stress_mpa": 344.8894468753172,
+    "highest_root_section_reference_stress_mpa": 382.46540200075464,
+    "joint_id": "TRM-ANL-000002",
+    "maximum_joint_opening_mm": 0.0,
+    "maximum_nominal_stress_amplitude_mpa": null,
+    "maximum_root_reference_stress_amplitude_mpa": null,
+    "method": "linear_axial_section_stress_envelope_v1",
+    "proof_utilisation": 0.5946369773712366,
+    "tensile_stress_area_mm2": 57.9895969018452,
+    "ultimate_utilisation": 0.43111180859414655,
+    "yield_utilisation": 0.5388897607426831
+  },
+  "validation": {
+    "checks": [
+      {
+        "check_id": "nonempty_envelope",
+        "description": "At least one preload and external-load combination must be evaluated.",
+        "passed": true
+      },
+      {
+        "check_id": "unique_point_ids",
+        "description": "Every joint-envelope point must have a unique identity.",
+        "passed": true
+      },
+      {
+        "check_id": "positive_stiffnesses",
+        "description": "Bolt and member stiffnesses must remain positive for every evaluated point.",
+        "passed": true
+      },
+      {
+        "check_id": "valid_load_fractions",
+        "description": "Basic and effective bolt-load fractions must lie in [0, 1).",
+        "passed": true
+      },
+      {
+        "check_id": "external_load_equilibrium",
+        "description": "Bolt tension minus member compression must equal the external separating load.",
+        "passed": true
+      },
+      {
+        "check_id": "clamped_state_consistency",
+        "description": "Clamped states must follow the two-spring load-sharing equations without joint opening.",
+        "passed": true
+      },
+      {
+        "check_id": "separated_state_consistency",
+        "description": "Separated states must carry the full external load in the bolt with zero member compression.",
+        "passed": true
+      },
+      {
+        "check_id": "envelope_extrema",
+        "description": "Reported envelope extrema must equal the extrema of all evaluated points.",
+        "passed": true
+      },
+      {
+        "check_id": "separation_flag",
+        "description": "The envelope separation flag must match the evaluated contact regimes.",
+        "passed": true
+      },
+      {
+        "check_id": "cyclic_response_identities",
+        "description": "Cyclic force means, amplitudes, ranges and member-force ordering must be consistent.",
+        "passed": true
+      },
+      {
+        "check_id": "strength_envelope_identity",
+        "description": "The strength result must use the same joint identity and governing bolt force.",
+        "passed": true
+      },
+      {
+        "check_id": "governing_point",
+        "description": "The reported governing point must exist and carry the envelope maximum bolt force.",
+        "passed": true
+      },
+      {
+        "check_id": "section_stress_identities",
+        "description": "Nominal and root-section reference stresses must equal force divided by their areas.",
+        "passed": true
+      },
+      {
+        "check_id": "reference_stress_order",
+        "description": "For positive bolt force, root-section reference stress must exceed nominal tensile-area stress.",
+        "passed": true
+      }
+    ],
+    "failed_check_ids": [],
+    "method": "piecewise_two_spring_joint_invariants_v1",
+    "passed": true
+  }
+}

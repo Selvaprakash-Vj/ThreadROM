@@ -459,3 +459,404 @@ def test_map_internal_pretension_section_faces() -> None:
     ) == mesh_data.boundary_triangle_count
 
     assert mesh_data.boundary_triangle_count == 172640
+
+
+def test_complete_joint_mesh_data_counts_mixed_c3d4_c3d6_elements() -> None:
+    """A component may contain C3D4 bulk plus C3D6 pretension wedges."""
+
+    points = np.zeros(
+        (10, 3),
+        dtype=np.float64,
+    )
+
+    tetrahedron = np.asarray(
+        [(0, 1, 2, 3)],
+        dtype=np.int64,
+    )
+
+    wedge = np.asarray(
+        [(0, 1, 2, 4, 5, 6)],
+        dtype=np.int64,
+    )
+
+    empty_tetrahedra = np.empty(
+        (0, 4),
+        dtype=np.int64,
+    )
+
+    empty_wedges = np.empty(
+        (0, 6),
+        dtype=np.int64,
+    )
+
+    mesh_data = transfer.CompleteJointCalculixMeshData(
+        points_mm=points,
+        component_tetrahedra={
+            BOLT: tetrahedron,
+            NUT: empty_tetrahedra,
+            HEAD_SIDE_MEMBER: empty_tetrahedra,
+            NUT_SIDE_MEMBER: empty_tetrahedra,
+        },
+        component_wedges={
+            BOLT: wedge,
+            NUT: empty_wedges,
+            HEAD_SIDE_MEMBER: empty_wedges,
+            NUT_SIDE_MEMBER: empty_wedges,
+        },
+        boundary_triangles={},
+        boundary_node_sets={},
+    )
+
+    assert mesh_data.element_count == 2
+    assert mesh_data.component_element_count(BOLT) == 2
+
+
+
+def test_read_grouped_complete_joint_mesh_recovers_c3d6_wedges(
+    monkeypatch,
+    tmp_path: Path,
+) -> None:
+    """Meshio wedge blocks survive beside C3D4 bulk elements."""
+
+    from dataclasses import replace
+    from types import SimpleNamespace
+
+    definition = (
+        load_complete_joint_calculix_transfer_definition(
+            PROJECT_ROOT
+            / "config"
+            / "complete_joint_calculix_transfer.toml"
+        )
+    )
+
+    definition = replace(
+        definition,
+        minimum_node_count=0,
+        minimum_element_count=0,
+    )
+
+    points = np.asarray(
+        [
+            (0.0, 0.0, 0.0),
+            (1.0, 0.0, 0.0),
+            (0.0, 1.0, 0.0),
+            (0.0, 0.0, 1.0),
+            (0.0, 0.0, 2.0),
+            (1.0, 0.0, 2.0),
+            (0.0, 1.0, 2.0),
+            (2.0, 0.0, 0.0),
+        ],
+        dtype=np.float64,
+    )
+
+    cells = []
+    physical = []
+    field_data = {}
+
+    next_tag = 1
+
+    # One C3D4 element for every governed component.
+    for component in (
+        BOLT,
+        NUT,
+        HEAD_SIDE_MEMBER,
+        NUT_SIDE_MEMBER,
+    ):
+        cells.append(
+            SimpleNamespace(
+                type="tetra",
+                data=np.asarray(
+                    [(0, 1, 2, 3)],
+                    dtype=np.int64,
+                ),
+            )
+        )
+
+        physical.append(
+            np.asarray(
+                [next_tag],
+                dtype=np.int64,
+            )
+        )
+
+        field_data[
+            definition.volume_name(component)
+        ] = np.asarray(
+            [next_tag, 3],
+            dtype=np.int64,
+        )
+
+        next_tag += 1
+
+    # One C3D6 pretension-layer element in the bolt.
+    #
+    # The wedge belongs to the SAME governed BOLT physical
+    # volume as the tetrahedral BOLT block, so it must reuse
+    # the existing BOLT physical tag.
+    bolt_physical_tag = int(
+        field_data[
+            definition.volume_name(BOLT)
+        ][0]
+    )
+
+    cells.append(
+        SimpleNamespace(
+            type="wedge",
+            data=np.asarray(
+                [(0, 1, 2, 4, 5, 6)],
+                dtype=np.int64,
+            ),
+        )
+    )
+
+    physical.append(
+        np.asarray(
+            [bolt_physical_tag],
+            dtype=np.int64,
+        )
+    )
+
+    # Preserve every governed boundary group.
+    boundary_tags = []
+
+    for physical_name in (
+        definition.required_boundary_groups
+    ):
+        field_data[physical_name] = np.asarray(
+            [next_tag, 2],
+            dtype=np.int64,
+        )
+
+        boundary_tags.append(next_tag)
+
+        next_tag += 1
+
+    cells.append(
+        SimpleNamespace(
+            type="triangle",
+            data=np.asarray(
+                [
+                    (0, 1, 2)
+                    for _ in boundary_tags
+                ],
+                dtype=np.int64,
+            ),
+        )
+    )
+
+    physical.append(
+        np.asarray(
+            boundary_tags,
+            dtype=np.int64,
+        )
+    )
+
+    fake_mesh = SimpleNamespace(
+        points=points,
+        cells=cells,
+        cell_data={
+            "gmsh:physical": physical,
+        },
+        field_data=field_data,
+    )
+
+    monkeypatch.setattr(
+        transfer.meshio,
+        "read",
+        lambda _: fake_mesh,
+    )
+
+    synthetic_path = tmp_path / "synthetic.msh"
+    synthetic_path.write_text(
+        "synthetic mesh placeholder",
+        encoding="utf-8",
+    )
+
+    mesh_data = read_grouped_complete_joint_mesh(
+        synthetic_path,
+        definition,
+    )
+
+    assert mesh_data.element_count == 5
+
+    assert (
+        mesh_data.component_tetrahedra[BOLT].shape
+        == (1, 4)
+    )
+
+    assert (
+        mesh_data.component_wedges[BOLT].shape
+        == (1, 6)
+    )
+
+    assert mesh_data.component_element_count(BOLT) == 2
+
+
+def test_write_complete_joint_transfer_deck_emits_c3d6_wedges(
+    tmp_path: Path,
+    monkeypatch,
+) -> None:
+    """Mixed bolt meshes emit both C3D4 and C3D6 element blocks."""
+
+    from dataclasses import replace
+
+    definition = (
+        load_complete_joint_calculix_transfer_definition(
+            PROJECT_ROOT
+            / "config"
+            / "complete_joint_calculix_transfer.toml"
+        )
+    )
+
+    definition = replace(
+        definition,
+        minimum_node_count=0,
+        minimum_element_count=0,
+    )
+
+    points = np.asarray(
+        [
+            (0.0, 0.0, 0.0),
+            (1.0, 0.0, 0.0),
+            (0.0, 1.0, 0.0),
+            (0.0, 0.0, 1.0),
+            (0.0, 0.0, 2.0),
+            (1.0, 0.0, 2.0),
+            (0.0, 1.0, 2.0),
+        ],
+        dtype=np.float64,
+    )
+
+    tetrahedron = np.asarray(
+        [(0, 1, 2, 3)],
+        dtype=np.int64,
+    )
+
+    wedge = np.asarray(
+        [(0, 1, 2, 4, 5, 6)],
+        dtype=np.int64,
+    )
+
+    empty_tetrahedra = np.empty(
+        (0, 4),
+        dtype=np.int64,
+    )
+
+    empty_wedges = np.empty(
+        (0, 6),
+        dtype=np.int64,
+    )
+
+    mesh_data = transfer.CompleteJointCalculixMeshData(
+        points_mm=points,
+        component_tetrahedra={
+            BOLT: tetrahedron,
+            NUT: empty_tetrahedra,
+            HEAD_SIDE_MEMBER: empty_tetrahedra,
+            NUT_SIDE_MEMBER: empty_tetrahedra,
+        },
+        component_wedges={
+            BOLT: wedge,
+            NUT: empty_wedges,
+            HEAD_SIDE_MEMBER: empty_wedges,
+            NUT_SIDE_MEMBER: empty_wedges,
+        },
+        boundary_triangles={},
+        boundary_node_sets={},
+    )
+
+    # This test is only about volume-element emission.
+    monkeypatch.setattr(
+        transfer,
+        "map_complete_joint_boundary_faces",
+        lambda *_args, **_kwargs: {},
+    )
+
+    output_path = tmp_path / "mixed.inp"
+
+    transfer.write_complete_joint_calculix_transfer_deck(
+        mesh_data,
+        definition,
+        output_path,
+    )
+
+    text = output_path.read_text(
+        encoding="utf-8",
+    )
+
+    assert "*ELEMENT, TYPE=C3D4, ELSET=BOLT" in text
+
+    assert (
+        "*ELEMENT, TYPE=C3D6, "
+        "ELSET=BOLT_PRETENSION_LAYER"
+        in text
+    )
+
+
+
+def test_map_complete_joint_boundary_faces_handles_c3d6_wedge_ids() -> None:
+    """Boundary mapping preserves IDs for C3D6 wedge faces."""
+
+    points = np.asarray(
+        [
+            (0.0, 0.0, 0.0),
+            (1.0, 0.0, 0.0),
+            (0.0, 1.0, 0.0),
+            (0.0, 0.0, 1.0),
+            (0.0, 0.0, 2.0),
+            (1.0, 0.0, 2.0),
+            (0.0, 1.0, 2.0),
+        ],
+        dtype=np.float64,
+    )
+
+    tetrahedron = np.asarray(
+        [(0, 1, 2, 3)],
+        dtype=np.int64,
+    )
+
+    wedge = np.asarray(
+        [(0, 1, 2, 4, 5, 6)],
+        dtype=np.int64,
+    )
+
+    empty_tetrahedra = np.empty(
+        (0, 4),
+        dtype=np.int64,
+    )
+
+    empty_wedges = np.empty(
+        (0, 6),
+        dtype=np.int64,
+    )
+
+    mesh_data = transfer.CompleteJointCalculixMeshData(
+        points_mm=points,
+        component_tetrahedra={
+            BOLT: tetrahedron,
+            NUT: empty_tetrahedra,
+            HEAD_SIDE_MEMBER: empty_tetrahedra,
+            NUT_SIDE_MEMBER: empty_tetrahedra,
+        },
+        component_wedges={
+            BOLT: wedge,
+            NUT: empty_wedges,
+            HEAD_SIDE_MEMBER: empty_wedges,
+            NUT_SIDE_MEMBER: empty_wedges,
+        },
+        boundary_triangles={
+            "WEDGE_TOP": np.asarray(
+                [(4, 5, 6)],
+                dtype=np.int64,
+            ),
+        },
+        boundary_node_sets={},
+    )
+
+    mapped = map_complete_joint_boundary_faces(
+        mesh_data
+    )
+
+    assert mapped["WEDGE_TOP"][0].element_id == 2
+    assert mapped["WEDGE_TOP"][0].face_label == "S2"
+

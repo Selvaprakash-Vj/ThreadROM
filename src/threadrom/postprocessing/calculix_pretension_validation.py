@@ -118,6 +118,26 @@ def validate_pretension_ramp(
         "records",
     )
 
+    accepted_step_numbers = {
+        _integer(item, "step")
+        for item in accepted_items
+    }
+
+    use_cumulative_time_ramp = len(accepted_step_numbers) > 1
+
+    final_total_time: float | None = None
+
+    if use_cumulative_time_ramp:
+        final_total_time = max(
+            _number(item, "total_time")
+            for item in accepted_items
+        )
+
+        if final_total_time <= 0.0:
+            raise ValueError(
+                "Final total time must be positive for a multi-step pretension ramp."
+            )
+
     accepted_by_key: dict[
         tuple[int, int],
         Mapping[str, object],
@@ -170,7 +190,15 @@ def validate_pretension_ramp(
             "total_time",
         )
 
-        expected_preload_n = target_preload_n * step_time
+        if use_cumulative_time_ramp:
+            assert final_total_time is not None
+            expected_preload_n = (
+                target_preload_n
+                * total_time
+                / final_total_time
+            )
+        else:
+            expected_preload_n = target_preload_n * step_time
 
         if pretension is None:
             pending_count += 1
@@ -277,7 +305,15 @@ def validate_pretension_ramp(
         "overall_status": overall_status,
         "target_preload_n": target_preload_n,
         "loading_assumption": (
-            "Unit linear force ramp: expected preload = target preload x accepted step time."
+            (
+                "Multi-step linear force ramp: expected preload = "
+                "target preload x accepted total time / final total time."
+            )
+            if use_cumulative_time_ramp
+            else (
+                "Unit linear force ramp: expected preload = "
+                "target preload x accepted step time."
+            )
         ),
         "tolerances": {
             "force_relative": (force_relative_tolerance),

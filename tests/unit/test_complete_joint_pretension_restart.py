@@ -173,3 +173,96 @@ def test_restart_bundle_refuses_overwrite(
             restart_write_frequency_steps=1,
             overlay_latest=True,
         )
+
+
+def test_prepare_completed_contact_force_diagnostic_restart_bundle(
+    tmp_path: Path,
+) -> None:
+    """A completed preload state can be interrogated non-destructively."""
+
+    from threadrom.solver.complete_joint_pretension_restart import (
+        prepare_completed_contact_force_diagnostic_restart_bundle,
+    )
+
+    original_input_path = tmp_path / "source.inp"
+    sta_path = tmp_path / "source.sta"
+    restart_output_path = tmp_path / "source.rout"
+    output_directory = tmp_path / "diagnostic_bundle"
+
+    original_input_path.write_text(
+        _full_checkpoint_deck(2),
+        encoding="utf-8",
+        newline="\n",
+    )
+
+    sta_path.write_text(
+        """
+SUMMARY OF JOB INFORMATION
+     1  1  1  4  1.0  1.0  1.0
+     2  1  1  5  2.0  1.0  1.0
+""",
+        encoding="utf-8",
+        newline="\n",
+    )
+
+    restart_bytes = b"completed-calculix-restart-state"
+    restart_output_path.write_bytes(restart_bytes)
+
+    contact_pairs = (
+        (
+            "SURF_NUT_INTERNAL_THREAD",
+            "SURF_BOLT_THREAD_SURFACES",
+        ),
+        (
+            "SURF_HEAD_MEMBER_HEAD_BEARING",
+            "SURF_BOLT_UNDER_HEAD_BEARING",
+        ),
+        (
+            "SURF_NUT_MEMBER_NUT_BEARING",
+            "SURF_NUT_LOWER_BEARING",
+        ),
+        (
+            "SURF_HEAD_MEMBER_INTERFACE",
+            "SURF_NUT_MEMBER_INTERFACE",
+        ),
+    )
+
+    summary = prepare_completed_contact_force_diagnostic_restart_bundle(
+        original_input_path=original_input_path,
+        sta_path=sta_path,
+        restart_output_path=restart_output_path,
+        output_directory=output_directory,
+        continuation_job_name="completed_cfn_diagnostic",
+        checkpoint_count=2,
+        configured_step_time=1.0,
+        contact_pairs=contact_pairs,
+    )
+
+    assert summary.completed_checkpoint == 2
+
+    continuation_text = summary.continuation_input_path.read_text(
+        encoding="utf-8"
+    )
+
+    assert continuation_text.startswith("*RESTART,READ\n")
+
+    assert "** Step 1:" not in continuation_text
+    assert "** Step 2:" not in continuation_text
+
+    assert "Post-completion contact-force diagnostic" in continuation_text
+
+    assert continuation_text.count("*STEP, NLGEOM=YES") == 1
+    assert continuation_text.count("*END STEP") == 1
+
+    for slave, master in contact_pairs:
+        assert (
+            f"*CONTACT PRINT, FREQUENCY=1, "
+            f"SLAVE={slave}, MASTER={master}"
+        ) in continuation_text
+
+    assert continuation_text.splitlines().count("CFN") == 4
+
+    assert summary.restart_input_path.read_bytes() == restart_bytes
+
+    # Source production restart must remain untouched.
+    assert restart_output_path.read_bytes() == restart_bytes

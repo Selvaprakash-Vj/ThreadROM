@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import tomllib
 from collections.abc import Callable, Mapping
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 from typing import cast
 
@@ -390,6 +390,10 @@ class CompleteJointCalculixMeshData:
         str,
         tuple[int, ...],
     ]
+    component_wedges: Mapping[
+        str,
+        NDArray[np.int64],
+    ] = field(default_factory=dict)
 
     @property
     def node_count(self) -> int:
@@ -401,12 +405,19 @@ class CompleteJointCalculixMeshData:
     def element_count(self) -> int:
         """Return the total number of tetrahedra."""
 
-        return sum(
+        tetrahedron_count = sum(
             len(tetrahedra)
             for tetrahedra in (
                 self.component_tetrahedra.values()
             )
         )
+
+        wedge_count = sum(
+            len(wedges)
+            for wedges in self.component_wedges.values()
+        )
+
+        return tetrahedron_count + wedge_count
 
     @property
     def boundary_triangle_count(self) -> int:
@@ -424,11 +435,22 @@ class CompleteJointCalculixMeshData:
         """Return tetrahedra belonging to one component."""
 
         try:
-            return len(self.component_tetrahedra[component])
+            tetrahedron_count = len(
+                self.component_tetrahedra[component]
+            )
         except KeyError as error:
             raise ValueError(
                 f"Unknown joint component: {component}"
             ) from error
+
+        wedge_count = len(
+            self.component_wedges.get(
+                component,
+                (),
+            )
+        )
+
+        return tetrahedron_count + wedge_count
 
     def boundary_triangle_count_for(
         self,
@@ -487,12 +509,18 @@ def read_grouped_complete_joint_mesh(
         list[NDArray[np.int64]],
     ] = {component: [] for component in COMPONENT_ORDER}
 
+    component_wedge_blocks: dict[
+        str,
+        list[NDArray[np.int64]],
+    ] = {component: [] for component in COMPONENT_ORDER}
+
     boundary_blocks: dict[
         str,
         list[NDArray[np.int64]],
     ] = {name: [] for name in definition.required_boundary_groups}
 
     recovered_tetrahedron_count = 0
+    recovered_wedge_count = 0
     recovered_triangle_count = 0
 
     for cell_block, block_physical_tags in zip(
@@ -540,6 +568,58 @@ def read_grouped_complete_joint_mesh(
 
                 component_blocks[component].append(connectivity[mask])
 
+        elif cell_block.type == "wedge":
+            connectivity = np.asarray(
+                cell_block.data,
+                dtype=np.int64,
+            )
+
+            if (
+                connectivity.ndim != 2
+                or connectivity.shape[1] != 6
+            ):
+                raise RuntimeError(
+                    "wedge connectivity must contain "
+                    "6 nodes per C3D6 element."
+                )
+
+            if len(connectivity) != len(physical_tags):
+                raise RuntimeError(
+                    "wedge connectivity and physical tags "
+                    "have different lengths."
+                )
+
+            recovered_wedge_count += len(connectivity)
+
+            for physical_tag in np.unique(physical_tags):
+                physical_name = field_lookup.get(
+                    (int(physical_tag), 3)
+                )
+
+                if physical_name is None:
+                    raise RuntimeError(
+                        "A wedge block belongs to an unnamed "
+                        "physical volume."
+                    )
+
+                component = volume_lookup.get(
+                    physical_name
+                )
+
+                if component is None:
+                    raise RuntimeError(
+                        "Unexpected wedge volume group: "
+                        f"{physical_name}."
+                    )
+
+                mask = physical_tags == physical_tag
+
+                component_wedge_blocks[
+                    component
+                ].append(
+                    connectivity[mask]
+                )
+
         elif cell_block.type == boundary_cell_type:
             connectivity = np.asarray(
                 cell_block.data,
@@ -586,6 +666,24 @@ def read_grouped_complete_joint_mesh(
 
         component_tetrahedra[component] = np.vstack(blocks)
 
+    component_wedges: dict[
+        str,
+        NDArray[np.int64],
+    ] = {}
+
+    for component in COMPONENT_ORDER:
+        blocks = component_wedge_blocks[component]
+
+        if blocks:
+            component_wedges[component] = np.vstack(
+                blocks
+            )
+        else:
+            component_wedges[component] = np.empty(
+                (0, 6),
+                dtype=np.int64,
+            )
+
     boundary_triangles: dict[
         str,
         NDArray[np.int64],
@@ -615,13 +713,33 @@ def read_grouped_complete_joint_mesh(
         dtype=np.float64,
     )
 
-    element_count = sum(len(tetrahedra) for tetrahedra in component_tetrahedra.values())
+    tetrahedron_count = sum(
+        len(tetrahedra)
+        for tetrahedra in component_tetrahedra.values()
+    )
 
-    boundary_triangle_count = sum(len(triangles) for triangles in boundary_triangles.values())
+    wedge_count = sum(
+        len(wedges)
+        for wedges in component_wedges.values()
+    )
 
-    if element_count != recovered_tetrahedron_count:
+    element_count = tetrahedron_count + wedge_count
+
+    boundary_triangle_count = sum(
+        len(triangles)
+        for triangles in boundary_triangles.values()
+    )
+
+    if tetrahedron_count != recovered_tetrahedron_count:
         raise RuntimeError(
-            "Component element total does not match the recovered tetrahedron total."
+            "Component tetrahedron total does not match "
+            "the recovered tetrahedron total."
+        )
+
+    if wedge_count != recovered_wedge_count:
+        raise RuntimeError(
+            "Component wedge total does not match "
+            "the recovered wedge total."
         )
 
     if boundary_triangle_count != recovered_triangle_count:
@@ -635,7 +753,29 @@ def read_grouped_complete_joint_mesh(
 
     all_tetrahedra = np.vstack(tuple(component_tetrahedra.values()))
 
-    all_triangles = np.vstack(tuple(boundary_triangles.values()))
+    all_triangles = np.vstack(
+        tuple(boundary_triangles.values())
+    )
+
+    nonempty_wedges = tuple(
+        wedges
+        for wedges in component_wedges.values()
+        if len(wedges) > 0
+    )
+
+    if nonempty_wedges:
+        all_wedges = np.vstack(nonempty_wedges)
+
+        if np.min(all_wedges) < 0:
+            raise RuntimeError(
+                "Wedge connectivity contains a negative "
+                "node index."
+            )
+
+        if np.max(all_wedges) >= len(points):
+            raise RuntimeError(
+                "Wedge connectivity references a missing node."
+            )
 
     if np.min(all_tetrahedra) < 0:
         raise RuntimeError("Tetrahedral connectivity contains a negative node index.")
@@ -654,6 +794,7 @@ def read_grouped_complete_joint_mesh(
         component_tetrahedra=component_tetrahedra,
         boundary_triangles=boundary_triangles,
         boundary_node_sets=boundary_node_sets,
+        component_wedges=component_wedges,
     )
 
 
@@ -737,6 +878,11 @@ def write_complete_joint_calculix_transfer_deck(
             component
         ]
 
+        wedges = mesh_data.component_wedges.get(
+            component,
+            (),
+        )
+
         element_set_name = _calculix_name(
             definition.volume_name(component)
         )
@@ -763,8 +909,51 @@ def write_complete_joint_calculix_transfer_deck(
 
             next_element_id += 1
 
+        if len(wedges) > 0:
+            if component != BOLT:
+                raise RuntimeError(
+                    "C3D6 pretension-layer elements are "
+                    "supported only for the bolt component."
+                )
+
+            if definition.element_type != "C3D4":
+                raise RuntimeError(
+                    "C3D6 pretension-layer elements require "
+                    "a C3D4 bulk mesh."
+                )
+
+            lines.append(
+                "*ELEMENT, TYPE=C3D6, "
+                "ELSET=BOLT_PRETENSION_LAYER"
+            )
+
+            for connectivity in wedges:
+                if len(connectivity) != 6:
+                    raise RuntimeError(
+                        "C3D6 connectivity must contain "
+                        "exactly 6 nodes."
+                    )
+
+                node_ids = tuple(
+                    int(node_index) + 1
+                    for node_index in connectivity
+                )
+
+                lines.append(
+                    f"{next_element_id}, "
+                    + ", ".join(
+                        str(node_id)
+                        for node_id in node_ids
+                    )
+                )
+
+                next_element_id += 1
+
         component_counts.append(
-            (component, len(tetrahedra))
+            (
+                component,
+                len(tetrahedra) + len(wedges),
+            )
         )
 
     for physical_name in sorted(
@@ -844,6 +1033,18 @@ def write_complete_joint_calculix_transfer_deck(
             "*SOLID SECTION, "
             f"ELSET={_calculix_name(definition.volume_name(component))}, "
             f"MATERIAL={_calculix_name(material_name)}"
+        )
+
+    if len(
+        mesh_data.component_wedges.get(
+            BOLT,
+            (),
+        )
+    ) > 0:
+        lines.append(
+            "*SOLID SECTION, "
+            "ELSET=BOLT_PRETENSION_LAYER, "
+            f"MATERIAL={_calculix_name(definition.bolt_material_name)}"
         )
 
     fixed_node_set = _calculix_name(
@@ -1036,6 +1237,115 @@ def _c3d10_faces(
                 node_7,
             ),
         ),
+    )
+
+
+def _c3d6_faces(
+    connectivity: NDArray[np.int64],
+) -> tuple[
+    tuple[str, tuple[int, ...]],
+    ...,
+]:
+    """Return CalculiX C3D6 face labels and nodes."""
+
+    if len(connectivity) != 6:
+        raise ValueError(
+            "C3D6 connectivity must contain 6 nodes."
+        )
+
+    n = tuple(
+        int(node_index)
+        for node_index in connectivity
+    )
+
+    return (
+        ("S1", (n[0], n[1], n[2])),
+        ("S2", (n[3], n[4], n[5])),
+        ("S3", (n[0], n[1], n[4], n[3])),
+        ("S4", (n[1], n[2], n[5], n[4])),
+        ("S5", (n[2], n[0], n[3], n[5])),
+    )
+
+
+def _outward_c3d6_face_normal(
+    points_mm: NDArray[np.float64],
+    connectivity: NDArray[np.int64],
+    face_nodes: tuple[int, ...],
+) -> NDArray[np.float64]:
+    """Return outward unit normal for one C3D6 face."""
+
+    if len(connectivity) != 6:
+        raise ValueError(
+            "C3D6 connectivity must contain 6 nodes."
+        )
+
+    if len(face_nodes) not in {3, 4}:
+        raise ValueError(
+            "C3D6 face must contain 3 or 4 nodes."
+        )
+
+    face_points = points_mm[
+        np.asarray(
+            face_nodes,
+            dtype=np.int64,
+        )
+    ]
+
+    element_points = points_mm[
+        np.asarray(
+            connectivity,
+            dtype=np.int64,
+        )
+    ]
+
+    face_centroid = np.mean(
+        face_points,
+        axis=0,
+    )
+
+    element_centroid = np.mean(
+        element_points,
+        axis=0,
+    )
+
+    # Newell-style polygon normal works for both the
+    # triangular and quadrilateral C3D6 faces.
+    normal = np.zeros(
+        3,
+        dtype=np.float64,
+    )
+
+    for index in range(len(face_points)):
+        current = face_points[index]
+        following = face_points[
+            (index + 1) % len(face_points)
+        ]
+
+        normal += np.cross(
+            current,
+            following,
+        )
+
+    magnitude = float(
+        np.linalg.norm(normal)
+    )
+
+    if magnitude <= 0.0:
+        raise RuntimeError(
+            "Could not determine C3D6 face normal."
+        )
+
+    # Flip if it points into the element.
+    if float(
+        np.dot(
+            normal,
+            element_centroid - face_centroid,
+        )
+    ) > 0.0:
+        normal = -normal
+
+    return normal / float(
+        np.linalg.norm(normal)
     )
 
 
@@ -1244,15 +1554,34 @@ def map_complete_joint_boundary_faces(
     next_element_id = 1
 
     for component in COMPONENT_ORDER:
-        tetrahedra = mesh_data.component_tetrahedra[component]
+        tetrahedra = mesh_data.component_tetrahedra[
+            component
+        ]
 
-        for local_index, connectivity in enumerate(tetrahedra):
+        wedges = mesh_data.component_wedges.get(
+            component,
+            (),
+        )
+
+        # Writer ordering:
+        #   1. this component's tetrahedra
+        #   2. this component's wedges
+        for local_index, connectivity in enumerate(
+            tetrahedra
+        ):
             if len(connectivity) != volume_node_count:
-                raise RuntimeError("Tetrahedral element has an unexpected node count.")
+                raise RuntimeError(
+                    "Tetrahedral element has an unexpected "
+                    "node count."
+                )
 
-            element_id = next_element_id + local_index
+            element_id = (
+                next_element_id + local_index
+            )
 
-            for face_label, face_nodes in face_builder(connectivity):
+            for face_label, face_nodes in face_builder(
+                connectivity
+            ):
                 key = tuple(sorted(face_nodes))
 
                 if key not in target_lookup:
@@ -1272,7 +1601,48 @@ def map_complete_joint_boundary_faces(
                     )
                 )
 
-        next_element_id += len(tetrahedra)
+        wedge_start_id = (
+            next_element_id + len(tetrahedra)
+        )
+
+        for local_index, connectivity in enumerate(
+            wedges
+        ):
+            if len(connectivity) != 6:
+                raise RuntimeError(
+                    "C3D6 element has an unexpected "
+                    "node count."
+                )
+
+            element_id = (
+                wedge_start_id + local_index
+            )
+
+            for face_label, face_nodes in _c3d6_faces(
+                connectivity
+            ):
+                key = tuple(sorted(face_nodes))
+
+                if key not in target_lookup:
+                    continue
+
+                candidate_lookup[key].append(
+                    (
+                        CalculixElementFace(
+                            element_id=element_id,
+                            face_label=face_label,
+                        ),
+                        _outward_c3d6_face_normal(
+                            mesh_data.points_mm,
+                            connectivity,
+                            face_nodes,
+                        ),
+                    )
+                )
+
+        next_element_id += (
+            len(tetrahedra) + len(wedges)
+        )
 
     mapped_faces: dict[
         str,

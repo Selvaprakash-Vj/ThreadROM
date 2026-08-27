@@ -1,0 +1,48 @@
+schema_version = 1
+preload_id = "TRM-PRELOAD-000001"
+
+[preload]
+target_force_n = 20000.0
+target_relative_tolerance = 0.01
+interface_spread_relative_tolerance = 0.005
+
+[thermal]
+enabled = true
+reference_temperature_c = 20.0
+expansion_coefficient_per_c = 1.2e-5
+equivalent_delta_temperature_c = -243.2744971
+
+calibration_method = "physical_cfn"
+calibration_delta_temperature_c = -145.0
+calibration_measured_clamp_force_n = 12146.47
+calibration_run_id = "CP6_THERMAL_CALIBRATION_145C"
+
+[initial_stress]
+enabled = true
+selection_mode = "automatic_free_thread_span_band"
+stress_magnitude_mode = "target_force_over_meshed_area"
+stress_direction_mode = "derived_bolt_axis"
+
+# Select an interior portion of the free bolt span derived from:
+# under-head bearing plane -> nut-thread engagement entry plane.
+# Fractions are dimensionless and remain geometry-independent.
+band_start_fraction = 0.25
+band_end_fraction = 0.75
+
+[validation]
+require_under_head_cfn = true
+require_nut_bearing_cfn = true
+require_member_interface_cfn = true
+require_thread_cfn = true
+
+require_bolt_net_tension = true
+require_member_net_compression = true
+require_thread_flank_validation = true
+require_global_equilibrium = true
+
+forbid_native_pretension_section = true
+forbid_manual_node_ids = true
+forbid_manual_element_ids = true
+forbid_contact_adjacent_initial_stress_elements = true
+[model]
+bolt_component = "bolt"

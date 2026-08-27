@@ -302,3 +302,219 @@ def _parse_displacement_record(
         d2_mm=components[1],
         d3_mm=components[2],
     )
+
+
+
+@dataclass(frozen=True)
+class FrdNodalForce:
+    """One nodal force record from an FRD dataset."""
+
+    node_id: int
+    f1_n: float
+    f2_n: float
+    f3_n: float
+
+
+@dataclass(frozen=True)
+class FrdForceDataset:
+    """One accepted-increment nodal-force dataset."""
+
+    dataset_sequence: int
+    step: int
+    increment: int
+    time: float
+    records: tuple[FrdNodalForce, ...]
+
+    def record_by_node_id(
+        self,
+        node_id: int,
+    ) -> FrdNodalForce:
+        """Return one requested nodal force record."""
+
+        for record in self.records:
+            if record.node_id == node_id:
+                return record
+
+        raise KeyError(
+            f"Node {node_id} is absent from FRD force dataset {self.dataset_sequence}."
+        )
+
+
+def read_targeted_frd_force_datasets(
+    frd_path: Path,
+    target_node_ids: Collection[int],
+) -> tuple[FrdForceDataset, ...]:
+    """Stream FORC datasets for selected nodes only."""
+
+    requested_node_ids = frozenset(target_node_ids)
+
+    if not requested_node_ids:
+        raise ValueError("At least one target FRD node ID is required.")
+
+    if any(node_id <= 0 for node_id in requested_node_ids):
+        raise ValueError("FRD target node IDs must be positive.")
+
+    datasets: list[FrdForceDataset] = []
+
+    dataset_sequence: int | None = None
+    step: int | None = None
+    increment: int | None = None
+    dataset_time: float | None = None
+
+    inside_force = False
+    records: list[FrdNodalForce] = []
+
+    with frd_path.open(
+        "r",
+        encoding="utf-8",
+        errors="replace",
+    ) as frd_file:
+        for line_number, raw_line in enumerate(
+            frd_file,
+            start=1,
+        ):
+            line = raw_line.rstrip("\r\n")
+
+            if line.startswith("    1PSTEP"):
+                (
+                    dataset_sequence,
+                    increment,
+                    step,
+                ) = _parse_pstep_line(
+                    line,
+                    line_number=line_number,
+                )
+
+                dataset_time = None
+                inside_force = False
+                records = []
+
+                continue
+
+            if line.startswith("  100CL"):
+                dataset_time = _parse_result_time(
+                    line,
+                    line_number=line_number,
+                )
+
+                continue
+
+            if line.startswith(" -4") and "FORC" in line:
+                if (
+                    dataset_sequence is None
+                    or step is None
+                    or increment is None
+                    or dataset_time is None
+                ):
+                    raise RuntimeError(
+                        "FRD force header lacks complete "
+                        f"dataset metadata at line {line_number}."
+                    )
+
+                inside_force = True
+                records = []
+
+                continue
+
+            if not inside_force:
+                continue
+
+            if line.startswith(" -3"):
+                assert dataset_sequence is not None
+                assert step is not None
+                assert increment is not None
+                assert dataset_time is not None
+
+                datasets.append(
+                    FrdForceDataset(
+                        dataset_sequence=dataset_sequence,
+                        step=step,
+                        increment=increment,
+                        time=dataset_time,
+                        records=tuple(records),
+                    )
+                )
+
+                inside_force = False
+                records = []
+
+                continue
+
+            if not line.startswith(" -1"):
+                continue
+
+            node_id = _parse_node_id(
+                line,
+                line_number=line_number,
+            )
+
+            if node_id not in requested_node_ids:
+                continue
+
+            records.append(
+                _parse_force_record(
+                    line,
+                    node_id=node_id,
+                    line_number=line_number,
+                )
+            )
+
+    if inside_force:
+        raise RuntimeError(
+            "FRD file ended before the current force dataset terminator."
+        )
+
+    if not datasets:
+        raise RuntimeError("No force datasets were found in the FRD file.")
+
+    return tuple(datasets)
+
+
+def _parse_force_record(
+    line: str,
+    *,
+    node_id: int,
+    line_number: int,
+) -> FrdNodalForce:
+    """Parse three concatenated FRD force components."""
+
+    raw_components = line[13:]
+
+    matches = tuple(_FRD_FLOAT_PATTERN.finditer(raw_components))
+
+    if len(matches) != 3:
+        raise RuntimeError(
+            "Expected three FRD force components at "
+            f"line {line_number}; found {len(matches)}."
+        )
+
+    reconstructed = "".join(
+        match.group(0)
+        for match in matches
+    )
+
+    if reconstructed != raw_components.strip():
+        raise RuntimeError(
+            f"Unparsed characters remain in FRD force line "
+            f"{line_number}: {raw_components!r}"
+        )
+
+    components = tuple(
+        float(match.group(0))
+        for match in matches
+    )
+
+    if not all(
+        math.isfinite(component)
+        for component in components
+    ):
+        raise RuntimeError(
+            f"FRD force components must be finite at line {line_number}."
+        )
+
+    return FrdNodalForce(
+        node_id=node_id,
+        f1_n=components[0],
+        f2_n=components[1],
+        f3_n=components[2],
+    )

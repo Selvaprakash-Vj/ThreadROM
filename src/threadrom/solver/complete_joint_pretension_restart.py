@@ -395,3 +395,262 @@ def prepare_pretension_restart_bundle(
         restart_size_bytes=(final_restart_input_path.stat().st_size),
         restart_sha256=_sha256_file(final_restart_input_path),
     )
+
+
+
+def prepare_completed_contact_force_diagnostic_restart_bundle(
+    *,
+    original_input_path: Path,
+    sta_path: Path,
+    restart_output_path: Path,
+    output_directory: Path,
+    continuation_job_name: str,
+    checkpoint_count: int,
+    configured_step_time: float,
+    contact_pairs: tuple[tuple[str, str], ...],
+) -> PretensionRestartBundleSummary:
+    """Prepare a non-destructive diagnostic restart from a completed preload."""
+
+    if not continuation_job_name.strip():
+        raise ValueError("Continuation job name cannot be blank.")
+
+    if not contact_pairs:
+        raise ValueError("At least one contact pair is required.")
+
+    required_paths = (
+        original_input_path,
+        sta_path,
+        restart_output_path,
+    )
+
+    for required_path in required_paths:
+        if not required_path.is_file():
+            raise FileNotFoundError(
+                f"Required restart source missing: {required_path}"
+            )
+
+    if restart_output_path.stat().st_size <= 0:
+        raise ValueError("CalculiX restart output is empty.")
+
+    records = parse_calculix_sta_records(
+        sta_path.read_text(
+            encoding="utf-8",
+            errors="replace",
+        )
+    )
+
+    completed_checkpoint = find_last_completed_checkpoint(
+        records,
+        checkpoint_count=checkpoint_count,
+        configured_step_time=configured_step_time,
+    )
+
+    if completed_checkpoint != checkpoint_count:
+        raise ValueError(
+            "Post-completion diagnostic restart requires all "
+            "governed preload checkpoints to be complete."
+        )
+
+    if output_directory.exists():
+        raise FileExistsError(
+            f"Restart bundle already exists: {output_directory}"
+        )
+
+    temporary_directory = output_directory.with_name(
+        output_directory.name + ".tmp"
+    )
+
+    if temporary_directory.exists():
+        raise FileExistsError(
+            "Temporary restart bundle already exists: "
+            f"{temporary_directory}"
+        )
+
+    diagnostic_lines = [
+        "*RESTART,READ",
+        "**",
+        "** Post-completion contact-force diagnostic",
+        "** The completed preload state is retained from restart.",
+        "** No governed preload checkpoint is replayed.",
+        "*STEP, NLGEOM=YES, INC=10",
+        "*STATIC",
+        "1.000000000000e-06, 1.000000000000e-06, "
+        "1.000000000000e-12, 1.000000000000e-06",
+    ]
+
+    for slave_surface, master_surface in contact_pairs:
+        if not slave_surface.strip() or not master_surface.strip():
+            raise ValueError(
+                "Contact diagnostic surfaces cannot be blank."
+            )
+
+        diagnostic_lines.extend(
+            (
+                (
+                    "*CONTACT PRINT, FREQUENCY=1, "
+                    f"SLAVE={slave_surface}, "
+                    f"MASTER={master_surface}"
+                ),
+                "CFN",
+            )
+        )
+
+    diagnostic_lines.extend(
+        (
+            "*NODE PRINT, NSET=BOLT_PRETENSION_REFERENCE",
+            "U, RF",
+            "*END STEP",
+        )
+    )
+
+    continuation_text = "\n".join(diagnostic_lines) + "\n"
+
+    temporary_directory.parent.mkdir(
+        parents=True,
+        exist_ok=True,
+    )
+
+    temporary_directory.mkdir()
+
+    continuation_input_path = (
+        temporary_directory
+        / f"{continuation_job_name}.inp"
+    )
+
+    restart_input_path = (
+        temporary_directory
+        / f"{continuation_job_name}.rin"
+    )
+
+    manifest_path = (
+        temporary_directory
+        / f"{continuation_job_name}.restart.json"
+    )
+
+    try:
+        continuation_input_path.write_text(
+            continuation_text,
+            encoding="utf-8",
+            newline="\n",
+        )
+
+        shutil.copy2(
+            restart_output_path,
+            restart_input_path,
+        )
+
+        restart_digest = _sha256_file(
+            restart_input_path
+        )
+
+        source_restart_digest = _sha256_file(
+            restart_output_path
+        )
+
+        if restart_digest != source_restart_digest:
+            raise RuntimeError(
+                "Copied restart input failed SHA-256 verification."
+            )
+
+        manifest = {
+            "mode": "post_completion_contact_force_diagnostic",
+            "continuation_job_name": continuation_job_name,
+            "completed_checkpoint": completed_checkpoint,
+            "next_checkpoint": checkpoint_count + 1,
+            "checkpoint_count": checkpoint_count,
+            "remaining_checkpoint_count": 0,
+            "configured_step_time": configured_step_time,
+            "diagnostic_step_time": 1.0e-6,
+            "contact_pairs": [
+                {
+                    "slave": slave,
+                    "master": master,
+                }
+                for slave, master in contact_pairs
+            ],
+            "source": {
+                "input_path": str(
+                    original_input_path.resolve()
+                ),
+                "sta_path": str(
+                    sta_path.resolve()
+                ),
+                "restart_output_path": str(
+                    restart_output_path.resolve()
+                ),
+                "restart_output_size_bytes": (
+                    restart_output_path.stat().st_size
+                ),
+                "restart_output_sha256": (
+                    source_restart_digest
+                ),
+            },
+            "bundle": {
+                "input_name": (
+                    continuation_input_path.name
+                ),
+                "restart_input_name": (
+                    restart_input_path.name
+                ),
+                "restart_input_size_bytes": (
+                    restart_input_path.stat().st_size
+                ),
+                "restart_input_sha256": (
+                    restart_digest
+                ),
+            },
+        }
+
+        manifest_path.write_text(
+            json.dumps(
+                manifest,
+                indent=2,
+            )
+            + "\n",
+            encoding="utf-8",
+            newline="\n",
+        )
+
+        temporary_directory.replace(
+            output_directory
+        )
+
+    except Exception:
+        shutil.rmtree(
+            temporary_directory,
+            ignore_errors=True,
+        )
+        raise
+
+    final_input_path = (
+        output_directory
+        / continuation_input_path.name
+    )
+
+    final_restart_input_path = (
+        output_directory
+        / restart_input_path.name
+    )
+
+    final_manifest_path = (
+        output_directory
+        / manifest_path.name
+    )
+
+    return PretensionRestartBundleSummary(
+        completed_checkpoint=completed_checkpoint,
+        next_checkpoint=checkpoint_count + 1,
+        checkpoint_count=checkpoint_count,
+        remaining_checkpoint_count=0,
+        continuation_job_name=continuation_job_name,
+        output_directory=output_directory,
+        continuation_input_path=final_input_path,
+        restart_input_path=final_restart_input_path,
+        manifest_path=final_manifest_path,
+        restart_size_bytes=(
+            final_restart_input_path.stat().st_size
+        ),
+        restart_sha256=_sha256_file(
+            final_restart_input_path
+        ),
+    )

@@ -116,3 +116,61 @@ def test_validation_json_round_trip(
 
     assert saved == payload
     assert saved["overall_status"] == "pass"
+
+
+def test_multistep_governed_ramp_uses_cumulative_time() -> None:
+    progress = {
+        "accepted_increments": [
+            {
+                "step": 1,
+                "increment": 1,
+                "step_time": 1.0,
+                "total_time": 1.0,
+            },
+            {
+                "step": 2,
+                "increment": 1,
+                "step_time": 1.0,
+                "total_time": 2.0,
+            },
+            {
+                "step": 3,
+                "increment": 1,
+                "step_time": 1.0,
+                "total_time": 3.0,
+            },
+        ]
+    }
+
+    pretension = {
+        "records": [
+            {
+                "step": 1,
+                "increment": 1,
+                "time": 1.0,
+                "preload_force_n": 1000.0,
+            },
+            {
+                "step": 2,
+                "increment": 1,
+                "time": 2.0,
+                "preload_force_n": 2000.0,
+            },
+            {
+                "step": 3,
+                "increment": 1,
+                "time": 3.0,
+                "preload_force_n": 3000.0,
+            },
+        ]
+    }
+
+    payload = validate_pretension_ramp(
+        progress,
+        pretension,
+        target_preload_n=3000.0,
+    )
+
+    assert payload["overall_status"] == "pass"
+    assert payload["passed_count"] == 3
+    assert payload["failed_count"] == 0

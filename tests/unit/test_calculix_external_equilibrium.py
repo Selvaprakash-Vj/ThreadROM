@@ -138,3 +138,65 @@ def test_external_equilibrium_fails_large_reaction() -> None:
     assert isinstance(validations, list)
 
     assert validations[0]["maximum_absolute_component_n"] == pytest.approx(0.25)
+
+
+def test_multistep_external_equilibrium_uses_total_time() -> None:
+    progress = {
+        "accepted_increments": [
+            {
+                "step": 1,
+                "increment": 1,
+                "step_time": 1.0,
+                "total_time": 1.0,
+            },
+            {
+                "step": 2,
+                "increment": 1,
+                "step_time": 1.0,
+                "total_time": 2.0,
+            },
+            {
+                "step": 3,
+                "increment": 1,
+                "step_time": 1.0,
+                "total_time": 3.0,
+            },
+        ]
+    }
+
+    total_force = {
+        "records": [
+            {
+                "step": None,
+                "increment": 1,
+                "set_name": "SUPPORT",
+                "time": 1.0,
+                "force_components_n": [0.0, 0.0, 0.0],
+            },
+            {
+                "step": None,
+                "increment": 1,
+                "set_name": "SUPPORT",
+                "time": 2.0,
+                "force_components_n": [0.0, 0.0, 0.0],
+            },
+            {
+                "step": None,
+                "increment": 1,
+                "set_name": "SUPPORT",
+                "time": 3.0,
+                "force_components_n": [0.0, 0.0, 0.0],
+            },
+        ]
+    }
+
+    payload = validate_external_equilibrium(
+        progress,
+        total_force,
+        support_set_name="SUPPORT",
+    )
+
+    assert payload["overall_status"] == "pass"
+    assert payload["passed_count"] == 3
+    assert payload["failed_count"] == 0
+    assert payload["pending_count"] == 0

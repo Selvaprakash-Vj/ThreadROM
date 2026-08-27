@@ -8,9 +8,131 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from threadrom.engineering.analytical_fem_verification import (
+    AcceptanceMetric,
     AnalyticalFemVerificationDefinition,
     EvidenceStatus,
+    VerificationTargetDefinition,
 )
+
+
+@dataclass(frozen=True)
+class NumericalComparisonEvaluation:
+    """Numerical analytical-to-FEM comparison result."""
+
+    analytical_value: float
+    fem_value: float
+    absolute_error: float
+    relative_error: float
+    passed: bool
+
+
+def evaluate_numerical_comparison(
+    *,
+    analytical_value: float,
+    fem_value: float,
+    acceptance_metric: AcceptanceMetric,
+    relative_tolerance: float | None,
+    absolute_tolerance: float | None,
+) -> NumericalComparisonEvaluation:
+    """Evaluate one numerical FEM result against an analytical target."""
+
+    absolute_error = abs(fem_value - analytical_value)
+
+    if analytical_value == 0.0:
+        relative_error = float("inf")
+    else:
+        relative_error = absolute_error / abs(analytical_value)
+
+    if acceptance_metric is AcceptanceMetric.RELATIVE:
+        if relative_tolerance is None:
+            raise ValueError("Relative acceptance requires a relative tolerance.")
+        passed = relative_error <= relative_tolerance
+
+    elif acceptance_metric is AcceptanceMetric.ABSOLUTE:
+        if absolute_tolerance is None:
+            raise ValueError("Absolute acceptance requires an absolute tolerance.")
+        passed = absolute_error <= absolute_tolerance
+
+    elif acceptance_metric is AcceptanceMetric.RELATIVE_OR_ABSOLUTE:
+        relative_passed = (
+            relative_tolerance is not None
+            and relative_error <= relative_tolerance
+        )
+        absolute_passed = (
+            absolute_tolerance is not None
+            and absolute_error <= absolute_tolerance
+        )
+
+        if relative_tolerance is None and absolute_tolerance is None:
+            raise ValueError(
+                "Relative-or-absolute acceptance requires at least one tolerance."
+            )
+
+        passed = relative_passed or absolute_passed
+
+    else:
+        raise ValueError(
+            f"Numerical comparison metric not yet implemented: {acceptance_metric.value}"
+        )
+
+    return NumericalComparisonEvaluation(
+        analytical_value=analytical_value,
+        fem_value=fem_value,
+        absolute_error=absolute_error,
+        relative_error=relative_error,
+        passed=passed,
+    )
+
+
+@dataclass(frozen=True)
+class VerificationTargetEvaluation:
+    """Evidence-backed numerical evaluation of one governed target."""
+
+    target_id: str
+    analytical_value: float
+    fem_value: float
+    absolute_error: float
+    relative_error: float
+    passed: bool
+    evidence_status: EvidenceStatus
+    evidence_artifact: Path
+
+
+def evaluate_verification_target(
+    *,
+    target: VerificationTargetDefinition,
+    fem_value: float,
+    evidence_artifact: Path,
+) -> VerificationTargetEvaluation:
+    """Evaluate one governed target from an extracted FEM value."""
+
+    if target.analytical_value is None:
+        raise ValueError(
+            f"Verification target '{target.target_id}' has no analytical value."
+        )
+
+    comparison = evaluate_numerical_comparison(
+        analytical_value=target.analytical_value,
+        fem_value=fem_value,
+        acceptance_metric=target.acceptance_metric,
+        relative_tolerance=target.relative_tolerance,
+        absolute_tolerance=target.absolute_tolerance,
+    )
+
+    return VerificationTargetEvaluation(
+        target_id=target.target_id,
+        analytical_value=comparison.analytical_value,
+        fem_value=comparison.fem_value,
+        absolute_error=comparison.absolute_error,
+        relative_error=comparison.relative_error,
+        passed=comparison.passed,
+        evidence_status=(
+            EvidenceStatus.PASS
+            if comparison.passed
+            else EvidenceStatus.FAIL
+        ),
+        evidence_artifact=evidence_artifact,
+    )
 
 
 @dataclass(frozen=True)

@@ -6,6 +6,7 @@ import pytest
 
 from threadrom.postprocessing.calculix_frd_displacement import (
     read_targeted_frd_displacement_datasets,
+    read_targeted_frd_force_datasets,
 )
 
 
@@ -186,3 +187,51 @@ def test_malformed_component_record_is_rejected(
                 1,
             },
         )
+
+
+
+def test_reads_targeted_force_records(
+    tmp_path: Path,
+) -> None:
+    """Targeted FRD force extraction preserves nodal F1/F2/F3."""
+
+    content = """    1PSTEP                         4           1           1
+  100CL  101 1.000000000           3                     0    1           1
+ -4  FORC        4    1
+ -5  F1          1    2    1    0
+ -5  F2          1    2    2    0
+ -5  F3          1    2    3    0
+ -5  ALL         1    2    0    0    1ALL
+ -1    1533841.25000E+000-2.50000E+0003.75000E-001
+ -1    153385-4.00000E-0015.00000E-001-6.00000E-001
+ -3
+"""
+
+    frd_path = tmp_path / "force_result.frd"
+
+    frd_path.write_text(
+        content,
+        encoding="utf-8",
+    )
+
+    datasets = read_targeted_frd_force_datasets(
+        frd_path,
+        target_node_ids={
+            153384,
+        },
+    )
+
+    assert len(datasets) == 1
+
+    dataset = datasets[0]
+
+    assert dataset.dataset_sequence == 4
+    assert dataset.step == 1
+    assert dataset.increment == 1
+    assert dataset.time == pytest.approx(1.0)
+
+    record = dataset.record_by_node_id(153384)
+
+    assert record.f1_n == pytest.approx(1.25)
+    assert record.f2_n == pytest.approx(-2.5)
+    assert record.f3_n == pytest.approx(0.375)

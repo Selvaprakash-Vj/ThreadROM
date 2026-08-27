@@ -1,0 +1,261 @@
+{
+  "distribution": {
+    "active_turn_count": 6,
+    "boundary_condition": "nut_fixed_at_bearing_face__bolt_force_at_bearing_face__both_bars_free_at_engagement_end",
+    "engagement": {
+      "active_turn_count": 6,
+      "axial_origin": "nut_bearing_face",
+      "complete_turn_count": 5,
+      "joint_id": "TRM-ANL-000002",
+      "method": "axial_pitch_cells_v1",
+      "nominal_engaged_pitch_count": 5.333333333333333,
+      "numbering_direction": "bearing_face_to_nut_free_end",
+      "partial_turn_fraction": 0.33333333333333304,
+      "pitch_mm": 1.5,
+      "total_engagement_length_mm": 8.0,
+      "turns": [
+        {
+          "axial_centroid_mm": 0.75,
+          "axial_end_mm": 1.5,
+          "axial_start_mm": 0.0,
+          "engagement_fraction": 1.0,
+          "engagement_length_mm": 1.5,
+          "is_partial": false,
+          "turn_number": 1
+        },
+        {
+          "axial_centroid_mm": 2.25,
+          "axial_end_mm": 3.0,
+          "axial_start_mm": 1.5,
+          "engagement_fraction": 1.0,
+          "engagement_length_mm": 1.5,
+          "is_partial": false,
+          "turn_number": 2
+        },
+        {
+          "axial_centroid_mm": 3.75,
+          "axial_end_mm": 4.5,
+          "axial_start_mm": 3.0,
+          "engagement_fraction": 1.0,
+          "engagement_length_mm": 1.5,
+          "is_partial": false,
+          "turn_number": 3
+        },
+        {
+          "axial_centroid_mm": 5.25,
+          "axial_end_mm": 6.0,
+          "axial_start_mm": 4.5,
+          "engagement_fraction": 1.0,
+          "engagement_length_mm": 1.5,
+          "is_partial": false,
+          "turn_number": 4
+        },
+        {
+          "axial_centroid_mm": 6.75,
+          "axial_end_mm": 7.5,
+          "axial_start_mm": 6.0,
+          "engagement_fraction": 1.0,
+          "engagement_length_mm": 1.5,
+          "is_partial": false,
+          "turn_number": 5
+        },
+        {
+          "axial_centroid_mm": 7.75,
+          "axial_end_mm": 8.0,
+          "axial_start_mm": 7.5,
+          "engagement_fraction": 0.3333333333333333,
+          "engagement_length_mm": 0.5,
+          "is_partial": true,
+          "turn_number": 6
+        }
+      ]
+    },
+    "final_remaining_bolt_force_n": 1.127773430198431e-10,
+    "first_turn_load_n": 4289.419468101657,
+    "first_turn_load_share": 0.21447097340508284,
+    "global_equilibrium_error_n": 9.458744898438454e-11,
+    "joint_id": "TRM-ANL-000002",
+    "load_conservation_error_n": -1.1641532182693481e-10,
+    "maximum_loaded_turn_number": 1,
+    "maximum_turn_load_n": 4289.419468101657,
+    "maximum_turn_load_share": 0.21447097340508284,
+    "method": "two_axial_bars_centroid_springs_v1",
+    "nut_bearing_reaction_n": -19999.999999999905,
+    "stiffness": {
+      "bolt_axial_area_mm2": 52.29231165845568,
+      "bolt_axial_compliance_per_force_inv_n": 9.106319095256063e-08,
+      "bolt_distributed_thread_stiffness_n_per_mm2": 156109.2633558889,
+      "bolt_material_id": "steel_8_8",
+      "bolt_thread_compliance_coefficient_mm2_per_n": 3.3839501615709633e-07,
+      "characteristic_transfer_length_mm": 10.177383968752961,
+      "combined_distributed_thread_stiffness_n_per_mm2": 78054.63167794445,
+      "effective_nut_outer_diameter_mm": 16.0,
+      "helix_angle_deg": 3.0281505696310247,
+      "internal_minor_diameter_mm": 8.376202367904177,
+      "joint_id": "TRM-ANL-000002",
+      "method": "iso_triangle_elastic_transfer_stiffness_v1",
+      "nut_axial_area_mm2": 145.9577929859,
+      "nut_axial_compliance_per_force_inv_n": 3.262521763647644e-08,
+      "nut_distributed_thread_stiffness_n_per_mm2": 156109.2633558889,
+      "nut_material_id": "steel_8",
+      "nut_thread_compliance_coefficient_mm2_per_n": 3.3839501615709633e-07,
+      "pitch_diameter_mm": 9.025721420742506,
+      "pitch_mm": 1.5,
+      "projection_convention": "distributed_axial_stiffness_equals_helix_stiffness_times_sin_beta",
+      "transfer_parameter_per_mm": 0.09825707697284908
+    },
+    "total_transferred_load_n": 20000.0,
+    "turn_loads": [
+      {
+        "axial_centroid_mm": 0.75,
+        "cumulative_load_n": 4289.419468101657,
+        "cumulative_load_share": 0.21447097340508284,
+        "engagement_fraction": 1.0,
+        "load_n": 4289.419468101657,
+        "load_share": 0.21447097340508284,
+        "relative_displacement_mm": 0.036636044745342974,
+        "remaining_bolt_force_n": 15710.580531898344,
+        "spring_stiffness_n_per_mm": 117081.94751691667,
+        "turn_number": 1
+      },
+      {
+        "axial_centroid_mm": 2.25,
+        "cumulative_load_n": 8237.565541975659,
+        "cumulative_load_share": 0.41187827709878294,
+        "engagement_fraction": 1.0,
+        "load_n": 3948.1460738740006,
+        "load_share": 0.19740730369370002,
+        "relative_displacement_mm": 0.03372121968934237,
+        "remaining_bolt_force_n": 11762.434458024341,
+        "spring_stiffness_n_per_mm": 117081.94751691667,
+        "turn_number": 2
+      },
+      {
+        "axial_centroid_mm": 3.75,
+        "cumulative_load_n": 11930.201902270332,
+        "cumulative_load_share": 0.5965100951135166,
+        "engagement_fraction": 1.0,
+        "load_n": 3692.6363602946726,
+        "load_share": 0.18463181801473363,
+        "relative_displacement_mm": 0.03153890449047356,
+        "remaining_bolt_force_n": 8069.798097729668,
+        "spring_stiffness_n_per_mm": 117081.94751691667,
+        "turn_number": 3
+      },
+      {
+        "axial_centroid_mm": 5.25,
+        "cumulative_load_n": 15447.54191486147,
+        "cumulative_load_share": 0.7723770957430734,
+        "engagement_fraction": 1.0,
+        "load_n": 3517.340012591137,
+        "load_share": 0.17586700062955685,
+        "relative_displacement_mm": 0.030041693763959057,
+        "remaining_bolt_force_n": 4552.458085138531,
+        "spring_stiffness_n_per_mm": 117081.94751691667,
+        "turn_number": 4
+      },
+      {
+        "axial_centroid_mm": 6.75,
+        "cumulative_load_n": 18865.991067268296,
+        "cumulative_load_share": 0.9432995533634149,
+        "engagement_fraction": 1.0,
+        "load_n": 3418.4491524068258,
+        "load_share": 0.17092245762034128,
+        "relative_displacement_mm": 0.029197064320380463,
+        "remaining_bolt_force_n": 1134.0089327317037,
+        "spring_stiffness_n_per_mm": 117081.94751691667,
+        "turn_number": 5
+      },
+      {
+        "axial_centroid_mm": 7.75,
+        "cumulative_load_n": 19999.999999999887,
+        "cumulative_load_share": 0.9999999999999943,
+        "engagement_fraction": 0.3333333333333333,
+        "load_n": 1134.00893273159,
+        "load_share": 0.0567004466365795,
+        "relative_displacement_mm": 0.029056800560165144,
+        "remaining_bolt_force_n": 1.127773430198431e-10,
+        "spring_stiffness_n_per_mm": 39027.31583897222,
+        "turn_number": 6
+      }
+    ]
+  },
+  "joint_id": "TRM-ANL-000002",
+  "validation": {
+    "checks": [
+      {
+        "check_id": "nonempty_turn_distribution",
+        "description": "At least one engaged thread turn must carry the transferred load.",
+        "passed": true
+      },
+      {
+        "check_id": "turn_count_consistency",
+        "description": "Reported active-turn counts must match the distribution and engagement records.",
+        "passed": true
+      },
+      {
+        "check_id": "turn_numbering_consistency",
+        "description": "Thread turns must be numbered consecutively from the nut bearing face.",
+        "passed": true
+      },
+      {
+        "check_id": "positive_thread_stiffness",
+        "description": "All thread springs and governing transfer stiffnesses must be finite and positive.",
+        "passed": true
+      },
+      {
+        "check_id": "nonnegative_turn_loads",
+        "description": "Every active thread turn must carry a finite nonnegative axial load.",
+        "passed": true
+      },
+      {
+        "check_id": "turn_load_share_identity",
+        "description": "Each reported load share must equal its turn load divided by total transferred load.",
+        "passed": true
+      },
+      {
+        "check_id": "cumulative_force_identities",
+        "description": "Cumulative load, cumulative share and remaining bolt force must be internally consistent.",
+        "passed": true
+      },
+      {
+        "check_id": "monotonic_cumulative_transfer",
+        "description": "Cumulative transferred load must not decrease and remaining bolt force must not increase.",
+        "passed": true
+      },
+      {
+        "check_id": "load_conservation",
+        "description": "Thread-turn loads and load shares must conserve the full transferred axial load.",
+        "passed": true
+      },
+      {
+        "check_id": "bearing_reaction_equilibrium",
+        "description": "The nut-bearing reaction must balance the applied bolt load.",
+        "passed": true
+      },
+      {
+        "check_id": "first_turn_identity",
+        "description": "Reported first-turn force and share must match the first turn in the distribution.",
+        "passed": true
+      },
+      {
+        "check_id": "maximum_turn_identity",
+        "description": "Reported maximum-loaded turn quantities must match the governing turn record.",
+        "passed": true
+      },
+      {
+        "check_id": "engagement_fraction_consistency",
+        "description": "Turn engagement fractions must be valid and sum to the nominal engaged-pitch count.",
+        "passed": true
+      },
+      {
+        "check_id": "transfer_length_identity",
+        "description": "The characteristic transfer length must be the reciprocal of the transfer parameter.",
+        "passed": true
+      }
+    ],
+    "failed_check_ids": [],
+    "method": "discrete_thread_spring_invariants_v1",
+    "passed": true
+  }
+}

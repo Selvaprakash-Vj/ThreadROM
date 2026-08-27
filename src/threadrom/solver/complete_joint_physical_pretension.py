@@ -1013,10 +1013,50 @@ def _render_preload_checkpoint_steps(
         "RF",
         "*NODE PRINT, NSET=HEAD_MEMBER_SUPPORT_BAND, TOTALS=ONLY",
         "RF",
+        f"*NODE PRINT, NSET={BOLT_HEAD_GUIDANCE_REFERENCE}, TOTALS=ONLY",
+        "RF",
+        f"*NODE PRINT, NSET={NUT_TRANSLATION_GUIDANCE_REFERENCE}, TOTALS=ONLY",
+        "RF",
+        f"*NODE PRINT, NSET={NUT_MEMBER_GUIDANCE_REFERENCE}, TOTALS=ONLY",
+        "RF",
+        f"*NODE PRINT, NSET={NUT_ROTATION_GUIDANCE_REFERENCE}, TOTALS=ONLY",
+        "RF",
+        f"*NODE PRINT, NSET={BOLT_HEAD_ROTATION_X_REFERENCE}, TOTALS=ONLY",
+        "RF",
+        f"*NODE PRINT, NSET={BOLT_HEAD_ROTATION_Y_REFERENCE}, TOTALS=ONLY",
+        "RF",
+        f"*NODE PRINT, NSET={NUT_ROTATION_X_REFERENCE}, TOTALS=ONLY",
+        "RF",
+        f"*NODE PRINT, NSET={NUT_ROTATION_Y_REFERENCE}, TOTALS=ONLY",
+        "RF",
         "*CONTACT FILE, FREQUENCY=1, CONTACT ELEMENTS",
         "CDIS, CSTR",
         "*CONTACT PRINT, FREQUENCY=1",
         "CDIS, CSTR, CNUM",
+        (
+            "*CONTACT PRINT, FREQUENCY=1, "
+            "SLAVE=SURF_NUT_INTERNAL_THREAD, "
+            "MASTER=SURF_BOLT_THREAD_SURFACES"
+        ),
+        "CFN",
+        (
+            "*CONTACT PRINT, FREQUENCY=1, "
+            "SLAVE=SURF_HEAD_MEMBER_HEAD_BEARING, "
+            "MASTER=SURF_BOLT_UNDER_HEAD_BEARING"
+        ),
+        "CFN",
+        (
+            "*CONTACT PRINT, FREQUENCY=1, "
+            "SLAVE=SURF_NUT_MEMBER_NUT_BEARING, "
+            "MASTER=SURF_NUT_LOWER_BEARING"
+        ),
+        "CFN",
+        (
+            "*CONTACT PRINT, FREQUENCY=1, "
+            "SLAVE=SURF_HEAD_MEMBER_INTERFACE, "
+            "MASTER=SURF_NUT_MEMBER_INTERFACE"
+        ),
+        "CFN",
         "*NODE FILE",
         "U, RF",
         "*EL FILE",

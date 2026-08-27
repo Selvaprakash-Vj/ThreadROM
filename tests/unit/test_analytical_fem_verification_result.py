@@ -160,3 +160,127 @@ def test_artifacts_are_written(
     assert '"simulation_id": "TRM-SIM-000010"' in json_text
     assert "# TRM-VER-000001" in report_text
     assert "Overall status | INCONCLUSIVE" in report_text
+
+
+def test_numerical_relative_comparison_passes_within_tolerance() -> None:
+    """A FEM value within the governed relative tolerance passes."""
+
+    from threadrom.engineering.analytical_fem_verification import (
+        AcceptanceMetric,
+    )
+    from threadrom.engineering.analytical_fem_verification_result import (
+        evaluate_numerical_comparison,
+    )
+
+    evaluation = evaluate_numerical_comparison(
+        analytical_value=100.0,
+        fem_value=105.0,
+        acceptance_metric=AcceptanceMetric.RELATIVE,
+        relative_tolerance=0.10,
+        absolute_tolerance=None,
+    )
+
+    assert evaluation.analytical_value == 100.0
+    assert evaluation.fem_value == 105.0
+    assert abs(evaluation.absolute_error - 5.0) < 1.0e-12
+    assert abs(evaluation.relative_error - 0.05) < 1.0e-12
+    assert evaluation.passed is True
+
+
+def test_numerical_absolute_comparison_passes_within_tolerance() -> None:
+    """A FEM value within the governed absolute tolerance passes."""
+
+    from threadrom.engineering.analytical_fem_verification import (
+        AcceptanceMetric,
+    )
+    from threadrom.engineering.analytical_fem_verification_result import (
+        evaluate_numerical_comparison,
+    )
+
+    evaluation = evaluate_numerical_comparison(
+        analytical_value=0.0,
+        fem_value=5.0e-4,
+        acceptance_metric=AcceptanceMetric.ABSOLUTE,
+        relative_tolerance=None,
+        absolute_tolerance=1.0e-3,
+    )
+
+    assert evaluation.analytical_value == 0.0
+    assert evaluation.fem_value == 5.0e-4
+    assert abs(evaluation.absolute_error - 5.0e-4) < 1.0e-12
+    assert evaluation.relative_error == float("inf")
+    assert evaluation.passed is True
+
+
+def test_numerical_relative_or_absolute_passes_if_either_limit_passes() -> None:
+    """Relative-or-absolute acceptance passes when either criterion passes."""
+
+    from threadrom.engineering.analytical_fem_verification import (
+        AcceptanceMetric,
+    )
+    from threadrom.engineering.analytical_fem_verification_result import (
+        evaluate_numerical_comparison,
+    )
+
+    evaluation = evaluate_numerical_comparison(
+        analytical_value=1000.0,
+        fem_value=1000.5,
+        acceptance_metric=AcceptanceMetric.RELATIVE_OR_ABSOLUTE,
+        relative_tolerance=1.0e-6,
+        absolute_tolerance=1.0,
+    )
+
+    assert abs(evaluation.absolute_error - 0.5) < 1.0e-12
+    assert abs(evaluation.relative_error - 5.0e-4) < 1.0e-12
+    assert evaluation.passed is True
+
+
+def test_numerical_relative_comparison_fails_outside_tolerance() -> None:
+    """A FEM value outside the governed relative tolerance fails."""
+
+    from threadrom.engineering.analytical_fem_verification import (
+        AcceptanceMetric,
+    )
+    from threadrom.engineering.analytical_fem_verification_result import (
+        evaluate_numerical_comparison,
+    )
+
+    evaluation = evaluate_numerical_comparison(
+        analytical_value=100.0,
+        fem_value=125.0,
+        acceptance_metric=AcceptanceMetric.RELATIVE,
+        relative_tolerance=0.10,
+        absolute_tolerance=None,
+    )
+
+    assert evaluation.absolute_error == 25.0
+    assert evaluation.relative_error == 0.25
+    assert evaluation.passed is False
+
+
+def test_target_evaluation_combines_contract_with_fem_value() -> None:
+    """A governed target can be evaluated from an actual FEM value."""
+
+    from threadrom.engineering.analytical_fem_verification_result import (
+        evaluate_verification_target,
+    )
+
+    definition = _definition()
+    target = definition.target_by_id("bolt_stiffness")
+
+    evaluation = evaluate_verification_target(
+        target=target,
+        fem_value=400000.0,
+        evidence_artifact=Path("evidence/bolt_stiffness.json"),
+    )
+
+    assert evaluation.target_id == "bolt_stiffness"
+    assert evaluation.analytical_value == target.analytical_value
+    assert evaluation.fem_value == 400000.0
+    assert evaluation.absolute_error is not None
+    assert evaluation.relative_error is not None
+    assert evaluation.passed is True
+    assert evaluation.evidence_status is EvidenceStatus.PASS
+    assert evaluation.evidence_artifact == Path(
+        "evidence/bolt_stiffness.json"
+    )

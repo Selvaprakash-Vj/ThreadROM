@@ -219,7 +219,9 @@ def test_write_complete_joint_physical_pretension_deck(
         == 20
     )
     assert (
-        text.count("*CONTACT PRINT, FREQUENCY=1")
+        text.splitlines().count(
+            "*CONTACT PRINT, FREQUENCY=1"
+        )
         == 20
     )
     assert (
@@ -230,6 +232,34 @@ def test_write_complete_joint_physical_pretension_deck(
         text.splitlines().count("CDIS, CSTR, CNUM")
         == 20
     )
+
+    expected_cfn_cards = (
+        (
+            "*CONTACT PRINT, FREQUENCY=1, "
+            "SLAVE=SURF_NUT_INTERNAL_THREAD, "
+            "MASTER=SURF_BOLT_THREAD_SURFACES"
+        ),
+        (
+            "*CONTACT PRINT, FREQUENCY=1, "
+            "SLAVE=SURF_HEAD_MEMBER_HEAD_BEARING, "
+            "MASTER=SURF_BOLT_UNDER_HEAD_BEARING"
+        ),
+        (
+            "*CONTACT PRINT, FREQUENCY=1, "
+            "SLAVE=SURF_NUT_MEMBER_NUT_BEARING, "
+            "MASTER=SURF_NUT_LOWER_BEARING"
+        ),
+        (
+            "*CONTACT PRINT, FREQUENCY=1, "
+            "SLAVE=SURF_HEAD_MEMBER_INTERFACE, "
+            "MASTER=SURF_NUT_MEMBER_INTERFACE"
+        ),
+    )
+
+    for card in expected_cfn_cards:
+        assert text.splitlines().count(card) == 20
+
+    assert text.splitlines().count("CFN") == 80
     assert text.count("*ELEMENT, TYPE=DCOUP3D") == 3
     assert text.count("*DISTRIBUTING COUPLING,") == 3
     assert text.count("*MPC") == 5
@@ -246,3 +276,22 @@ def test_write_complete_joint_physical_pretension_deck(
     assert "NUT_ANCHOR_XY" not in text
     assert "NUT_ANTI_SPIN_Y" not in text
     assert "ALL_NODES, 1, 3, 0.0" not in text
+
+    guidance_reaction_sets = (
+        "BOLT_HEAD_GUIDANCE_REFERENCE",
+        "NUT_TRANSLATION_GUIDANCE_REFERENCE",
+        "NUT_MEMBER_GUIDANCE_REFERENCE",
+        "NUT_ROTATION_GUIDANCE_REFERENCE",
+        "BOLT_HEAD_ROTATION_X_REFERENCE",
+        "BOLT_HEAD_ROTATION_Y_REFERENCE",
+        "NUT_ROTATION_X_REFERENCE",
+        "NUT_ROTATION_Y_REFERENCE",
+    )
+
+    for set_name in guidance_reaction_sets:
+        assert (
+            text.count(
+                f"*NODE PRINT, NSET={set_name}, TOTALS=ONLY"
+            )
+            == 20
+        )

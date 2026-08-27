@@ -1,0 +1,79 @@
+{
+  "bolt_id": "TRM-BLT-000001",
+  "external_tolerance_class": "6g",
+  "internal_tolerance_class": "6H",
+  "joint_id": "TRM-ANL-000002",
+  "mechanics": {
+    "basic_external_minor_diameter_mm": 8.159696016958067,
+    "basic_internal_minor_diameter_mm": 8.376202367904177,
+    "basic_pitch_diameter_mm": 9.025721420742506,
+    "engaged_lead_turn_count": 5.333333333333333,
+    "engaged_pitch_count": 5.333333333333333,
+    "engagement_length_mm": 8.0,
+    "external_root_area_mm2": 52.29231165845568,
+    "external_thread_radial_depth_mm": 0.9201519915209664,
+    "flank_half_angle_deg": 30.0,
+    "fundamental_triangle_height_mm": 1.299038105676658,
+    "helix_angle_at_pitch_diameter_deg": 3.0281505696310247,
+    "included_angle_deg": 60.0,
+    "internal_thread_radial_depth_mm": 0.8118988160479113,
+    "lead_mm": 1.5,
+    "method": "iso_metric_basic_profile_60_deg",
+    "nominal_area_mm2": 78.53981633974483,
+    "nominal_diameter_mm": 10.0,
+    "pitch_diameter_area_mm2": 63.98139886693104,
+    "pitch_mm": 1.5,
+    "root_to_nominal_area_ratio": 0.6658063908916135,
+    "starts": 1,
+    "tensile_stress_area_mm2": 57.9895969018452,
+    "tensile_to_nominal_area_ratio": 0.7383464795868099
+  },
+  "nut_id": "TRM-NUT-000001",
+  "validation": {
+    "checks": [
+      {
+        "check_id": "diameter_order",
+        "description": "External minor, internal minor, pitch and nominal diameters must be positive and strictly ordered.",
+        "passed": true
+      },
+      {
+        "check_id": "area_order",
+        "description": "Root, tensile, pitch-diameter and nominal areas must be positive and strictly ordered.",
+        "passed": true
+      },
+      {
+        "check_id": "positive_thread_depths",
+        "description": "External and internal radial thread depths must be positive.",
+        "passed": true
+      },
+      {
+        "check_id": "lead_consistency",
+        "description": "Thread lead must equal pitch multiplied by the number of starts.",
+        "passed": true
+      },
+      {
+        "check_id": "engaged_pitch_count_consistency",
+        "description": "Engaged pitch count must equal engagement length divided by pitch.",
+        "passed": true
+      },
+      {
+        "check_id": "engaged_turn_count_consistency",
+        "description": "Engaged lead-turn count must equal engagement length divided by lead.",
+        "passed": true
+      },
+      {
+        "check_id": "area_ratio_bounds",
+        "description": "Root and tensile area ratios must remain between zero and one and physically ordered.",
+        "passed": true
+      },
+      {
+        "check_id": "helix_angle_bounds",
+        "description": "Pitch-diameter helix angle must be finite and lie strictly between zero and 90 degrees.",
+        "passed": true
+      }
+    ],
+    "failed_check_ids": [],
+    "method": "deterministic_geometry_invariants_v1",
+    "passed": true
+  }
+}

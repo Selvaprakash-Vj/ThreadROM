@@ -60,8 +60,8 @@ def test_invalid_reference_force_sign_is_rejected(
     content = BASE_CONFIG.read_text(encoding="utf-8")
 
     content = content.replace(
-        "preload_force_n = 20000.0",
-        ("preload_force_n = 20000.0\nreference_force_sign = 0"),
+        "reference_force_sign = 1",
+        "reference_force_sign = 0",
         1,
     )
 

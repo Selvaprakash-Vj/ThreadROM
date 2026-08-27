@@ -119,9 +119,10 @@ def validate_external_equilibrium(
     for accepted in accepted_items:
         step = _integer(accepted, "step")
         increment = _integer(accepted, "increment")
-        accepted_time = _number(
-            accepted,
-            "step_time",
+        accepted_time = (
+            _number(accepted, "total_time")
+            if "total_time" in accepted
+            else _number(accepted, "step_time")
         )
 
         match_index: int | None = None
