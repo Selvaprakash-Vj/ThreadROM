@@ -105,3 +105,10 @@ reports/*
 
 # Governed local solver evidence archives
 /simulations/archive/
+
+# External/open-data caches: reproducible downloads, not source-controlled
+data/external/*
+!data/external/.gitkeep
+
+# Private/licensed reference material: never commit
+data/private/*
