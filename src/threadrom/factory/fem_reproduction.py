@@ -1,4 +1,4 @@
-﻿"""Deterministic Phase-2 certified FEM reproduction assembly."""
+"""Deterministic Phase-2 certified FEM reproduction assembly."""
 
 from __future__ import annotations
 
@@ -8,6 +8,10 @@ from pathlib import Path
 
 from threadrom.factory.fem_profile import (
     FemReproductionProfile,
+)
+from threadrom.factory.fem_solver_orchestrator import (
+    FemOrchestratedRun,
+    orchestrate_calculix_run,
 )
 from threadrom.solver.calculix_job import (
     CalculixJobDefinition,
@@ -427,14 +431,12 @@ def write_phase2_certified_reproduction_deck(
         ),
     )
 
-def run_phase2_certified_reproduction_job(
+def _validate_phase2_certified_reproduction_deck(
     *,
-    project_root: Path,
     deck: FemReproductionDeckResult,
-    transfer: CompleteJointCalculixTransferDefinition,
     profile: FemReproductionProfile,
-) -> CalculixRunResult:
-    """Execute only an oracle-identical certified reproduction deck."""
+) -> None:
+    """Require immutable certified reproduction identity."""
 
     if not deck.input_path.exists():
         raise FileNotFoundError(
@@ -461,13 +463,22 @@ def run_phase2_certified_reproduction_job(
             "run identity."
         )
 
+
+def _certified_calculix_job_definition(
+    *,
+    deck: FemReproductionDeckResult,
+    transfer: CompleteJointCalculixTransferDefinition,
+    profile: FemReproductionProfile,
+) -> CalculixJobDefinition:
+    """Build governed CalculiX execution settings."""
+
     solver_timeout_seconds = (
         profile.backend.solver_timeout_seconds
         if profile.backend.solver_timeout_seconds is not None
         else transfer.timeout_seconds
     )
 
-    definition = CalculixJobDefinition(
+    return CalculixJobDefinition(
         executable_relative_path=(
             transfer.executable_relative_path
         ),
@@ -475,8 +486,63 @@ def run_phase2_certified_reproduction_job(
         timeout_seconds=solver_timeout_seconds,
     )
 
+
+def run_phase2_certified_reproduction_job(
+    *,
+    project_root: Path,
+    deck: FemReproductionDeckResult,
+    transfer: CompleteJointCalculixTransferDefinition,
+    profile: FemReproductionProfile,
+) -> CalculixRunResult:
+    """Execute only an oracle-identical certified reproduction deck."""
+
+    _validate_phase2_certified_reproduction_deck(
+        deck=deck,
+        profile=profile,
+    )
+
+    definition = _certified_calculix_job_definition(
+        deck=deck,
+        transfer=transfer,
+        profile=profile,
+    )
+
     return run_calculix_job(
         project_root=project_root,
         input_path=deck.input_path,
         definition=definition,
+    )
+
+
+def orchestrate_phase2_certified_reproduction_job(
+    *,
+    project_root: Path,
+    deck: FemReproductionDeckResult,
+    transfer: CompleteJointCalculixTransferDefinition,
+    profile: FemReproductionProfile,
+    manifest_path: Path | None = None,
+) -> FemOrchestratedRun:
+    """Execute certified reproduction through governed orchestration."""
+
+    _validate_phase2_certified_reproduction_deck(
+        deck=deck,
+        profile=profile,
+    )
+
+    definition = _certified_calculix_job_definition(
+        deck=deck,
+        transfer=transfer,
+        profile=profile,
+    )
+
+    return orchestrate_calculix_run(
+        project_root=project_root,
+        input_path=deck.input_path,
+        definition=definition,
+        run_id=profile.oracle.run_id,
+        case_hash=profile.oracle.case_hash,
+        backend_policy_id=profile.backend.policy_id,
+        solver_name=profile.backend.solver_name,
+        solver_version=profile.backend.solver_version,
+        manifest_path=manifest_path,
     )

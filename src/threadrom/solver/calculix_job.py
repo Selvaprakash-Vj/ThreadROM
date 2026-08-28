@@ -11,6 +11,21 @@ from threadrom.solver.calculix_mesh_transfer import (
 )
 
 
+class CalculixJobError(RuntimeError):
+    """Structured CalculiX failure preserving RuntimeError compatibility."""
+
+    def __init__(
+        self,
+        message: str,
+        *,
+        category: str,
+        return_code: int | None,
+    ) -> None:
+        super().__init__(message)
+        self.category = category
+        self.return_code = return_code
+
+
 @dataclass(frozen=True, slots=True)
 class CalculixJobDefinition:
     """Minimal solver-execution contract."""
@@ -124,15 +139,19 @@ def run_calculix_job(
         )
 
     if completed.returncode != 0:
-        raise RuntimeError(
+        raise CalculixJobError(
             "CalculiX returned a nonzero exit code.\n"
-            + combined_diagnostics[-4000:]
+            + combined_diagnostics[-4000:],
+            category="nonzero_exit",
+            return_code=completed.returncode,
         )
 
     if "*ERROR" in combined_diagnostics.upper():
-        raise RuntimeError(
+        raise CalculixJobError(
             "CalculiX reported an input or solution error.\n"
-            + combined_diagnostics[-4000:]
+            + combined_diagnostics[-4000:],
+            category="solver_reported_error",
+            return_code=completed.returncode,
         )
 
     required_outputs = (
@@ -151,12 +170,14 @@ def run_calculix_job(
     ]
 
     if missing_outputs:
-        raise RuntimeError(
+        raise CalculixJobError(
             "CalculiX did not create required outputs: "
             + ", ".join(
                 str(path)
                 for path in missing_outputs
-            )
+            ),
+            category="missing_required_output",
+            return_code=completed.returncode,
         )
 
     return CalculixRunResult(
