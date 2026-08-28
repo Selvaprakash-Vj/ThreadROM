@@ -826,16 +826,36 @@ def _calculix_surface_name(
     )
 
 
-def write_complete_joint_calculix_transfer_deck(
+
+@dataclass(frozen=True)
+class CompleteJointCalculixModelDeck:
+    """Pure rendered complete-joint CalculiX model."""
+
+    lines: tuple[str, ...]
+    node_count: int
+    element_count: int
+    volume_element_set_count: int
+    boundary_node_set_count: int
+    element_surface_count: int
+    mapped_element_face_count: int
+    component_element_counts: tuple[
+        tuple[str, int],
+        ...,
+    ]
+
+
+def render_complete_joint_calculix_model(
     mesh_data: CompleteJointCalculixMeshData,
     definition: CompleteJointCalculixTransferDefinition,
-    input_path: Path,
     *,
     internal_surface_normals: (
         Mapping[str, tuple[float, float, float]] | None
     ) = None,
-) -> CompleteJointCalculixDeckSummary:
-    """Write nodes, component ELSETs and boundary NSETs."""
+    material_keyword_extensions: (
+        Mapping[str, tuple[str, ...]] | None
+    ) = None,
+) -> CompleteJointCalculixModelDeck:
+    """Render the deterministic model without an analysis step."""
 
     mapped_boundary_faces = (
         map_complete_joint_boundary_faces(
@@ -994,6 +1014,24 @@ def write_complete_joint_calculix_transfer_deck(
         definition.member_material_name,
     )
 
+    material_extensions = dict(
+        material_keyword_extensions or {}
+    )
+
+    unknown_material_extensions = (
+        set(material_extensions)
+        - set(material_definitions)
+    )
+
+    if unknown_material_extensions:
+        raise ValueError(
+            "Material keyword extensions reference unknown "
+            "materials: "
+            + ", ".join(
+                sorted(unknown_material_extensions)
+            )
+        )
+
     for material_name in material_definitions:
         lines.extend(
             [
@@ -1007,6 +1045,13 @@ def write_complete_joint_calculix_transfer_deck(
                     f"{definition.poissons_ratio:.12e}"
                 ),
             ]
+        )
+
+        lines.extend(
+            material_extensions.get(
+                material_name,
+                (),
+            )
         )
 
     section_assignments = (
@@ -1046,6 +1091,59 @@ def write_complete_joint_calculix_transfer_deck(
             "ELSET=BOLT_PRETENSION_LAYER, "
             f"MATERIAL={_calculix_name(definition.bolt_material_name)}"
         )
+
+
+    written_element_count = next_element_id - 1
+
+    if written_element_count != mesh_data.element_count:
+        raise RuntimeError(
+            "Rendered element count does not match "
+            "the transferred mesh."
+        )
+
+    mapped_element_face_count = sum(
+        len(faces)
+        for faces in mapped_boundary_faces.values()
+    )
+
+    return CompleteJointCalculixModelDeck(
+        lines=tuple(lines),
+        node_count=mesh_data.node_count,
+        element_count=written_element_count,
+        volume_element_set_count=len(COMPONENT_ORDER),
+        boundary_node_set_count=len(
+            mesh_data.boundary_node_sets
+        ),
+        element_surface_count=len(
+            mapped_boundary_faces
+        ),
+        mapped_element_face_count=(
+            mapped_element_face_count
+        ),
+        component_element_counts=tuple(
+            component_counts
+        ),
+    )
+
+
+def write_complete_joint_calculix_transfer_deck(
+    mesh_data: CompleteJointCalculixMeshData,
+    definition: CompleteJointCalculixTransferDefinition,
+    input_path: Path,
+    *,
+    internal_surface_normals: (
+        Mapping[str, tuple[float, float, float]] | None
+    ) = None,
+) -> CompleteJointCalculixDeckSummary:
+    """Write the complete-joint transfer smoke-test deck."""
+
+    model = render_complete_joint_calculix_model(
+        mesh_data,
+        definition,
+        internal_surface_normals=internal_surface_normals,
+    )
+
+    lines = list(model.lines)
 
     fixed_node_set = _calculix_name(
         definition.smoke_test_fixed_node_set
@@ -1096,38 +1194,29 @@ def write_complete_joint_calculix_transfer_deck(
         newline="\n",
     )
 
-    written_element_count = next_element_id - 1
-
-    if written_element_count != mesh_data.element_count:
-        raise RuntimeError(
-            "Written element count does not match "
-            "the transferred mesh."
-        )
-
-    mapped_element_face_count = sum(
-        len(faces)
-        for faces in mapped_boundary_faces.values()
-    )
-
     return CompleteJointCalculixDeckSummary(
-        node_count=mesh_data.node_count,
-        element_count=written_element_count,
-        volume_element_set_count=len(COMPONENT_ORDER),
-        boundary_node_set_count=len(
-            mesh_data.boundary_node_sets
+        node_count=model.node_count,
+        element_count=model.element_count,
+        volume_element_set_count=(
+            model.volume_element_set_count
         ),
-        element_surface_count=len(
-            mapped_boundary_faces
+        boundary_node_set_count=(
+            model.boundary_node_set_count
+        ),
+        element_surface_count=(
+            model.element_surface_count
         ),
         mapped_element_face_count=(
-            mapped_element_face_count
+            model.mapped_element_face_count
         ),
         smoke_test_fixed_node_count=(
             mesh_data.node_count
         ),
-        input_file_size_bytes=input_path.stat().st_size,
-        component_element_counts=tuple(
-            component_counts
+        input_file_size_bytes=(
+            input_path.stat().st_size
+        ),
+        component_element_counts=(
+            model.component_element_counts
         ),
     )
 

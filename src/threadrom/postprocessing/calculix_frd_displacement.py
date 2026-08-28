@@ -518,3 +518,290 @@ def _parse_force_record(
         f2_n=components[1],
         f3_n=components[2],
     )
+
+@dataclass(frozen=True)
+class FrdNodalStress:
+    """One extrapolated nodal-stress record from an FRD dataset."""
+
+    node_id: int
+    sxx_mpa: float
+    syy_mpa: float
+    szz_mpa: float
+    sxy_mpa: float
+    syz_mpa: float
+    szx_mpa: float
+
+
+@dataclass(frozen=True)
+class FrdStressDataset:
+    """One accepted-increment nodal-stress dataset."""
+
+    dataset_sequence: int
+    step: int
+    increment: int
+    time: float
+    records: tuple[FrdNodalStress, ...]
+
+    def record_by_node_id(
+        self,
+        node_id: int,
+    ) -> FrdNodalStress:
+        """Return one requested nodal stress record."""
+
+        for record in self.records:
+            if record.node_id == node_id:
+                return record
+
+        raise KeyError(
+            f"Node {node_id} is absent from FRD stress "
+            f"dataset {self.dataset_sequence}."
+        )
+
+
+def read_targeted_frd_stress_datasets(
+    frd_path: Path,
+    target_node_ids: Collection[int],
+) -> tuple[FrdStressDataset, ...]:
+    """Stream STRESS datasets for selected nodes only."""
+
+    requested_node_ids = frozenset(
+        target_node_ids
+    )
+
+    if not requested_node_ids:
+        raise ValueError(
+            "At least one target FRD node ID is required."
+        )
+
+    if any(
+        node_id <= 0
+        for node_id in requested_node_ids
+    ):
+        raise ValueError(
+            "FRD target node IDs must be positive."
+        )
+
+    datasets: list[FrdStressDataset] = []
+
+    dataset_sequence: int | None = None
+    step: int | None = None
+    increment: int | None = None
+    dataset_time: float | None = None
+
+    inside_stress = False
+    component_names: tuple[str, ...] = ()
+    records: list[FrdNodalStress] = []
+
+    expected_components = (
+        "SXX",
+        "SYY",
+        "SZZ",
+        "SXY",
+        "SYZ",
+        "SZX",
+    )
+
+    with frd_path.open(
+        "r",
+        encoding="utf-8",
+        errors="replace",
+    ) as frd_file:
+        for line_number, raw_line in enumerate(
+            frd_file,
+            start=1,
+        ):
+            line = raw_line.rstrip("\r\n")
+
+            if line.startswith("    1PSTEP"):
+                (
+                    dataset_sequence,
+                    increment,
+                    step,
+                ) = _parse_pstep_line(
+                    line,
+                    line_number=line_number,
+                )
+
+                dataset_time = None
+                inside_stress = False
+                component_names = ()
+                records = []
+
+                continue
+
+            if line.startswith("  100CL"):
+                dataset_time = _parse_result_time(
+                    line,
+                    line_number=line_number,
+                )
+
+                continue
+
+            if (
+                line.startswith(" -4")
+                and "STRESS" in line
+            ):
+                if (
+                    dataset_sequence is None
+                    or step is None
+                    or increment is None
+                    or dataset_time is None
+                ):
+                    raise RuntimeError(
+                        "FRD stress header lacks complete "
+                        f"dataset metadata at line {line_number}."
+                    )
+
+                fields = line.split()
+
+                if (
+                    len(fields) < 3
+                    or fields[1] != "STRESS"
+                    or fields[2] != "6"
+                ):
+                    raise RuntimeError(
+                        "Expected six-component FRD STRESS "
+                        f"dataset at line {line_number}: {line!r}"
+                    )
+
+                inside_stress = True
+                component_names = ()
+                records = []
+
+                continue
+
+            if not inside_stress:
+                continue
+
+            if line.startswith(" -5"):
+                fields = line.split()
+
+                if len(fields) < 2:
+                    raise RuntimeError(
+                        "Malformed FRD stress-component "
+                        f"descriptor at line {line_number}."
+                    )
+
+                component_names += (
+                    fields[1].upper(),
+                )
+
+                continue
+
+            if line.startswith(" -3"):
+                if component_names != expected_components:
+                    raise RuntimeError(
+                        "Unexpected FRD stress component order: "
+                        f"{component_names!r}"
+                    )
+
+                assert dataset_sequence is not None
+                assert step is not None
+                assert increment is not None
+                assert dataset_time is not None
+
+                datasets.append(
+                    FrdStressDataset(
+                        dataset_sequence=dataset_sequence,
+                        step=step,
+                        increment=increment,
+                        time=dataset_time,
+                        records=tuple(records),
+                    )
+                )
+
+                inside_stress = False
+                component_names = ()
+                records = []
+
+                continue
+
+            if not line.startswith(" -1"):
+                continue
+
+            node_id = _parse_node_id(
+                line,
+                line_number=line_number,
+            )
+
+            if node_id not in requested_node_ids:
+                continue
+
+            records.append(
+                _parse_stress_record(
+                    line,
+                    node_id=node_id,
+                    line_number=line_number,
+                )
+            )
+
+    if inside_stress:
+        raise RuntimeError(
+            "FRD file ended before the current stress "
+            "dataset terminator."
+        )
+
+    if not datasets:
+        raise RuntimeError(
+            "No stress datasets were found in the FRD file."
+        )
+
+    return tuple(datasets)
+
+
+def _parse_stress_record(
+    line: str,
+    *,
+    node_id: int,
+    line_number: int,
+) -> FrdNodalStress:
+    """Parse six concatenated FRD stress components."""
+
+    raw_components = line[13:]
+
+    matches = tuple(
+        _FRD_FLOAT_PATTERN.finditer(
+            raw_components
+        )
+    )
+
+    if len(matches) != 6:
+        raise RuntimeError(
+            "Expected six FRD stress components at "
+            f"line {line_number}; found {len(matches)}."
+        )
+
+    reconstructed = "".join(
+        match.group(0)
+        for match in matches
+    )
+
+    if reconstructed != raw_components.strip():
+        raise RuntimeError(
+            "Unparsed characters remain in FRD stress "
+            f"line {line_number}: {raw_components!r}"
+        )
+
+    components = tuple(
+        float(match.group(0))
+        for match in matches
+    )
+
+    if not all(
+        math.isfinite(component)
+        for component in components
+    ):
+        raise RuntimeError(
+            "FRD stress components must be finite at "
+            f"line {line_number}."
+        )
+
+    return FrdNodalStress(
+        node_id=node_id,
+        sxx_mpa=components[0],
+        syy_mpa=components[1],
+        szz_mpa=components[2],
+        sxy_mpa=components[3],
+        syz_mpa=components[4],
+        szx_mpa=components[5],
+    )

@@ -1,0 +1,51 @@
+# ThreadROM Phase-2 certified 20 kN FEM result oracle.
+#
+# These values describe the immutable certified reference result.
+# They are NOT universal Phase-3 acceptance thresholds.
+
+[clamp_force]
+target_force_n = 20000.0
+under_head_force_n = 20060.270
+nut_bearing_force_n = 20066.050
+member_interface_force_n = 20064.180
+thread_normal_force_n = 15318.240
+
+[axial_stress]
+bolt_mean_szz_mpa = 315.656
+bolt_median_szz_mpa = 335.369
+head_member_mean_szz_mpa = -33.081
+nut_member_mean_szz_mpa = -32.952
+bolt_selected_tetrahedra = 128619
+head_member_tetrahedra = 29037
+nut_member_tetrahedra = 28835
+
+[deformation]
+member_shortening_mm = 0.003212695
+analytical_member_shortening_mm = 0.003113245
+bolt_mechanical_extension_mm = 0.038321380
+
+[thread_flank]
+intended_flank_name = "-Z-normal flank"
+engagement_min_z_mm = 20.0
+engagement_max_z_mm = 28.0
+engaged_triangle_count = 11943
+
+positive_triangle_count = 3949
+positive_mean_compression_mpa = 38.443
+positive_median_compression_mpa = 0.0
+positive_compressed_area_percent = 19.163
+
+negative_triangle_count = 3948
+negative_mean_compression_mpa = 317.140
+negative_median_compression_mpa = 46.030
+negative_compressed_area_percent = 59.844
+
+dominance_ratio = 8.2496
+
+[numerical]
+accepted_increment_count = 20
+final_step = 1
+final_increment = 20
+final_attempt = 1
+final_iterations = 21
+final_time = 1.0

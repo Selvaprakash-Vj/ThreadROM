@@ -60,6 +60,72 @@ def derive_thermal_preload_state(
             thermal.calibration_delta_temperature_c
         ),
     )
+def render_thermal_expansion_keywords(
+    *,
+    state: ThermalPreloadState,
+) -> tuple[str, ...]:
+    """Render bolt-material thermal-expansion keywords."""
+
+    return (
+        (
+            "*EXPANSION, "
+            f"ZERO={float(state.reference_temperature_c)}"
+        ),
+        (
+            f"{state.expansion_coefficient_per_c:.12e}"
+        ),
+    )
+
+
+def render_initial_temperature_keywords(
+    *,
+    state: ThermalPreloadState,
+    all_nodes_set_name: str,
+) -> tuple[str, ...]:
+    """Render the model-level initial temperature field."""
+
+    if not all_nodes_set_name or not all_nodes_set_name.strip():
+        raise ValueError(
+            "all_nodes_set_name must be a non-empty symbolic name."
+        )
+
+    return (
+        "**",
+        (
+            "** Initial thermal reference state: "
+            f"{state.reference_temperature_c:+.12g} degC"
+        ),
+        "*INITIAL CONDITIONS, TYPE=TEMPERATURE",
+        (
+            f"{all_nodes_set_name}, "
+            f"{state.reference_temperature_c:.12e}"
+        ),
+    )
+
+
+def render_bolt_temperature_keywords(
+    *,
+    state: ThermalPreloadState,
+    bolt_nodes_set_name: str,
+) -> tuple[str, ...]:
+    """Render the in-step bolt-only thermal preload field."""
+
+    if not bolt_nodes_set_name or not bolt_nodes_set_name.strip():
+        raise ValueError(
+            "bolt_nodes_set_name must be a non-empty symbolic name."
+        )
+
+    return (
+        "** Thermal bolt preload",
+        "*TEMPERATURE",
+        (
+            f"{bolt_nodes_set_name}, "
+            f"{state.applied_bolt_temperature_c:.12e}"
+        ),
+        "**",
+    )
+
+
 def render_thermal_preload_keywords(
     *,
     state: ThermalPreloadState,
