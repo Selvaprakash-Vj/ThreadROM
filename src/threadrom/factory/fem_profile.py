@@ -135,7 +135,19 @@ class FemBackendPolicy:
     forbid_manual_node_ids: bool
     forbid_manual_element_ids: bool
 
+    # Optional long-running solver policy. None intentionally means
+    # inherit the transfer/smoke execution timeout.
+    solver_timeout_seconds: int | None = None
+
     def __post_init__(self) -> None:
+        if (
+            self.solver_timeout_seconds is not None
+            and self.solver_timeout_seconds <= 0
+        ):
+            raise ValueError(
+                "solver_timeout_seconds must be positive when specified."
+            )
+
         if not self.policy_id.strip():
             raise ValueError("policy_id must not be blank.")
         if self.normal_stiffness_scale_per_mm <= 0.0:
@@ -234,6 +246,9 @@ PHASE2_CERTIFIED_FEM_PROFILE = FemReproductionProfile(
         forbid_direct_preload_cload=True,
         forbid_manual_node_ids=True,
         forbid_manual_element_ids=True,
+        # Certified nonlinear reproduction is an ~8 h-class solve.
+        # Use 2x runtime headroom while keeping a finite ceiling.
+        solver_timeout_seconds=57_600,
     ),
     oracle=FemCertificationOracle(
         run_id="trm_sim_000004_run_a2_thermal_20kn",

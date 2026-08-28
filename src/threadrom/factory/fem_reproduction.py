@@ -461,12 +461,18 @@ def run_phase2_certified_reproduction_job(
             "run identity."
         )
 
+    solver_timeout_seconds = (
+        profile.backend.solver_timeout_seconds
+        if profile.backend.solver_timeout_seconds is not None
+        else transfer.timeout_seconds
+    )
+
     definition = CalculixJobDefinition(
         executable_relative_path=(
             transfer.executable_relative_path
         ),
         job_name=deck.input_path.stem,
-        timeout_seconds=transfer.timeout_seconds,
+        timeout_seconds=solver_timeout_seconds,
     )
 
     return run_calculix_job(
