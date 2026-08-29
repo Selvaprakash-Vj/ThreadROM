@@ -48,15 +48,16 @@ class CompleteJointBoundaryRegionDefinition:
     assembly_id: str
     contact_model_id: str
     status: str
-    outer_band_inner_radius_mm: float
+    outer_band_inner_radius_mm: float | None
     member_outer_radius_mm: float
     coordinate_tolerance_mm: float
     regions: tuple[BoundaryRegionDefinition, ...]
     expected_region_count: int
-    expected_head_support_node_count: int
-    expected_nut_load_node_count: int
+    expected_head_support_node_count: int | None
+    expected_nut_load_node_count: int | None
     require_zero_bearing_overlap: bool
     require_equal_region_node_counts: bool
+    outer_band_free_annulus_fraction: float | None = None
 
     def region(
         self,
@@ -286,19 +287,20 @@ def load_complete_joint_boundary_region_definition(
         ),
     )
 
-    if definition.outer_band_inner_radius_mm <= 0.0:
-        raise ValueError(
-            "Outer-band inner radius must be positive."
-        )
+    if definition.outer_band_inner_radius_mm is not None:
+        if definition.outer_band_inner_radius_mm <= 0.0:
+            raise ValueError(
+                "Outer-band inner radius must be positive."
+            )
 
-    if (
-        definition.member_outer_radius_mm
-        <= definition.outer_band_inner_radius_mm
-    ):
-        raise ValueError(
-            "Member outer radius must exceed the "
-            "outer-band inner radius."
-        )
+        if (
+            definition.member_outer_radius_mm
+            <= definition.outer_band_inner_radius_mm
+        ):
+            raise ValueError(
+                "Member outer radius must exceed the "
+                "outer-band inner radius."
+            )
 
     if definition.coordinate_tolerance_mm <= 0.0:
         raise ValueError(
@@ -459,10 +461,66 @@ def derive_complete_joint_boundary_regions(
                 "has an unexpected outer radius."
             )
 
+        if (
+            definition.outer_band_free_annulus_fraction
+            is None
+        ):
+            if definition.outer_band_inner_radius_mm is None:
+                raise ValueError(
+                    "Legacy boundary-band mode requires an "
+                    "absolute inner radius."
+                )
+
+            inner_radius_mm = (
+                definition.outer_band_inner_radius_mm
+            )
+        else:
+            fraction = (
+                definition.outer_band_free_annulus_fraction
+            )
+
+            if not 0.0 < fraction < 1.0:
+                raise ValueError(
+                    "Outer-band free-annulus fraction "
+                    "must lie in (0, 1)."
+                )
+
+            excluded_coordinates = mesh_data.points_mm[
+                excluded_node_ids - 1
+            ]
+
+            excluded_radii = np.hypot(
+                excluded_coordinates[:, 0],
+                excluded_coordinates[:, 1],
+            )
+
+            excluded_outer_radius_mm = float(
+                np.max(excluded_radii)
+            )
+
+            if (
+                excluded_outer_radius_mm
+                >= definition.member_outer_radius_mm
+            ):
+                raise RuntimeError(
+                    f"{region_definition.key}: excluded boundary "
+                    "reaches or exceeds the member outer radius."
+                )
+
+            free_annulus_width_mm = (
+                definition.member_outer_radius_mm
+                - excluded_outer_radius_mm
+            )
+
+            inner_radius_mm = (
+                excluded_outer_radius_mm
+                + fraction * free_annulus_width_mm
+            )
+
         selection_mask: NDArray[np.bool_] = (
             source_radii
             >= (
-                definition.outer_band_inner_radius_mm
+                inner_radius_mm
                 - definition.coordinate_tolerance_mm
             )
         )
@@ -513,7 +571,9 @@ def derive_complete_joint_boundary_regions(
     nut_load = result.region(NUT_LOAD)
 
     if (
-        head_support.node_count
+        definition.expected_head_support_node_count
+        is not None
+        and head_support.node_count
         != definition.expected_head_support_node_count
     ):
         raise RuntimeError(
@@ -522,7 +582,9 @@ def derive_complete_joint_boundary_regions(
         )
 
     if (
-        nut_load.node_count
+        definition.expected_nut_load_node_count
+        is not None
+        and nut_load.node_count
         != definition.expected_nut_load_node_count
     ):
         raise RuntimeError(

@@ -1,0 +1,16 @@
+[identity]
+policy_id = "complete_joint_semantic_results_v1"
+
+[axial_stress]
+bolt_component = "bolt"
+head_side_member_component = "head_side_member"
+nut_side_member_component = "nut_side_member"
+bolt_free_span_band_start_fraction = 0.25
+bolt_free_span_band_end_fraction = 0.75
+
+[surfaces]
+under_head = "BOLT_UNDER_HEAD_BEARING"
+head_member_bearing = "HEAD_MEMBER_HEAD_BEARING"
+nut_member_bearing = "NUT_MEMBER_NUT_BEARING"
+nut_thread = "nut_internal_thread"
+bolt_thread = "BOLT_THREAD_SURFACES"

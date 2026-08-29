@@ -1,4 +1,4 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 
 from dataclasses import replace
 
@@ -82,11 +82,7 @@ from threadrom.case.reference_cases import phase2_certification_case
             PreflightTarget.ANALYTICAL,
             PreflightRuleCode.ANALYSIS_CAPABILITY_SUPPORTED,
         ),
-        (
-            lambda case: case,
-            PreflightTarget.FEM,
-            PreflightRuleCode.ANALYSIS_CAPABILITY_SUPPORTED,
-        ),
+
         (
             lambda case: case,
             PreflightTarget.ROM,

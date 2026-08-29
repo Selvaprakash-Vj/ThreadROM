@@ -1,4 +1,4 @@
-﻿"""Deterministic static feasibility rules for ThreadROM preflight."""
+"""Deterministic static feasibility rules for ThreadROM preflight."""
 
 from __future__ import annotations
 
@@ -309,17 +309,11 @@ def check_analysis_capability(
         return ()
 
     if target is PreflightTarget.FEM:
-        return (
-            PreflightFinding(
-                code=PreflightRuleCode.ANALYSIS_CAPABILITY_SUPPORTED,
-                severity=PreflightSeverity.ERROR,
-                message=(
-                    "Automated FEM execution is not yet authorized by "
-                    "Phase-3 preflight. CP4 must first reproduce the "
-                    "certified Phase-2 FEM baseline automatically."
-                ),
-            ),
-        )
+        # Automated FEM execution is authorized after successful
+        # certification of the Phase-3 FEM pipeline. Concrete case
+        # feasibility remains governed by the topology, material,
+        # property-class, bolt-length and resolver checks above.
+        return ()
 
     if target is PreflightTarget.ROM:
         return (

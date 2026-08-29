@@ -1,4 +1,4 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 
 from dataclasses import replace
 
@@ -287,7 +287,7 @@ def test_geometry_target_is_authorized_at_capability_layer() -> None:
     )
 
 
-def test_fem_target_is_blocked_until_cp4() -> None:
+def test_fem_target_is_authorized_after_fem_pipeline_certification() -> None:
     case = phase2_certification_case()
 
     findings = check_analysis_capability(
@@ -295,13 +295,7 @@ def test_fem_target_is_blocked_until_cp4() -> None:
         PreflightTarget.FEM,
     )
 
-    assert len(findings) == 1
-    assert (
-        findings[0].code
-        is PreflightRuleCode.ANALYSIS_CAPABILITY_SUPPORTED
-    )
-    assert findings[0].severity is PreflightSeverity.ERROR
-    assert "CP4" in findings[0].message
+    assert findings == ()
 
 
 def test_rom_target_is_blocked_until_phase4() -> None:

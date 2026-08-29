@@ -1,4 +1,4 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 
 from dataclasses import replace
 
@@ -36,20 +36,14 @@ def test_reference_geometry_preflight_passes() -> None:
     assert report.can_proceed is True
 
 
-def test_reference_fem_preflight_is_explicitly_blocked_until_cp4() -> None:
+def test_reference_fem_preflight_passes_after_fem_pipeline_certification() -> None:
     report = preflight_case(
         phase2_certification_case(),
         PreflightTarget.FEM,
     )
 
-    assert report.disposition is PreflightDisposition.BLOCKED
-    assert report.can_proceed is False
-    assert len(report.blocking_findings) == 1
-    assert (
-        report.blocking_findings[0].code
-        is PreflightRuleCode.ANALYSIS_CAPABILITY_SUPPORTED
-    )
-    assert "CP4" in report.blocking_findings[0].message
+    assert report.disposition is PreflightDisposition.PASS
+    assert report.findings == ()
 
 
 def test_dimensionally_unsupported_standard_is_reported_not_crashed() -> None:
