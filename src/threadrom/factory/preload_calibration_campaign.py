@@ -24,6 +24,7 @@ class PreloadCalibrationTrialSource(StrEnum):
     """Derivation source for one calibration trial temperature."""
 
     ANALYTICAL_SEED = "analytical_seed"
+    FEM_WARM_START = "fem_warm_start"
     PROPORTIONAL = "proportional"
     FALLBACK_PERTURBATION = "fallback_perturbation"
     SECANT = "secant"
@@ -125,6 +126,44 @@ def _trial_run_id(
     )
 
 
+def derive_fem_warm_start_preload_calibration_trial(
+    *,
+    predicted_delta_temperature_c: float,
+    case_run_id: str,
+) -> PreloadCalibrationTrial:
+    """Build trial 1 from governed reusable FEM calibration evidence."""
+
+    if (
+        not math.isfinite(
+            predicted_delta_temperature_c
+        )
+        or predicted_delta_temperature_c >= 0.0
+    ):
+        raise ValueError(
+            "FEM warm-start temperature must be finite "
+            "thermal contraction."
+        )
+
+    if not case_run_id.strip():
+        raise ValueError(
+            "FEM warm-start requires a non-blank case run ID."
+        )
+
+    return PreloadCalibrationTrial(
+        trial_index=1,
+        run_id=_trial_run_id(
+            case_run_id=case_run_id,
+            trial_index=1,
+        ),
+        delta_temperature_c=(
+            predicted_delta_temperature_c
+        ),
+        source=(
+            PreloadCalibrationTrialSource.FEM_WARM_START
+        ),
+    )
+
+
 def derive_initial_preload_calibration_trial(
     *,
     seed: ThermalPreloadCalibrationSeed,
@@ -150,6 +189,7 @@ def derive_initial_preload_calibration_trial(
 def _derive_second_trial_delta_temperature(
     *,
     target_force_n: float,
+    target_relative_tolerance: float,
     current_trial: PreloadCalibrationTrial,
     measurement: ClampForceMeasurement,
     policy: PreloadCalibrationCampaignPolicy,
@@ -181,6 +221,27 @@ def _derive_second_trial_delta_temperature(
         )
         / current_trial.delta_temperature_c
     )
+
+    force_relative_error = (
+        measurement.mean_force_n
+        - target_force_n
+    ) / target_force_n
+
+    # If the governed preload-force gate is actually missed, preserve
+    # the physically directed proportional correction even when the
+    # resulting second point is close to the first point.
+    #
+    # The near-duplicate perturbation is reserved for cases where the
+    # force already satisfies its governed tolerance but another
+    # calibration criterion (for example interface spread) still fails.
+    if (
+        abs(force_relative_error)
+        > target_relative_tolerance
+    ):
+        return (
+            proportional,
+            PreloadCalibrationTrialSource.PROPORTIONAL,
+        )
 
     if (
         relative_separation
@@ -267,7 +328,7 @@ def evaluate_preload_calibration_trial(
 
     if (
         decision.disposition
-        is PreloadCalibrationDisposition.ACCEPT
+        is not PreloadCalibrationDisposition.CONTINUE
     ):
         return PreloadCalibrationTrialEvaluation(
             decision=decision,
@@ -289,6 +350,9 @@ def evaluate_preload_calibration_trial(
             source,
         ) = _derive_second_trial_delta_temperature(
             target_force_n=target_force_n,
+            target_relative_tolerance=(
+                target_relative_tolerance
+            ),
             current_trial=current_trial,
             measurement=measurement,
             policy=policy,

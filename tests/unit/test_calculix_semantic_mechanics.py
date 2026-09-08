@@ -829,7 +829,7 @@ def test_complete_joint_deformation_uses_entry_plane_only() -> None:
     )
 
 
-def test_complete_joint_deformation_rejects_missing_entry_plane() -> None:
+def test_complete_joint_deformation_maps_entry_to_nearest_discretized_level() -> None:
     points = np.asarray(
         [
             [0.0, 0.0, 0.0],
@@ -855,33 +855,48 @@ def test_complete_joint_deformation_rejects_missing_entry_plane() -> None:
         dtype=float,
     )
 
-    with pytest.raises(
-        ValueError,
-        match="engagement-entry",
-    ):
-        summarize_complete_joint_deformation(
-            points_mm=points,
-            under_head_triangles=np.asarray(
-                [[0, 1, 2]],
-                dtype=np.int64,
-            ),
-            head_member_bearing_triangles=np.asarray(
-                [[3, 4, 5]],
-                dtype=np.int64,
-            ),
-            nut_member_bearing_triangles=np.asarray(
-                [[6, 7, 8]],
-                dtype=np.int64,
-            ),
-            nut_thread_triangles=np.asarray(
-                [[9, 10, 11]],
-                dtype=np.int64,
-            ),
-            bolt_thread_triangles=np.asarray(
-                [[12, 13, 14]],
-                dtype=np.int64,
-            ),
-            nodal_uz_mm={},
-            thermal_expansion_coefficient_per_c=1.2e-5,
-            equivalent_delta_temperature_c=-250.0,
-        )
+    state = summarize_complete_joint_deformation(
+        points_mm=points,
+        under_head_triangles=np.asarray(
+            [[0, 1, 2]],
+            dtype=np.int64,
+        ),
+        head_member_bearing_triangles=np.asarray(
+            [[3, 4, 5]],
+            dtype=np.int64,
+        ),
+        nut_member_bearing_triangles=np.asarray(
+            [[6, 7, 8]],
+            dtype=np.int64,
+        ),
+        nut_thread_triangles=np.asarray(
+            [[9, 10, 11]],
+            dtype=np.int64,
+        ),
+        bolt_thread_triangles=np.asarray(
+            [[12, 13, 14]],
+            dtype=np.int64,
+        ),
+        nodal_uz_mm={
+            0: 0.0,
+            1: 0.0,
+            2: 0.0,
+            3: 0.001,
+            4: 0.001,
+            5: 0.001,
+            6: -0.001,
+            7: -0.001,
+            8: -0.001,
+            12: -0.010,
+            13: -0.012,
+            14: -0.014,
+        },
+        thermal_expansion_coefficient_per_c=1.2e-5,
+        equivalent_delta_temperature_c=-250.0,
+    )
+
+    assert state.engagement_entry_node_count == 3
+    assert (
+        state.bolt_engagement_entry_mean_uz_mm
+        == pytest.approx(-0.012)
+    )

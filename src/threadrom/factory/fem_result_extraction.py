@@ -627,3 +627,453 @@ def extract_fem_physics_result_evidence(
             stress_target_ids
         ),
     )
+
+
+# === VV06-S1 PHYSICS HISTORY EXTRACTION ===
+
+
+@dataclass(frozen=True, slots=True)
+class FemPhysicsHistoryPoint:
+    """One accepted nonlinear FEM state required by VV06-S1."""
+
+    step: int
+    increment: int
+    time: float
+
+    displacement_dataset_sequence: int
+    stress_dataset_sequence: int
+
+    mean_clamp_force_n: float
+    thread_normal_force_n: float
+
+    member_shortening_mm: float
+    bolt_free_span_mean_szz_mpa: float
+
+    # Populated only for explicitly requested DIRECT increments.
+    thread_flank_state: ThreadFlankStressState | None
+
+
+def extract_fem_physics_result_history(
+    *,
+    mesh_data: CompleteJointCalculixMeshData,
+    policy: FemResultExtractionPolicy,
+    frd_path: Path,
+    sta_path: Path,
+    dat_path: Path,
+    contact_pairs: tuple[CalibrationContactPair, ...],
+    flank_increments: tuple[int, ...],
+) -> tuple[FemPhysicsHistoryPoint, ...]:
+    """Extract accepted semantic FEM history for governed VV06-S1 use.
+
+    This intentionally reuses the same component/surface definitions,
+    free-span stress-region logic, FRD readers, semantic axial-stress
+    summarizer, flank diagnostic, STA accepted-increment parser, and governed
+    DAT contact-force semantics as the certified final-state extractor.
+
+    Member shortening is evaluated directly as:
+
+        mean(UZ_head_member_bearing) - mean(UZ_nut_member_bearing)
+
+    which is exactly the definition used by
+    ``summarize_complete_joint_deformation`` and is independent of the
+    thermal preload actuator.  No thermal-ramp assumption is therefore needed
+    by VV06-S1.
+    """
+
+    from threadrom.factory.fem_preload_calibration_measurement import (
+        extract_clamp_force_history_from_dat,
+    )
+
+    for artifact_path in (
+        frd_path,
+        sta_path,
+        dat_path,
+    ):
+        if (
+            not artifact_path.exists()
+            or artifact_path.stat().st_size <= 0
+        ):
+            raise FileNotFoundError(
+                "Required FEM history artifact is absent or empty: "
+                f"{artifact_path}"
+            )
+
+    if len(set(flank_increments)) != len(flank_increments):
+        raise ValueError(
+            "VV06-S1 flank increments must be unique."
+        )
+
+    if any(
+        increment <= 0
+        for increment in flank_increments
+    ):
+        raise ValueError(
+            "VV06-S1 flank increments must be positive."
+        )
+
+    bolt_tetrahedra = _required_component(
+        mesh_data,
+        policy.bolt_component,
+    )
+
+    head_tetrahedra = _required_component(
+        mesh_data,
+        policy.head_side_member_component,
+    )
+
+    nut_tetrahedra = _required_component(
+        mesh_data,
+        policy.nut_side_member_component,
+    )
+
+    under_head = _required_surface(
+        mesh_data,
+        policy.under_head_surface,
+    )
+
+    head_bearing = _required_surface(
+        mesh_data,
+        policy.head_member_bearing_surface,
+    )
+
+    nut_bearing = _required_surface(
+        mesh_data,
+        policy.nut_member_bearing_surface,
+    )
+
+    nut_thread = _required_surface(
+        mesh_data,
+        policy.nut_thread_surface,
+    )
+
+    bolt_thread = _required_surface(
+        mesh_data,
+        policy.bolt_thread_surface,
+    )
+
+    accepted_increments = parse_status_increments(
+        sta_path.read_text(
+            encoding="utf-8",
+            errors="replace",
+        )
+    )
+
+    if not accepted_increments:
+        raise RuntimeError(
+            "Completed FEM result contains no accepted increments."
+        )
+
+    accepted_increment_numbers = {
+        accepted.increment
+        for accepted in accepted_increments
+    }
+
+    missing_flank_increments = tuple(
+        increment
+        for increment in flank_increments
+        if increment not in accepted_increment_numbers
+    )
+
+    if missing_flank_increments:
+        raise RuntimeError(
+            "Requested DIRECT flank increments are absent from "
+            "accepted solver history: "
+            + ", ".join(
+                str(value)
+                for value in missing_flank_increments
+            )
+        )
+
+    # --------------------------------------------------------------
+    # Governed synchronized DAT history
+    # --------------------------------------------------------------
+
+    contact_history = extract_clamp_force_history_from_dat(
+        dat_path=dat_path,
+        contact_pairs=contact_pairs,
+    )
+
+    if len(contact_history) != len(accepted_increments):
+        raise RuntimeError(
+            "Synchronized DAT contact-history count does not match "
+            "accepted STA increment count."
+        )
+
+    for accepted, contact in zip(
+        accepted_increments,
+        contact_history,
+        strict=True,
+    ):
+        if not math.isclose(
+            contact.time,
+            accepted.total_time,
+            rel_tol=0.0,
+            abs_tol=1.0e-9,
+        ):
+            raise RuntimeError(
+                "DAT contact history is not synchronized with accepted "
+                "STA increment history."
+            )
+
+    # --------------------------------------------------------------
+    # Displacement history
+    # --------------------------------------------------------------
+
+    displacement_target_ids = _one_based_node_ids(
+        under_head,
+        head_bearing,
+        nut_bearing,
+        nut_thread,
+        bolt_thread,
+    )
+
+    displacement_datasets = (
+        read_targeted_frd_displacement_datasets(
+            frd_path,
+            target_node_ids=displacement_target_ids,
+        )
+    )
+
+    head_bearing_nodes = np.unique(
+        head_bearing.reshape(-1)
+    )
+
+    nut_bearing_nodes = np.unique(
+        nut_bearing.reshape(-1)
+    )
+
+    displacement_history: dict[
+        tuple[int, int],
+        tuple[int, float],
+    ] = {}
+
+    for accepted in accepted_increments:
+        dataset = _select_final_dataset(
+            displacement_datasets,
+            step=accepted.step,
+            increment=accepted.increment,
+            kind="displacement",
+        )
+
+        if not math.isclose(
+            dataset.time,
+            accepted.total_time,
+            rel_tol=0.0,
+            abs_tol=1.0e-9,
+        ):
+            raise RuntimeError(
+                "FRD displacement history is not synchronized with "
+                "accepted STA increment history."
+            )
+
+        nodal_uz_mm = {
+            record.node_id - 1: record.d3_mm
+            for record in dataset.records
+        }
+
+        def mean_uz(
+            node_indices: NDArray[np.int64],
+        ) -> float:
+            values = np.asarray(
+                [
+                    nodal_uz_mm[
+                        int(node_index)
+                    ]
+                    for node_index in node_indices
+                ],
+                dtype=float,
+            )
+
+            if not np.all(
+                np.isfinite(values)
+            ):
+                raise RuntimeError(
+                    "Non-finite nodal UZ encountered in FEM history."
+                )
+
+            return float(
+                np.mean(values)
+            )
+
+        member_shortening_mm = (
+            mean_uz(head_bearing_nodes)
+            - mean_uz(nut_bearing_nodes)
+        )
+
+        if not math.isfinite(
+            member_shortening_mm
+        ):
+            raise RuntimeError(
+                "Non-finite member shortening in FEM history."
+            )
+
+        displacement_history[
+            (
+                accepted.step,
+                accepted.increment,
+            )
+        ] = (
+            dataset.dataset_sequence,
+            member_shortening_mm,
+        )
+
+    del displacement_datasets
+    gc.collect()
+
+    # --------------------------------------------------------------
+    # Stress history
+    # --------------------------------------------------------------
+
+    bolt_region = derive_bolt_free_span_stress_region(
+        points_mm=mesh_data.points_mm,
+        bolt_tetrahedra=bolt_tetrahedra,
+        under_head_triangles=under_head,
+        nut_thread_triangles=nut_thread,
+        band_start_fraction=(
+            policy.bolt_free_span_band_start_fraction
+        ),
+        band_end_fraction=(
+            policy.bolt_free_span_band_end_fraction
+        ),
+    )
+
+    selected_bolt_tetrahedra = bolt_tetrahedra[
+        np.asarray(
+            bolt_region.selected_element_indices,
+            dtype=np.int64,
+        )
+    ]
+
+    stress_target_ids = _one_based_node_ids(
+        selected_bolt_tetrahedra,
+        head_tetrahedra,
+        nut_tetrahedra,
+        bolt_thread,
+        nut_thread,
+    )
+
+    stress_datasets = read_targeted_frd_stress_datasets(
+        frd_path,
+        target_node_ids=stress_target_ids,
+    )
+
+    result: list[FemPhysicsHistoryPoint] = []
+
+    for accepted, contact in zip(
+        accepted_increments,
+        contact_history,
+        strict=True,
+    ):
+        dataset = _select_final_dataset(
+            stress_datasets,
+            step=accepted.step,
+            increment=accepted.increment,
+            kind="stress",
+        )
+
+        if not math.isclose(
+            dataset.time,
+            accepted.total_time,
+            rel_tol=0.0,
+            abs_tol=1.0e-9,
+        ):
+            raise RuntimeError(
+                "FRD stress history is not synchronized with "
+                "accepted STA increment history."
+            )
+
+        nodal_szz_mpa = {
+            record.node_id - 1: record.szz_mpa
+            for record in dataset.records
+        }
+
+        axial_state = summarize_complete_joint_axial_state(
+            points_mm=mesh_data.points_mm,
+            bolt_tetrahedra=bolt_tetrahedra,
+            head_side_member_tetrahedra=head_tetrahedra,
+            nut_side_member_tetrahedra=nut_tetrahedra,
+            under_head_triangles=under_head,
+            nut_thread_triangles=nut_thread,
+            band_start_fraction=(
+                policy.bolt_free_span_band_start_fraction
+            ),
+            band_end_fraction=(
+                policy.bolt_free_span_band_end_fraction
+            ),
+            nodal_szz_mpa=nodal_szz_mpa,
+        )
+
+        flank_state: ThreadFlankStressState | None = None
+
+        if accepted.increment in flank_increments:
+            nodal_stress_mpa = {
+                record.node_id - 1: (
+                    record.sxx_mpa,
+                    record.syy_mpa,
+                    record.szz_mpa,
+                    record.sxy_mpa,
+                    record.syz_mpa,
+                    record.szx_mpa,
+                )
+                for record in dataset.records
+            }
+
+            flank_state = summarize_engaged_bolt_thread_flanks(
+                points_mm=mesh_data.points_mm,
+                bolt_thread_triangles=bolt_thread,
+                nut_thread_triangles=nut_thread,
+                nodal_stress_mpa=nodal_stress_mpa,
+            )
+
+            del nodal_stress_mpa
+
+        key = (
+            accepted.step,
+            accepted.increment,
+        )
+
+        if key not in displacement_history:
+            raise RuntimeError(
+                "Missing synchronized displacement evidence for "
+                f"step={accepted.step}, increment={accepted.increment}."
+            )
+
+        (
+            displacement_dataset_sequence,
+            member_shortening_mm,
+        ) = displacement_history[key]
+
+        result.append(
+            FemPhysicsHistoryPoint(
+                step=accepted.step,
+                increment=accepted.increment,
+                time=accepted.total_time,
+                displacement_dataset_sequence=(
+                    displacement_dataset_sequence
+                ),
+                stress_dataset_sequence=(
+                    dataset.dataset_sequence
+                ),
+                mean_clamp_force_n=(
+                    contact.measurement.mean_force_n
+                ),
+                thread_normal_force_n=(
+                    contact.thread_normal_force_n
+                ),
+                member_shortening_mm=(
+                    member_shortening_mm
+                ),
+                bolt_free_span_mean_szz_mpa=(
+                    axial_state.bolt.mean_szz_mpa
+                ),
+                thread_flank_state=flank_state,
+            )
+        )
+
+        del nodal_szz_mpa
+        del axial_state
+
+    del stress_datasets
+    gc.collect()
+
+    return tuple(result)

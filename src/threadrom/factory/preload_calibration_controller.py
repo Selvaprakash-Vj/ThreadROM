@@ -17,6 +17,7 @@ class PreloadCalibrationDisposition(StrEnum):
 
     ACCEPT = "accept"
     CONTINUE = "continue"
+    NON_MONOTONIC_RESPONSE = "non_monotonic_response"
 
 
 @dataclass(frozen=True, slots=True)
@@ -155,6 +156,47 @@ def evaluate_preload_calibration(
         delta_temperature_c=current_delta_temperature_c,
         measured_force_n=measurement.mean_force_n,
     )
+
+    delta_temperature_difference = (
+        current_point.delta_temperature_c
+        - previous_point.delta_temperature_c
+    )
+
+    force_difference = (
+        current_point.measured_force_n
+        - previous_point.measured_force_n
+    )
+
+    if (
+        not math.isclose(
+            delta_temperature_difference,
+            0.0,
+            rel_tol=0.0,
+            abs_tol=1.0e-12,
+        )
+        and not math.isclose(
+            force_difference,
+            0.0,
+            rel_tol=0.0,
+            abs_tol=1.0e-9,
+        )
+        and (
+            force_difference
+            / delta_temperature_difference
+        )
+        >= 0.0
+    ):
+        return PreloadCalibrationDecision(
+            disposition=(
+                PreloadCalibrationDisposition.NON_MONOTONIC_RESPONSE
+            ),
+            target_force_n=target_force_n,
+            target_relative_tolerance=target_relative_tolerance,
+            spread_relative_tolerance=spread_relative_tolerance,
+            measurement=measurement,
+            target_relative_error=target_relative_error,
+            next_delta_temperature_c=None,
+        )
 
     secant = derive_secant_delta_temperature(
         target_force_n=target_force_n,

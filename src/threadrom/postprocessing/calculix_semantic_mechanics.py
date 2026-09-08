@@ -495,9 +495,42 @@ def summarize_complete_joint_deformation(
         2,
     ]
 
+    # The nut and bolt thread surfaces are meshed independently.
+    # Their nodes are therefore not required to register at an
+    # identical axial coordinate.  The physical engagement-entry
+    # plane remains defined by the nut-thread boundary above; map
+    # that plane onto the nearest axial level represented by the
+    # bolt-thread mesh.
+    entry_distance = np.abs(
+        bolt_thread_z
+        - free_span_end_z
+    )
+
+    if (
+        len(entry_distance) == 0
+        or not np.all(
+            np.isfinite(entry_distance)
+        )
+    ):
+        raise ValueError(
+            "Bolt thread engagement-entry mapping requires "
+            "finite thread-node coordinates."
+        )
+
+    nearest_entry_index = int(
+        np.argmin(entry_distance)
+    )
+
+    discretized_entry_z = float(
+        bolt_thread_z[
+            nearest_entry_index
+        ]
+    )
+
     entry_mask = np.isclose(
         bolt_thread_z,
-        free_span_end_z,
+        discretized_entry_z,
+        rtol=0.0,
         atol=1.0e-9,
     )
 
@@ -507,8 +540,8 @@ def summarize_complete_joint_deformation(
 
     if len(entry_nodes) == 0:
         raise ValueError(
-            "No bolt thread nodes found on "
-            "the engagement-entry plane."
+            "No bolt thread nodes found on the nearest "
+            "discretized engagement-entry level."
         )
 
     def mean_uz(

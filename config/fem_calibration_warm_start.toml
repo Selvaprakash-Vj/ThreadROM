@@ -1,0 +1,17 @@
+[identity]
+policy_id = "complete_joint_fem_warm_start_v1"
+
+[neighbors]
+maximum_neighbors = 4
+maximum_reuse_distance = 0.75
+inverse_distance_power = 2.0
+exact_distance_tolerance = 1.0e-12
+
+[correction]
+minimum_factor = 0.5
+maximum_factor = 3.0
+
+[applicability]
+minimum_neighbors_for_reuse = 2
+require_target_preload_bracketing = true
+maximum_correction_factor_relative_spread = 0.20

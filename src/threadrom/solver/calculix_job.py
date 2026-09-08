@@ -32,15 +32,18 @@ class CalculixJobDefinition:
 
     executable_relative_path: Path
     job_name: str
-    timeout_seconds: int
+    timeout_seconds: int | None
 
     def __post_init__(self) -> None:
         if not self.job_name.strip():
             raise ValueError("job_name must not be blank.")
 
-        if self.timeout_seconds <= 0:
+        if (
+            self.timeout_seconds is not None
+            and self.timeout_seconds <= 0
+        ):
             raise ValueError(
-                "timeout_seconds must be positive."
+                "timeout_seconds must be positive when specified."
             )
 
 

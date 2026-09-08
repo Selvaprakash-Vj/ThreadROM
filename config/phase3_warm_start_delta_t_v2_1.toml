@@ -1,0 +1,176 @@
+﻿# ThreadROM Phase 3 CP8
+# Warm-Start Delta-T Predictor V2.1
+#
+# Frozen before prospective prediction and before any FEM result
+# from the selected prospective sentinel is accessed.
+
+[identity]
+policy_id = "TRM-WSV21-000001"
+policy_name = "phase3_warm_start_delta_t_v2_1"
+schema_version = 1
+status = "frozen"
+
+[scope]
+phase = 3
+checkpoint = 8
+campaign_id = "TRM-PDOE-C01"
+predictor_scope = "first_trial_delta_temperature_only"
+
+[provenance]
+v2_policy_sha256 = "a548e95b538a7ec94eeb76d77502c7e75e2394d5847ab50e6b57d497e7f0a941"
+v2_diagnostic_script_sha256 = "d6f79049af8091e75e1d997a2344c298f171419188f7e37bca75f5818543b525"
+v2_proxy_fail_log_sha256 = "743f55b3f21904249422aa3e22aad0bd64c350780587ea56be2a0f549fb3fad3"
+v2_retrospective_verdict = "PROXY_FAIL"
+
+[base_surface]
+method = "exact_trilinear_interpolation"
+required_certified_corner_count = 8
+
+normalized_dimension_order = [
+    "target_preload",
+    "head_member_thickness",
+    "radial_geometry_fraction",
+]
+
+certified_corner_case_ids = [
+    "A00",
+    "A01",
+    "A02",
+    "A03",
+    "D-BND-001",
+    "D-BND-002",
+    "D-BND-003",
+    "D-BND-004",
+]
+
+preserve_all_boundary_values_exactly = true
+
+[interior_correction]
+method = "single_bubble_residual"
+
+# B(x,y,z) = 64*x*(1-x)*y*(1-y)*z*(1-z)
+#
+# This basis is zero on every face of the normalized cube,
+# therefore the certified trilinear boundary surface remains
+# exactly unchanged.
+bubble_scale = 64.0
+
+formula = """
+correction_factor_v2_1 =
+    trilinear_correction_factor
+    + k * 64*x*(1-x)*y*(1-y)*z*(1-z)
+"""
+
+development_case_id = "D-INT-010"
+development_case_role = "DEVELOPMENT_RESIDUAL_EVIDENCE"
+
+# k is derived exactly from D-INT-010:
+#
+# k =
+#   (accepted_correction_factor_DINT010
+#    - trilinear_correction_factor_DINT010)
+#   / bubble_DINT010
+#
+# No fitted global multiplier and no additional FEM evidence
+# may be used to determine k.
+coefficient_derivation = "exact_single_point_residual"
+
+additional_fit_parameters = 1
+
+[development_evidence]
+case_id = "D-INT-010"
+blind_holdout = false
+
+normalized_coordinates = [
+    0.3884259094216256,
+    0.5016032833852213,
+    0.7525408170679,
+]
+
+accepted_fem_evidence_sha256 = "4ae4455eabdaff752036745e38550ae16a334e5f88643e8b4f2adbaf0b3d51aa"
+
+# D-INT-010 was already inspected and therefore may not be used
+# as validation evidence for V2.1.
+may_validate_v2_1 = false
+
+[prospective_selection]
+meaningful_interior_margin = 0.20
+
+# Candidate eligibility:
+# every normalized coordinate must satisfy
+#
+#   margin <= coordinate <= 1 - margin
+#
+# among previously unsolved Production DOE design cases.
+require_meaningfully_interior = true
+
+# Selection uses coordinates only.
+# No FEM response or calibration result from any candidate
+# may participate.
+response_blind_selection = true
+
+bubble_function = "64*x*(1-x)*y*(1-y)*z*(1-z)"
+distance_metric = "euclidean_normalized_coordinate_distance"
+
+selection_score = """
+bubble_value
+*
+euclidean_distance_from_D_INT_010
+"""
+
+selection_rule = "maximum_score_then_case_id"
+
+selected_case_id = "D-INT-008"
+
+selected_normalized_coordinates = [
+    0.338688726937794,
+    0.46187250281214554,
+    0.387268407866376,
+]
+
+selected_bubble_value = 0.84542732
+selected_distance_from_development = 0.37077791
+selected_selection_score_approx = 0.31346577
+
+[prospective_validation]
+case_id = "D-INT-008"
+role = "PROSPECTIVE_WARM_START_V2_1_SENTINEL"
+
+# V2.1 delta-T prediction must be generated and frozen
+# before any D-INT-008 FEM result is accessed.
+prediction_must_be_frozen_before_result_access = true
+
+# Existing calibration acceptance remains unchanged.
+target_relative_tolerance = 0.01
+
+success_label = "PROSPECTIVE_PASS"
+failure_label = "PROSPECTIVE_FAIL"
+
+# Only an actual first FEM trial within governed tolerance
+# may authorize rollout.
+first_trial_fem_required = true
+proxy_result_insufficient = true
+prospective_pass_required_for_rollout = true
+
+[deployment]
+rollout_authorized_initially = false
+
+# No threshold relaxation is permitted after observing
+# the prospective result.
+posthoc_tolerance_change_forbidden = true
+
+# If the prospective case fails, V2.1 remains blocked and the
+# failure is preserved as development evidence.
+failed_prospective_case_must_be_preserved = true
+
+[holdouts]
+blind_holdout_case_ids = [
+    "H01",
+    "H02",
+    "H03",
+    "H04",
+    "H05",
+    "H06",
+]
+
+blind_holdouts_must_remain_sealed = true

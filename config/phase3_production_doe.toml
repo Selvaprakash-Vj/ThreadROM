@@ -1,0 +1,408 @@
+# ThreadROM Phase 3 CP8
+# Governed Production DOE Contract
+#
+# Frozen before production DOE generation and before any diagnostic
+# surrogate fit. Changes require an explicit new policy version.
+#
+# This domain intentionally contains only parameter families already
+# exercised by the certified Phase-3 FEM factory.
+#
+# P02_PRELOAD_HIGH at 25 kN is NOT part of this certified production
+# domain. Its calibration closed as NON_MONOTONIC_RESPONSE and its
+# mandatory mesh VV06 remains unresolved.
+
+[identity]
+policy_id = "TRM-PDOE-000001"
+policy_name = "phase3_production_doe_v1"
+schema_version = 1
+status = "frozen"
+
+[governance]
+phase = 3
+checkpoint = 8
+vv21_declared_domain_coverage_required = true
+vv22_blind_holdout_integrity_required = true
+vv23_sufficiency_policy_required_before_first_surrogate_fit = true
+post_hoc_acceptance_relaxation_forbidden = true
+
+# A valid converged FEM state is preserved even when its realized
+# preload differs from the requested target. Requested and realized
+# physical states remain separate dataset fields.
+preserve_valid_realized_states = true
+requested_and_realized_states_are_distinct = true
+
+# No production FEM solve is authorized merely by freezing this file.
+solver_launch_authorized = false
+
+
+# ------------------------------------------------------------------
+# FIXED PRODUCT / PHYSICS SCOPE
+# ------------------------------------------------------------------
+
+[fixed.fastener]
+bolt_standard = "ISO 4017:2022"
+thread_designation = "M10x1.5"
+bolt_length_mm = 30.0
+bolt_material_id = "fastener_steel"
+bolt_property_class = "8.8"
+nut_standard = "ISO 4032:2023"
+nut_material_id = "fastener_steel"
+nut_property_class = "8"
+handedness = "right"
+starts = 1
+
+[fixed.materials]
+head_side_member_material_id = "steel_member"
+nut_side_member_material_id = "steel_member"
+
+[fixed.interfaces]
+thread_friction_coefficient = 0.15
+head_bearing_friction_coefficient = 0.15
+nut_bearing_friction_coefficient = 0.15
+member_interface_friction_coefficient = 0.15
+
+[fixed.loading]
+external_axial_load_n = 0.0
+
+[fixed.analysis]
+calculation_mode = "auto"
+fidelity = "production"
+
+
+# ------------------------------------------------------------------
+# INDEPENDENT DOE COORDINATES
+# ------------------------------------------------------------------
+#
+# The production domain is intentionally three-dimensional.
+#
+# We do NOT independently vary head/nut thicknesses because CP7
+# exercised a constant-total-grip 8/12 mm asymmetry.
+#
+# We do NOT independently vary OD and clearance-hole diameter because
+# P04 exercised those together. Instead they are governed by one
+# radial_geometry_fraction along the certified baseline -> P04 path.
+
+[[dimensions]]
+dimension_id = "target_preload"
+kind = "continuous"
+raw_field = "loading.target_preload_n"
+minimum = 15000.0
+maximum = 20000.0
+unit = "N"
+normalized_minimum = 0.0
+normalized_maximum = 1.0
+transform = "linear"
+
+[[dimensions]]
+dimension_id = "head_member_thickness"
+kind = "continuous"
+raw_field = "members.head_side_member.thickness_mm"
+minimum = 8.0
+maximum = 10.0
+unit = "mm"
+normalized_minimum = 0.0
+normalized_maximum = 1.0
+transform = "linear"
+
+[[dimensions]]
+dimension_id = "radial_geometry_fraction"
+kind = "continuous_derived_path"
+minimum = 0.0
+maximum = 1.0
+unit = "dimensionless"
+normalized_minimum = 0.0
+normalized_maximum = 1.0
+transform = "linear"
+
+
+# ------------------------------------------------------------------
+# DERIVED PHYSICAL CONSTRAINTS
+# ------------------------------------------------------------------
+
+[constraints.member_stack]
+total_grip_mm = 20.0
+head_member_thickness_min_mm = 8.0
+head_member_thickness_max_mm = 10.0
+
+# Derived exactly:
+# nut thickness = total grip - head thickness.
+nut_member_thickness_relation = "20.0 - head_member_thickness_mm"
+
+[constraints.radial_geometry_path]
+# lambda = radial_geometry_fraction
+#
+# lambda=0 -> certified baseline:
+#   OD = 30 mm
+#   hole = 11 mm
+#
+# lambda=1 -> P04:
+#   OD = 36 mm
+#   hole = 12 mm
+#
+# Both members use the same radial dimensions.
+
+outer_diameter_start_mm = 30.0
+outer_diameter_end_mm = 36.0
+clearance_hole_start_mm = 11.0
+clearance_hole_end_mm = 12.0
+
+outer_diameter_relation = "30.0 + 6.0 * radial_geometry_fraction"
+clearance_hole_relation = "11.0 + 1.0 * radial_geometry_fraction"
+
+apply_identically_to_both_members = true
+
+
+# ------------------------------------------------------------------
+# EXPLICIT EXCLUSIONS
+# ------------------------------------------------------------------
+
+[exclusions]
+target_preload_above_n = 20000.0
+p02_25kn_inside_certified_domain = false
+reverse_12_8_grip_asymmetry_certified = false
+independent_member_od_variation_certified = false
+independent_clearance_hole_variation_certified = false
+friction_variation_certified = false
+material_variation_certified = false
+external_axial_load_variation_certified = false
+thread_family_variation_certified = false
+
+
+# ------------------------------------------------------------------
+# MESH GOVERNANCE
+# ------------------------------------------------------------------
+
+[mesh]
+baseline_mesh_level = "medium"
+
+# The ordinary medium mesh remains valid for the baseline radial
+# geometry path endpoint lambda=0.
+baseline_radial_fraction_mesh_policy = "medium"
+
+# Any nonzero radial excursion uses the governed local-refinement
+# policy. This is deliberately conservative and avoids attempting
+# to infer an unvalidated switch threshold from one sentinel.
+radial_variation_mesh_policy_id = "TRM-LRP-000001"
+radial_variation_mesh_policy_name = "medium_plus_v1"
+medium_plus_required_when_radial_fraction_gt = 0.0
+
+global_fine_production_mesh_required = false
+
+p04_medium_plus_certification_record = "simulations/staging/phase3_cp8_p04/vv06_medium_plus/p04_medium_plus_certification_record.json"
+p04_medium_plus_certification_sha256 = "ea36aae7c7e7c9214af6ebbf50f31799d10f924e359d93b270f76a91aaee4880"
+
+p02_governance_record = "simulations/staging/phase3_cp8_overnight/trm_fem_a55757c8e1bd/p02_high_preload_governance_record.json"
+p02_governance_sha256 = "4a3d99f4281390d8402f689355ac31aa7e308aa41eb903120ae1cb747e6fc295"
+
+
+# ------------------------------------------------------------------
+# CAMPAIGN SIZE
+# ------------------------------------------------------------------
+
+[campaign]
+campaign_id = "TRM-PDOE-C01"
+
+# TOTAL desired design/training rows, including reusable certified
+# FEM anchors. Existing accepted physics is not duplicated merely to
+# obtain a new DOE run ID.
+design_rows_total = 24
+
+existing_anchor_rows_planned = 4
+new_design_rows_maximum = 20
+
+blind_holdout_rows = 6
+
+adaptive_enrichment_rows_minimum = 0
+adaptive_enrichment_rows_maximum = 12
+
+# No blanket 50+ solve authorization.
+large_upfront_campaign_forbidden = true
+
+
+# ------------------------------------------------------------------
+# EXISTING REUSABLE DESIGN ANCHORS
+# ------------------------------------------------------------------
+#
+# Their final dataset eligibility is still subject to normal evidence
+# and provenance validation. Listing here does not bypass certification.
+
+[[existing_anchors]]
+anchor_id = "A00"
+source_case_id = "P00_BASELINE_CONTROL"
+role = "design_boundary_anchor"
+normalized_coordinates = [1.0, 1.0, 0.0]
+
+[[existing_anchors]]
+anchor_id = "A01"
+source_case_id = "P01_PRELOAD_LOW"
+role = "design_boundary_anchor"
+normalized_coordinates = [0.0, 1.0, 0.0]
+
+[[existing_anchors]]
+anchor_id = "A02"
+source_case_id = "P03_ASYMMETRIC_GRIP"
+role = "design_boundary_anchor"
+normalized_coordinates = [1.0, 0.0, 0.0]
+
+[[existing_anchors]]
+anchor_id = "A03"
+source_case_id = "P04_RADIAL_GEOMETRY"
+role = "design_boundary_anchor"
+normalized_coordinates = [1.0, 1.0, 1.0]
+
+
+# ------------------------------------------------------------------
+# MANDATORY DESIGN-SET BOUNDARY COMPLETION
+# ------------------------------------------------------------------
+#
+# Together with A00-A03, these four points complete the eight corners
+# of the declared three-dimensional normalized cube.
+#
+# These are DESIGN cases, not blind holdouts.
+
+[[mandatory_design_points]]
+case_id = "D-BND-001"
+normalized_coordinates = [0.0, 0.0, 0.0]
+
+[[mandatory_design_points]]
+case_id = "D-BND-002"
+normalized_coordinates = [0.0, 0.0, 1.0]
+
+[[mandatory_design_points]]
+case_id = "D-BND-003"
+normalized_coordinates = [0.0, 1.0, 1.0]
+
+[[mandatory_design_points]]
+case_id = "D-BND-004"
+normalized_coordinates = [1.0, 0.0, 1.0]
+
+
+# ------------------------------------------------------------------
+# SPACE-FILLING DESIGN POLICY
+# ------------------------------------------------------------------
+
+[design]
+policy_id = "deterministic_maximin_lhs_v1"
+normalized_dimension_order = [
+    "target_preload",
+    "head_member_thickness",
+    "radial_geometry_fraction",
+]
+
+# 24 total design rows:
+#   4 reusable existing anchors
+# + 4 explicit missing cube corners
+# + 16 deterministic interior space-filling rows
+interior_space_filling_rows = 16
+
+deterministic_seed = 310826
+candidate_pool_multiplier = 100
+
+include_declared_domain_boundaries = true
+duplicate_canonical_case_hashes_forbidden = true
+duplicate_normalized_coordinates_forbidden = true
+
+
+# ------------------------------------------------------------------
+# PRE-REGISTERED BLIND HOLDOUTS
+# ------------------------------------------------------------------
+#
+# Frozen now, before any Phase-4/diagnostic surrogate fit.
+# These points must not enter training until their blind scores have
+# been recorded.
+#
+# They deliberately probe mixed-factor interior/face conditions rather
+# than duplicating already known cube corners.
+
+[holdouts]
+policy_id = "phase3_blind_holdouts_v1"
+frozen_before_surrogate_fit = true
+training_membership_before_blind_scoring_forbidden = true
+normalized_dimension_order = [
+    "target_preload",
+    "head_member_thickness",
+    "radial_geometry_fraction",
+]
+minimum_design_to_holdout_normalized_euclidean_distance = 0.15
+
+[[holdouts.points]]
+case_id = "H01"
+normalized_coordinates = [0.25, 0.25, 0.25]
+
+[[holdouts.points]]
+case_id = "H02"
+normalized_coordinates = [0.75, 0.75, 0.75]
+
+[[holdouts.points]]
+case_id = "H03"
+normalized_coordinates = [0.25, 0.75, 0.75]
+
+[[holdouts.points]]
+case_id = "H04"
+normalized_coordinates = [0.75, 0.25, 0.25]
+
+[[holdouts.points]]
+case_id = "H05"
+normalized_coordinates = [0.50, 0.20, 0.80]
+
+[[holdouts.points]]
+case_id = "H06"
+normalized_coordinates = [0.50, 0.80, 0.20]
+
+
+# ------------------------------------------------------------------
+# DATASET REPRESENTATION
+# ------------------------------------------------------------------
+
+[dataset]
+store_raw_physical_inputs = true
+store_normalized_coordinates = true
+store_dimensionless_physics_features = true
+
+store_requested_preload = true
+store_realized_preload = true
+
+store_mesh_policy_and_provenance = true
+store_calibration_provenance = true
+store_solver_provenance = true
+store_convergence_evidence = true
+store_physics_acceptance = true
+store_failure_classification = true
+store_artifact_hashes = true
+store_case_role = true
+
+training_role = "PRODUCTION_DESIGN"
+holdout_role = "BLIND_HOLDOUT"
+boundary_role = "PRODUCTION_DOMAIN_BOUNDARY_SENTINEL"
+
+valid_solve_may_be_preserved_when_requested_target_missed = true
+
+
+# ------------------------------------------------------------------
+# CALIBRATION / SOLVE EFFICIENCY
+# ------------------------------------------------------------------
+
+[efficiency]
+reuse_certified_existing_fem_evidence = true
+reuse_accepted_calibration_solve_as_physics_evidence_when_semantically_identical = true
+
+fem_warm_start_required_when_applicable = true
+blind_recalibration_from_scratch_for_each_case_forbidden = true
+
+goal_in_covered_domain = "one verification solve per case"
+
+additional_calibration_solve_only_after_governed_failure = true
+duplicate_solver_semantics_rerun_forbidden = true
+
+
+# ------------------------------------------------------------------
+# DATASET SUFFICIENCY
+# ------------------------------------------------------------------
+
+[sufficiency]
+# VV-23 requires a separate response-specific threshold policy.
+threshold_policy_id = "TO_BE_FROZEN_BEFORE_FIRST_DIAGNOSTIC_SURROGATE_FIT"
+diagnostic_surrogate_fit_authorized = false
+
+adaptive_enrichment_only_after_predeclared_threshold_failure = true
+acceptance_threshold_relaxation_after_results_forbidden = true

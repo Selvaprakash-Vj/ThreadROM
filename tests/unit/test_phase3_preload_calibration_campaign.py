@@ -10,8 +10,11 @@ from threadrom.factory.preload_calibration_campaign import (
     derive_initial_preload_calibration_trial,
     evaluate_preload_calibration_trial,
 )
+from threadrom.factory.preload_calibration_campaign import PreloadCalibrationTrial
+
 from threadrom.factory.preload_calibration_controller import (
     ClampForceMeasurement,
+    PreloadCalibrationDisposition,
 )
 from threadrom.factory.preload_calibration_seed import (
     ThermalPreloadCalibrationSeed,
@@ -207,3 +210,133 @@ def test_previous_trial_and_measurement_are_atomic_inputs() -> None:
             previous_trial=first,
             previous_measurement=None,
         )
+
+
+def test_small_underload_miss_uses_proportional_correction() -> None:
+    first = PreloadCalibrationTrial(
+        trial_index=1,
+        run_id="trm_fem_p01_cal_01",
+        delta_temperature_c=-189.8409550761197,
+        source=PreloadCalibrationTrialSource.FEM_WARM_START,
+    )
+
+    result = evaluate_preload_calibration_trial(
+        case_run_id="trm_fem_p01",
+        target_force_n=15_000.0,
+        target_relative_tolerance=0.01,
+        spread_relative_tolerance=0.005,
+        current_trial=first,
+        measurement=_measurement(14_802.58),
+    )
+
+    assert result.next_trial is not None
+    assert (
+        result.next_trial.source
+        is PreloadCalibrationTrialSource.PROPORTIONAL
+    )
+    assert result.next_trial.delta_temperature_c == pytest.approx(
+        first.delta_temperature_c
+        * 15_000.0
+        / 14_802.58
+    )
+
+
+def test_larger_underload_miss_uses_proportional_correction() -> None:
+    first = PreloadCalibrationTrial(
+        trial_index=1,
+        run_id="trm_fem_p02_cal_01",
+        delta_temperature_c=-316.1671871266993,
+        source=PreloadCalibrationTrialSource.FEM_WARM_START,
+    )
+
+    result = evaluate_preload_calibration_trial(
+        case_run_id="trm_fem_p02",
+        target_force_n=25_000.0,
+        target_relative_tolerance=0.01,
+        spread_relative_tolerance=0.005,
+        current_trial=first,
+        measurement=_measurement(24_095.963333333333),
+    )
+
+    assert result.next_trial is not None
+    assert (
+        result.next_trial.source
+        is PreloadCalibrationTrialSource.PROPORTIONAL
+    )
+    assert result.next_trial.delta_temperature_c == pytest.approx(
+        first.delta_temperature_c
+        * 25_000.0
+        / 24_095.963333333333
+    )
+
+
+def test_force_inside_tolerance_with_spread_failure_uses_perturbation() -> None:
+    first = derive_initial_preload_calibration_trial(
+        seed=_seed(),
+        case_run_id="trm_fem_inside_tolerance",
+    )
+
+    result = evaluate_preload_calibration_trial(
+        case_run_id="trm_fem_inside_tolerance",
+        target_force_n=20_000.0,
+        target_relative_tolerance=0.01,
+        spread_relative_tolerance=0.0001,
+        current_trial=first,
+        measurement=_measurement(
+            19_900.0,
+            spread_n=100.0,
+        ),
+    )
+
+    assert result.next_trial is not None
+    assert (
+        result.next_trial.source
+        is PreloadCalibrationTrialSource.FALLBACK_PERTURBATION
+    )
+    assert result.next_trial.delta_temperature_c == pytest.approx(
+        0.80 * first.delta_temperature_c
+    )
+
+def test_p02_reversed_response_terminates_campaign_without_trial_four() -> None:
+    """Preserve the governed P02 non-monotonic calibration boundary."""
+
+    second = PreloadCalibrationTrial(
+        trial_index=2,
+        run_id="trm_fem_p02_cal_02",
+        delta_temperature_c=-328.029204262325,
+        source=PreloadCalibrationTrialSource.PROPORTIONAL,
+    )
+
+    third = PreloadCalibrationTrial(
+        trial_index=3,
+        run_id="trm_fem_p02_cal_03",
+        delta_temperature_c=-333.844390132161,
+        source=PreloadCalibrationTrialSource.SECANT,
+    )
+
+    result = evaluate_preload_calibration_trial(
+        case_run_id="trm_fem_p02",
+        target_force_n=25_000.0,
+        target_relative_tolerance=0.01,
+        spread_relative_tolerance=0.005,
+        previous_trial=second,
+        previous_measurement=_measurement(
+            24_702.603333333333,
+            spread_n=9.27,
+        ),
+        current_trial=third,
+        measurement=_measurement(
+            23_839.306666666667,
+            spread_n=9.63,
+        ),
+    )
+
+    assert not result.accepted
+
+    assert (
+        result.decision.disposition
+        is PreloadCalibrationDisposition.NON_MONOTONIC_RESPONSE
+    )
+
+    assert result.decision.next_delta_temperature_c is None
+    assert result.next_trial is None

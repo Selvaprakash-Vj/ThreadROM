@@ -209,3 +209,200 @@ def extract_clamp_force_measurement_from_dat(
         measurement=measurement,
         thread_normal_force_n=magnitude("thread"),
     )
+
+
+# === SYNCHRONIZED CLAMP-FORCE HISTORY ===
+
+
+def extract_clamp_force_history_from_records(
+    *,
+    records: Iterable[CalculixContactStatisticsRecord],
+    contact_pairs: Iterable[CalibrationContactPair],
+) -> tuple[ClampForceExtraction, ...]:
+    """Extract every synchronized governed clamp-force state.
+
+    This is the history-form equivalent of
+    ``extract_clamp_force_measurement_from_dat``.
+
+    Semantics intentionally match the certified final-state extractor:
+
+    - pair identities come from current case-specific contact metadata;
+    - required clamp paths are under-head, nut-bearing, member-interface;
+    - thread force is extracted from the governed thread pair;
+    - physical force magnitude is ``abs(normal_force_n)``;
+    - only result times common to all four required contact pairs are retained;
+    - if CalculiX emits repeated records for one pair at one time, the final
+      complete record in solver/DAT order is authoritative.
+    """
+
+    records_tuple = tuple(records)
+
+    if not records_tuple:
+        raise RuntimeError(
+            "No complete CalculiX contact-statistics records were found."
+        )
+
+    pair_by_name: dict[str, CalibrationContactPair] = {}
+
+    for pair in contact_pairs:
+        if pair.name in pair_by_name:
+            raise ValueError(
+                f"Duplicate contact-pair name: {pair.name}"
+            )
+
+        pair_by_name[pair.name] = pair
+
+    required_names = (
+        *_REQUIRED_CLAMP_PAIR_NAMES,
+        _THREAD_PAIR_NAME,
+    )
+
+    missing_definitions = tuple(
+        name
+        for name in required_names
+        if name not in pair_by_name
+    )
+
+    if missing_definitions:
+        raise ValueError(
+            "Calibration contact definition is missing required pairs: "
+            + ", ".join(missing_definitions)
+        )
+
+    records_by_name: dict[
+        str,
+        list[CalculixContactStatisticsRecord],
+    ] = {}
+
+    for name in required_names:
+        pair = pair_by_name[name]
+
+        expected_key = (
+            pair.slave_surface,
+            pair.master_surface,
+        )
+
+        matching = [
+            record
+            for record in records_tuple
+            if _pair_record_key(record) == expected_key
+        ]
+
+        if not matching:
+            raise RuntimeError(
+                "No contact-statistics records found for "
+                f"pair {name!r}: "
+                f"{expected_key[0]} -> {expected_key[1]}"
+            )
+
+        records_by_name[name] = matching
+
+    common_times = set(
+        record.time
+        for record in records_by_name[
+            required_names[0]
+        ]
+    )
+
+    for name in required_names[1:]:
+        common_times.intersection_update(
+            record.time
+            for record in records_by_name[name]
+        )
+
+    if not common_times:
+        raise RuntimeError(
+            "Required contact pairs have no synchronized result time."
+        )
+
+    ordered_times = tuple(
+        sorted(common_times)
+    )
+
+    if any(
+        not math.isfinite(time)
+        for time in ordered_times
+    ):
+        raise RuntimeError(
+            "Synchronized contact-result history contains "
+            "a non-finite time."
+        )
+
+    extractions: list[ClampForceExtraction] = []
+
+    for time in ordered_times:
+        record_by_name: dict[
+            str,
+            CalculixContactStatisticsRecord,
+        ] = {}
+
+        for name in required_names:
+            matching_at_time = [
+                record
+                for record in records_by_name[name]
+                if record.time == time
+            ]
+
+            if not matching_at_time:
+                raise RuntimeError(
+                    f"Contact pair {name!r} is missing synchronized "
+                    f"result time {time!r}."
+                )
+
+            # Preserve existing certified semantics:
+            # final complete record at one solver time is authoritative.
+            record_by_name[name] = matching_at_time[-1]
+
+        def magnitude(name: str) -> float:
+            value = abs(
+                record_by_name[name].normal_force_n
+            )
+
+            if not math.isfinite(value) or value <= 0.0:
+                raise RuntimeError(
+                    f"Contact pair {name!r} produced a non-positive "
+                    "or non-finite clamp-force magnitude."
+                )
+
+            return value
+
+        measurement = ClampForceMeasurement(
+            under_head_force_n=magnitude("under_head"),
+            nut_bearing_force_n=magnitude("nut_bearing"),
+            member_interface_force_n=magnitude("member_interface"),
+        )
+
+        extractions.append(
+            ClampForceExtraction(
+                time=time,
+                measurement=measurement,
+                thread_normal_force_n=magnitude("thread"),
+            )
+        )
+
+    return tuple(extractions)
+
+
+def extract_clamp_force_history_from_dat(
+    *,
+    dat_path: Path,
+    contact_pairs: Iterable[CalibrationContactPair],
+) -> tuple[ClampForceExtraction, ...]:
+    """Read a CalculiX DAT and return all synchronized clamp-force states."""
+
+    if not dat_path.exists() or dat_path.stat().st_size <= 0:
+        raise FileNotFoundError(
+            f"Valid CalculiX DAT file not found: {dat_path}"
+        )
+
+    records = parse_contact_statistics_records(
+        dat_path.read_text(
+            encoding="utf-8",
+            errors="replace",
+        )
+    )
+
+    return extract_clamp_force_history_from_records(
+        records=records,
+        contact_pairs=contact_pairs,
+    )

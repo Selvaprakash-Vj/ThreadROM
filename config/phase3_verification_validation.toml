@@ -1,0 +1,365 @@
+[identity]
+matrix_id = "phase3_complete_joint_vv_v1"
+phase = 3
+checkpoint = "CP8"
+status = "governed"
+principle = "Solver convergence alone is never physics certification."
+
+# ---------------------------------------------------------------------------
+# External / normative references
+# ---------------------------------------------------------------------------
+
+[[references]]
+reference_id = "ISO-68-1-2023"
+authority = "ISO"
+identifier = "ISO 68-1:2023"
+title = "ISO general purpose screw threads ? Basic and design profiles ? Part 1: Metric screw threads"
+reference_type = "normative"
+
+[[references]]
+reference_id = "ISO-724-2023"
+authority = "ISO"
+identifier = "ISO 724:2023"
+title = "ISO general purpose metric screw threads ? Basic dimensions"
+reference_type = "normative"
+
+[[references]]
+reference_id = "ISO-965-1-2026"
+authority = "ISO"
+identifier = "ISO 965-1:2026"
+title = "ISO general purpose metric screw threads ? Tolerances ? Part 1: Principles and basic data"
+reference_type = "normative"
+
+[[references]]
+reference_id = "ISO-898-1-2013"
+authority = "ISO"
+identifier = "ISO 898-1:2013"
+title = "Mechanical properties of fasteners made of carbon steel and alloy steel ? Part 1"
+reference_type = "normative"
+note = "Current published edition; successor edition is under development."
+
+[[references]]
+reference_id = "VDI-2230-1-2015"
+authority = "VDI"
+identifier = "VDI 2230 Blatt 1:2015"
+title = "Systematic calculation of highly stressed bolted joints ? Joints with one cylindrical bolt"
+reference_type = "engineering_guideline"
+
+[[references]]
+reference_id = "NASA-RP-1228"
+authority = "NASA"
+identifier = "NASA RP-1228"
+title = "Fastener Design Manual"
+reference_type = "independent_engineering_reference"
+
+[[references]]
+reference_id = "NASA-TM-106943"
+authority = "NASA"
+identifier = "NASA TM-106943"
+title = "Preloaded Joint Analysis Methodology for Space Flight Systems"
+reference_type = "independent_engineering_reference"
+
+# ---------------------------------------------------------------------------
+# GEOMETRY / STANDARDS
+# ---------------------------------------------------------------------------
+
+[[checks]]
+check_id = "VV-01"
+title = "Metric thread profile and basic dimensions"
+category = "geometry"
+criterion_type = "hard"
+cadence = "every_distinct_thread"
+evidence = "ThreadROM governed thread database/configuration versus ISO profile/basic dimensions."
+criterion = "Generated metric-thread basic/design dimensions must agree with the governed standards data and existing numerical tolerances; no manual or legacy geometry scalar may override the resolved case."
+reference_ids = ["ISO-68-1-2023", "ISO-724-2023"]
+current_run_applicable = true
+
+[[checks]]
+check_id = "VV-02"
+title = "Thread tolerance-domain definition"
+category = "geometry"
+criterion_type = "hard"
+cadence = "every_distinct_thread_tolerance_family"
+evidence = "Resolved thread tolerance assumptions versus ISO tolerance-system definition."
+criterion = "Tolerance assumptions must be explicit and inside the supported ThreadROM domain; unsupported or unknown tolerance combinations must fail closed."
+reference_ids = ["ISO-965-1-2026"]
+current_run_applicable = true
+
+[[checks]]
+check_id = "VV-03"
+title = "Fastener property-class admissibility"
+category = "strength"
+criterion_type = "hard"
+cadence = "every_case"
+evidence = "Resolved bolt property class, tensile stress area, proof load and preload utilisation."
+criterion = "The certified elastic FEM/ROM domain must not exceed the governed proof-load envelope."
+reference_ids = ["ISO-898-1-2013", "NASA-RP-1228"]
+current_run_applicable = true
+thresholds = { maximum_proof_utilisation = 1.0 }
+
+[[checks]]
+check_id = "VV-04"
+title = "CAD assembly geometry"
+category = "geometry"
+criterion_type = "hard"
+cadence = "every_new_geometry"
+evidence = "Resolved case versus native CAD measurements versus STEP roundtrip measurements."
+criterion = "Solid count, bounds and volume consistency must satisfy the existing governed assembly-geometry validation policy. Reused geometry must carry an explicit equivalence certificate rather than claiming regeneration."
+reference_ids = []
+current_run_applicable = true
+
+[[checks]]
+check_id = "VV-05"
+title = "Mesh topology, semantics and quality"
+category = "mesh"
+criterion_type = "hard"
+cadence = "every_new_mesh_or_certified_reuse"
+evidence = "Mesh topology, physical groups, semantic boundaries, Jacobian/orientation and governed quality metrics."
+criterion = "All required components and surfaces must exist; no degenerate or inverted volume elements are permitted; the governed mesh-quality policy must pass. Mesh reuse requires an explicit equivalence gate."
+reference_ids = []
+current_run_applicable = true
+
+[[checks]]
+check_id = "VV-06"
+title = "Mesh-convergence sentinel"
+category = "mesh"
+criterion_type = "hard"
+cadence = "mandatory_phase3_sentinels"
+evidence = "Medium versus fine solution comparison."
+criterion = "P02_PRELOAD_HIGH and P04_RADIAL_GEOMETRY are mandatory Phase-3 mesh-convergence sentinels. Global deformation/clamp quantities must converge within 2%; free-span bolt stress and integrated thread-normal force must converge within 3%."
+reference_ids = []
+current_run_applicable = false
+execution_phase = 3
+execution_checkpoint = "CP8"
+required_case_ids = ["P02_PRELOAD_HIGH", "P04_RADIAL_GEOMETRY"]
+thresholds = { global_relative = 0.02, bolt_stress_relative = 0.03, thread_force_relative = 0.03 }
+
+# ---------------------------------------------------------------------------
+# ANALYTICAL ? FEM MECHANICS
+# ---------------------------------------------------------------------------
+
+[[checks]]
+check_id = "VV-07"
+title = "Bolt compliance and mechanical extension"
+category = "analytical_fem"
+criterion_type = "hard"
+cadence = "every_accepted_case"
+evidence = "FEM mechanical bolt extension versus F times analytical bolt compliance."
+criterion = "Relative difference between FEM mechanical bolt extension and the analytical bolt-compliance prediction must not exceed 10%."
+reference_ids = ["VDI-2230-1-2015", "NASA-TM-106943"]
+current_run_applicable = true
+thresholds = { relative = 0.10 }
+
+[[checks]]
+check_id = "VV-08"
+title = "Member compliance and shortening"
+category = "analytical_fem"
+criterion_type = "hard"
+cadence = "every_accepted_case"
+evidence = "FEM member-stack shortening versus F times analytical member compliance."
+criterion = "Relative difference between FEM member shortening and the analytical member-compliance prediction must not exceed 10%."
+reference_ids = ["VDI-2230-1-2015", "NASA-TM-106943"]
+current_run_applicable = true
+thresholds = { relative = 0.10 }
+
+[[checks]]
+check_id = "VV-09"
+title = "Overall joint compatibility"
+category = "analytical_fem"
+criterion_type = "hard"
+cadence = "every_accepted_case"
+evidence = "FEM bolt/member deformation compatibility versus analytical total compliance."
+criterion = "Effective FEM joint compliance must agree with the governed linear analytical estimate within 10%."
+reference_ids = ["VDI-2230-1-2015", "NASA-TM-106943"]
+current_run_applicable = true
+thresholds = { relative = 0.10 }
+
+[[checks]]
+check_id = "VV-10"
+title = "Nominal bolt axial stress"
+category = "analytical_fem"
+criterion_type = "hard"
+cadence = "every_accepted_case"
+evidence = "FEM free-span median axial stress versus target clamp force divided by governed tensile stress area."
+criterion = "FEM free-span median Szz must agree with nominal F/At within 10%."
+reference_ids = ["ISO-898-1-2013", "VDI-2230-1-2015", "NASA-RP-1228"]
+current_run_applicable = true
+thresholds = { relative = 0.10 }
+
+# ---------------------------------------------------------------------------
+# FEM PHYSICS ACCEPTANCE
+# ---------------------------------------------------------------------------
+
+[[checks]]
+check_id = "VV-11"
+title = "Preload target accuracy"
+category = "fem_physics"
+criterion_type = "hard"
+cadence = "every_accepted_case"
+evidence = "Mean of under-head, nut-bearing and member-interface clamp-force measurements."
+criterion = "Mean physical clamp force must lie within ?1% of the resolved case target."
+reference_ids = []
+current_run_applicable = true
+thresholds = { target_relative = 0.01 }
+
+[[checks]]
+check_id = "VV-12"
+title = "Clamp-plane equilibrium"
+category = "fem_physics"
+criterion_type = "hard"
+cadence = "every_accepted_case"
+evidence = "Under-head, nut-bearing and member-interface clamp-force consistency."
+criterion = "Relative spread between physical clamp-force planes must not exceed 0.5%."
+reference_ids = []
+current_run_applicable = true
+thresholds = { spread_relative = 0.005 }
+
+[[checks]]
+check_id = "VV-13"
+title = "Native threaded load transfer"
+category = "fem_physics"
+criterion_type = "hard"
+cadence = "every_accepted_case"
+evidence = "Native CalculiX thread-contact normal-force evidence."
+criterion = "Thread contact must carry positive physical normal force and satisfy the governed generic FEM physics-acceptance policy."
+reference_ids = []
+current_run_applicable = true
+
+[[checks]]
+check_id = "VV-14"
+title = "Physical axial deformation signs"
+category = "fem_physics"
+criterion_type = "hard"
+cadence = "every_accepted_case"
+evidence = "FEM displacement-derived bolt mechanical extension and member-stack shortening."
+criterion = "Bolt mechanical extension must be positive and member-stack shortening must be positive."
+reference_ids = ["VDI-2230-1-2015", "NASA-TM-106943"]
+current_run_applicable = true
+
+[[checks]]
+check_id = "VV-15"
+title = "Intended thread-flank dominance"
+category = "fem_physics"
+criterion_type = "hard"
+cadence = "every_accepted_case"
+evidence = "Resolved assembly flank direction versus FEM engaged-thread stress/contact state."
+criterion = "The case-derived intended bearing flank must satisfy the existing governed flank-dominance acceptance policy."
+reference_ids = []
+current_run_applicable = true
+
+[[checks]]
+check_id = "VV-16"
+title = "Nonlinear numerical completion"
+category = "numerics"
+criterion_type = "hard"
+cadence = "every_solver_execution"
+evidence = "Process return code, Job finished marker, accepted-increment history, attempts, iterations and classified retries/cutbacks."
+criterion = "Process return code must be zero, Job finished must be present and nonlinear completion history must be valid. Retries/cutbacks may only occur under the governed retry policy and must never be hidden."
+reference_ids = []
+current_run_applicable = true
+
+# ---------------------------------------------------------------------------
+# SOLVE REUSE / COMPUTATIONAL EFFICIENCY
+# ---------------------------------------------------------------------------
+
+[[checks]]
+check_id = "VV-17"
+title = "Calibration-solve to production-solve reuse certificate"
+category = "reuse"
+criterion_type = "hard"
+cadence = "every_reused_solution"
+evidence = "Canonical operative deck plus mesh hash, solver/version, backend policy, materials, contact/friction, BC/guidance, nonlinear controls and actuator/load state."
+criterion = "An accepted calibration solution may stand as the production solution only when all physics-affecting solver semantics and artifacts are proven equivalent. Any uncertainty fails closed to a fresh solve."
+reference_ids = []
+current_run_applicable = true
+
+[[checks]]
+check_id = "VV-18"
+title = "Reuse fail-safe negative regression"
+category = "reuse"
+criterion_type = "hard"
+cadence = "every_release"
+evidence = "Deliberate mutations of physics-affecting inputs."
+criterion = "Changes to preload/thermal actuator state, friction, material, mesh, contact topology, boundary/guidance conditions or nonlinear step controls must invalidate reuse."
+reference_ids = []
+current_run_applicable = false
+
+# ---------------------------------------------------------------------------
+# INDEPENDENT / SENTINEL VALIDATION
+# ---------------------------------------------------------------------------
+
+[[checks]]
+check_id = "VV-19"
+title = "Independent solver sentinel comparison"
+category = "cross_solver"
+criterion_type = "hard"
+cadence = "mandatory_phase5_sentinels"
+evidence = "CalculiX versus independently constructed ANSYS Mechanical model."
+criterion = "Before Phase-5 validation/generalisation is closed, P00_BASELINE_CONTROL, P03_ASYMMETRIC_GRIP and one production-domain boundary case must be independently reconstructed in ANSYS Mechanical. Clamp/deformation and free-span stress differences must not exceed 5%; integrated thread-load difference must not exceed 10%; qualitative load-transfer/flank behaviour must agree."
+reference_ids = ["VDI-2230-1-2015", "NASA-TM-106943"]
+current_run_applicable = false
+execution_phase = 5
+execution_checkpoint = "validation_generalisation"
+required_case_ids = ["P00_BASELINE_CONTROL", "P03_ASYMMETRIC_GRIP"]
+required_case_roles = ["PRODUCTION_DOMAIN_BOUNDARY_SENTINEL"]
+thresholds = { global_relative = 0.05, thread_load_relative = 0.10 }
+
+[[checks]]
+check_id = "VV-20"
+title = "Thread-load-distribution trend"
+category = "thread_distribution"
+criterion_type = "conditional"
+cadence = "selected_sentinel_cases"
+evidence = "ThreadROM analytical thread-distribution model versus FEM per-thread integrated contact/load distribution."
+criterion = "Qualitative concentration and decay trend must agree. A quantitative acceptance threshold may only be activated after the governed FEM per-thread extractor is certified."
+reference_ids = []
+current_run_applicable = false
+
+# ---------------------------------------------------------------------------
+# DOE / DATASET CERTIFICATION
+# ---------------------------------------------------------------------------
+
+[[checks]]
+check_id = "VV-21"
+title = "DOE declared-domain coverage"
+category = "dataset"
+criterion_type = "hard"
+cadence = "dataset_level"
+evidence = "Normalized raw and dimensionless parameter-space coverage metrics."
+criterion = "The declared production domain must include deliberate boundary/extreme coverage and must not contain uncontrolled unsampled regions according to the governed DOE policy."
+reference_ids = []
+current_run_applicable = false
+
+[[checks]]
+check_id = "VV-22"
+title = "Blind FEM holdout integrity"
+category = "dataset"
+criterion_type = "hard"
+cadence = "dataset_level"
+evidence = "Pre-registered holdout case identities and dataset membership audit."
+criterion = "Holdout cases must be selected and frozen before surrogate fitting and must not enter training before their blind scores are recorded."
+reference_ids = []
+current_run_applicable = false
+
+[[checks]]
+check_id = "VV-23"
+title = "Dataset sufficiency before freeze"
+category = "dataset"
+criterion_type = "hard"
+cadence = "before_dataset_freeze"
+evidence = "Pre-registered response-specific surrogate validation thresholds plus blind holdout/CV results."
+criterion = "A separate governed dataset-sufficiency threshold policy must be frozen before the first diagnostic surrogate fit. If any response fails its predeclared threshold, targeted FEM enrichment is required; the acceptance limit may not be relaxed after results are seen."
+reference_ids = []
+current_run_applicable = false
+gate_state = "BLOCKED_UNTIL_THRESHOLD_POLICY_FROZEN"
+
+[[checks]]
+check_id = "VV-24"
+title = "Experimental validation status"
+category = "experimental"
+criterion_type = "limitation"
+cadence = "project_level"
+evidence = "Physical test evidence for the exact ThreadROM joint family."
+criterion = "Phase 3 currently has no exact physical-test validation. This limitation must remain explicit and must never be represented as completed validation. Experimental validation is a future Phase-5 objective."
+reference_ids = ["NASA-RP-1228", "NASA-TM-106943"]
+current_run_applicable = false

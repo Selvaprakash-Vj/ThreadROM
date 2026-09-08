@@ -17,6 +17,10 @@ from threadrom.geometry.bolt_blank import (
 from threadrom.geometry.nut_blank import (
     NutBlankDefinition,
 )
+from threadrom.meshing.complete_joint_local_refinement import (
+    ResolvedCompleteJointLocalRefinement,
+    resolve_complete_joint_local_refinement_surface_tags,
+)
 from threadrom.meshing.complete_joint_mesh_definition import (
     CompleteJointMeshDefinition,
     ResolvedCompleteJointMeshSizes,
@@ -67,6 +71,14 @@ class GroupedCompleteJointMeshResult:
         JointMeshPhysicalGroupSummary,
         ...,
     ]
+
+    # Optional governed local-refinement provenance.
+    # None/zero means the legacy/base mesh path was used.
+    local_refinement_policy_id: str | None = None
+    local_refinement_surface_count: int = 0
+    local_refinement_size_mm: float | None = None
+    local_refinement_transition_distance_mm: float | None = None
+    local_refinement_sampling: int | None = None
 
     def element_count_for(
         self,
@@ -423,6 +435,117 @@ def validate_grouped_complete_joint_mesh(
             )
 
 
+
+# === GOVERNED COMPLETE-JOINT LOCAL REFINEMENT ===
+
+
+def _apply_complete_joint_local_refinement(
+    *,
+    refinement: ResolvedCompleteJointLocalRefinement,
+    classification: CompleteJointSurfaceClassificationResult,
+    sizes: ResolvedCompleteJointMeshSizes,
+) -> int:
+    """Apply governed semantic Distance -> Threshold refinement."""
+
+    if refinement.base_mesh_level != sizes.level_name:
+        raise ValueError(
+            "Local-refinement base mesh level does not match "
+            "the resolved complete-joint mesh level."
+        )
+
+    if (
+        refinement.local_size_mm <= 0.0
+        or refinement.local_size_mm
+        >= sizes.mesh_size_max_mm
+    ):
+        raise ValueError(
+            "Local-refinement size must be positive and below "
+            "the global maximum mesh size."
+        )
+
+    if refinement.transition_distance_mm <= 0.0:
+        raise ValueError(
+            "Local-refinement transition distance must be positive."
+        )
+
+    if refinement.distance_sampling <= 0:
+        raise ValueError(
+            "Local-refinement distance sampling must be positive."
+        )
+
+    resolved_surfaces = (
+        resolve_complete_joint_local_refinement_surface_tags(
+            refinement=refinement,
+            classification=classification,
+        )
+    )
+
+    surface_tags = list(
+        resolved_surfaces.all_surface_tags
+    )
+
+    if not surface_tags:
+        raise RuntimeError(
+            "Governed local refinement resolved no CAD surfaces."
+        )
+
+    distance_field = gmsh.model.mesh.field.add(
+        "Distance"
+    )
+
+    gmsh.model.mesh.field.setNumbers(
+        distance_field,
+        "SurfacesList",
+        surface_tags,
+    )
+
+    gmsh.model.mesh.field.setNumber(
+        distance_field,
+        "Sampling",
+        refinement.distance_sampling,
+    )
+
+    threshold_field = gmsh.model.mesh.field.add(
+        "Threshold"
+    )
+
+    gmsh.model.mesh.field.setNumber(
+        threshold_field,
+        "InField",
+        distance_field,
+    )
+
+    gmsh.model.mesh.field.setNumber(
+        threshold_field,
+        "SizeMin",
+        refinement.local_size_mm,
+    )
+
+    gmsh.model.mesh.field.setNumber(
+        threshold_field,
+        "SizeMax",
+        sizes.mesh_size_max_mm,
+    )
+
+    gmsh.model.mesh.field.setNumber(
+        threshold_field,
+        "DistMin",
+        0.0,
+    )
+
+    gmsh.model.mesh.field.setNumber(
+        threshold_field,
+        "DistMax",
+        refinement.transition_distance_mm,
+    )
+
+    gmsh.model.mesh.field.setAsBackgroundMesh(
+        threshold_field
+    )
+
+    return len(surface_tags)
+
+
 def generate_grouped_complete_joint_mesh(
     step_path: Path,
     msh_path: Path,
@@ -440,6 +563,10 @@ def generate_grouped_complete_joint_mesh(
     nut_classification_definition: (
         NutSurfaceClassificationDefinition
     ),
+    *,
+    local_refinement: (
+        ResolvedCompleteJointLocalRefinement | None
+    ) = None,
 ) -> GroupedCompleteJointMeshResult:
     """Generate the four-volume grouped assembly mesh."""
 
@@ -527,6 +654,7 @@ def generate_grouped_complete_joint_mesh(
     gmsh_node_count = 0
     gmsh_volume_element_count = 0
     gmsh_surface_element_count = 0
+    local_refinement_surface_count = 0
 
     try:
         gmsh.initialize()
@@ -587,6 +715,15 @@ def generate_grouped_complete_joint_mesh(
             nut_thread_points,
             sizes.nut_thread_surface_size_mm,
         )
+
+        if local_refinement is not None:
+            local_refinement_surface_count = (
+                _apply_complete_joint_local_refinement(
+                    refinement=local_refinement,
+                    classification=classification_result,
+                    sizes=sizes,
+                )
+            )
 
         gmsh.model.mesh.generate(3)
 
@@ -670,6 +807,29 @@ def generate_grouped_complete_joint_mesh(
         meshio_triangle_count=meshio_triangle_count,
         msh_file_size_bytes=msh_path.stat().st_size,
         physical_groups=physical_groups,
+        local_refinement_policy_id=(
+            None
+            if local_refinement is None
+            else local_refinement.policy_id
+        ),
+        local_refinement_surface_count=(
+            local_refinement_surface_count
+        ),
+        local_refinement_size_mm=(
+            None
+            if local_refinement is None
+            else local_refinement.local_size_mm
+        ),
+        local_refinement_transition_distance_mm=(
+            None
+            if local_refinement is None
+            else local_refinement.transition_distance_mm
+        ),
+        local_refinement_sampling=(
+            None
+            if local_refinement is None
+            else local_refinement.distance_sampling
+        ),
     )
 
     validate_grouped_complete_joint_mesh(

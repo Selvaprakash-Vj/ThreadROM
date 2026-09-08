@@ -1,0 +1,50 @@
+[identity]
+policy_id = "TRM-LRP-000001"
+policy_name = "medium_plus_v1"
+status = "development"
+
+[applicability]
+enabled = true
+base_mesh_level = "medium"
+refinement_kind = "surface_distance_threshold"
+
+[regions]
+# Semantic load-transfer regions only.
+#
+# No CAD entity IDs, node IDs, element IDs, coordinates, or
+# P04-specific geometry assumptions are permitted.
+
+bolt_regions = [
+    "under_head_bearing",
+]
+
+nut_regions = [
+    "lower_bearing",
+]
+
+member_regions = [
+    "head_member_head_bearing",
+    "nut_member_nut_bearing",
+    "head_member_interface",
+    "nut_member_interface",
+]
+
+[sizing]
+# Existing CP5 contact-focused refinement is promoted here into
+# governed configuration rather than retained as hidden literals.
+
+local_size_relative_to_global_max = 0.50
+transition_distance_relative_to_global_max = 0.15
+distance_sampling = 30
+
+# Medium+ deliberately leaves existing thread sizing unchanged.
+preserve_base_thread_refinement = true
+
+[verification]
+require_all_regions_resolved = true
+require_local_size_below_global_max = true
+require_positive_transition_distance = true
+
+# Mesh generation alone does not certify Medium+.
+# A governed P04 sentinel is required after mesh preflight.
+requires_p04_vv06_sentinel = true

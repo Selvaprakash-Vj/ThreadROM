@@ -1,0 +1,85 @@
+# ThreadROM Phase-3 CP8
+# P04 Medium+ mesh-policy physics sentinel.
+#
+# Frozen before any Medium+ CalculiX solve.
+# This contract supplements but does not replace the permanent
+# original VV06 fixed-input result or VV06-S1 screening record.
+
+[identity]
+policy_id = "TRM-P04-MP-SENTINEL-000001"
+policy_name = "p04_medium_plus_single_solve_v1"
+status = "frozen_before_solve"
+
+[case]
+case_id = "P04_RADIAL_GEOMETRY"
+case_hash = "ae87c6fcba1140a8e3b7ca4d7d170e4f0531fe3c931f0a28b6d9148ae8f0705d"
+
+[mesh]
+mesh_policy_id = "TRM-LRP-000001"
+mesh_policy_name = "medium_plus_v1"
+base_mesh_level = "medium"
+mesh_filename = "complete_joint_grouped_medium_plus_v1_first_order.msh"
+
+# Measured evidence only. These were not pre-frozen acceptance limits.
+node_count = 188960
+tetrahedron_count = 985634
+reference_medium_tetrahedron_count = 624982
+reference_fine_tetrahedron_count = 1684356
+
+[mesh.quality]
+status = "PASS"
+degenerate_count = 0
+mixed_orientation = false
+minimum_volume_mm3 = 4.707691399e-05
+minimum_mean_ratio = 0.053519098
+maximum_edge_ratio = 40.435962904
+
+[solve]
+solve_count_authorized = 1
+calibration_solve_authorized = false
+duplicate_production_solve_authorized = false
+
+# Reuse the exact fixed thermal actuator already evaluated on the
+# existing P04 medium and fine meshes.
+thermal_delta_c = -274.5213713136916
+
+# A completed accepted sentinel solve is itself the Medium+ physics
+# evidence. Do not rerun an identical production deck.
+reuse_accepted_sentinel_as_physics_evidence = true
+
+[comparison]
+reference_mesh = "fine"
+methodology_config = "config/fem_vv06_s1.toml"
+
+# Governing matched-preload comparisons.
+preload_targets_n = [18000.0, 19000.0, 19500.0]
+
+strict_monotonic_clamp_history_required = true
+extrapolation_allowed = false
+
+# If the Medium+ history does not cover a requested governing load,
+# that comparison is INDETERMINATE. No automatic second solve.
+missing_target_disposition = "INDETERMINATE"
+
+[acceptance.member_shortening]
+maximum_relative_difference_percent = 2.0
+
+[acceptance.bolt_free_span_mean_szz]
+maximum_relative_difference_percent = 3.0
+
+[acceptance.thread_normal_force]
+maximum_relative_difference_percent = 3.0
+
+[acceptance.flank]
+required_increments = [19, 20]
+expected_dominant_direction = "-Z-normal flank"
+minimum_dominance_ratio = 1.0
+
+[acceptance.overall]
+precedence = ["REJECT", "INDETERMINATE", "SUPPORT"]
+
+[provenance]
+original_vv06_fixed_input_preserved = true
+vv06_s1_medium_rejection_preserved = true
+global_fine_s2_solve_authorized = false
+automatic_recalibration_authorized = false

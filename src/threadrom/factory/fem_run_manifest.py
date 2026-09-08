@@ -105,7 +105,7 @@ class FemRunManifest:
     solver_name: str
     solver_version: str
     executable_relative_path: str
-    solver_timeout_seconds: int
+    solver_timeout_seconds: int | None
     started_at_utc: str
     finished_at_utc: str
     duration_seconds: float
@@ -156,9 +156,12 @@ class FemRunManifest:
                 "project-relative POSIX path."
             )
 
-        if self.solver_timeout_seconds <= 0:
+        if (
+            self.solver_timeout_seconds is not None
+            and self.solver_timeout_seconds <= 0
+        ):
             raise ValueError(
-                "Solver timeout must be positive."
+                "Solver timeout must be positive when specified."
             )
 
         if self.duration_seconds < 0.0:

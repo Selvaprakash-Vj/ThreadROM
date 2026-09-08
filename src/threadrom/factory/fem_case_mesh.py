@@ -16,6 +16,11 @@ from threadrom.factory.fem_case_preparation import (
 from threadrom.factory.geometry_adapter import (
     GeometryDefinitionBundle,
 )
+from threadrom.meshing.complete_joint_local_refinement import (
+    CompleteJointLocalRefinementPolicy,
+    ResolvedCompleteJointLocalRefinement,
+    resolve_complete_joint_local_refinement,
+)
 from threadrom.meshing.complete_joint_mesh_definition import (
     CompleteJointMeshDefinition,
     ResolvedCompleteJointMeshSizes,
@@ -51,6 +56,9 @@ class FemCaseMeshArtifact:
     step_path: Path
     msh_path: Path
     result: GroupedCompleteJointMeshResult
+    local_refinement: (
+        ResolvedCompleteJointLocalRefinement | None
+    ) = None
 
 
 def generate_fem_case_grouped_mesh(
@@ -71,6 +79,9 @@ def generate_fem_case_grouped_mesh(
     ),
     bolt_mesh_level_policy: MeshLevelPolicy,
     nut_mesh_level_policy: MeshLevelPolicy,
+    local_refinement_policy: (
+        CompleteJointLocalRefinementPolicy | None
+    ) = None,
 ) -> FemCaseMeshArtifact:
     """Generate and validate one case-specific grouped tetrahedral mesh."""
 
@@ -114,13 +125,34 @@ def generate_fem_case_grouped_mesh(
         nut_levels,
     )
 
+    # === OPTIONAL GOVERNED LOCAL REFINEMENT ===
+
+    resolved_local_refinement: (
+        ResolvedCompleteJointLocalRefinement | None
+    ) = None
+
+    if local_refinement_policy is not None:
+        resolved_local_refinement = (
+            resolve_complete_joint_local_refinement(
+                policy=local_refinement_policy,
+                base_mesh_level=sizes.level_name,
+                global_max_size_mm=sizes.mesh_size_max_mm,
+            )
+        )
+
+    mesh_variant_name = (
+        sizes.level_name
+        if resolved_local_refinement is None
+        else resolved_local_refinement.policy_name
+    )
+
     msh_path = (
         artifact_root
         / preparation.identity.run_id
         / "mesh"
         / (
             "complete_joint_grouped_"
-            f"{sizes.level_name}_first_order.msh"
+            f"{mesh_variant_name}_first_order.msh"
         )
     )
 
@@ -135,6 +167,7 @@ def generate_fem_case_grouped_mesh(
         definitions.joint_classification,
         definitions.bolt_classification,
         definitions.nut_classification,
+        local_refinement=resolved_local_refinement,
     )
 
     return FemCaseMeshArtifact(
@@ -145,4 +178,5 @@ def generate_fem_case_grouped_mesh(
         step_path=step_path,
         msh_path=msh_path,
         result=result,
+        local_refinement=resolved_local_refinement,
     )

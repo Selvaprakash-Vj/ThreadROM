@@ -1,0 +1,247 @@
+# ThreadROM Phase 3 CP8
+# Governed Dataset Sufficiency Policy
+#
+# This policy satisfies VV-23:
+#   - frozen before the first diagnostic surrogate fit
+#   - response-specific thresholds are pre-registered
+#   - thresholds may not be relaxed after results are observed
+#   - targeted FEM enrichment is required when a response fails
+#
+# The thresholds below deliberately reserve part of the numerical
+# discretisation/error budget for the surrogate itself.
+#
+# Existing governed mesh-response tolerances:
+#   member shortening             <= 2%
+#   bolt free-span mean SZZ       <= 3%
+#   thread normal force           <= 3%
+#
+# Realized clamp force is retained as a mandatory physical-state
+# coordinate, NOT scored as one of the VV-23 structural responses.
+
+[identity]
+policy_id = "TRM-DSUF-000001"
+policy_name = "phase3_dataset_sufficiency_v1"
+schema_version = 1
+status = "frozen"
+
+[governance]
+phase = 3
+checkpoint = 8
+verification_check_id = "VV-23"
+
+production_doe_policy_id = "TRM-PDOE-000001"
+production_doe_contract = "config/phase3_production_doe.toml"
+production_doe_contract_sha256 = "43032557cb2abead0118362bcfc6a9b2e5246a7d363ca83eef5fcf35054befc1"
+
+frozen_before_first_diagnostic_surrogate_fit = true
+post_hoc_threshold_relaxation_forbidden = true
+response_threshold_deletion_after_results_forbidden = true
+
+solver_launch_authorized = false
+diagnostic_surrogate_fit_authorized_now = false
+
+
+# ------------------------------------------------------------------
+# DATASET ELIGIBILITY
+# ------------------------------------------------------------------
+
+[dataset]
+required_training_rows = 24
+required_blind_holdout_rows = 6
+
+existing_certified_rows_may_count_toward_training_total = true
+
+all_training_rows_require_valid_fem_physics_state = true
+all_holdout_rows_require_valid_fem_physics_state = true
+
+case_hash_uniqueness_required = true
+duplicate_physical_state_rows_forbidden = true
+
+raw_physical_inputs_required = true
+normalized_coordinates_required = true
+dimensionless_features_required = true
+
+requested_preload_required = true
+realized_mean_clamp_force_required = true
+
+mesh_provenance_required = true
+calibration_provenance_required = true
+solver_provenance_required = true
+physics_acceptance_required = true
+convergence_evidence_required = true
+artifact_hashes_required = true
+
+# A converged solve that misses its requested actuator target is not
+# automatically discarded. Its realized state is preserved, but it
+# must still satisfy normal physics/data eligibility requirements.
+valid_realized_state_preservation_required = true
+
+
+# ------------------------------------------------------------------
+# CROSS-VALIDATION
+# ------------------------------------------------------------------
+
+[cross_validation]
+method = "leave_one_out"
+training_rows_only = true
+blind_holdouts_forbidden = true
+
+# Relative error:
+#   e_i = (prediction_i - FEM_i) / FEM_i
+#
+# RRMSE:
+#   sqrt(mean(e_i^2))
+#
+# Maximum error:
+#   max(abs(e_i))
+#
+# All three governed responses remain strictly positive throughout
+# the declared preload domain; zero denominators are invalid evidence.
+relative_error_definition = "prediction_minus_fem_over_fem"
+zero_reference_response_forbidden = true
+
+
+# ------------------------------------------------------------------
+# BLIND HOLDOUT EVALUATION
+# ------------------------------------------------------------------
+
+[blind_holdout]
+holdout_count = 6
+
+identities_frozen_before_fit = true
+training_membership_before_blind_scoring_forbidden = true
+
+relative_error_definition = "prediction_minus_fem_over_fem"
+zero_reference_response_forbidden = true
+
+# Every pre-registered holdout must receive a blind prediction before
+# it can ever become eligible for later training/enrichment use.
+blind_prediction_required_before_membership_change = true
+
+
+# ------------------------------------------------------------------
+# GOVERNED RESPONSE SET
+# ------------------------------------------------------------------
+#
+# Realized mean clamp force is NOT listed here because the existing
+# VV06-S1 methodology explicitly treats it as the interpolation/state
+# axis rather than a response metric.
+
+[[responses]]
+response_id = "member_shortening"
+dataset_field = "member_shortening_mm"
+unit = "mm"
+
+numerical_certification_relative_limit = 0.02
+
+cross_validation_rrmse_max = 0.01
+cross_validation_max_absolute_relative_error = 0.02
+
+blind_holdout_rrmse_max = 0.015
+blind_holdout_max_absolute_relative_error = 0.02
+
+[[responses]]
+response_id = "bolt_free_span_mean_szz"
+dataset_field = "bolt_free_span_mean_szz_mpa"
+unit = "MPa"
+
+numerical_certification_relative_limit = 0.03
+
+cross_validation_rrmse_max = 0.015
+cross_validation_max_absolute_relative_error = 0.03
+
+blind_holdout_rrmse_max = 0.02
+blind_holdout_max_absolute_relative_error = 0.03
+
+[[responses]]
+response_id = "thread_normal_force"
+dataset_field = "thread_normal_force_n"
+unit = "N"
+
+numerical_certification_relative_limit = 0.03
+
+cross_validation_rrmse_max = 0.015
+cross_validation_max_absolute_relative_error = 0.03
+
+blind_holdout_rrmse_max = 0.02
+blind_holdout_max_absolute_relative_error = 0.03
+
+
+# ------------------------------------------------------------------
+# NON-REGRESSION PHYSICS GATES
+# ------------------------------------------------------------------
+
+[physics_gates]
+# These remain FEM/data eligibility gates rather than surrogate
+# regression targets.
+
+physics_acceptance_pass_required = true
+intended_thread_flank_required = true
+intended_thread_flank_normal_family = "negative_z"
+thread_flank_dominance_ratio_minimum = 1.0
+
+solver_normal_completion_required = true
+accepted_increment_history_required = true
+
+
+# ------------------------------------------------------------------
+# SUFFICIENCY DISPOSITION
+# ------------------------------------------------------------------
+
+[disposition]
+all_response_cross_validation_gates_required = true
+all_response_blind_holdout_gates_required = true
+
+required_training_row_count_gate = true
+required_blind_holdout_row_count_gate = true
+declared_domain_coverage_gate = true
+
+pass_disposition = "DATASET_SUFFICIENT_FOR_FREEZE"
+fail_disposition = "TARGETED_ENRICHMENT_REQUIRED"
+
+
+# ------------------------------------------------------------------
+# TARGETED ENRICHMENT
+# ------------------------------------------------------------------
+
+[enrichment]
+enabled = true
+
+minimum_additional_rows = 0
+maximum_additional_rows = 12
+
+trigger_on_any_response_threshold_failure = true
+trigger_on_domain_coverage_failure = true
+
+# Enrichment must target observed weak regions rather than launch a
+# second blanket DOE.
+blanket_second_campaign_forbidden = true
+
+selection_basis = [
+    "largest_governed_validation_error_region",
+    "declared_domain_coverage_gap",
+    "response_specific_error_concentration",
+]
+
+preserve_original_thresholds = true
+threshold_relaxation_forbidden = true
+
+# Blind holdouts are not silently consumed as training data merely
+# because they expose a difficult region. Their blind score remains
+# immutable evidence first.
+preserve_original_blind_scores = true
+
+
+# ------------------------------------------------------------------
+# DATASET FREEZE
+# ------------------------------------------------------------------
+
+[freeze]
+dataset_freeze_requires_sufficiency_pass = true
+dataset_freeze_before_blind_scoring_forbidden = true
+
+frozen_dataset_requires_manifest_hash = true
+frozen_dataset_requires_case_membership_audit = true
+frozen_dataset_requires_response_validation_record = true
+
+phase4_rom_training_on_certified_dataset_only = true

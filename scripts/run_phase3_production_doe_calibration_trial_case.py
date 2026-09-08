@@ -1,0 +1,530 @@
+﻿from __future__ import annotations
+
+import argparse
+import hashlib
+import json
+
+from pathlib import Path
+
+import threadrom.factory.fem_case_definition_bundle as bundle_mod
+
+from threadrom.factory.fem_solver_orchestrator import (
+    orchestrate_calculix_run,
+)
+from threadrom.factory.production_doe import (
+    build_phase3_production_doe,
+    load_phase3_production_doe_policy,
+)
+from threadrom.solver.calculix_job import (
+    CalculixJobDefinition,
+)
+from threadrom.solver.complete_joint_calculix_transfer import (
+    load_complete_joint_calculix_transfer_definition,
+)
+
+
+ROOT = Path(r"D:\ThreadROM")
+CONFIG = ROOT / "config"
+
+CAMPAIGN_ROOT = (
+    ROOT
+    / "simulations"
+    / "staging"
+    / "phase3_cp8_production_doe"
+    / "TRM-PDOE-C01"
+)
+
+DOE_POLICY_PATH = (
+    CONFIG
+    / "phase3_production_doe.toml"
+)
+
+CAMPAIGN_MANIFEST_PATH = (
+    CAMPAIGN_ROOT
+    / "production_doe_campaign_manifest.json"
+)
+
+PREPARATION_CERT_PATH = (
+    CAMPAIGN_ROOT
+    / "production_doe_preparation_certification_record.json"
+)
+
+WARM_KNOWLEDGE_PATH = (
+    CAMPAIGN_ROOT
+    / "production_doe_warm_start_knowledge_record.json"
+)
+
+SOLVER_ROOT = (
+    CAMPAIGN_ROOT
+    / "solver_preparation"
+)
+
+
+EXPECTED_DOE_POLICY_SHA256 = (
+    "43032557cb2abead0118362bcfc6a9b2e"
+    "5246a7d363ca83eef5fcf35054befc1"
+)
+
+EXPECTED_CAMPAIGN_SHA256 = (
+    "84516519bbb188664268936e2d116e133"
+    "431d90d037bed407ffb2d1fe92d2a67"
+)
+
+EXPECTED_PREPARATION_CERT_SHA256 = (
+    "ad49cc35b61e95147ae669f0f915b8d7a"
+    "e403145d098729e5540285f319befd5"
+)
+
+EXPECTED_WARM_KNOWLEDGE_SHA256 = (
+    "21e525db65d36a13ca6e2ee96514307f6"
+    "234b2518bd60423f872f6dfa6fae8f7"
+)
+
+
+def parse_arguments() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(
+        description=(
+            "Execute one already-prepared governed "
+            "Production DOE preload-calibration trial."
+        )
+    )
+
+    parser.add_argument(
+        "--case-id",
+        required=True,
+    )
+
+    parser.add_argument(
+        "--trial-index",
+        type=int,
+        choices=(1, 2, 3),
+        required=True,
+    )
+
+    return parser.parse_args()
+
+
+def sha256(path: Path) -> str:
+    if (
+        not path.is_file()
+        or path.stat().st_size <= 0
+    ):
+        raise FileNotFoundError(path)
+
+    digest = hashlib.sha256()
+
+    with path.open("rb") as stream:
+        for chunk in iter(
+            lambda: stream.read(8 * 1024 * 1024),
+            b"",
+        ):
+            digest.update(chunk)
+
+    return digest.hexdigest()
+
+
+def require_sha256(
+    path: Path,
+    expected: str,
+    label: str,
+) -> str:
+    actual = sha256(path)
+
+    if actual != expected:
+        raise RuntimeError(
+            f"{label} drift detected.\n"
+            f"Expected: {expected}\n"
+            f"Actual  : {actual}\n"
+            f"Path    : {path}"
+        )
+
+    return actual
+
+
+def main() -> int:
+    args = parse_arguments()
+
+    # --------------------------------------------------
+    # GOVERNANCE
+    # --------------------------------------------------
+
+    require_sha256(
+        DOE_POLICY_PATH,
+        EXPECTED_DOE_POLICY_SHA256,
+        "Production DOE policy",
+    )
+
+    require_sha256(
+        CAMPAIGN_MANIFEST_PATH,
+        EXPECTED_CAMPAIGN_SHA256,
+        "Production DOE campaign manifest",
+    )
+
+    require_sha256(
+        PREPARATION_CERT_PATH,
+        EXPECTED_PREPARATION_CERT_SHA256,
+        "Production DOE preparation certification",
+    )
+
+    require_sha256(
+        WARM_KNOWLEDGE_PATH,
+        EXPECTED_WARM_KNOWLEDGE_SHA256,
+        "Production DOE warm-start knowledge",
+    )
+
+    policy = (
+        load_phase3_production_doe_policy(
+            DOE_POLICY_PATH
+        )
+    )
+
+    campaign = (
+        build_phase3_production_doe(
+            policy
+        )
+    )
+
+    try:
+        doe_case = next(
+            item
+            for item in campaign.design_cases
+            if item.case_id == args.case_id
+        )
+    except StopIteration as exc:
+        raise RuntimeError(
+            "Requested case is not an authorized "
+            "Production DOE design case. "
+            "Holdouts remain inaccessible: "
+            f"{args.case_id}"
+        ) from exc
+
+    if doe_case.source_case_id is not None:
+        raise RuntimeError(
+            "Certified FEM anchors must not be rerun."
+        )
+
+    case_run_id = (
+        f"trm_fem_{doe_case.case_hash[:12]}"
+    )
+
+    trial_run_id = (
+        f"{case_run_id}_cal_{args.trial_index:02d}"
+    )
+
+    run_dir = (
+        SOLVER_ROOT
+        / case_run_id
+        / trial_run_id
+    )
+
+    # --------------------------------------------------
+    # BIND TO EXACT PREPARED TRIAL
+    # --------------------------------------------------
+
+    if args.trial_index == 1:
+        prep_record_path = (
+            run_dir
+            / "production_doe_solver_preparation_record.json"
+        )
+
+        expected_disposition = (
+            "PRODUCTION_DOE_TRIAL1_"
+            "SOLVER_PREPARATION_PASS"
+        )
+
+        trial_key = "trial_1"
+
+    else:
+        prep_record_path = (
+            run_dir
+            / "production_doe_calibration_solver_preparation_record.json"
+        )
+
+        expected_disposition = (
+            "PRODUCTION_DOE_NEXT_CALIBRATION_"
+            "SOLVER_PREPARATION_PASS"
+        )
+
+        trial_key = "next_trial"
+
+    prep_sidecar_path = (
+        prep_record_path.with_suffix(
+            ".sha256"
+        )
+    )
+
+    if not prep_record_path.is_file():
+        raise FileNotFoundError(
+            "FINAL governed solver-preparation "
+            f"record missing: {prep_record_path}"
+        )
+
+    if not prep_sidecar_path.is_file():
+        raise FileNotFoundError(
+            "Solver-preparation SHA sidecar missing: "
+            f"{prep_sidecar_path}"
+        )
+
+    prep = json.loads(
+        prep_record_path.read_text(
+            encoding="utf-8"
+        )
+    )
+
+    if prep["record_status"] != "FINAL":
+        raise RuntimeError(
+            "Solver-preparation record is not FINAL."
+        )
+
+    if (
+        prep["overall_disposition"]
+        != expected_disposition
+    ):
+        raise RuntimeError(
+            "Unexpected solver-preparation disposition."
+        )
+
+    if (
+        prep["case"]["case_id"]
+        != doe_case.case_id
+        or prep["case"]["case_hash"]
+        != doe_case.case_hash
+    ):
+        raise RuntimeError(
+            "Prepared calibration case identity mismatch."
+        )
+
+    if (
+        prep["fem_preflight"]["status"]
+        != "PASS"
+    ):
+        raise RuntimeError(
+            "Prepared calibration FEM preflight "
+            "is not PASS."
+        )
+
+    if (
+        prep["solve_authorization"]["calculix_invoked"]
+        is not False
+        or prep["solve_authorization"][
+            "solver_authorized_by_this_script"
+        ]
+        is not False
+        or prep["solve_authorization"]["holdout_accessed"]
+        is not False
+    ):
+        raise RuntimeError(
+            "Prepared calibration provenance "
+            "is not clean."
+        )
+
+    trial = prep[trial_key]
+
+    if (
+        int(trial["trial_index"])
+        != args.trial_index
+    ):
+        raise RuntimeError(
+            "Prepared trial index mismatch."
+        )
+
+    if (
+        trial["run_id"]
+        != trial_run_id
+    ):
+        raise RuntimeError(
+            "Prepared trial run identity mismatch."
+        )
+
+    input_path = (
+        ROOT
+        / prep["deck"]["relative_path"]
+    )
+
+    actual_deck_hash = sha256(
+        input_path
+    )
+
+    if (
+        actual_deck_hash
+        != prep["deck"]["sha256"]
+    ):
+        raise RuntimeError(
+            "Prepared calibration deck hash drift."
+        )
+
+    if (
+        input_path.stat().st_size
+        != prep["deck"]["size_bytes"]
+    ):
+        raise RuntimeError(
+            "Prepared calibration deck size drift."
+        )
+
+    if input_path.name != f"{trial_run_id}.inp":
+        raise RuntimeError(
+            "Prepared trial/deck filename mismatch."
+        )
+
+    # --------------------------------------------------
+    # DUPLICATE-SOLVE GUARD
+    # --------------------------------------------------
+
+    manifest_path = (
+        run_dir
+        / "fem_run_manifest.json"
+    )
+
+    if manifest_path.exists():
+        raise RuntimeError(
+            "FEM run manifest already exists. "
+            "Refusing accidental duplicate solve: "
+            f"{manifest_path}"
+        )
+
+    # --------------------------------------------------
+    # CERTIFIED SOLVER BACKEND
+    # --------------------------------------------------
+
+    transfer = (
+        load_complete_joint_calculix_transfer_definition(
+            CONFIG
+            / "complete_joint_calculix_transfer.toml"
+        )
+    )
+
+    backend = (
+        bundle_mod
+        .PHASE2_CERTIFIED_FEM_PROFILE
+        .backend
+    )
+
+    definition = CalculixJobDefinition(
+        executable_relative_path=(
+            transfer.executable_relative_path
+        ),
+        job_name=trial_run_id,
+        timeout_seconds=None,
+    )
+
+    print("=" * 124, flush=True)
+    print(
+        "THREADROM — PRODUCTION DOE CALIBRATION FEM START",
+        flush=True,
+    )
+    print("=" * 124, flush=True)
+
+    print(
+        "Case ID       :",
+        doe_case.case_id,
+        flush=True,
+    )
+
+    print(
+        "Case hash     :",
+        doe_case.case_hash,
+        flush=True,
+    )
+
+    print(
+        "Trial index   :",
+        args.trial_index,
+        flush=True,
+    )
+
+    print(
+        "Trial run ID  :",
+        trial_run_id,
+        flush=True,
+    )
+
+    print(
+        "Trial source  :",
+        trial["source"],
+        flush=True,
+    )
+
+    print(
+        "Trial dT C    :",
+        trial["delta_temperature_c"],
+        flush=True,
+    )
+
+    print(
+        "Deck SHA256   :",
+        actual_deck_hash,
+        flush=True,
+    )
+
+    print(
+        "Timeout       : NONE",
+        flush=True,
+    )
+
+    print(
+        "Manifest      :",
+        manifest_path,
+        flush=True,
+    )
+
+    print("=" * 124, flush=True)
+
+    result = orchestrate_calculix_run(
+        project_root=ROOT,
+        input_path=input_path,
+        definition=definition,
+        run_id=trial_run_id,
+        case_hash=doe_case.case_hash,
+        backend_policy_id=backend.policy_id,
+        solver_name=backend.solver_name,
+        solver_version=backend.solver_version,
+        manifest_path=manifest_path,
+    )
+
+    print()
+    print("=" * 124, flush=True)
+    print(
+        "THREADROM — PRODUCTION DOE CALIBRATION FEM FINISHED",
+        flush=True,
+    )
+    print("=" * 124, flush=True)
+
+    print(
+        "Case ID      :",
+        doe_case.case_id,
+        flush=True,
+    )
+
+    print(
+        "Trial index  :",
+        args.trial_index,
+        flush=True,
+    )
+
+    print(
+        "Trial run ID :",
+        trial_run_id,
+        flush=True,
+    )
+
+    print(
+        "Disposition  :",
+        result.manifest.disposition,
+        flush=True,
+    )
+
+    print(
+        "Manifest     :",
+        result.manifest_path,
+        flush=True,
+    )
+
+    print("=" * 124, flush=True)
+
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(
+        main()
+    )

@@ -1,0 +1,124 @@
+﻿# ThreadROM Phase 3 CP8
+# Warm-Start Delta-T Predictor V2 Validation Policy
+#
+# Frozen before implementation and before retrospective V2 scoring.
+
+[identity]
+policy_id = "TRM-WSV2-000001"
+policy_name = "phase3_warm_start_delta_t_v2_validation"
+schema_version = 1
+status = "frozen"
+
+[scope]
+phase = 3
+checkpoint = 8
+campaign_id = "TRM-PDOE-C01"
+
+# V2 is a preload-calibration warm-start predictor only.
+# It does not alter FEM physics, contact, mesh, solver settings,
+# or governed preload acceptance criteria.
+predictor_scope = "first_trial_delta_temperature_only"
+
+[corner_surface]
+method = "exact_trilinear_interpolation"
+required_corner_count = 8
+normalized_dimension_order = [
+    "target_preload",
+    "head_member_thickness",
+    "radial_geometry_fraction",
+]
+
+# Every corner must be immutable accepted FEM evidence.
+solver_success_alone_is_insufficient = true
+governed_calibration_accept_required = true
+accepted_fem_evidence_record_required = true
+v2_anchor_eligibility_required = true
+
+[retrospective_sentinel]
+case_id = "D-INT-010"
+role = "RETROSPECTIVE_INTERIOR_VALIDATION_SENTINEL"
+
+# This is explicitly NOT a blind holdout.
+blind_holdout = false
+
+# Actual frozen coordinates:
+normalized_coordinates = [
+    0.3884259094216256,
+    0.5016032833852213,
+    0.7525408170679,
+]
+
+minimum_boundary_distance_observed = 0.2474591829321
+
+# "Meaningfully interior" means every coordinate must satisfy:
+#
+#   margin <= coordinate <= 1 - margin
+#
+# This prevents floating-point-near-boundary points from being
+# misclassified as true interior validation points.
+meaningful_interior_margin = 0.20
+
+[retrospective_delta_t]
+compare_predicted_to_accepted_delta_t = true
+report_absolute_error_c = true
+report_relative_error = true
+
+# Delta-T agreement alone does not prove preload acceptance.
+delta_t_error_alone_may_not_authorize_rollout = true
+
+[retrospective_force_proxy]
+enabled = true
+
+# Force proxy may only be evaluated by interpolation between the
+# sentinel's two real FEM calibration observations.
+#
+# Implementation must use:
+#
+#   lo, hi = sorted((trial1_delta_t, trial2_delta_t))
+#   lo <= predicted_delta_t <= hi
+#
+sorted_trial_bracket_required = true
+extrapolation_forbidden = true
+
+eligible_basis_label = "INTERPOLATED_RETROSPECTIVE_FORCE_PROXY"
+
+[verdicts]
+allowed = [
+    "PROXY_PASS",
+    "PROXY_FAIL",
+    "INDETERMINATE",
+]
+
+# INDETERMINATE is mandatory if any required evidence or
+# interpolation assumption fails.
+outside_meaningful_interior_region = "INDETERMINATE"
+force_proxy_requires_extrapolation = "INDETERMINATE"
+missing_certified_corner_evidence = "INDETERMINATE"
+
+[deployment]
+# A retrospective proxy result can never authorize general rollout.
+proxy_pass_authorizes_rollout = false
+
+# One previously unsolved Production DOE design case must receive
+# a frozen V2 prediction before its FEM solve.
+prospective_fem_confirmation_required = true
+
+prospective_success_label = "PROSPECTIVE_PASS"
+
+# Existing preload target tolerance remains unchanged.
+prospective_first_shot_target_relative_tolerance = 0.01
+
+# Only a genuine first-shot prospective FEM PASS may authorize
+# V2 use for the remaining covered-domain Production DOE campaign.
+prospective_pass_required_for_rollout = true
+
+[holdouts]
+blind_holdout_case_ids = [
+    "H01",
+    "H02",
+    "H03",
+    "H04",
+    "H05",
+    "H06",
+]
+blind_holdouts_must_remain_sealed = true

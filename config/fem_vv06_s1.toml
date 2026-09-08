@@ -1,0 +1,122 @@
+policy_id = "vv06_s1_matched_preload_screening_v1"
+
+# Supplemental screening only.
+# This policy MUST NOT overwrite or reinterpret the original VV06 result.
+supplements_vv06 = true
+replaces_vv06 = false
+
+# Numerical safety floor used only in the conservative d_high denominator.
+epsilon = 1.0e-12
+
+# Realized clamp-force comparison points.
+comparison_preload_kn = [5.0, 10.0, 15.0, 18.0, 19.0, 19.5]
+governing_preload_kn = [18.0, 19.0, 19.5]
+
+# Force-based interpolation is valid only on strictly monotonic accepted histories.
+require_strict_clamp_monotonicity = true
+allow_extrapolation = false
+
+# Clamp force is the interpolation axis, NOT an S1 response metric.
+clamp_force_definition = "three_path_mean_absolute_normal_force"
+interpolation_axis = "realized_clamp_force_n"
+
+
+[response_tolerances]
+
+member_shortening_relative = 0.02
+bolt_free_span_mean_szz_relative = 0.03
+thread_normal_force_relative = 0.03
+
+
+[interpolation]
+
+primary_method = "two_point_linear"
+cross_check_method = "local_three_point_quadratic"
+
+# Quadratic estimate may be used only as interpolation, never extrapolation.
+quadratic_require_finite_distinct_forces = true
+quadratic_require_target_inside_force_range = true
+
+# If a valid quadratic cross-check cannot be formed:
+# U_Q = |Q_upper - Q_lower|
+fallback_uncertainty = "full_linear_bracket_response_span"
+
+# Medium/fine uncertainties combine conservatively:
+# U = U_medium + U_fine
+uncertainty_combination = "worst_case_additive"
+
+
+[uncertainty_band]
+
+# D = |Q_fine - Q_medium|
+#
+# d_low =
+#   max(0, D - U) /
+#   (|Q_medium| + U_medium)
+#
+# d_high =
+#   (D + U) /
+#   max(|Q_medium| - U_medium, epsilon)
+
+lower_bound_formula = "conservative_relative_lower_v1"
+upper_bound_formula = "conservative_relative_upper_v1"
+
+
+[decision]
+
+# Per metric / governing point:
+#
+# SUPPORT       if d_high <= tolerance
+# REJECT        if d_low  > tolerance
+# INDETERMINATE otherwise
+#
+# Overall precedence:
+# any REJECT > any INDETERMINATE > unanimous SUPPORT
+
+support_requires_all_governing_metrics_and_points = true
+reject_if_any_governing_metric_point_rejects = true
+indeterminate_if_no_reject_and_any_indeterminate = true
+precedence = ["reject", "indeterminate", "support"]
+
+support_disposition = "S1_SUPPORTS_CONFIRMATION"
+reject_disposition = "S1_REJECTS_MEDIUM_FOR_P04"
+indeterminate_disposition = "S1_INDETERMINATE"
+
+
+[flank_gate]
+
+# Direct FEM states only. Never interpolate flank identity.
+direct_only = true
+required_increments = [19, 20]
+
+expected_dominant_flank = "-Z-normal flank"
+minimum_dominance_ratio = 1.0
+
+mismatch_disposition = "reject"
+missing_evidence_disposition = "indeterminate"
+
+
+[provenance]
+
+label_direct_vs_interpolated = true
+
+record_dataset_sequence = true
+record_step = true
+record_increment = true
+record_time = true
+
+record_lower_bracket_increment = true
+record_upper_bracket_increment = true
+record_lower_bracket_force_n = true
+record_upper_bracket_force_n = true
+record_interpolation_fraction = true
+
+record_linear_value = true
+record_quadratic_value_when_available = true
+record_per_mesh_interpolation_uncertainty = true
+
+record_relative_difference_nominal = true
+record_relative_difference_lower_bound = true
+record_relative_difference_upper_bound = true
+
+preserve_original_vv06_result = true
