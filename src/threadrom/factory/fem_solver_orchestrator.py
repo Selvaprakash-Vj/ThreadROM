@@ -398,6 +398,10 @@ def _collect_workspace_artifacts(
             directory / f"{job_name}.cvg",
         ),
         (
+            FemRunArtifactRole.ROUT,
+            directory / f"{job_name}.rout",
+        ),
+        (
             FemRunArtifactRole.STDOUT,
             directory / f"{job_name}.stdout.log",
         ),
@@ -517,6 +521,14 @@ def _collect_run_artifacts(
         (
             FemRunArtifactRole.CVG,
             cvg_path,
+            False,
+        ),
+        (
+            FemRunArtifactRole.ROUT,
+            (
+                run_result.input_path.parent
+                / f"{job_name}.rout"
+            ),
             False,
         ),
         (

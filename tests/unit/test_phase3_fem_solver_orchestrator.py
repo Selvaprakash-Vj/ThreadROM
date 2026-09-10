@@ -47,6 +47,7 @@ def _fake_successful_solver(
     frd = directory / f"{job}.frd"
     sta = directory / f"{job}.sta"
     cvg = directory / f"{job}.cvg"
+    rout = directory / f"{job}.rout"
     stdout = directory / f"{job}.stdout.log"
     stderr = directory / f"{job}.stderr.log"
 
@@ -54,6 +55,7 @@ def _fake_successful_solver(
     frd.write_bytes(b"frd-result")
     sta.write_bytes(b"sta-result")
     cvg.write_bytes(b"cvg-result")
+    rout.write_bytes(b"restart-state")
     stdout.write_text(
         "Job finished\n",
         encoding="utf-8",
@@ -186,6 +188,24 @@ def test_successful_orchestration_persists_complete_manifest(
         b"input-deck"
     ).hexdigest()
 
+    restart_artifact = next(
+        artifact
+        for artifact in result.manifest.artifacts
+        if artifact.role is FemRunArtifactRole.ROUT
+    )
+
+    assert restart_artifact.relative_path == (
+        "runs/run_001.rout"
+    )
+
+    assert restart_artifact.size_bytes == len(
+        b"restart-state"
+    )
+
+    assert restart_artifact.sha256 == hashlib.sha256(
+        b"restart-state"
+    ).hexdigest()
+
 
 def test_cvg_is_optional_for_generic_successful_run(
     tmp_path: Path,
@@ -239,6 +259,60 @@ def test_cvg_is_optional_for_generic_successful_run(
     }
 
     assert FemRunArtifactRole.CVG not in roles
+
+
+def test_rout_is_optional_for_non_restart_run(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    run_dir = tmp_path / "runs"
+    run_dir.mkdir()
+
+    input_path = run_dir / "run_001.inp"
+    input_path.write_bytes(b"input")
+
+    def fake_without_rout(
+        *,
+        project_root: Path,
+        input_path: Path,
+        definition: CalculixJobDefinition,
+    ) -> CalculixRunResult:
+        result = _fake_successful_solver(
+            project_root=project_root,
+            input_path=input_path,
+            definition=definition,
+        )
+
+        (
+            input_path.parent
+            / "run_001.rout"
+        ).unlink()
+
+        return result
+
+    monkeypatch.setattr(
+        orchestrator,
+        "run_calculix_job",
+        fake_without_rout,
+    )
+
+    result = orchestrator.orchestrate_successful_calculix_run(
+        project_root=tmp_path,
+        input_path=input_path,
+        definition=_definition(),
+        run_id="run_001",
+        case_hash=_CASE_HASH,
+        backend_policy_id="backend_v1",
+        solver_name="CalculiX",
+        solver_version="2.23",
+    )
+
+    roles = {
+        artifact.role
+        for artifact in result.manifest.artifacts
+    }
+
+    assert FemRunArtifactRole.ROUT not in roles
 
 
 def test_run_identity_must_match_job_name(

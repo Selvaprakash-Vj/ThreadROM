@@ -1,4 +1,4 @@
-﻿"""Governed FEM reproduction policy for the certified Phase-2 baseline."""
+"""Governed FEM reproduction policy for the certified Phase-2 baseline."""
 
 from __future__ import annotations
 
@@ -52,6 +52,51 @@ class FemStaticStepPolicy:
             raise ValueError(
                 "minimum_increment cannot exceed maximum_increment."
             )
+
+
+@dataclass(frozen=True, slots=True)
+class FemExecutionResiliencePolicy:
+    """Execution-only checkpoint/restart governance.
+
+    This policy is deliberately separate from FemBackendPolicy so
+    restart resilience cannot mutate the certified Phase-2 physics
+    backend identity.
+    """
+
+    policy_id: str
+    checkpoint_count: int
+    write_enabled: bool
+    write_frequency_steps: int
+    overlay_latest: bool
+    preserve_total_pseudo_time: bool = True
+
+    def __post_init__(self) -> None:
+        if not self.policy_id.strip():
+            raise ValueError(
+                "Execution-resilience policy_id must not be blank."
+            )
+        if self.checkpoint_count <= 0:
+            raise ValueError(
+                "Execution-resilience checkpoint_count must be positive."
+            )
+        if self.write_frequency_steps <= 0:
+            raise ValueError(
+                "Restart-write frequency must be positive."
+            )
+        if self.write_frequency_steps > self.checkpoint_count:
+            raise ValueError(
+                "Restart-write frequency cannot exceed checkpoint count."
+            )
+
+    @property
+    def checkpoint_fractions(self) -> tuple[float, ...]:
+        return tuple(
+            checkpoint_index / self.checkpoint_count
+            for checkpoint_index in range(
+                1,
+                self.checkpoint_count + 1,
+            )
+        )
 
 
 @dataclass(frozen=True, slots=True)
@@ -202,6 +247,20 @@ class FemReproductionProfile:
 
     backend: FemBackendPolicy
     oracle: FemCertificationOracle
+
+
+PHASE3_CP8_EXECUTION_RESILIENCE = (
+    FemExecutionResiliencePolicy(
+        policy_id=(
+            "phase3_cp8_thermal_calibration_restart_v2_windows_nonoverlay"
+        ),
+        checkpoint_count=20,
+        write_enabled=True,
+        write_frequency_steps=1,
+        overlay_latest=False,
+        preserve_total_pseudo_time=True,
+    )
+)
 
 
 PHASE2_CERTIFIED_FEM_PROFILE = FemReproductionProfile(

@@ -1,4 +1,4 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 
 import argparse
 import dataclasses
@@ -31,6 +31,8 @@ from threadrom.factory.fem_preload_calibration_measurement import (
     extract_clamp_force_measurement_from_dat,
 )
 from threadrom.factory.preload_calibration_campaign import (
+    PreloadCalibrationTrial,
+    PreloadCalibrationTrialSource,
     derive_fem_warm_start_preload_calibration_trial,
     evaluate_preload_calibration_trial,
 )
@@ -438,47 +440,384 @@ def main() -> int:
     # TRIAL-1 ROOT PROVENANCE
     # --------------------------------------------------
 
-    trial1_run_id = (
-        f"{case_run_id}_cal_01"
+    rollout_cert_path = (
+        CAMPAIGN_ROOT
+        / "warm_start_delta_t_v2_1_rollout_preparation_certification.json"
     )
 
-    trial1_dir = (
-        SOLVER_ROOT
-        / case_run_id
-        / trial1_run_id
+    expected_rollout_cert_sha256 = (
+        "a11662817427d9131b92f798e953d116"
+        "269ad672c49434365a75f68dac4709a7"
     )
 
-    trial1_prep_path = (
-        trial1_dir
-        / "production_doe_solver_preparation_record.json"
-    )
+    certified_rows = []
 
-    if not trial1_prep_path.is_file():
-        raise FileNotFoundError(
-            "Trial-1 solver-preparation record missing."
+    if rollout_cert_path.is_file():
+        actual_rollout_cert_sha256 = sha256(
+            rollout_cert_path
         )
 
-    trial1_prep = json.loads(
-        trial1_prep_path.read_text(
-            encoding="utf-8"
-        )
-    )
+        if (
+            actual_rollout_cert_sha256
+            != expected_rollout_cert_sha256
+        ):
+            raise RuntimeError(
+                "V2.1 rollout-certification SHA drift."
+            )
 
-    predicted_dt = float(
-        trial1_prep[
-            "warm_start_prediction"
-        ][
-            "predicted_delta_temperature_c"
+        rollout_cert = json.loads(
+            rollout_cert_path.read_text(
+                encoding="utf-8"
+            )
+        )
+
+        certified_rows = [
+            row
+            for row in rollout_cert[
+                "certified_rollout_cases"
+            ]
+            if row["case_id"] == doe_case.case_id
         ]
-    )
 
-    current_trial = (
-        derive_fem_warm_start_preload_calibration_trial(
-            predicted_delta_temperature_c=predicted_dt,
-            case_run_id=case_run_id,
+        if len(certified_rows) > 1:
+            raise RuntimeError(
+                "Multiple certified V2.1 rollout rows "
+                "exist for requested case."
+            )
+
+    if len(certified_rows) == 1:
+        certified = certified_rows[0]
+
+        if (
+            certified["case_hash"]
+            != doe_case.case_hash
+        ):
+            raise RuntimeError(
+                "Certified V2.1 case-hash drift."
+            )
+
+        trial1_run_id = (
+            f"{case_run_id}_cal_01_wsv21"
         )
-    )
 
+        if (
+            certified["run_id"]
+            != trial1_run_id
+        ):
+            raise RuntimeError(
+                "Certified V2.1 Trial-1 run-ID drift."
+            )
+
+        trial1_dir = (
+            SOLVER_ROOT
+            / case_run_id
+            / trial1_run_id
+        )
+
+        trial1_prep_path = (
+            ROOT
+            / certified[
+                "preparation_relative_path"
+            ]
+        )
+
+        if (
+            sha256(trial1_prep_path)
+            != certified[
+                "preparation_sha256"
+            ]
+        ):
+            raise RuntimeError(
+                "Certified V2.1 preparation SHA drift."
+            )
+
+        trial1_prep = json.loads(
+            trial1_prep_path.read_text(
+                encoding="utf-8"
+            )
+        )
+
+        if (
+            trial1_prep.get("record_status")
+            != "FINAL"
+            or trial1_prep.get(
+                "overall_disposition"
+            )
+            != (
+                "V2_1_ROLLOUT_CASE_PREPARATION_PASS_"
+                "AWAITING_BATCH_CERTIFICATION"
+            )
+        ):
+            raise RuntimeError(
+                "V2.1 Trial-1 preparation is not "
+                "the frozen FINAL PASS."
+            )
+
+        if (
+            trial1_prep["case"]["case_id"]
+            != doe_case.case_id
+            or trial1_prep["case"]["case_hash"]
+            != doe_case.case_hash
+            or trial1_prep["case"][
+                "v2_1_trial1_run_id"
+            ]
+            != trial1_run_id
+        ):
+            raise RuntimeError(
+                "V2.1 Trial-1 preparation identity drift."
+            )
+
+        if (
+            trial1_prep[
+                "fem_preflight"
+            ][
+                "status"
+            ]
+            != "PASS"
+            or trial1_prep[
+                "fem_preflight"
+            ][
+                "blocking_error_count"
+            ]
+            != 0
+        ):
+            raise RuntimeError(
+                "Certified V2.1 FEM preflight "
+                "is not PASS."
+            )
+
+        zero = trial1_prep[
+            "zero_solve_assertion"
+        ]
+
+        for field in (
+            "solver_outputs_detected",
+            "solver_results_read",
+            "calculix_invoked",
+            "solver_authorized_by_this_script",
+            "blind_holdout_accessed",
+            "v2_1_refit_performed",
+        ):
+            if zero.get(field) is not False:
+                raise RuntimeError(
+                    "Frozen V2.1 zero-solve "
+                    "provenance drift for "
+                    f"{field}."
+                )
+
+        prediction = trial1_prep[
+            "frozen_v2_1_prediction"
+        ]
+
+        if (
+            prediction.get(
+                "model_refit_performed"
+            )
+            is not False
+        ):
+            raise RuntimeError(
+                "V2.1 model-refit provenance drift."
+            )
+
+        predicted_dt = float(
+            certified[
+                "predicted_delta_temperature_c"
+            ]
+        )
+
+        if not math.isclose(
+            float(
+                prediction[
+                    "predicted_delta_temperature_c"
+                ]
+            ),
+            predicted_dt,
+            rel_tol=0.0,
+            abs_tol=1.0e-10,
+        ):
+            raise RuntimeError(
+                "Certified V2.1 prediction drift."
+            )
+
+        frozen_trial = trial1_prep[
+            "trial_1"
+        ]
+
+        if (
+            int(
+                frozen_trial[
+                    "trial_index"
+                ]
+            )
+            != 1
+            or frozen_trial["run_id"]
+            != trial1_run_id
+            or not math.isclose(
+                float(
+                    frozen_trial[
+                        "delta_temperature_c"
+                    ]
+                ),
+                predicted_dt,
+                rel_tol=0.0,
+                abs_tol=1.0e-10,
+            )
+        ):
+            raise RuntimeError(
+                "Frozen V2.1 Trial-1 identity/"
+                "temperature drift."
+            )
+
+        deck_path = (
+            ROOT
+            / certified[
+                "deck_relative_path"
+            ]
+        )
+
+        deck_sha = sha256(
+            deck_path
+        )
+
+        if (
+            deck_sha
+            != certified[
+                "deck_sha256"
+            ]
+            or deck_sha
+            != trial1_prep[
+                "deck"
+            ][
+                "sha256"
+            ]
+        ):
+            raise RuntimeError(
+                "Certified V2.1 Trial-1 "
+                "deck SHA drift."
+            )
+
+        if (
+            deck_path.stat().st_size
+            != int(
+                certified[
+                    "deck_size_bytes"
+                ]
+            )
+        ):
+            raise RuntimeError(
+                "Certified V2.1 Trial-1 "
+                "deck-size drift."
+            )
+
+        current_trial = (
+            PreloadCalibrationTrial(
+                trial_index=1,
+                run_id=trial1_run_id,
+                delta_temperature_c=(
+                    predicted_dt
+                ),
+                source=(
+                    PreloadCalibrationTrialSource
+                    .FEM_WARM_START
+                ),
+            )
+        )
+
+        root_trial_provenance = {
+            "mode": (
+                "certified_v2_1_first_shot"
+            ),
+            "run_id": trial1_run_id,
+            "preparation_relative_path": (
+                relative(
+                    trial1_prep_path
+                )
+            ),
+            "preparation_sha256": (
+                sha256(
+                    trial1_prep_path
+                )
+            ),
+            "rollout_certification_relative_path": (
+                relative(
+                    rollout_cert_path
+                )
+            ),
+            "rollout_certification_sha256": (
+                actual_rollout_cert_sha256
+            ),
+            "deck_relative_path": (
+                relative(
+                    deck_path
+                )
+            ),
+            "deck_sha256": deck_sha,
+            "v2_1_refit_performed": False,
+            "holdout_accessed": False,
+        }
+
+    else:
+        trial1_run_id = (
+            f"{case_run_id}_cal_01"
+        )
+
+        trial1_dir = (
+            SOLVER_ROOT
+            / case_run_id
+            / trial1_run_id
+        )
+
+        trial1_prep_path = (
+            trial1_dir
+            / "production_doe_solver_preparation_record.json"
+        )
+
+        if not trial1_prep_path.is_file():
+            raise FileNotFoundError(
+                "Trial-1 solver-preparation "
+                "record missing."
+            )
+
+        trial1_prep = json.loads(
+            trial1_prep_path.read_text(
+                encoding="utf-8"
+            )
+        )
+
+        predicted_dt = float(
+            trial1_prep[
+                "warm_start_prediction"
+            ][
+                "predicted_delta_temperature_c"
+            ]
+        )
+
+        current_trial = (
+            derive_fem_warm_start_preload_calibration_trial(
+                predicted_delta_temperature_c=(
+                    predicted_dt
+                ),
+                case_run_id=case_run_id,
+            )
+        )
+
+        root_trial_provenance = {
+            "mode": (
+                "legacy_canonical_trial_1"
+            ),
+            "run_id": trial1_run_id,
+            "preparation_relative_path": (
+                relative(
+                    trial1_prep_path
+                )
+            ),
+            "preparation_sha256": (
+                sha256(
+                    trial1_prep_path
+                )
+            ),
+            "holdout_accessed": False,
+        }
     # --------------------------------------------------
     # GOVERNED CALIBRATION HISTORY
     # --------------------------------------------------
@@ -756,6 +1095,10 @@ def main() -> int:
         ),
 
         "record_status": "FINAL",
+
+        "root_trial_provenance": (
+            root_trial_provenance
+        ),
 
         "case": {
             "case_id": doe_case.case_id,

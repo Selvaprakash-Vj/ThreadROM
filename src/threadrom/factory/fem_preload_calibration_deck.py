@@ -12,7 +12,9 @@ from threadrom.factory.fem_case_definition_bundle import (
 )
 from threadrom.factory.fem_profile import (
     FemBackendPolicy,
+    FemExecutionResiliencePolicy,
     PHASE2_CERTIFIED_FEM_PROFILE,
+    PHASE3_CP8_EXECUTION_RESILIENCE,
 )
 from threadrom.factory.preload_calibration_campaign import (
     PreloadCalibrationTrial,
@@ -66,6 +68,10 @@ class FemPreloadCalibrationDeckResult:
     trial_index: int
     delta_temperature_c: float
     applied_bolt_temperature_c: float
+    checkpoint_count: int
+    checkpoint_step_time: float
+    restart_write_count: int
+    execution_resilience_policy_id: str
     node_count: int
     element_count: int
     bolt_thermal_node_count: int
@@ -127,6 +133,9 @@ def write_fem_preload_calibration_trial_deck(
     input_path: Path,
     backend: FemBackendPolicy = (
         PHASE2_CERTIFIED_FEM_PROFILE.backend
+    ),
+    resilience: FemExecutionResiliencePolicy = (
+        PHASE3_CP8_EXECUTION_RESILIENCE
     ),
 ) -> FemPreloadCalibrationDeckResult:
     """Render one fresh nonlinear thermal-preload calibration trial.
@@ -305,27 +314,54 @@ def write_fem_preload_calibration_trial_deck(
         )
     )
 
-    bolt_temperature_lines = (
-        render_bolt_temperature_keywords(
-            state=state,
-            bolt_nodes_set_name=BOLT_THERMAL_SET,
-        )
-    )
-
     step = backend.step
 
-    step_lines: list[str] = [
-        (
-            "*STEP, NLGEOM=YES, "
-            f"INC={step.maximum_increments}"
-        ),
-        "*STATIC",
-        (
-            f"{step.initial_increment:.12e}, "
-            f"{step.total_time:.12e}, "
-            f"{step.minimum_increment:.12e}, "
-            f"{step.maximum_increment:.12e}"
-        ),
+    if not resilience.write_enabled:
+        raise ValueError(
+            "CP8 production calibration requires restart writes."
+        )
+
+    if not resilience.preserve_total_pseudo_time:
+        raise ValueError(
+            "CP8 thermal calibration must preserve total pseudo-time."
+        )
+
+    checkpoint_step_time = (
+        step.total_time
+        / resilience.checkpoint_count
+    )
+
+    if not math.isclose(
+        checkpoint_step_time,
+        step.initial_increment,
+        rel_tol=0.0,
+        abs_tol=1.0e-12,
+    ):
+        raise ValueError(
+            "CP8 checkpoint cadence drift: total_time/checkpoint_count "
+            "must equal the certified initial increment."
+        )
+
+    if not math.isclose(
+        checkpoint_step_time,
+        step.maximum_increment,
+        rel_tol=0.0,
+        abs_tol=1.0e-12,
+    ):
+        raise ValueError(
+            "CP8 checkpoint cadence drift: checkpoint step time "
+            "must equal the certified maximum increment."
+        )
+
+    restart_keyword = (
+        "*RESTART,WRITE,FREQUENCY="
+        f"{resilience.write_frequency_steps}"
+    )
+
+    if resilience.overlay_latest:
+        restart_keyword += ",OVERLAY"
+
+    boundary_step_lines = (
         "*BOUNDARY",
         f"{head_support.name}, 1, 3, 0.0",
         f"{BOLT_HEAD_GUIDANCE_REFERENCE}, 1, 2, 0.0",
@@ -336,7 +372,9 @@ def write_fem_preload_calibration_trial_deck(
         f"{BOLT_HEAD_ROTATION_Y_REFERENCE}, 1, 1, 0.0",
         f"{NUT_ROTATION_X_REFERENCE}, 1, 1, 0.0",
         f"{NUT_ROTATION_Y_REFERENCE}, 1, 1, 0.0",
-        *bolt_temperature_lines,
+    )
+
+    output_lines: list[str] = [
         (
             "*NODE PRINT, "
             f"NSET={head_support.name}, "
@@ -351,7 +389,7 @@ def write_fem_preload_calibration_trial_deck(
     ]
 
     for pair in bundle.contact.contact_pairs:
-        step_lines.extend(
+        output_lines.extend(
             (
                 (
                     "*CONTACT PRINT, FREQUENCY=1, "
@@ -362,12 +400,110 @@ def write_fem_preload_calibration_trial_deck(
             )
         )
 
-    step_lines.extend(
-        (
-            "*END STEP",
-            "",
+    step_lines: list[str] = []
+    checkpoint_states = []
+
+    for checkpoint_index, checkpoint_fraction in enumerate(
+        resilience.checkpoint_fractions,
+        start=1,
+    ):
+        checkpoint_state = (
+            derive_thermal_preload_actuator_state(
+                target_force_n=state.target_force_n,
+                reference_temperature_c=(
+                    state.reference_temperature_c
+                ),
+                delta_temperature_c=(
+                    state.delta_temperature_c
+                    * checkpoint_fraction
+                ),
+                expansion_coefficient_per_c=(
+                    state.expansion_coefficient_per_c
+                ),
+            )
         )
-    )
+
+        checkpoint_states.append(
+            checkpoint_state
+        )
+
+        checkpoint_temperature_lines = (
+            render_bolt_temperature_keywords(
+                state=checkpoint_state,
+                bolt_nodes_set_name=BOLT_THERMAL_SET,
+            )
+        )
+
+        step_lines.extend(
+            (
+                (
+                    f"** Step {checkpoint_index}: "
+                    "preload checkpoint "
+                    f"{checkpoint_fraction:.6f}"
+                ),
+                (
+                    "*STEP, NLGEOM=YES, "
+                    f"INC={step.maximum_increments}"
+                ),
+                "*STATIC",
+                (
+                    f"{checkpoint_step_time:.12e}, "
+                    f"{checkpoint_step_time:.12e}, "
+                    f"{step.minimum_increment:.12e}, "
+                    f"{checkpoint_step_time:.12e}"
+                ),
+            )
+        )
+
+        if checkpoint_index == 1:
+            step_lines.append(
+                restart_keyword
+            )
+            step_lines.extend(
+                boundary_step_lines
+            )
+
+        step_lines.extend(
+            checkpoint_temperature_lines
+        )
+
+        step_lines.extend(
+            output_lines
+        )
+
+        step_lines.extend(
+            (
+                "*END STEP",
+                "",
+            )
+        )
+
+    if len(checkpoint_states) != resilience.checkpoint_count:
+        raise RuntimeError(
+            "Rendered thermal checkpoint count drift."
+        )
+
+    final_checkpoint_state = checkpoint_states[-1]
+
+    if not math.isclose(
+        final_checkpoint_state.delta_temperature_c,
+        state.delta_temperature_c,
+        rel_tol=0.0,
+        abs_tol=1.0e-10,
+    ):
+        raise RuntimeError(
+            "Final checkpoint delta temperature drift."
+        )
+
+    if not math.isclose(
+        final_checkpoint_state.applied_bolt_temperature_c,
+        state.applied_bolt_temperature_c,
+        rel_tol=0.0,
+        abs_tol=1.0e-10,
+    ):
+        raise RuntimeError(
+            "Final checkpoint absolute bolt temperature drift."
+        )
 
     lines = [
         "** ------------------------------------------------------------",
@@ -375,6 +511,18 @@ def write_fem_preload_calibration_trial_deck(
         f"** Case run ID: {case_run_id}",
         f"** Calibration trial ID: {trial.run_id}",
         f"** Calibration trial index: {trial.trial_index}",
+        (
+            "** Execution resilience policy: "
+            f"{resilience.policy_id}"
+        ),
+        (
+            "** Thermal checkpoint count: "
+            f"{resilience.checkpoint_count}"
+        ),
+        (
+            "** Checkpoint step pseudo-time: "
+            f"{checkpoint_step_time:.12e}"
+        ),
         (
             "** Target preload N: "
             f"{state.target_force_n:.12e}"
@@ -412,7 +560,62 @@ def write_fem_preload_calibration_trial_deck(
         *step_lines,
     ]
 
-    payload = "\n".join(lines).encode(
+    rendered_text = "\n".join(lines)
+
+    written_step_count = rendered_text.count(
+        "*STEP,"
+    )
+    restart_write_count = rendered_text.count(
+        "*RESTART,WRITE"
+    )
+    temperature_count = rendered_text.count(
+        "*TEMPERATURE"
+    )
+
+    if (
+        written_step_count
+        != resilience.checkpoint_count
+    ):
+        raise RuntimeError(
+            "Written thermal-step count does not match "
+            "the governed checkpoint count."
+        )
+
+    expected_restart_write_count = int(
+        resilience.write_enabled
+    )
+
+    if (
+        restart_write_count
+        != expected_restart_write_count
+    ):
+        raise RuntimeError(
+            "Written restart-keyword count does not match "
+            "the governed execution-resilience policy."
+        )
+
+    if (
+        temperature_count
+        != resilience.checkpoint_count
+    ):
+        raise RuntimeError(
+            "Each governed thermal checkpoint must contain "
+            "exactly one bolt-temperature command."
+        )
+
+    if not math.isclose(
+        checkpoint_step_time
+        * resilience.checkpoint_count,
+        step.total_time,
+        rel_tol=0.0,
+        abs_tol=1.0e-12,
+    ):
+        raise RuntimeError(
+            "Checkpoint pseudo-time does not preserve "
+            "the certified total time."
+        )
+
+    payload = rendered_text.encode(
         "utf-8"
     )
 
@@ -436,6 +639,18 @@ def write_fem_preload_calibration_trial_deck(
         delta_temperature_c=state.delta_temperature_c,
         applied_bolt_temperature_c=(
             state.applied_bolt_temperature_c
+        ),
+        checkpoint_count=(
+            resilience.checkpoint_count
+        ),
+        checkpoint_step_time=(
+            checkpoint_step_time
+        ),
+        restart_write_count=(
+            restart_write_count
+        ),
+        execution_resilience_policy_id=(
+            resilience.policy_id
         ),
         node_count=model.node_count,
         element_count=model.element_count,

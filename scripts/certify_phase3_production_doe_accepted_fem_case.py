@@ -9,11 +9,16 @@ from enum import Enum
 from pathlib import Path
 
 from threadrom.case.resolver import resolve_case
+from threadrom.factory.fem_run_adjudication import (
+    verify_fem_run_adjudication,
+)
 from threadrom.factory.fem_preload_calibration_measurement import (
     extract_clamp_force_measurement_from_dat,
 )
 from threadrom.factory.preload_calibration_campaign import (
     PreloadCalibrationDisposition,
+    PreloadCalibrationTrial,
+    PreloadCalibrationTrialSource,
     derive_fem_warm_start_preload_calibration_trial,
     evaluate_preload_calibration_trial,
 )
@@ -60,6 +65,15 @@ PREPARATION_CERT_PATH = (
 WARM_KNOWLEDGE_PATH = (
     CAMPAIGN_ROOT
     / "production_doe_warm_start_knowledge_record.json"
+)
+
+
+RESTART_WRITE_ADJUDICATION_REASON = (
+    "CalculiX completed all 20 governed preload checkpoints "
+    "with return code 0 and Job finished, while restart-write "
+    "rename errors caused the original immutable run manifest "
+    "to retain solver_reported_error disposition. Independent "
+    "STA and ROUT evidence verifies the governed final state."
 )
 
 
@@ -175,6 +189,96 @@ def require_clean_manifest(
     return data
 
 
+def require_trial2_solver_evidence(
+    manifest_path: Path,
+    *,
+    expected_run_id: str,
+    expected_case_hash: str,
+) -> tuple[dict, dict]:
+    """Require either clean success or governed adjudication."""
+
+    data = json.loads(
+        manifest_path.read_text(
+            encoding="utf-8"
+        )
+    )
+
+    if data.get("run_id") != expected_run_id:
+        raise RuntimeError(
+            f"Run-ID mismatch in {manifest_path}"
+        )
+
+    if data.get("case_hash") != expected_case_hash:
+        raise RuntimeError(
+            f"Case-hash mismatch in {manifest_path}"
+        )
+
+    if data.get("disposition") == "succeeded":
+        clean = require_clean_manifest(
+            manifest_path,
+            expected_run_id=expected_run_id,
+            expected_case_hash=expected_case_hash,
+        )
+
+        return clean, {
+            "evidence_kind": "CLEAN_SOLVER_SUCCESS",
+            "solver_success_verified": True,
+            "completed_solution_evidence_verified": True,
+            "solver_outcome_adjudicated": False,
+            "adjudication_relative_path": None,
+            "adjudication_sha256": None,
+        }
+
+    adjudication_path = (
+        manifest_path.parent
+        / "fem_run_adjudication.json"
+    )
+
+    verified = verify_fem_run_adjudication(
+        project_root=ROOT,
+        adjudication_path=adjudication_path,
+        manifest_path=manifest_path,
+        expected_run_id=expected_run_id,
+        expected_case_hash=expected_case_hash,
+        expected_final_step=20,
+        expected_checkpoint_step_time=0.05,
+        adjudication_reason=(
+            RESTART_WRITE_ADJUDICATION_REASON
+        ),
+    )
+
+    return data, {
+        "evidence_kind": (
+            "ADJUDICATED_COMPLETED_SOLUTION_EVIDENCE"
+        ),
+        "solver_success_verified": False,
+        "completed_solution_evidence_verified": True,
+        "solver_outcome_adjudicated": True,
+        "adjudication_relative_path": (
+            relative(adjudication_path)
+        ),
+        "adjudication_sha256": (
+            sha256(adjudication_path)
+        ),
+        "adjudication_disposition": (
+            verified.disposition.value
+        ),
+        "sta_completed_checkpoint": (
+            verified.sta_completed_checkpoint
+        ),
+        "rout_stored_step": (
+            verified.rout_stored_step
+        ),
+        "original_manifest_disposition": (
+            verified.original_disposition
+        ),
+        "original_failure_category": (
+            verified.original_failure_category
+        ),
+    }
+
+
+
 def main() -> int:
     args = parse_args()
 
@@ -263,7 +367,7 @@ def main() -> int:
         f"trm_fem_{doe_case.case_hash[:12]}"
     )
 
-    trial1_run_id = (
+    canonical_trial1_run_id = (
         f"{case_run_id}_cal_01"
     )
 
@@ -276,11 +380,6 @@ def main() -> int:
         / case_run_id
     )
 
-    trial1_dir = (
-        case_root
-        / trial1_run_id
-    )
-
     trial2_dir = (
         case_root
         / trial2_run_id
@@ -290,20 +389,9 @@ def main() -> int:
     # IMMUTABLE PREPARATION EVIDENCE
     # ---------------------------------------------------------
 
-    trial1_prep_path = (
-        trial1_dir
-        / "production_doe_solver_preparation_record.json"
-    )
-
     trial2_prep_path = (
         trial2_dir
         / "production_doe_calibration_solver_preparation_record.json"
-    )
-
-    trial1_prep = json.loads(
-        trial1_prep_path.read_text(
-            encoding="utf-8"
-        )
     )
 
     trial2_prep = json.loads(
@@ -311,19 +399,6 @@ def main() -> int:
             encoding="utf-8"
         )
     )
-
-    if trial1_prep.get("record_status") != "FINAL":
-        raise RuntimeError(
-            "Trial-1 preparation record is not FINAL."
-        )
-
-    if (
-        trial1_prep.get("overall_disposition")
-        != "PRODUCTION_DOE_TRIAL1_SOLVER_PREPARATION_PASS"
-    ):
-        raise RuntimeError(
-            "Trial-1 solver preparation is not governed PASS."
-        )
 
     if trial2_prep.get("record_status") != "FINAL":
         raise RuntimeError(
@@ -340,6 +415,240 @@ def main() -> int:
         raise RuntimeError(
             "Trial-2 solver preparation is not governed PASS."
         )
+
+    root_provenance = (
+        trial2_prep.get(
+            "root_trial_provenance"
+        )
+    )
+
+    if root_provenance is not None:
+        if not isinstance(root_provenance, dict):
+            raise RuntimeError(
+                "Trial-2 root-trial provenance is malformed."
+            )
+
+        if (
+            root_provenance.get("mode")
+            != "certified_v2_1_first_shot"
+        ):
+            raise RuntimeError(
+                "Unsupported governed root-trial provenance mode."
+            )
+
+        trial1_mode = (
+            "certified_v2_1_first_shot"
+        )
+
+        trial1_run_id = (
+            root_provenance["run_id"]
+        )
+
+        if (
+            root_provenance.get("holdout_accessed")
+            is not False
+            or root_provenance.get(
+                "v2_1_refit_performed"
+            )
+            is not False
+        ):
+            raise RuntimeError(
+                "V2.1 root-trial provenance is not clean."
+            )
+
+        trial1_prep_path = (
+            ROOT
+            / Path(
+                root_provenance[
+                    "preparation_relative_path"
+                ]
+            )
+        )
+
+        trial1_deck_path = (
+            ROOT
+            / Path(
+                root_provenance[
+                    "deck_relative_path"
+                ]
+            )
+        )
+
+        rollout_cert_path = (
+            ROOT
+            / Path(
+                root_provenance[
+                    "rollout_certification_relative_path"
+                ]
+            )
+        )
+
+        for governed_path in (
+            trial1_prep_path,
+            trial1_deck_path,
+            rollout_cert_path,
+        ):
+            if not governed_path.resolve().is_relative_to(
+                ROOT.resolve()
+            ):
+                raise RuntimeError(
+                    "Root-trial provenance escaped project root."
+                )
+
+        if (
+            sha256(trial1_prep_path)
+            != root_provenance[
+                "preparation_sha256"
+            ]
+        ):
+            raise RuntimeError(
+                "V2.1 Trial-1 preparation SHA drift."
+            )
+
+        if (
+            sha256(trial1_deck_path)
+            != root_provenance[
+                "deck_sha256"
+            ]
+        ):
+            raise RuntimeError(
+                "V2.1 Trial-1 deck SHA drift."
+            )
+
+        if (
+            sha256(rollout_cert_path)
+            != root_provenance[
+                "rollout_certification_sha256"
+            ]
+        ):
+            raise RuntimeError(
+                "V2.1 rollout-certification SHA drift."
+            )
+
+        trial1_dir = (
+            trial1_prep_path.parent
+        )
+
+        if (
+            trial1_dir.name
+            != trial1_run_id
+        ):
+            raise RuntimeError(
+                "V2.1 Trial-1 directory/run identity mismatch."
+            )
+
+        trial1_prep = json.loads(
+            trial1_prep_path.read_text(
+                encoding="utf-8"
+            )
+        )
+
+        if (
+            trial1_prep.get("record_status")
+            != "FINAL"
+        ):
+            raise RuntimeError(
+                "V2.1 Trial-1 preparation is not FINAL."
+            )
+
+        if (
+            trial1_prep.get(
+                "overall_disposition"
+            )
+            != (
+                "V2_1_ROLLOUT_CASE_PREPARATION_"
+                "PASS_AWAITING_BATCH_CERTIFICATION"
+            )
+        ):
+            raise RuntimeError(
+                "V2.1 Trial-1 preparation is not governed PASS."
+            )
+
+        if (
+            trial1_prep["case"][
+                "v2_1_trial1_run_id"
+            ]
+            != trial1_run_id
+            or trial1_prep["case"][
+                "canonical_case_run_id"
+            ]
+            != case_run_id
+        ):
+            raise RuntimeError(
+                "V2.1 Trial-1 frozen run identity mismatch."
+            )
+
+        if (
+            trial1_prep[
+                "frozen_v2_1_prediction"
+            ][
+                "model_refit_performed"
+            ]
+            is not False
+        ):
+            raise RuntimeError(
+                "V2.1 Trial-1 unexpectedly reports refit."
+            )
+
+    else:
+        trial1_mode = "legacy_trial1"
+
+        trial1_run_id = (
+            canonical_trial1_run_id
+        )
+
+        trial1_dir = (
+            case_root
+            / trial1_run_id
+        )
+
+        trial1_prep_path = (
+            trial1_dir
+            / "production_doe_solver_preparation_record.json"
+        )
+
+        trial1_prep = json.loads(
+            trial1_prep_path.read_text(
+                encoding="utf-8"
+            )
+        )
+
+        if trial1_prep.get("record_status") != "FINAL":
+            raise RuntimeError(
+                "Trial-1 preparation record is not FINAL."
+            )
+
+        if (
+            trial1_prep.get(
+                "overall_disposition"
+            )
+            != "PRODUCTION_DOE_TRIAL1_SOLVER_PREPARATION_PASS"
+        ):
+            raise RuntimeError(
+                "Trial-1 solver preparation is not governed PASS."
+            )
+
+        solve_auth = (
+            trial1_prep[
+                "solve_authorization"
+            ]
+        )
+
+        if (
+            solve_auth["calculix_invoked"] is not False
+            or solve_auth[
+                "solver_authorized_by_this_script"
+            ]
+            is not False
+            or solve_auth["holdout_accessed"] is not False
+        ):
+            raise RuntimeError(
+                "Trial-1 solver-preparation provenance is not clean."
+            )
+
+    # ---------------------------------------------------------
+    # COMMON PREPARATION IDENTITY / PREFLIGHT GATES
+    # ---------------------------------------------------------
 
     for prep in (
         trial1_prep,
@@ -363,18 +672,27 @@ def main() -> int:
                 "Solver-preparation FEM preflight is not PASS."
             )
 
-        solve_auth = prep["solve_authorization"]
+    trial2_solve_auth = (
+        trial2_prep["solve_authorization"]
+    )
 
-        if (
-            solve_auth["calculix_invoked"] is not False
-            or solve_auth[
-                "solver_authorized_by_this_script"
-            ] is not False
-            or solve_auth["holdout_accessed"] is not False
-        ):
-            raise RuntimeError(
-                "Solver-preparation provenance is not clean."
-            )
+    if (
+        trial2_solve_auth[
+            "calculix_invoked"
+        ]
+        is not False
+        or trial2_solve_auth[
+            "solver_authorized_by_this_script"
+        ]
+        is not False
+        or trial2_solve_auth[
+            "holdout_accessed"
+        ]
+        is not False
+    ):
+        raise RuntimeError(
+            "Trial-2 solver-preparation provenance is not clean."
+        )
 
     # ---------------------------------------------------------
     # SOLVER EVIDENCE
@@ -406,7 +724,10 @@ def main() -> int:
         expected_case_hash=doe_case.case_hash,
     )
 
-    trial2_manifest = require_clean_manifest(
+    (
+        trial2_manifest,
+        trial2_solver_evidence,
+    ) = require_trial2_solver_evidence(
         trial2_manifest_path,
         expected_run_id=trial2_run_id,
         expected_case_hash=doe_case.case_hash,
@@ -426,18 +747,83 @@ def main() -> int:
     # RECONSTRUCT GOVERNED CALIBRATION HISTORY
     # ---------------------------------------------------------
 
-    trial1 = (
-        derive_fem_warm_start_preload_calibration_trial(
-            predicted_delta_temperature_c=float(
-                trial1_prep[
-                    "warm_start_prediction"
-                ][
-                    "predicted_delta_temperature_c"
+    if (
+        trial1_mode
+        == "certified_v2_1_first_shot"
+    ):
+        frozen_trial1 = (
+            trial1_prep["trial_1"]
+        )
+
+        completed_history = (
+            trial2_prep[
+                "completed_calibration_history"
+            ]
+        )
+
+        if len(completed_history) != 1:
+            raise RuntimeError(
+                "Trial-2 preparation must preserve exactly "
+                "one completed root trial."
+            )
+
+        historical_trial1 = (
+            completed_history[0]["trial"]
+        )
+
+        for field in (
+            "trial_index",
+            "run_id",
+            "source",
+            "delta_temperature_c",
+        ):
+            if (
+                historical_trial1[field]
+                != frozen_trial1[field]
+            ):
+                raise RuntimeError(
+                    "V2.1 root Trial-1 history drift."
+                )
+
+        if (
+            int(frozen_trial1["trial_index"])
+            != 1
+            or frozen_trial1["run_id"]
+            != trial1_run_id
+            or frozen_trial1["source"]
+            != "fem_warm_start"
+        ):
+            raise RuntimeError(
+                "V2.1 frozen Trial-1 identity is invalid."
+            )
+
+        trial1 = PreloadCalibrationTrial(
+            trial_index=1,
+            run_id=trial1_run_id,
+            delta_temperature_c=float(
+                frozen_trial1[
+                    "delta_temperature_c"
                 ]
             ),
-            case_run_id=case_run_id,
+            source=(
+                PreloadCalibrationTrialSource
+                .FEM_WARM_START
+            ),
         )
-    )
+
+    else:
+        trial1 = (
+            derive_fem_warm_start_preload_calibration_trial(
+                predicted_delta_temperature_c=float(
+                    trial1_prep[
+                        "warm_start_prediction"
+                    ][
+                        "predicted_delta_temperature_c"
+                    ]
+                ),
+                case_run_id=case_run_id,
+            )
+        )
 
     frozen_trial2 = (
         trial2_prep["next_trial"]
@@ -816,11 +1202,28 @@ def main() -> int:
                         trial2_manifest_path
                     )
                 ),
+                "solver_evidence": (
+                    trial2_solver_evidence
+                ),
             },
         ],
 
         "evidence_semantics": {
-            "solver_success_verified": True,
+            "solver_success_verified": (
+                trial2_solver_evidence[
+                    "solver_success_verified"
+                ]
+            ),
+            "completed_solution_evidence_verified": (
+                trial2_solver_evidence[
+                    "completed_solution_evidence_verified"
+                ]
+            ),
+            "solver_outcome_adjudicated": (
+                trial2_solver_evidence[
+                    "solver_outcome_adjudicated"
+                ]
+            ),
             "governed_calibration_accept_verified": True,
             "trial_1_preserved": True,
             "trial_2_is_accepted_physics_solve": True,
@@ -925,7 +1328,18 @@ def main() -> int:
     )
 
     print(
-        "Solver success         : VERIFIED"
+        "Solution evidence      : VERIFIED"
+    )
+
+    print(
+        "Solver outcome         : "
+        + (
+            "ADJUDICATED"
+            if trial2_solver_evidence[
+                "solver_outcome_adjudicated"
+            ]
+            else "CLEAN SUCCESS"
+        )
     )
 
     print(

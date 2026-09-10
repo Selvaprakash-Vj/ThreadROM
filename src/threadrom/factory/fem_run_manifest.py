@@ -21,6 +21,7 @@ class FemRunArtifactRole(str, Enum):
     FRD = "frd"
     STA = "sta"
     CVG = "cvg"
+    ROUT = "rout"
     STDOUT = "stdout"
     STDERR = "stderr"
 

@@ -853,8 +853,29 @@ for case_id in CORNER_IDS:
             ]
         )
 
+        completed_solution_verified = (
+            semantics.get(
+                "completed_solution_evidence_verified"
+            )
+        )
+
+        if completed_solution_verified is None:
+            # Backward compatibility for historical clean
+            # accepted-FEM evidence written before the
+            # completed-solution semantic was introduced.
+            completed_solution_verified = (
+                semantics.get(
+                    "solver_success_verified"
+                )
+            )
+
+        if completed_solution_verified is not True:
+            raise RuntimeError(
+                f"{case_id}: completed FEM solution "
+                "evidence is not verified."
+            )
+
         required_true = (
-            "solver_success_verified",
             "governed_calibration_accept_verified",
             "trial_1_preserved",
             "trial_2_is_accepted_physics_solve",

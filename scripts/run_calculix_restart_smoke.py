@@ -186,7 +186,7 @@ def _step_one() -> str:
 *STEP, NLGEOM=YES, INC=20
 *STATIC
 1.000000000000e+00, 1.000000000000e+00, 1.000000000000e-08, 1.000000000000e+00
-*RESTART,WRITE,FREQUENCY=1,OVERLAY
+*RESTART,WRITE,FREQUENCY=1
 *BOUNDARY
 BOTTOM, 1, 3, 0.0
 *CLOAD
@@ -287,7 +287,7 @@ def main() -> None:
         checkpoint_count=2,
         configured_step_time=1.0,
         restart_write_frequency_steps=1,
-        overlay_latest=True,
+        overlay_latest=False,
     )
 
     continuation_text = bundle.continuation_input_path.read_text(encoding="utf-8")
