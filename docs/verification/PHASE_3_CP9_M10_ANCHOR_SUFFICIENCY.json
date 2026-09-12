@@ -1,0 +1,360 @@
+{
+  "checkpoint": {
+    "checkpoint": 9,
+    "name": "M10 Sufficiency and Information-Value Gate",
+    "phase": 3,
+    "purpose": "Determine whether additional M10 FEM solves are justified before expanding Universal ThreadROM into broader parameter dimensions."
+  },
+  "coverage": {
+    "accepted_set_spacing": {
+      "maximum_nearest_neighbor_distance": 0.7094692616987868,
+      "mean_nearest_neighbor_distance": 0.39722283486630267,
+      "minimum_pairwise_distance": 0.25870380645230445
+    },
+    "all_8_normalized_cube_corners_represented": true,
+    "axis_coverage": {
+      "head_member_thickness": {
+        "maximum": 1.0,
+        "maximum_gap": 0.1665421747410294,
+        "minimum": 0.0,
+        "unique_levels": 13
+      },
+      "radial_geometry_fraction": {
+        "maximum": 1.0,
+        "maximum_gap": 0.23759710615936935,
+        "minimum": 0.0,
+        "unique_levels": 13
+      },
+      "target_preload": {
+        "maximum": 1.0,
+        "maximum_gap": 0.1584137163538889,
+        "minimum": 0.0,
+        "unique_levels": 13
+      }
+    },
+    "corner_binding": {
+      "0.0,0.0,0.0": "D-BND-001",
+      "0.0,0.0,1.0": "D-BND-002",
+      "0.0,1.0,0.0": "A01",
+      "0.0,1.0,1.0": "D-BND-003",
+      "1.0,0.0,0.0": "A02",
+      "1.0,0.0,1.0": "D-BND-004",
+      "1.0,1.0,0.0": "A00",
+      "1.0,1.0,1.0": "A03"
+    },
+    "corner_count": 8,
+    "fill_distance_lattice": {
+      "current_19": {
+        "maximum_fill_distance": 0.5520637935428034,
+        "mean_fill_distance": 0.255439376519653,
+        "p95_fill_distance": 0.422650444290438
+      },
+      "full_24": {
+        "maximum_fill_distance": 0.4725913452483675,
+        "mean_fill_distance": 0.22640007051111896,
+        "p95_fill_distance": 0.37416573867739417
+      },
+      "full_24_improvement_over_current_19_percent": {
+        "maximum_fill_distance": 14.39551900051822,
+        "mean_fill_distance": 11.368374917051913,
+        "p95_fill_distance": 11.471585152227123
+      },
+      "grid_points_per_axis": 31
+    },
+    "greedy_information_value_sequence": [
+      {
+        "case_id": "D-INT-016",
+        "incremental_improvement_percent": {
+          "maximum_fill_distance": 7.667103281081292,
+          "mean_fill_distance": 3.9607815198228784,
+          "p95_fill_distance": 5.682414003619691
+        },
+        "step": 1,
+        "total_improvement_vs_current_19_percent": {
+          "maximum_fill_distance": 7.667103281081292,
+          "mean_fill_distance": 3.9607815198228784,
+          "p95_fill_distance": 5.682414003619691
+        }
+      },
+      {
+        "case_id": "D-INT-012",
+        "incremental_improvement_percent": {
+          "maximum_fill_distance": 0.2815630019211204,
+          "mean_fill_distance": 2.053510989326503,
+          "p95_fill_distance": 3.1499122051880373
+        },
+        "step": 2,
+        "total_improvement_vs_current_19_percent": {
+          "maximum_fill_distance": 7.927078556843807,
+          "mean_fill_distance": 5.932957425376606,
+          "p95_fill_distance": 8.653335156558398
+        }
+      },
+      {
+        "case_id": "D-INT-014",
+        "incremental_improvement_percent": {
+          "maximum_fill_distance": 7.0253450659409,
+          "mean_fill_distance": 2.4110472168770642,
+          "p95_fill_distance": 2.3565370987107093
+        },
+        "step": 3,
+        "total_improvement_vs_current_19_percent": {
+          "maximum_fill_distance": 14.39551900051822,
+          "mean_fill_distance": 8.200958237370626,
+          "p95_fill_distance": 10.80595320202903
+        }
+      },
+      {
+        "case_id": "D-INT-013",
+        "incremental_improvement_percent": {
+          "maximum_fill_distance": 0.0,
+          "mean_fill_distance": 1.7954721674810479,
+          "p95_fill_distance": 0.47031182770914204
+        },
+        "step": 4,
+        "total_improvement_vs_current_19_percent": {
+          "maximum_fill_distance": 14.39551900051822,
+          "mean_fill_distance": 9.84918448223294,
+          "p95_fill_distance": 11.225443353732317
+        }
+      },
+      {
+        "case_id": "D-INT-015",
+        "incremental_improvement_percent": {
+          "maximum_fill_distance": 0.0,
+          "mean_fill_distance": 1.6851654930615325,
+          "p95_fill_distance": 0.2772661534943918
+        },
+        "step": 5,
+        "total_improvement_vs_current_19_percent": {
+          "maximum_fill_distance": 14.39551900051822,
+          "mean_fill_distance": 11.368374917051913,
+          "p95_fill_distance": 11.471585152227123
+        }
+      }
+    ],
+    "individual_unrun_case_information_value_percent": {
+      "D-INT-012": {
+        "maximum_fill_distance": 7.927078556843807,
+        "mean_fill_distance": 2.837753377887329,
+        "p95_fill_distance": 5.385113237285869
+      },
+      "D-INT-013": {
+        "maximum_fill_distance": 0.0,
+        "mean_fill_distance": 2.3891780200096897,
+        "p95_fill_distance": 0.25313332539024713
+      },
+      "D-INT-014": {
+        "maximum_fill_distance": 0.0,
+        "mean_fill_distance": 2.2680008119940207,
+        "p95_fill_distance": 1.661935870823747
+      },
+      "D-INT-015": {
+        "maximum_fill_distance": 0.0,
+        "mean_fill_distance": 2.1622735981991137,
+        "p95_fill_distance": 1.179455699082802
+      },
+      "D-INT-016": {
+        "maximum_fill_distance": 7.667103281081292,
+        "mean_fill_distance": 3.9607815198228784,
+        "p95_fill_distance": 5.682414003619691
+      }
+    },
+    "normalized_dimension_order": [
+      "target_preload",
+      "head_member_thickness",
+      "radial_geometry_fraction"
+    ]
+  },
+  "decision": {
+    "additional_m10_fem_authorized_now": false,
+    "disposition": "M10_ANCHOR_SUFFICIENT_FOR_UNIVERSAL_EXPANSION",
+    "m10_blind_holdouts_remain_sealed": true,
+    "next_checkpoint": "CP10 ? Universal Applicability Envelope v1 and Diversified DOE Definition",
+    "reasoning": [
+      "19 governed reusable M10 states are already available.",
+      "All 8 normalized 3D M10-domain corners are represented.",
+      "Every frozen M10 input dimension spans the complete normalized [0,1] interval.",
+      "The five remaining M10 cases improve local geometric fill coverage, but add no new physics dimension.",
+      "For Universal ThreadROM, the expected information value of new size, pitch, material, grip, engagement, friction, and other cross-domain evidence now exceeds the marginal value of blanket completion of the old M10-only DOE.",
+      "Future M10 enrichment remains permitted only when ROM error, uncertainty, or coverage evidence identifies a specific M10 weakness."
+    ],
+    "remaining_m10_cases_retained_for_future_targeted_enrichment": true
+  },
+  "evidence_membership": {
+    "canonical_accepted_fem_count": 14,
+    "canonical_accepted_fem_ids": [
+      "D-BND-001",
+      "D-BND-002",
+      "D-BND-003",
+      "D-BND-004",
+      "D-INT-001",
+      "D-INT-002",
+      "D-INT-003",
+      "D-INT-004",
+      "D-INT-005",
+      "D-INT-006",
+      "D-INT-007",
+      "D-INT-009",
+      "D-INT-010",
+      "D-INT-011"
+    ],
+    "historical_bound_anchor_count": 4,
+    "historical_bound_anchor_ids": [
+      "A00",
+      "A01",
+      "A02",
+      "A03"
+    ],
+    "prospective_accepted_sentinel_count": 1,
+    "prospective_accepted_sentinel_ids": [
+      "D-INT-008"
+    ],
+    "total_governed_usable_m10_states": 19,
+    "unrun_frozen_candidate_count": 5,
+    "unrun_frozen_candidate_ids": [
+      "D-INT-012",
+      "D-INT-013",
+      "D-INT-014",
+      "D-INT-015",
+      "D-INT-016"
+    ],
+    "usable_m10_state_ids": [
+      "A00",
+      "A01",
+      "A02",
+      "A03",
+      "D-BND-001",
+      "D-BND-002",
+      "D-BND-003",
+      "D-BND-004",
+      "D-INT-001",
+      "D-INT-002",
+      "D-INT-003",
+      "D-INT-004",
+      "D-INT-005",
+      "D-INT-006",
+      "D-INT-007",
+      "D-INT-008",
+      "D-INT-009",
+      "D-INT-010",
+      "D-INT-011"
+    ]
+  },
+  "governance": {
+    "canonical_accepted_fem_evidence": [
+      {
+        "case_id": "D-INT-011",
+        "relative_path": "simulations/staging/phase3_cp8_production_doe/TRM-PDOE-C01/solver_preparation/trm_fem_06046fe91597/production_doe_accepted_fem_evidence.json",
+        "sha256": "70b92a213350921a6bd97a8de3c5cac2845f052e292280415e7dc0d2673c6cdd"
+      },
+      {
+        "case_id": "D-BND-003",
+        "relative_path": "simulations/staging/phase3_cp8_production_doe/TRM-PDOE-C01/solver_preparation/trm_fem_132f5f2b9795/production_doe_accepted_fem_evidence.json",
+        "sha256": "e70286dc187829b9ab3eb7eea699c92d6b0491343b33419cc39567abfaf1580d"
+      },
+      {
+        "case_id": "D-INT-003",
+        "relative_path": "simulations/staging/phase3_cp8_production_doe/TRM-PDOE-C01/solver_preparation/trm_fem_226154f7ef4e/production_doe_accepted_fem_evidence.json",
+        "sha256": "df7d9833893315eddf34810cfa24d77c33138ab80a21a1f91c041c69bf8527c5"
+      },
+      {
+        "case_id": "D-INT-009",
+        "relative_path": "simulations/staging/phase3_cp8_production_doe/TRM-PDOE-C01/solver_preparation/trm_fem_37ea3dfbef25/production_doe_accepted_fem_evidence.json",
+        "sha256": "b75a1f75c7e292278eae7075232fe0fe4249e691ab4fb242d2cd3d58703fd858"
+      },
+      {
+        "case_id": "D-INT-007",
+        "relative_path": "simulations/staging/phase3_cp8_production_doe/TRM-PDOE-C01/solver_preparation/trm_fem_4766e95d0d13/production_doe_accepted_fem_evidence.json",
+        "sha256": "b7d2fc2019e973894b90ce3e4f7efcdcf645c27595bddc28da0d544edca4a70a"
+      },
+      {
+        "case_id": "D-INT-005",
+        "relative_path": "simulations/staging/phase3_cp8_production_doe/TRM-PDOE-C01/solver_preparation/trm_fem_4e77db0d0c12/production_doe_accepted_fem_evidence.json",
+        "sha256": "b89f2b0bc98016313b21afcc794a4242123992cc39ada8dc3b62daa5c8ddd09d"
+      },
+      {
+        "case_id": "D-BND-002",
+        "relative_path": "simulations/staging/phase3_cp8_production_doe/TRM-PDOE-C01/solver_preparation/trm_fem_4ec5fd412595/production_doe_accepted_fem_evidence.json",
+        "sha256": "4c0ffc372d257bf263b738d165ce3c411e1ee7c021d4e9998eae26ad1c028517"
+      },
+      {
+        "case_id": "D-INT-006",
+        "relative_path": "simulations/staging/phase3_cp8_production_doe/TRM-PDOE-C01/solver_preparation/trm_fem_6c0eb1807bb0/production_doe_accepted_fem_evidence.json",
+        "sha256": "e1229c0d33e858d764fb4ad51b98aca3a081e1f08ebcd525d8f5641478fc3bee"
+      },
+      {
+        "case_id": "D-INT-001",
+        "relative_path": "simulations/staging/phase3_cp8_production_doe/TRM-PDOE-C01/solver_preparation/trm_fem_762a30bed266/production_doe_accepted_fem_evidence.json",
+        "sha256": "6395b3cdfcbaa449d2a7c760c6d1835b74953234924896dece45716c770195fd"
+      },
+      {
+        "case_id": "D-BND-004",
+        "relative_path": "simulations/staging/phase3_cp8_production_doe/TRM-PDOE-C01/solver_preparation/trm_fem_9d11902c8c53/production_doe_accepted_fem_evidence.json",
+        "sha256": "aa31658699e020a79f1c43a45c561a813b07c15103f6800c1f509e3d7abe26dc"
+      },
+      {
+        "case_id": "D-BND-001",
+        "relative_path": "simulations/staging/phase3_cp8_production_doe/TRM-PDOE-C01/solver_preparation/trm_fem_a5e86e9150fb/production_doe_accepted_fem_evidence.json",
+        "sha256": "daf2325a7a6c6fd8f77f263f091140e4e9d7389cd44cf9856c1284631b3ac07d"
+      },
+      {
+        "case_id": "D-INT-002",
+        "relative_path": "simulations/staging/phase3_cp8_production_doe/TRM-PDOE-C01/solver_preparation/trm_fem_cd79bd4336c0/production_doe_accepted_fem_evidence.json",
+        "sha256": "9f565605379c5f74dd8818ed98003909fc096e7d5340f6a6d643a4b780d6e4db"
+      },
+      {
+        "case_id": "D-INT-004",
+        "relative_path": "simulations/staging/phase3_cp8_production_doe/TRM-PDOE-C01/solver_preparation/trm_fem_d0bfb12d44c2/production_doe_accepted_fem_evidence.json",
+        "sha256": "e35b5023950abd512ad1915b4bba56896d84e257ab94bdffa22012328000645b"
+      },
+      {
+        "case_id": "D-INT-010",
+        "relative_path": "simulations/staging/phase3_cp8_production_doe/TRM-PDOE-C01/solver_preparation/trm_fem_dded29952881/production_doe_accepted_fem_evidence.json",
+        "sha256": "4ae4455eabdaff752036745e38550ae16a334e5f88643e8b4f2adbaf0b3d51aa"
+      }
+    ],
+    "governing_inputs": {
+      "campaign_manifest": {
+        "relative_path": "simulations/staging/phase3_cp8_production_doe/TRM-PDOE-C01/production_doe_campaign_manifest.json",
+        "sha256": "84516519bbb188664268936e2d116e133431d90d037bed407ffb2d1fe92d2a67"
+      },
+      "d_int_008_prospective_sentinel": {
+        "relative_path": "simulations/staging/phase3_cp8_production_doe/TRM-PDOE-C01/warm_start_delta_t_v2_1_prospective_validation.json",
+        "sha256": "cf03ca248142c043bf8fe4cff4f59b2daa657b37f2a4e0aa82ae671873d69ad9"
+      },
+      "dataset_sufficiency_policy": {
+        "relative_path": "config/phase3_dataset_sufficiency.toml",
+        "sha256": "cc3f228cf1ae5e44441d6744eaaf628169d40ba2efeea0c56cc86588458a8812"
+      },
+      "existing_anchor_binding": {
+        "relative_path": "simulations/staging/phase3_cp8_production_doe/TRM-PDOE-C01/existing_anchor_binding_record.json",
+        "sha256": "ab861ff62af6bbc4589b3a469e8dc159c92dd61116fd8275c02e8f1adcf813b2"
+      },
+      "production_doe_policy": {
+        "relative_path": "config/phase3_production_doe.toml",
+        "sha256": "43032557cb2abead0118362bcfc6a9b2e5246a7d363ca83eef5fcf35054befc1"
+      }
+    },
+    "never_claim_universality_outside_validated_envelope": true,
+    "no_fem_launched_by_cp9": true,
+    "no_holdout_solver_result_accessed_by_cp9": true,
+    "old_m10_dataset_freeze_not_redefined": true,
+    "parent_git_commit": "b818a26edc380f928eb8efabd145aa2645359c92",
+    "post_hoc_relaxation_of_trm_dsuf_000001": false
+  },
+  "legacy_dataset_sufficiency_policy": {
+    "dataset_freeze_claimed": false,
+    "holdouts_consumed_for_cp9": false,
+    "interpretation": "The frozen M10-local dataset sufficiency policy remains intact and is explicitly NOT claimed as satisfied. CP9 answers a different question: whether the existing M10 evidence is sufficient as an anchor/reference domain for Universal ThreadROM expansion.",
+    "policy_id": "TRM-DSUF-000001",
+    "policy_satisfied": false,
+    "required_blind_holdout_rows": 6,
+    "required_training_rows": 24,
+    "thresholds_relaxed": false
+  },
+  "overall_disposition": "CP9_PASS_M10_ANCHOR_SUFFICIENT_FOR_UNIVERSAL_EXPANSION",
+  "record_id": "TRM-P3-CP9-M10-ANCHOR-SUFFICIENCY-001",
+  "record_status": "FINAL",
+  "schema_version": 1
+}
