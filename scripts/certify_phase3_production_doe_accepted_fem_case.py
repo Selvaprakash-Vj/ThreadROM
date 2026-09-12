@@ -428,17 +428,17 @@ def main() -> int:
                 "Trial-2 root-trial provenance is malformed."
             )
 
-        if (
-            root_provenance.get("mode")
-            != "certified_v2_1_first_shot"
+        root_mode = root_provenance.get("mode")
+
+        if root_mode not in (
+            "certified_v2_1_first_shot",
+            "certified_restart_v2_trial_1",
         ):
             raise RuntimeError(
                 "Unsupported governed root-trial provenance mode."
             )
 
-        trial1_mode = (
-            "certified_v2_1_first_shot"
-        )
+        trial1_mode = root_mode
 
         trial1_run_id = (
             root_provenance["run_id"]
@@ -453,7 +453,7 @@ def main() -> int:
             is not False
         ):
             raise RuntimeError(
-                "V2.1 root-trial provenance is not clean."
+                "Governed root-trial provenance is not clean."
             )
 
         trial1_prep_path = (
@@ -474,20 +474,65 @@ def main() -> int:
             )
         )
 
-        rollout_cert_path = (
-            ROOT
-            / Path(
-                root_provenance[
-                    "rollout_certification_relative_path"
-                ]
-            )
-        )
-
-        for governed_path in (
+        governed_paths = [
             trial1_prep_path,
             trial1_deck_path,
-            rollout_cert_path,
+        ]
+
+        if (
+            trial1_mode
+            == "certified_v2_1_first_shot"
         ):
+            rollout_cert_path = (
+                ROOT
+                / Path(
+                    root_provenance[
+                        "rollout_certification_relative_path"
+                    ]
+                )
+            )
+
+            governed_paths.append(
+                rollout_cert_path
+            )
+
+        else:
+            execution_cert_path = (
+                ROOT
+                / Path(
+                    root_provenance[
+                        "execution_certification_relative_path"
+                    ]
+                )
+            )
+
+            solver_manifest_source_path = (
+                ROOT
+                / Path(
+                    root_provenance[
+                        "solver_manifest_relative_path"
+                    ]
+                )
+            )
+
+            wave_preparation_path = (
+                ROOT
+                / Path(
+                    root_provenance[
+                        "wave_preparation_relative_path"
+                    ]
+                )
+            )
+
+            governed_paths.extend(
+                (
+                    execution_cert_path,
+                    solver_manifest_source_path,
+                    wave_preparation_path,
+                )
+            )
+
+        for governed_path in governed_paths:
             if not governed_path.resolve().is_relative_to(
                 ROOT.resolve()
             ):
@@ -502,7 +547,7 @@ def main() -> int:
             ]
         ):
             raise RuntimeError(
-                "V2.1 Trial-1 preparation SHA drift."
+                "Governed Trial-1 preparation SHA drift."
             )
 
         if (
@@ -512,18 +557,53 @@ def main() -> int:
             ]
         ):
             raise RuntimeError(
-                "V2.1 Trial-1 deck SHA drift."
+                "Governed Trial-1 deck SHA drift."
             )
 
         if (
-            sha256(rollout_cert_path)
-            != root_provenance[
-                "rollout_certification_sha256"
-            ]
+            trial1_mode
+            == "certified_v2_1_first_shot"
         ):
-            raise RuntimeError(
-                "V2.1 rollout-certification SHA drift."
-            )
+            if (
+                sha256(rollout_cert_path)
+                != root_provenance[
+                    "rollout_certification_sha256"
+                ]
+            ):
+                raise RuntimeError(
+                    "V2.1 rollout-certification SHA drift."
+                )
+
+        else:
+            if (
+                sha256(execution_cert_path)
+                != root_provenance[
+                    "execution_certification_sha256"
+                ]
+            ):
+                raise RuntimeError(
+                    "Restart-v2 execution-certification SHA drift."
+                )
+
+            if (
+                sha256(solver_manifest_source_path)
+                != root_provenance[
+                    "solver_manifest_sha256"
+                ]
+            ):
+                raise RuntimeError(
+                    "Restart-v2 Trial-1 solver-manifest SHA drift."
+                )
+
+            if (
+                sha256(wave_preparation_path)
+                != root_provenance[
+                    "wave_preparation_sha256"
+                ]
+            ):
+                raise RuntimeError(
+                    "Restart-v2 wave-preparation SHA drift."
+                )
 
         trial1_dir = (
             trial1_prep_path.parent
@@ -534,7 +614,7 @@ def main() -> int:
             != trial1_run_id
         ):
             raise RuntimeError(
-                "V2.1 Trial-1 directory/run identity mismatch."
+                "Governed Trial-1 directory/run identity mismatch."
             )
 
         trial1_prep = json.loads(
@@ -548,47 +628,229 @@ def main() -> int:
             != "FINAL"
         ):
             raise RuntimeError(
-                "V2.1 Trial-1 preparation is not FINAL."
+                "Governed Trial-1 preparation is not FINAL."
             )
 
         if (
-            trial1_prep.get(
-                "overall_disposition"
-            )
-            != (
-                "V2_1_ROLLOUT_CASE_PREPARATION_"
-                "PASS_AWAITING_BATCH_CERTIFICATION"
-            )
+            trial1_mode
+            == "certified_v2_1_first_shot"
         ):
-            raise RuntimeError(
-                "V2.1 Trial-1 preparation is not governed PASS."
+            if (
+                trial1_prep.get(
+                    "overall_disposition"
+                )
+                != (
+                    "V2_1_ROLLOUT_CASE_PREPARATION_"
+                    "PASS_AWAITING_BATCH_CERTIFICATION"
+                )
+            ):
+                raise RuntimeError(
+                    "V2.1 Trial-1 preparation is not governed PASS."
+                )
+
+            if (
+                trial1_prep["case"][
+                    "v2_1_trial1_run_id"
+                ]
+                != trial1_run_id
+                or trial1_prep["case"][
+                    "canonical_case_run_id"
+                ]
+                != case_run_id
+            ):
+                raise RuntimeError(
+                    "V2.1 Trial-1 frozen run identity mismatch."
+                )
+
+            if (
+                trial1_prep[
+                    "frozen_v2_1_prediction"
+                ][
+                    "model_refit_performed"
+                ]
+                is not False
+            ):
+                raise RuntimeError(
+                    "V2.1 Trial-1 unexpectedly reports refit."
+                )
+
+        else:
+            if (
+                trial1_prep.get(
+                    "overall_disposition"
+                )
+                != (
+                    "CP8_RESTART_V2_SIBLING_PREPARATION_"
+                    "PASS_AWAITING_INDEPENDENT_EXECUTION_"
+                    "CERTIFICATION"
+                )
+            ):
+                raise RuntimeError(
+                    "Restart-v2 Trial-1 preparation "
+                    "is not governed PASS."
+                )
+
+            rv2_case = trial1_prep["case"]
+            rv2_trial = trial1_prep["trial"]
+            execution_auth = (
+                trial1_prep[
+                    "execution_authorization"
+                ]
+            )
+            replacement = (
+                trial1_prep[
+                    "replacement_semantics"
+                ]
+            )
+            governance = (
+                trial1_prep["governance"]
             )
 
-        if (
-            trial1_prep["case"][
-                "v2_1_trial1_run_id"
-            ]
-            != trial1_run_id
-            or trial1_prep["case"][
-                "canonical_case_run_id"
-            ]
-            != case_run_id
-        ):
-            raise RuntimeError(
-                "V2.1 Trial-1 frozen run identity mismatch."
+            if (
+                rv2_case[
+                    "restart_v2_trial_run_id"
+                ]
+                != trial1_run_id
+                or rv2_case[
+                    "canonical_case_run_id"
+                ]
+                != case_run_id
+                or int(
+                    rv2_case["trial_index"]
+                )
+                != 1
+            ):
+                raise RuntimeError(
+                    "Restart-v2 Trial-1 run identity mismatch."
+                )
+
+            if (
+                int(rv2_trial["trial_index"])
+                != 1
+                or rv2_trial["run_id"]
+                != trial1_run_id
+                or rv2_trial["source"]
+                != "fem_warm_start"
+            ):
+                raise RuntimeError(
+                    "Restart-v2 Trial-1 trial identity is invalid."
+                )
+
+            if (
+                root_provenance.get(
+                    "trial_1_is_restart_v2_replacement"
+                )
+                is not True
+                or root_provenance.get(
+                    "historical_checkpoint_resume_used"
+                )
+                is not False
+            ):
+                raise RuntimeError(
+                    "Restart-v2 root replacement semantics "
+                    "are not governed."
+                )
+
+            if (
+                execution_auth[
+                    "calculix_invoked_by_this_record"
+                ]
+                is not False
+                or execution_auth[
+                    "execution_authorized_by_this_record"
+                ]
+                is not False
+                or execution_auth[
+                    "blind_holdout_execution_authorized"
+                ]
+                is not False
+                or execution_auth[
+                    "solver_results_read_for_replacement"
+                ]
+                is not False
+                or execution_auth[
+                    "requires_independent_pre_execution_certification"
+                ]
+                is not True
+            ):
+                raise RuntimeError(
+                    "Restart-v2 execution authorization "
+                    "is not clean."
+                )
+
+            if (
+                replacement[
+                    "calibration_trial_identity"
+                ]
+                != "TRIAL_1"
+                or replacement[
+                    "fresh_full_solve_required"
+                ]
+                is not True
+                or replacement[
+                    "historical_source_preserved"
+                ]
+                is not True
+                or replacement[
+                    "new_calibration_attempt"
+                ]
+                is not False
+                or replacement[
+                    "physics_prediction_changed"
+                ]
+                is not False
+                or replacement[
+                    "resume_from_historical_checkpoint"
+                ]
+                is not False
+            ):
+                raise RuntimeError(
+                    "Restart-v2 replacement semantics drift."
+                )
+
+            if (
+                governance[
+                    "holdout_accessed"
+                ]
+                is not False
+                or governance[
+                    "v2_1_model_refit_performed"
+                ]
+                is not False
+            ):
+                raise RuntimeError(
+                    "Restart-v2 governance is not clean."
+                )
+
+            frozen_dt = float(
+                root_provenance[
+                    "frozen_v2_1_delta_temperature_c"
+                ]
             )
 
-        if (
-            trial1_prep[
-                "frozen_v2_1_prediction"
-            ][
-                "model_refit_performed"
-            ]
-            is not False
-        ):
-            raise RuntimeError(
-                "V2.1 Trial-1 unexpectedly reports refit."
-            )
+            if not abs(
+                float(
+                    rv2_trial[
+                        "delta_temperature_c"
+                    ]
+                )
+                - frozen_dt
+            ) <= 1.0e-10:
+                raise RuntimeError(
+                    "Restart-v2 Trial-1 frozen delta-T drift."
+                )
+
+            if not abs(
+                float(
+                    replacement[
+                        "frozen_v2_1_delta_temperature_c"
+                    ]
+                )
+                - frozen_dt
+            ) <= 1.0e-10:
+                raise RuntimeError(
+                    "Restart-v2 replacement delta-T drift."
+                )
 
     else:
         trial1_mode = "legacy_trial1"
@@ -747,12 +1009,17 @@ def main() -> int:
     # RECONSTRUCT GOVERNED CALIBRATION HISTORY
     # ---------------------------------------------------------
 
-    if (
-        trial1_mode
-        == "certified_v2_1_first_shot"
+    if trial1_mode in (
+        "certified_v2_1_first_shot",
+        "certified_restart_v2_trial_1",
     ):
         frozen_trial1 = (
             trial1_prep["trial_1"]
+            if (
+                trial1_mode
+                == "certified_v2_1_first_shot"
+            )
+            else trial1_prep["trial"]
         )
 
         completed_history = (
@@ -782,7 +1049,7 @@ def main() -> int:
                 != frozen_trial1[field]
             ):
                 raise RuntimeError(
-                    "V2.1 root Trial-1 history drift."
+                    "Governed root Trial-1 history drift."
                 )
 
         if (
@@ -794,7 +1061,7 @@ def main() -> int:
             != "fem_warm_start"
         ):
             raise RuntimeError(
-                "V2.1 frozen Trial-1 identity is invalid."
+                "Governed frozen Trial-1 identity is invalid."
             )
 
         trial1 = PreloadCalibrationTrial(
