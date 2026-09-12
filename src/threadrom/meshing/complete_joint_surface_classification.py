@@ -408,8 +408,6 @@ def identify_complete_joint_volumes(
 
         x_extent = x_max - x_min
         y_extent = y_max - y_min
-        axial_extent = z_max - z_min
-
         is_member_diameter = (
             abs(
                 x_extent
@@ -423,7 +421,10 @@ def identify_complete_joint_volumes(
             <= tolerance
         )
 
-        if z_min < -tolerance and axial_extent > 30.0:
+        # The bolt head is the only governed component extending
+        # below the assembly datum. Identification must therefore be
+        # geometry-relative rather than tied to an absolute bolt length.
+        if z_min < -tolerance:
             bolt_tag = int(tag)
             continue
 

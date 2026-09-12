@@ -101,13 +101,19 @@ class FemExecutionResiliencePolicy:
 
 @dataclass(frozen=True, slots=True)
 class FemDistributedGuidancePolicy:
-    """Governed distributed rigid-mode guidance controls."""
+    """Governed geometry-relative distributed-guidance controls.
+
+    The dimensional CalculiX guidance radii are resolved from semantic mesh
+    boundaries. These fractions preserve the certified M10 guidance behaviour
+    without embedding M10-specific millimetre dimensions in the reusable
+    backend policy.
+    """
 
     translation_sample_node_count: int
     rotation_sample_node_count: int
-    bolt_head_max_radius_mm: float
-    nut_min_radius_mm: float
-    nut_max_radius_mm: float
+    bolt_head_safe_radius_fraction: float
+    nut_inner_annulus_fraction: float
+    nut_outer_inset_fraction: float
 
     def __post_init__(self) -> None:
         if self.translation_sample_node_count <= 0:
@@ -122,27 +128,46 @@ class FemDistributedGuidancePolicy:
 
         for name, value in (
             (
-                "bolt_head_max_radius_mm",
-                self.bolt_head_max_radius_mm,
+                "bolt_head_safe_radius_fraction",
+                self.bolt_head_safe_radius_fraction,
             ),
             (
-                "nut_min_radius_mm",
-                self.nut_min_radius_mm,
+                "nut_inner_annulus_fraction",
+                self.nut_inner_annulus_fraction,
             ),
             (
-                "nut_max_radius_mm",
-                self.nut_max_radius_mm,
+                "nut_outer_inset_fraction",
+                self.nut_outer_inset_fraction,
             ),
         ):
-            if not math.isfinite(value) or value <= 0.0:
+            if not math.isfinite(value):
                 raise ValueError(
-                    f"{name} must be finite and positive."
+                    f"{name} must be finite."
                 )
 
-        if self.nut_min_radius_mm >= self.nut_max_radius_mm:
+        if not 0.0 < self.bolt_head_safe_radius_fraction < 1.0:
             raise ValueError(
-                "nut_min_radius_mm must be smaller than "
-                "nut_max_radius_mm."
+                "bolt_head_safe_radius_fraction must lie in (0, 1)."
+            )
+
+        if not 0.0 < self.nut_inner_annulus_fraction < 1.0:
+            raise ValueError(
+                "nut_inner_annulus_fraction must lie in (0, 1)."
+            )
+
+        if not 0.0 <= self.nut_outer_inset_fraction < 1.0:
+            raise ValueError(
+                "nut_outer_inset_fraction must lie in [0, 1)."
+            )
+
+        if (
+            self.nut_inner_annulus_fraction
+            + self.nut_outer_inset_fraction
+            >= 1.0
+        ):
+            raise ValueError(
+                "Nut inner and outer guidance fractions leave no "
+                "positive guidance annulus."
             )
 
 
@@ -296,18 +321,18 @@ PHASE2_CERTIFIED_FEM_PROFILE = FemReproductionProfile(
         guidance_policy=FemDistributedGuidancePolicy(
             translation_sample_node_count=40,
             rotation_sample_node_count=20,
-            bolt_head_max_radius_mm=7.5,
-            nut_min_radius_mm=5.5,
-            nut_max_radius_mm=8.0,
+            bolt_head_safe_radius_fraction=0.9375,
+            nut_inner_annulus_fraction=(1.0 / 6.0),
+            nut_outer_inset_fraction=0.0,
         ),
         require_case_specific_preload_calibration=True,
         forbid_native_pretension_section=True,
         forbid_direct_preload_cload=True,
         forbid_manual_node_ids=True,
         forbid_manual_element_ids=True,
-        # Certified nonlinear reproduction is an ~8 h-class solve.
-        # Use 2x runtime headroom while keeping a finite ceiling.
-        solver_timeout_seconds=57_600,
+        # Long-running governed FEM solves are intentionally uncapped.
+        # Transfer/smoke-operation timeouts remain local to those operations.
+        solver_timeout_seconds=None,
     ),
     oracle=FemCertificationOracle(
         run_id="trm_sim_000004_run_a2_thermal_20kn",

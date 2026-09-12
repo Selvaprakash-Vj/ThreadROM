@@ -7,8 +7,14 @@ import math
 from dataclasses import dataclass
 from pathlib import Path
 
+from threadrom.factory.fem_case_definition_bundle import (
+    FemGuidanceGeometry,
+)
 from threadrom.factory.fem_profile import (
     FemBackendPolicy,
+)
+from threadrom.factory.fem_guidance import (
+    resolve_fem_distributed_guidance_policy,
 )
 from threadrom.solver.complete_joint_boundary_regions import (
     CompleteJointBoundaryRegionDefinition,
@@ -37,7 +43,6 @@ from threadrom.solver.complete_joint_guidance import (
     NUT_ROTATION_X_REFERENCE,
     NUT_ROTATION_Y_REFERENCE,
     NUT_TRANSLATION_GUIDANCE_REFERENCE,
-    DistributedGuidancePolicy,
     render_distributed_guidance_keywords,
 )
 from threadrom.solver.complete_joint_preload import (
@@ -170,6 +175,7 @@ def write_fem_production_deck(
     contact: CompleteJointContactDefinition,
     preload: CompleteJointPreloadDefinition,
     backend: FemBackendPolicy,
+    guidance_geometry: FemGuidanceGeometry,
     input_path: Path,
 ) -> FemProductionDeckResult:
     """Assemble one generic case-specific nonlinear FEM production deck."""
@@ -235,8 +241,14 @@ def write_fem_production_deck(
         node_ids=bolt_node_ids,
     )
 
-    governed_guidance = (
-        backend.guidance_policy
+    resolved_guidance = (
+        resolve_fem_distributed_guidance_policy(
+            mesh_data=mesh_data,
+            policy=backend.guidance_policy,
+            nominal_thread_diameter_mm=(
+                guidance_geometry.nominal_thread_diameter_mm
+            ),
+        )
     )
 
     guidance = (
@@ -249,28 +261,7 @@ def write_fem_production_deck(
             first_element_id=(
                 mesh_data.element_count + 1
             ),
-            policy=DistributedGuidancePolicy(
-                translation_sample_node_count=(
-                    governed_guidance
-                    .translation_sample_node_count
-                ),
-                rotation_sample_node_count=(
-                    governed_guidance
-                    .rotation_sample_node_count
-                ),
-                bolt_head_max_radius_mm=(
-                    governed_guidance
-                    .bolt_head_max_radius_mm
-                ),
-                nut_min_radius_mm=(
-                    governed_guidance
-                    .nut_min_radius_mm
-                ),
-                nut_max_radius_mm=(
-                    governed_guidance
-                    .nut_max_radius_mm
-                ),
-            ),
+            policy=resolved_guidance,
         )
     )
 

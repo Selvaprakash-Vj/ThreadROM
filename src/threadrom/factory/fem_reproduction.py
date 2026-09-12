@@ -6,6 +6,12 @@ import hashlib
 from dataclasses import dataclass
 from pathlib import Path
 
+from threadrom.factory.fem_guidance import (
+    resolve_fem_distributed_guidance_policy,
+)
+from threadrom.factory.fem_case_definition_bundle import (
+    FemGuidanceGeometry,
+)
 from threadrom.factory.fem_profile import (
     FemReproductionProfile,
 )
@@ -47,7 +53,6 @@ from threadrom.solver.complete_joint_guidance import (
     NUT_ROTATION_X_REFERENCE,
     NUT_ROTATION_Y_REFERENCE,
     NUT_TRANSLATION_GUIDANCE_REFERENCE,
-    DistributedGuidancePolicy,
     render_distributed_guidance_keywords,
 )
 from threadrom.solver.complete_joint_preload import (
@@ -136,6 +141,7 @@ def write_phase2_certified_reproduction_deck(
     contact: CompleteJointContactDefinition,
     preload: CompleteJointPreloadDefinition,
     profile: FemReproductionProfile,
+    guidance_geometry: FemGuidanceGeometry,
     input_path: Path,
 ) -> FemReproductionDeckResult:
     """Assemble the certified thermal-preload FEM deck."""
@@ -185,8 +191,14 @@ def write_phase2_certified_reproduction_deck(
         node_ids=bolt_node_ids,
     )
 
-    governed_guidance = (
-        profile.backend.guidance_policy
+    resolved_guidance = (
+        resolve_fem_distributed_guidance_policy(
+            mesh_data=mesh_data,
+            policy=profile.backend.guidance_policy,
+            nominal_thread_diameter_mm=(
+                guidance_geometry.nominal_thread_diameter_mm
+            ),
+        )
     )
 
     guidance = (
@@ -203,28 +215,7 @@ def write_phase2_certified_reproduction_deck(
             first_element_id=(
                 mesh_data.element_count + 1
             ),
-            policy=DistributedGuidancePolicy(
-                translation_sample_node_count=(
-                    governed_guidance
-                    .translation_sample_node_count
-                ),
-                rotation_sample_node_count=(
-                    governed_guidance
-                    .rotation_sample_node_count
-                ),
-                bolt_head_max_radius_mm=(
-                    governed_guidance
-                    .bolt_head_max_radius_mm
-                ),
-                nut_min_radius_mm=(
-                    governed_guidance
-                    .nut_min_radius_mm
-                ),
-                nut_max_radius_mm=(
-                    governed_guidance
-                    .nut_max_radius_mm
-                ),
-            ),
+            policy=resolved_guidance,
         )
     )
 
@@ -472,18 +463,14 @@ def _certified_calculix_job_definition(
 ) -> CalculixJobDefinition:
     """Build governed CalculiX execution settings."""
 
-    solver_timeout_seconds = (
-        profile.backend.solver_timeout_seconds
-        if profile.backend.solver_timeout_seconds is not None
-        else transfer.timeout_seconds
-    )
-
     return CalculixJobDefinition(
         executable_relative_path=(
             transfer.executable_relative_path
         ),
         job_name=deck.input_path.stem,
-        timeout_seconds=solver_timeout_seconds,
+        timeout_seconds=(
+            profile.backend.solver_timeout_seconds
+        ),
     )
 
 

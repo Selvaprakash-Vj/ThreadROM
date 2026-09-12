@@ -77,12 +77,12 @@ def _profile(
     )
 
 
-def test_certified_profile_has_long_running_solver_timeout() -> None:
+def test_certified_profile_has_no_artificial_solver_timeout() -> None:
     assert (
         PHASE2_CERTIFIED_FEM_PROFILE
         .backend
         .solver_timeout_seconds
-        == 57_600
+        is None
     )
 
 
@@ -144,7 +144,7 @@ def test_certified_runner_prefers_backend_solver_timeout(
     assert captured["job_name"] == run_id
 
 
-def test_runner_can_intentionally_inherit_transfer_timeout(
+def test_runner_does_not_inherit_transfer_timeout(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
@@ -195,7 +195,7 @@ def test_runner_can_intentionally_inherit_transfer_timeout(
     )
 
     assert result == "solver-result"
-    assert captured["timeout_seconds"] == 1_800
+    assert captured["timeout_seconds"] is None
 
 
 def test_backend_rejects_nonpositive_solver_timeout() -> None:

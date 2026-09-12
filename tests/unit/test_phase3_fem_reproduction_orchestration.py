@@ -42,7 +42,7 @@ def _deck(tmp_path: Path):
 def _profile(
     sha256: str,
     *,
-    timeout: int | None = 57_600,
+    timeout: int | None = None,
 ):
     return SimpleNamespace(
         oracle=SimpleNamespace(
@@ -102,10 +102,10 @@ def test_certified_reproduction_routes_identity(
     assert captured["solver_name"] == "CalculiX"
     assert captured["solver_version"] == "2.23"
     assert captured["definition"].job_name == "certified_run"
-    assert captured["definition"].timeout_seconds == 57_600
+    assert captured["definition"].timeout_seconds is None
 
 
-def test_certified_orchestration_uses_timeout_fallback(
+def test_certified_orchestration_does_not_use_transfer_timeout_fallback(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
@@ -132,7 +132,7 @@ def test_certified_orchestration_uses_timeout_fallback(
         ),
     )
 
-    assert captured["definition"].timeout_seconds == 1_800
+    assert captured["definition"].timeout_seconds is None
 
 
 def test_certified_orchestration_forwards_manifest_path(

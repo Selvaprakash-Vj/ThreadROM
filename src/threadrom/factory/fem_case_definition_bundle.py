@@ -39,6 +39,23 @@ from threadrom.solver.complete_joint_preload import (
 
 
 @dataclass(frozen=True, slots=True)
+class FemGuidanceGeometry:
+    """Case-specific physical geometry required by guidance resolution."""
+
+    nominal_thread_diameter_mm: float
+
+    def __post_init__(self) -> None:
+        if (
+            not math.isfinite(self.nominal_thread_diameter_mm)
+            or self.nominal_thread_diameter_mm <= 0.0
+        ):
+            raise ValueError(
+                "Guidance nominal thread diameter must be "
+                "finite and positive."
+            )
+
+
+@dataclass(frozen=True, slots=True)
 class FemCaseDefinitionBundle:
     """Non-reference FEM definitions derived for one resolved case."""
 
@@ -46,6 +63,7 @@ class FemCaseDefinitionBundle:
     transfer: CompleteJointCalculixTransferDefinition
     contact: CompleteJointContactDefinition
     boundary: CompleteJointBoundaryRegionDefinition
+    guidance_geometry: FemGuidanceGeometry
     calibration_seed: ThermalPreloadCalibrationSeed
     calibration_policy: PreloadCalibrationCampaignPolicy
 
@@ -134,12 +152,6 @@ def build_generic_fem_definition_bundle(
         )
     )
 
-    timeout_seconds = (
-        backend.solver_timeout_seconds
-        if backend.solver_timeout_seconds is not None
-        else transfer_template.timeout_seconds
-    )
-
     transfer = replace(
         transfer_template,
         simulation_id=preparation.identity.run_id,
@@ -150,7 +162,7 @@ def build_generic_fem_definition_bundle(
         mesh_level=backend.mesh_level,
         source_mesh_name=source_mesh_name,
         job_name=preparation.identity.job_name,
-        timeout_seconds=timeout_seconds,
+        timeout_seconds=transfer_template.timeout_seconds,
         element_type=backend.element_type,
         youngs_modulus_mpa=(
             preparation.physics.youngs_modulus_mpa
@@ -231,6 +243,11 @@ def build_generic_fem_definition_bundle(
         transfer=transfer,
         contact=contact,
         boundary=boundary,
+        guidance_geometry=FemGuidanceGeometry(
+            nominal_thread_diameter_mm=(
+                resolved.thread_standard.nominal_diameter_mm
+            ),
+        ),
         calibration_seed=calibration_seed,
         calibration_policy=calibration_policy,
     )

@@ -135,7 +135,10 @@ def test_bundle_uses_reusable_backend_policy_without_oracle_scalars() -> None:
 
     assert bundle.transfer.element_type == backend.element_type
     assert bundle.transfer.mesh_level == backend.mesh_level
-    assert bundle.transfer.timeout_seconds == 57_600
+    # Transfer timeout remains local to transfer/smoke operations.
+    # Long-running FEM solver execution is governed separately.
+    assert bundle.transfer.timeout_seconds == 1_800
+    assert backend.solver_timeout_seconds is None
 
     assert (
         bundle.contact.contact_type
@@ -460,3 +463,13 @@ def test_unaccepted_trial_cannot_be_promoted_to_final_preload() -> None:
             evaluation=evaluation,
             preload_template=preload_template,
         )
+
+
+
+def test_bundle_carries_case_specific_guidance_geometry() -> None:
+    bundle = _bundle()
+
+    assert (
+        bundle.guidance_geometry.nominal_thread_diameter_mm
+        == pytest.approx(10.0)
+    )

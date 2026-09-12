@@ -16,6 +16,9 @@ from threadrom.factory.fem_profile import (
     PHASE2_CERTIFIED_FEM_PROFILE,
     PHASE3_CP8_EXECUTION_RESILIENCE,
 )
+from threadrom.factory.fem_guidance import (
+    resolve_fem_distributed_guidance_policy,
+)
 from threadrom.factory.preload_calibration_campaign import (
     PreloadCalibrationTrial,
 )
@@ -37,7 +40,6 @@ from threadrom.solver.complete_joint_guidance import (
     BOLT_HEAD_GUIDANCE_REFERENCE,
     BOLT_HEAD_ROTATION_X_REFERENCE,
     BOLT_HEAD_ROTATION_Y_REFERENCE,
-    DistributedGuidancePolicy,
     NUT_MEMBER_GUIDANCE_REFERENCE,
     NUT_ROTATION_GUIDANCE_REFERENCE,
     NUT_ROTATION_X_REFERENCE,
@@ -247,7 +249,16 @@ def write_fem_preload_calibration_trial_deck(
         node_ids=bolt_node_ids,
     )
 
-    governed_guidance = backend.guidance_policy
+    resolved_guidance = (
+        resolve_fem_distributed_guidance_policy(
+            mesh_data=mesh_data,
+            policy=backend.guidance_policy,
+            nominal_thread_diameter_mm=(
+                bundle.guidance_geometry
+                .nominal_thread_diameter_mm
+            ),
+        )
+    )
 
     guidance = render_distributed_guidance_keywords(
         mesh_data=mesh_data,
@@ -258,28 +269,7 @@ def write_fem_preload_calibration_trial_deck(
         first_element_id=(
             mesh_data.element_count + 1
         ),
-        policy=DistributedGuidancePolicy(
-            translation_sample_node_count=(
-                governed_guidance
-                .translation_sample_node_count
-            ),
-            rotation_sample_node_count=(
-                governed_guidance
-                .rotation_sample_node_count
-            ),
-            bolt_head_max_radius_mm=(
-                governed_guidance
-                .bolt_head_max_radius_mm
-            ),
-            nut_min_radius_mm=(
-                governed_guidance
-                .nut_min_radius_mm
-            ),
-            nut_max_radius_mm=(
-                governed_guidance
-                .nut_max_radius_mm
-            ),
-        ),
+        policy=resolved_guidance,
     )
 
     contact_lines = (
