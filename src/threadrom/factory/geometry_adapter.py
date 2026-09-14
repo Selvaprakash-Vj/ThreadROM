@@ -9,6 +9,10 @@ from threadrom.factory.geometry_profile import (
     CERTIFIED_PHASE2_GEOMETRY_PROFILE,
     GeometryDefinitionProfile,
 )
+from threadrom.factory.geometry_identity import (
+    bolt_geometry_sha256,
+    nut_geometry_sha256,
+)
 from threadrom.geometry.bolt_blank import (
     BoltBlankDefinition,
 )
@@ -61,9 +65,17 @@ def build_geometry_definitions(
             "'basic_internal_minor_diameter' as the nut bore basis."
         )
 
-    case_token = resolved.case_hash[:16]
-    bolt_geometry_id = f"bolt-geometry-{case_token}"
-    nut_geometry_id = f"nut-geometry-{case_token}"
+    bolt_token = bolt_geometry_sha256(
+        resolved,
+        profile=profile,
+    )[:16]
+    nut_token = nut_geometry_sha256(
+        resolved,
+        profile=profile,
+    )[:16]
+
+    bolt_geometry_id = f"bolt-geometry-{bolt_token}"
+    nut_geometry_id = f"nut-geometry-{nut_token}"
 
     bolt_blank = BoltBlankDefinition(
         geometry_id=bolt_geometry_id,

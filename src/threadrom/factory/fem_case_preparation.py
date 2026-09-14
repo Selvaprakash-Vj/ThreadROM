@@ -11,24 +11,29 @@ from threadrom.case.resolved_case import ResolvedCase
 
 @dataclass(frozen=True, slots=True)
 class FemCaseIdentity:
-    """Deterministic identity of one non-reference FEM case."""
+    """Deterministic request and resolved-execution identity of one FEM case."""
 
     case_hash: str
+    resolution_hash: str
     run_id: str
     job_name: str
 
     def __post_init__(self) -> None:
-        if len(self.case_hash) != 64:
-            raise ValueError(
-                "FEM case hash must contain 64 hexadecimal characters."
-            )
+        for value, label in (
+            (self.case_hash, "FEM case hash"),
+            (self.resolution_hash, "FEM resolution hash"),
+        ):
+            if len(value) != 64:
+                raise ValueError(
+                    f"{label} must contain 64 hexadecimal characters."
+                )
 
-        try:
-            int(self.case_hash, 16)
-        except ValueError as exc:
-            raise ValueError(
-                "FEM case hash must be hexadecimal."
-            ) from exc
+            try:
+                int(value, 16)
+            except ValueError as exc:
+                raise ValueError(
+                    f"{label} must be hexadecimal."
+                ) from exc
 
         if not self.run_id.strip():
             raise ValueError(
@@ -244,7 +249,7 @@ def derive_fem_case_preparation(
             "FEM run prefix must not be blank."
         )
 
-    digest = resolved.case_hash
+    digest = resolved.resolution_hash
     short_hash = digest[:12]
 
     run_id = (
@@ -270,7 +275,8 @@ def derive_fem_case_preparation(
 
     return FemCasePreparation(
         identity=FemCaseIdentity(
-            case_hash=digest,
+            case_hash=resolved.case_hash,
+            resolution_hash=digest,
             run_id=run_id,
             job_name=run_id,
         ),

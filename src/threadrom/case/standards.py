@@ -1,4 +1,4 @@
-"""Governed fastener-standard reference data for Phase-3 resolution.
+﻿"""Governed fastener-standard reference data for Phase-3 resolution.
 
 Only values already established by the certified ThreadROM baseline are
 registered here. Additional product sizes/standards must be added with
@@ -8,6 +8,19 @@ traceable reference data and validation evidence.
 from __future__ import annotations
 
 from dataclasses import dataclass
+from datetime import date
+
+from threadrom.case.standard_dimensions import (
+    DimensionEvidenceBasis,
+    DimensionVerificationStatus,
+    GovernedDimensionEvidence,
+)
+
+
+_PHASE2_CERTIFICATION = (
+    "docs/verification/PHASE_2_FINAL_20KN_CERTIFICATION.md"
+)
+_PHASE2_CERTIFICATION_DATE = date(2026, 8, 27)
 
 
 @dataclass(frozen=True)
@@ -17,6 +30,8 @@ class MetricThreadStandardRecord:
     designation: str
     nominal_diameter_mm: float
     pitch_mm: float
+    nominal_diameter_evidence: GovernedDimensionEvidence
+    pitch_evidence: GovernedDimensionEvidence
 
 
 @dataclass(frozen=True)
@@ -27,6 +42,8 @@ class BoltStandardRecord:
     thread_designation: str
     head_across_flats_mm: float
     head_height_mm: float
+    head_across_flats_evidence: GovernedDimensionEvidence
+    head_height_evidence: GovernedDimensionEvidence
 
 
 @dataclass(frozen=True)
@@ -37,6 +54,90 @@ class NutStandardRecord:
     thread_designation: str
     across_flats_mm: float
     thickness_mm: float
+    across_flats_evidence: GovernedDimensionEvidence
+    thickness_evidence: GovernedDimensionEvidence
+
+
+def _certified_m10_baseline_dimension(
+    *,
+    evidence_id: str,
+    quantity_name: str,
+    value_mm: float,
+    source_reference: str,
+) -> GovernedDimensionEvidence:
+    """Create evidence for one realised dimension of the certified M10 anchor."""
+
+    return GovernedDimensionEvidence(
+        evidence_id=evidence_id,
+        evidence_basis=(
+            DimensionEvidenceBasis.CERTIFIED_REALIZED_BASELINE
+        ),
+        standard_reference=None,
+        thread_designation="M10x1.5",
+        quantity_name=quantity_name,
+        value_mm=value_mm,
+        source_reference=source_reference,
+        verification_status=DimensionVerificationStatus.VERIFIED,
+        verification_reference=_PHASE2_CERTIFICATION,
+        verified_on=_PHASE2_CERTIFICATION_DATE,
+    )
+
+
+_M10_NOMINAL_DIAMETER_EVIDENCE = _certified_m10_baseline_dimension(
+    evidence_id="TRM-DIM-M10-000001",
+    quantity_name="nominal_diameter_mm",
+    value_mm=10.0,
+    source_reference=(
+        "config/baseline_fastener.toml [thread].nominal_diameter_mm"
+    ),
+)
+
+_M10_PITCH_EVIDENCE = _certified_m10_baseline_dimension(
+    evidence_id="TRM-DIM-M10-000002",
+    quantity_name="pitch_mm",
+    value_mm=1.5,
+    source_reference=(
+        "config/baseline_fastener.toml [thread].pitch_mm"
+    ),
+)
+
+_M10_BOLT_AF_EVIDENCE = _certified_m10_baseline_dimension(
+    evidence_id="TRM-DIM-M10-000003",
+    quantity_name="head_across_flats_mm",
+    value_mm=16.0,
+    source_reference=(
+        "config/baseline_geometry.toml "
+        "[bolt_blank].head_across_flats_mm"
+    ),
+)
+
+_M10_BOLT_HEAD_HEIGHT_EVIDENCE = _certified_m10_baseline_dimension(
+    evidence_id="TRM-DIM-M10-000004",
+    quantity_name="head_height_mm",
+    value_mm=6.4,
+    source_reference=(
+        "config/baseline_geometry.toml "
+        "[bolt_blank].head_height_mm"
+    ),
+)
+
+_M10_NUT_AF_EVIDENCE = _certified_m10_baseline_dimension(
+    evidence_id="TRM-DIM-M10-000005",
+    quantity_name="nut_across_flats_mm",
+    value_mm=16.0,
+    source_reference=(
+        "config/nut_geometry.toml [nut].across_flats_mm"
+    ),
+)
+
+_M10_NUT_THICKNESS_EVIDENCE = _certified_m10_baseline_dimension(
+    evidence_id="TRM-DIM-M10-000006",
+    quantity_name="nut_thickness_mm",
+    value_mm=8.0,
+    source_reference=(
+        "config/nut_geometry.toml [nut].thickness_mm"
+    ),
+)
 
 
 _THREAD_RECORDS = {
@@ -44,6 +145,8 @@ _THREAD_RECORDS = {
         designation="M10x1.5",
         nominal_diameter_mm=10.0,
         pitch_mm=1.5,
+        nominal_diameter_evidence=_M10_NOMINAL_DIAMETER_EVIDENCE,
+        pitch_evidence=_M10_PITCH_EVIDENCE,
     ),
 }
 
@@ -54,6 +157,8 @@ _BOLT_RECORDS = {
         thread_designation="M10x1.5",
         head_across_flats_mm=16.0,
         head_height_mm=6.4,
+        head_across_flats_evidence=_M10_BOLT_AF_EVIDENCE,
+        head_height_evidence=_M10_BOLT_HEAD_HEIGHT_EVIDENCE,
     ),
 }
 
@@ -64,6 +169,8 @@ _NUT_RECORDS = {
         thread_designation="M10x1.5",
         across_flats_mm=16.0,
         thickness_mm=8.0,
+        across_flats_evidence=_M10_NUT_AF_EVIDENCE,
+        thickness_evidence=_M10_NUT_THICKNESS_EVIDENCE,
     ),
 }
 

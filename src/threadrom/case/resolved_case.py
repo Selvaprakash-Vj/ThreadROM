@@ -40,6 +40,16 @@ class ResolvedCase:
     bolt_property_class: FastenerPropertyClass
     nut_property_class: FastenerPropertyClass
 
+    @property
+    def resolution_hash(self) -> str:
+        """Return the exact governed resolved-engineering fingerprint."""
+
+        from threadrom.case.resolution_serialization import (
+            resolution_sha256,
+        )
+
+        return resolution_sha256(self)
+
     def __post_init__(self) -> None:
         if len(self.case_hash) != 64:
             raise ValueError(

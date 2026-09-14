@@ -52,6 +52,12 @@ def _install_factory_stubs(
 
     monkeypatch.setattr(
         module,
+        "bind_fem_case_mesh_identity",
+        lambda definitions, *args, **kwargs: definitions,
+    )
+
+    monkeypatch.setattr(
+        module,
         "resolve_mesh_levels",
         lambda *args, **kwargs: (),
     )

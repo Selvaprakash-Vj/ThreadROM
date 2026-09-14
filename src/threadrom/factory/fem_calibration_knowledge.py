@@ -63,6 +63,7 @@ class FemCalibrationKnowledgeRecord:
     """One accepted FEM calibration retained as reusable evidence."""
 
     case_hash: str
+    resolution_hash: str
     accepted_run_id: str
     feature: FemCalibrationFeatureVector
 
@@ -518,6 +519,7 @@ def build_fem_calibration_knowledge_record(
 
     record = FemCalibrationKnowledgeRecord(
         case_hash=resolved.case_hash,
+        resolution_hash=resolved.resolution_hash,
         accepted_run_id=accepted_run_id,
         feature=build_fem_calibration_feature_vector(
             resolved,
@@ -565,7 +567,10 @@ def predict_fem_warm_start(
     exact = tuple(
         record
         for record in knowledge
-        if record.case_hash == resolved.case_hash
+        if (
+            record.case_hash == resolved.case_hash
+            and record.resolution_hash == resolved.resolution_hash
+        )
     )
 
     if len(exact) > 1:
@@ -849,7 +854,7 @@ def write_fem_calibration_knowledge(
     """Persist accepted FEM calibration knowledge as deterministic JSON."""
 
     payload = {
-        "schema_version": 1,
+        "schema_version": 2,
         "records": [
             asdict(record)
             for record in sorted(

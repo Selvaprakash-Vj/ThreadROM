@@ -43,7 +43,7 @@ def test_generic_fem_geometry_builds_validated_baseline_step(
     )
     assert (
         artifact.run_id
-        == f"trm_fem_{resolved.case_hash[:12]}"
+        == f"trm_fem_{resolved.resolution_hash[:12]}"
     )
 
     assert artifact.step_path.exists()

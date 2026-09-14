@@ -8,6 +8,7 @@ from pathlib import Path
 from threadrom.case.resolved_case import ResolvedCase
 from threadrom.factory.fem_case_mesh_preparation import (
     FemCaseMeshDefinitions,
+    bind_fem_case_mesh_identity,
     build_fem_case_mesh_definitions,
 )
 from threadrom.factory.fem_case_preparation import (
@@ -139,6 +140,12 @@ def generate_fem_case_grouped_mesh(
                 global_max_size_mm=sizes.mesh_size_max_mm,
             )
         )
+
+    definitions = bind_fem_case_mesh_identity(
+        definitions,
+        sizes,
+        resolved_local_refinement,
+    )
 
     mesh_variant_name = (
         sizes.level_name

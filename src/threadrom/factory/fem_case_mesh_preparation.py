@@ -8,8 +8,19 @@ from threadrom.case.resolved_case import ResolvedCase
 from threadrom.factory.geometry_adapter import (
     GeometryDefinitionBundle,
 )
+from threadrom.factory.geometry_identity import (
+    joint_geometry_bundle_sha256,
+)
+from threadrom.factory.mesh_identity import (
+    classification_sha256,
+    mesh_generation_sha256,
+)
+from threadrom.meshing.complete_joint_local_refinement import (
+    ResolvedCompleteJointLocalRefinement,
+)
 from threadrom.meshing.complete_joint_mesh_definition import (
     CompleteJointMeshDefinition,
+    ResolvedCompleteJointMeshSizes,
 )
 from threadrom.meshing.complete_joint_surface_classification import (
     CompleteJointSurfaceClassificationDefinition,
@@ -29,6 +40,7 @@ class FemCaseMeshDefinitions:
     mesh_id: str
     joint_geometry_id: str
     classification_id: str
+    classification_sha256: str
     mesh: CompleteJointMeshDefinition
     joint_classification: (
         CompleteJointSurfaceClassificationDefinition
@@ -60,10 +72,26 @@ def build_fem_case_mesh_definitions(
     """
 
     token = resolved.case_hash[:16]
+    joint_geometry_token = joint_geometry_bundle_sha256(
+        resolved,
+        geometry,
+    )[:16]
+    classification_digest = classification_sha256(
+        resolved,
+        geometry,
+        joint_classification=joint_classification_template,
+        bolt_classification=bolt_classification_template,
+        nut_classification=nut_classification_template,
+    )
+    classification_token = classification_digest[:16]
 
     mesh_id = f"mesh-{token}"
-    joint_geometry_id = f"joint-geometry-{token}"
-    classification_id = f"joint-classification-{token}"
+    joint_geometry_id = (
+        f"joint-geometry-{joint_geometry_token}"
+    )
+    classification_id = (
+        f"joint-classification-{classification_token}"
+    )
 
     mesh = replace(
         mesh_template,
@@ -96,8 +124,53 @@ def build_fem_case_mesh_definitions(
         mesh_id=mesh_id,
         joint_geometry_id=joint_geometry_id,
         classification_id=classification_id,
+        classification_sha256=classification_digest,
         mesh=mesh,
         joint_classification=joint_classification,
         bolt_classification=bolt_classification,
         nut_classification=nut_classification,
+    )
+
+
+def bind_fem_case_mesh_identity(
+    definitions: FemCaseMeshDefinitions,
+    sizes: ResolvedCompleteJointMeshSizes,
+    local_refinement: (
+        ResolvedCompleteJointLocalRefinement | None
+    ),
+) -> FemCaseMeshDefinitions:
+    """Bind the final mesh identity after its recipe is fully resolved.
+
+    Classification identity is computed once during preparation from the
+    actual built geometry and then carried forward unchanged. Mesh identity
+    is derived only here, once absolute mesh sizes and optional local
+    refinement are known.
+    """
+
+    mesh_digest = mesh_generation_sha256(
+        mesh_definition=definitions.mesh,
+        sizes=sizes,
+        classification_sha256=(
+            definitions.classification_sha256
+        ),
+        local_refinement=local_refinement,
+    )
+
+    mesh_id = f"mesh-{mesh_digest[:16]}"
+
+    return replace(
+        definitions,
+        mesh_id=mesh_id,
+        mesh=replace(
+            definitions.mesh,
+            mesh_id=mesh_id,
+        ),
+        bolt_classification=replace(
+            definitions.bolt_classification,
+            mesh_id=mesh_id,
+        ),
+        nut_classification=replace(
+            definitions.nut_classification,
+            mesh_id=mesh_id,
+        ),
     )
