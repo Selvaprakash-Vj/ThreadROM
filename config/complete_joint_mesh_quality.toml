@@ -4,9 +4,24 @@ geometry_id = "TRM-GEO-000001"
 status = "development"
 
 [acceptance]
+# minimum_tetrahedron_volume_mm3 remains only a tiny absolute
+# numerical degeneracy guard. Absolute element volume is scale-
+# dependent, so do not derive a diversified production-quality
+# floor from the M10 anchor.
 minimum_tetrahedron_volume_mm3 = 1.0e-12
-minimum_mean_ratio = 1.0e-6
-maximum_edge_ratio = 10000.0
+
+# Pre-DOE production-quality floor v1.
+# Derived conservatively from already accepted complete-joint
+# realizations. The limiting certified realization is the P04
+# medium_plus_v1 mesh:
+#   minimum mean ratio = 0.0535190979
+#   maximum edge ratio = 40.4359629
+#
+# Crossing either bound fails closed and requires mesh review /
+# refinement; it does not silently relax the quality criterion.
+minimum_mean_ratio = 0.05
+maximum_edge_ratio = 50.0
+
 allow_mixed_orientation = false
 
 [reporting]

@@ -44,6 +44,11 @@ from threadrom.meshing.nut_surface_classification import (
 from threadrom.meshing.surface_classification import (
     SurfaceClassificationDefinition,
 )
+from threadrom.meshing.tetrahedral_quality import (
+    MeshQualityDefinition,
+    TetrahedralMeshQualityResult,
+    analyze_tetrahedral_mesh_quality,
+)
 
 
 @dataclass(frozen=True, slots=True)
@@ -60,6 +65,28 @@ class FemCaseMeshArtifact:
     local_refinement: (
         ResolvedCompleteJointLocalRefinement | None
     ) = None
+
+
+def validate_fem_case_grouped_mesh_quality(
+    artifact: FemCaseMeshArtifact,
+    definition: MeshQualityDefinition,
+) -> TetrahedralMeshQualityResult:
+    """Fail closed when a generated FEM-case mesh violates quality policy."""
+
+    if not artifact.msh_path.is_file():
+        raise FileNotFoundError(
+            f"Generated FEM-case mesh not found: {artifact.msh_path}"
+        )
+
+    if artifact.msh_path.stat().st_size <= 0:
+        raise RuntimeError(
+            f"Generated FEM-case mesh is empty: {artifact.msh_path}"
+        )
+
+    return analyze_tetrahedral_mesh_quality(
+        artifact.msh_path,
+        definition,
+    )
 
 
 def generate_fem_case_grouped_mesh(

@@ -1,4 +1,4 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 
 import argparse
 import hashlib
@@ -13,6 +13,7 @@ from threadrom.factory.fem_case_geometry import (
 )
 from threadrom.factory.fem_case_mesh import (
     generate_fem_case_grouped_mesh,
+    validate_fem_case_grouped_mesh_quality,
 )
 from threadrom.factory.fem_case_preparation import (
     derive_fem_case_preparation,
@@ -43,6 +44,9 @@ from threadrom.meshing.nut_surface_classification import (
 )
 from threadrom.meshing.surface_classification import (
     load_surface_classification_definition,
+)
+from threadrom.meshing.tetrahedral_quality import (
+    load_mesh_quality_definition,
 )
 
 
@@ -582,6 +586,32 @@ def main() -> None:
         )
 
     # --------------------------------------------------
+    # FAIL-CLOSED MESH QUALITY
+    # --------------------------------------------------
+
+    mesh_quality_policy_path = (
+        CONFIG
+        / "complete_joint_mesh_quality.toml"
+    )
+
+    mesh_quality_definition = (
+        load_mesh_quality_definition(
+            mesh_quality_policy_path
+        )
+    )
+
+    mesh_quality = (
+        validate_fem_case_grouped_mesh_quality(
+            mesh_artifact,
+            mesh_quality_definition,
+        )
+    )
+
+    mesh_quality_policy_sha256 = sha256(
+        mesh_quality_policy_path
+    )
+
+    # --------------------------------------------------
     # IMMUTABLE PREPARATION PROVENANCE
     # --------------------------------------------------
 
@@ -730,6 +760,56 @@ def main() -> None:
             for path in config_paths
         ],
 
+        "mesh_quality": {
+            "status": "PASS",
+            "policy_relative_path": (
+                "config/complete_joint_mesh_quality.toml"
+            ),
+            "policy_sha256": (
+                mesh_quality_policy_sha256
+            ),
+            "thresholds": {
+                "minimum_tetrahedron_volume_mm3": (
+                    mesh_quality_definition
+                    .minimum_tetrahedron_volume_mm3
+                ),
+                "minimum_mean_ratio": (
+                    mesh_quality_definition
+                    .minimum_mean_ratio
+                ),
+                "maximum_edge_ratio": (
+                    mesh_quality_definition
+                    .maximum_edge_ratio
+                ),
+                "allow_mixed_orientation": (
+                    mesh_quality_definition
+                    .allow_mixed_orientation
+                ),
+            },
+            "measured": {
+                "node_count": (
+                    mesh_quality.node_count
+                ),
+                "tetrahedron_count": (
+                    mesh_quality.tetrahedron_count
+                ),
+                "degenerate_count": (
+                    mesh_quality.degenerate_count
+                ),
+                "minimum_volume_mm3": (
+                    mesh_quality.minimum_volume_mm3
+                ),
+                "minimum_mean_ratio": (
+                    mesh_quality.minimum_mean_ratio
+                ),
+                "maximum_edge_ratio": (
+                    mesh_quality.maximum_edge_ratio
+                ),
+                "mixed_orientation": (
+                    mesh_quality.has_mixed_orientation
+                ),
+            },
+        },
         "gates": {
             "frozen_campaign_membership": (
                 "PASS"
@@ -744,6 +824,9 @@ def main() -> None:
                 "PASS"
             ),
             "mesh_variant_validation": (
+                "PASS"
+            ),
+            "mesh_quality_validation": (
                 "PASS"
             ),
             "holdout_accessed": False,
