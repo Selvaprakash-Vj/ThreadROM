@@ -1,4 +1,4 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 
 import argparse
 import dataclasses
@@ -24,11 +24,19 @@ from threadrom.case.resolver import (
 from threadrom.factory.fem_calibration_knowledge import (
     FemWarmStartSource,
     build_fem_calibration_knowledge_record,
+    LEGACY_SINGLE_STEP_EXECUTION_GENERATION_ID,
+    build_legacy_fem_geometry_identity,
     load_fem_warm_start_policy,
     predict_fem_warm_start,
 )
+from threadrom.factory.fem_profile import (
+    PHASE3_CP8_EXECUTION_RESILIENCE,
+)
 from threadrom.factory.fem_case_definition_bundle import (
     build_generic_fem_definition_bundle,
+)
+from threadrom.factory.fem_case_preparation import (
+    derive_fem_case_preparation,
 )
 from threadrom.factory.fem_preload_calibration_deck import (
     write_fem_preload_calibration_trial_deck,
@@ -129,6 +137,16 @@ EXPECTED_PREPARATION_CERT_SHA256 = (
 EXPECTED_WARM_KNOWLEDGE_SHA256 = (
     "21e525db65d36a13ca6e2ee96514307f6"
     "234b2518bd60423f872f6dfa6fae8f7"
+)
+
+EXPECTED_CURRENT_WARM_POLICY_SHA256 = (
+    "eb498f9ab7a0b1793084ccee8049bad6"
+    "c64fed76358e326182227777bfda25d9"
+)
+
+FROZEN_CP8_RECORDED_WARM_POLICY_SHA256 = (
+    "408ccbfe67fefec86e31bf033dc36a731"
+    "e3bbc43f7ac564a9e74a1061562793b"
 )
 
 
@@ -367,10 +385,30 @@ def find_preparation_row(
     return matches[0]
 
 
+def find_anchor_binding_row(
+    binding: dict,
+    case_hash: str,
+) -> dict:
+    matches = [
+        row
+        for row in binding.get("bindings", [])
+        if row.get("case_hash") == case_hash
+    ]
+
+    if len(matches) != 1:
+        raise RuntimeError(
+            "Expected exactly one anchor binding for "
+            f"case hash {case_hash}; found {len(matches)}."
+        )
+
+    return matches[0]
+
+
 def build_warm_start_knowledge(
     *,
     campaign,
     warm_record: dict,
+    binding: dict,
 ):
     anchor_by_id = {
         item.case_id: item
@@ -436,10 +474,37 @@ def build_warm_start_knowledge(
             )
         )
 
+        binding_row = find_anchor_binding_row(
+            binding,
+            anchor.case_hash,
+        )
+
+        try:
+            anchor_mesh_sha256 = (
+                binding_row[
+                    "mesh_evidence"
+                ]["sha256"]
+            )
+        except KeyError as exc:
+            raise RuntimeError(
+                f"{case_id}: anchor binding lacks certified "
+                "mesh SHA-256 provenance."
+            ) from exc
+
+        geometry_identity = (
+            build_legacy_fem_geometry_identity(
+                mesh_sha256=anchor_mesh_sha256,
+            )
+        )
+
         record = (
             build_fem_calibration_knowledge_record(
                 resolved=resolved,
                 seed=seed,
+                geometry_identity=geometry_identity,
+                execution_generation_id=(
+                    LEGACY_SINGLE_STEP_EXECUTION_GENERATION_ID
+                ),
                 accepted_run_id=(
                     row["accepted_run_id"]
                 ),
@@ -537,6 +602,12 @@ def main() -> None:
     campaign = (
         build_phase3_production_doe(
             policy
+        )
+    )
+
+    anchor_binding = json.loads(
+        ANCHOR_BINDING_PATH.read_text(
+            encoding="utf-8"
         )
     )
 
@@ -657,6 +728,12 @@ def main() -> None:
             "the frozen Production DOE hash."
         )
 
+    case_preparation = (
+        derive_fem_case_preparation(
+            resolved
+        )
+    )
+
     preparation_cert = json.loads(
         PREPARATION_CERT_PATH.read_text(
             encoding="utf-8"
@@ -728,20 +805,32 @@ def main() -> None:
         )
     )
 
-    warm_policy_hash = sha256(
-        WARM_POLICY_PATH
+    current_warm_policy_hash = require_sha256(
+        WARM_POLICY_PATH,
+        EXPECTED_CURRENT_WARM_POLICY_SHA256,
+        "Current FEM warm-start policy",
     )
 
+    recorded_warm_policy_hash = warm_record[
+        "warm_start_policy"
+    ]["policy_sha256"]
+
     if (
-        warm_policy_hash
-        != warm_record[
-            "warm_start_policy"
-        ]["policy_sha256"]
+        recorded_warm_policy_hash
+        != FROZEN_CP8_RECORDED_WARM_POLICY_SHA256
     ):
         raise RuntimeError(
-            "Warm-start policy drift relative "
-            "to frozen knowledge evidence."
+            "Frozen CP8 warm-start policy provenance drift."
         )
+
+    # Historical solver-preparation records were created
+    # against the provenance token stored in the immutable
+    # CP8 knowledge artifact. Preserve that value in replay
+    # output while independently verifying today's actual
+    # policy file above.
+    warm_policy_hash = (
+        FROZEN_CP8_RECORDED_WARM_POLICY_SHA256
+    )
 
     warm_policy = (
         load_fem_warm_start_policy(
@@ -763,6 +852,7 @@ def main() -> None:
         build_warm_start_knowledge(
             campaign=campaign,
             warm_record=warm_record,
+            binding=anchor_binding,
         )
     )
 
@@ -772,9 +862,21 @@ def main() -> None:
         )
     )
 
+    target_geometry_identity = (
+        build_legacy_fem_geometry_identity(
+            mesh_sha256=preparation_row[
+                "mesh_sha256"
+            ],
+        )
+    )
+
     prediction = predict_fem_warm_start(
         resolved=resolved,
         seed=seed,
+        geometry_identity=target_geometry_identity,
+        execution_generation_id=(
+            PHASE3_CP8_EXECUTION_RESILIENCE.policy_id
+        ),
         knowledge=knowledge,
         policy=warm_policy,
     )
@@ -796,7 +898,7 @@ def main() -> None:
                 prediction.predicted_delta_temperature_c
             ),
             case_run_id=(
-                f"trm_fem_{resolved.case_hash[:12]}"
+                case_preparation.identity.run_id
             ),
         )
     )
@@ -863,6 +965,15 @@ def main() -> None:
     )
 
     if (
+        bundle.preparation
+        != case_preparation
+    ):
+        raise RuntimeError(
+            "FEM bundle preparation identity drifted from "
+            "the governed resolved execution identity."
+        )
+
+    if (
         bundle.calibration_seed.target_force_n
         != resolved.source_case.loading.target_preload_n
     ):
@@ -883,7 +994,7 @@ def main() -> None:
     # --------------------------------------------------
 
     case_run_id = (
-        f"trm_fem_{resolved.case_hash[:12]}"
+        case_preparation.identity.run_id
     )
 
     run_dir = (

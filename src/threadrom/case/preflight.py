@@ -1,4 +1,4 @@
-﻿"""Backend-neutral result model for governed ThreadROM preflight checks."""
+"""Backend-neutral result model for governed ThreadROM preflight checks."""
 
 from __future__ import annotations
 
@@ -44,6 +44,7 @@ class PreflightRuleCode(StrEnum):
     THREAD_ENGAGEMENT_FEASIBLE = "thread_engagement_feasible"
     PROPERTY_CLASS_COMPATIBLE = "property_class_compatible"
     FRICTION_ENVELOPE_SUPPORTED = "friction_envelope_supported"
+    FEM_ELASTIC_MODEL_SUPPORTED = "fem_elastic_model_supported"
     SERVICE_TEMPERATURE_SUPPORTED = "service_temperature_supported"
     ANALYSIS_CAPABILITY_SUPPORTED = "analysis_capability_supported"
 

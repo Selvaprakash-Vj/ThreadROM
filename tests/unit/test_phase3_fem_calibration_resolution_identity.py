@@ -1,4 +1,4 @@
-﻿"""Tests for resolved-identity-safe FEM calibration reuse."""
+"""Tests for resolved-identity-safe FEM calibration reuse."""
 
 from dataclasses import replace
 
@@ -15,7 +15,11 @@ from threadrom.factory.pilot_doe import (
 from threadrom.factory.preload_calibration_seed import (
     derive_analytical_thermal_preload_seed,
 )
-from tests.unit.test_phase3_fem_calibration_knowledge import _policy
+from tests.unit.test_phase3_fem_calibration_knowledge import (
+    _TEST_EXECUTION_GENERATION_ID,
+    _geometry_identity,
+    _policy,
+)
 
 
 def _pilot(case_id: PilotDoeCaseId):
@@ -41,6 +45,8 @@ def test_new_calibration_record_preserves_both_identities() -> None:
     record = build_fem_calibration_knowledge_record(
         resolved=resolved,
         seed=seed,
+        geometry_identity=_geometry_identity(resolved),
+        execution_generation_id=_TEST_EXECUTION_GENERATION_ID,
         accepted_run_id="accepted-p03",
         accepted_delta_temperature_c=-263.562942251128,
         measured_mean_clamp_force_n=19820.576667,
@@ -58,6 +64,8 @@ def test_exact_reuse_requires_matching_resolution_hash() -> None:
     record = build_fem_calibration_knowledge_record(
         resolved=resolved,
         seed=seed,
+        geometry_identity=_geometry_identity(resolved),
+        execution_generation_id=_TEST_EXECUTION_GENERATION_ID,
         accepted_run_id="accepted-p03",
         accepted_delta_temperature_c=-263.562942251128,
         measured_mean_clamp_force_n=19820.576667,
@@ -86,6 +94,8 @@ def test_exact_reuse_requires_matching_resolution_hash() -> None:
     prediction = predict_fem_warm_start(
         resolved=changed,
         seed=changed_seed,
+        geometry_identity=_geometry_identity(changed),
+        execution_generation_id=_TEST_EXECUTION_GENERATION_ID,
         knowledge=(record,),
         policy=_policy(),
     )
@@ -101,6 +111,8 @@ def test_matching_resolution_hash_remains_exact_reuse() -> None:
     record = build_fem_calibration_knowledge_record(
         resolved=resolved,
         seed=seed,
+        geometry_identity=_geometry_identity(resolved),
+        execution_generation_id=_TEST_EXECUTION_GENERATION_ID,
         accepted_run_id="accepted-p03",
         accepted_delta_temperature_c=-263.562942251128,
         measured_mean_clamp_force_n=19820.576667,
@@ -109,6 +121,8 @@ def test_matching_resolution_hash_remains_exact_reuse() -> None:
     prediction = predict_fem_warm_start(
         resolved=resolved,
         seed=seed,
+        geometry_identity=_geometry_identity(resolved),
+        execution_generation_id=_TEST_EXECUTION_GENERATION_ID,
         knowledge=(record,),
         policy=_policy(),
     )

@@ -23,6 +23,11 @@ from threadrom.geometry.helical_thread_cutter import (
 )
 
 
+EXTERNAL_THREAD_CONSTRUCTION_REVISION = (
+    "canonical_additive_external_thread_v2_physical_minor_core"
+)
+
+
 @dataclass(frozen=True)
 class ThreadedShankBuild:
     """Shapes produced during additive threaded-shank construction."""
@@ -104,10 +109,13 @@ def build_thread_core(
     if radial_overlap_mm <= 0.0:
         raise ValueError("Radial overlap must be positive.")
 
-    core_radius_mm = (
-        definition.minor_radius_mm
-        + radial_overlap_mm
-    )
+    # The cylindrical core terminates exactly at the governed
+    # physical external-thread minor/root radius.
+    #
+    # ``radial_overlap_mm`` is a Boolean construction allowance for
+    # the additive ridge only. It must not enlarge the finished
+    # physical root cylinder.
+    core_radius_mm = definition.minor_radius_mm
 
     if core_radius_mm >= definition.major_radius_mm:
         raise ValueError(

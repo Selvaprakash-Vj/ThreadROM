@@ -16,6 +16,62 @@ from threadrom.factory.preload_calibration_seed import (
 )
 
 
+LEGACY_UNVERSIONED_GEOMETRY_GENERATION_ID = (
+    "legacy_unversioned"
+)
+
+LEGACY_SINGLE_STEP_EXECUTION_GENERATION_ID = (
+    "legacy_single_step_unversioned"
+)
+
+
+@dataclass(frozen=True, slots=True)
+class FemGeometryRealizationIdentity:
+    """Governed CAD-realization boundary for reusable FEM evidence."""
+
+    generation_id: str
+    realization_id: str
+
+    def __post_init__(self) -> None:
+        if not self.generation_id.strip():
+            raise ValueError(
+                "FEM geometry generation_id must not be blank."
+            )
+
+        if not self.realization_id.strip():
+            raise ValueError(
+                "FEM geometry realization_id must not be blank."
+            )
+
+
+def build_legacy_fem_geometry_identity(
+    *,
+    mesh_sha256: str,
+) -> FemGeometryRealizationIdentity:
+    """Bind legacy FEM evidence to its immutable certified mesh."""
+
+    if (
+        len(mesh_sha256) != 64
+        or any(
+            character not in "0123456789abcdef"
+            for character in mesh_sha256
+        )
+    ):
+        raise ValueError(
+            "Legacy FEM mesh_sha256 must be exactly "
+            "64 lowercase hexadecimal characters."
+        )
+
+    return FemGeometryRealizationIdentity(
+        generation_id=(
+            LEGACY_UNVERSIONED_GEOMETRY_GENERATION_ID
+        ),
+        realization_id=(
+            f"legacy_mesh_sha256:{mesh_sha256}"
+        ),
+    )
+
+
 @dataclass(frozen=True, slots=True)
 class FemCalibrationCompatibilityKey:
     """Categorical boundary for safe FEM-knowledge reuse."""
@@ -30,6 +86,8 @@ class FemCalibrationCompatibilityKey:
     handedness: str
     starts: int
     member_material_ids: tuple[str, ...]
+    geometry_generation_id: str
+    execution_generation_id: str
 
 
 @dataclass(frozen=True, slots=True)
@@ -64,6 +122,8 @@ class FemCalibrationKnowledgeRecord:
 
     case_hash: str
     resolution_hash: str
+    geometry_identity: FemGeometryRealizationIdentity
+    execution_generation_id: str
     accepted_run_id: str
     feature: FemCalibrationFeatureVector
 
@@ -160,8 +220,15 @@ def _require_friction(
 def build_fem_calibration_feature_vector(
     resolved: ResolvedCase,
     seed: ThermalPreloadCalibrationSeed,
+    geometry_identity: FemGeometryRealizationIdentity,
+    execution_generation_id: str,
 ) -> FemCalibrationFeatureVector:
     """Build governed similarity features from one resolved case."""
+
+    if not execution_generation_id.strip():
+        raise ValueError(
+            "FEM execution generation ID must not be blank."
+        )
 
     source = resolved.source_case
     assembly = resolved.assembly
@@ -245,6 +312,12 @@ def build_fem_calibration_feature_vector(
             member_material_ids=tuple(
                 layer.material_id
                 for layer in layers
+            ),
+            geometry_generation_id=(
+                geometry_identity.generation_id
+            ),
+            execution_generation_id=(
+                execution_generation_id
             ),
         ),
         target_preload_n=preload,
@@ -485,11 +558,18 @@ def build_fem_calibration_knowledge_record(
     *,
     resolved: ResolvedCase,
     seed: ThermalPreloadCalibrationSeed,
+    geometry_identity: FemGeometryRealizationIdentity,
+    execution_generation_id: str,
     accepted_run_id: str,
     accepted_delta_temperature_c: float,
     measured_mean_clamp_force_n: float,
 ) -> FemCalibrationKnowledgeRecord:
     """Create one reusable record from accepted FEM evidence."""
+
+    if not execution_generation_id.strip():
+        raise ValueError(
+            "FEM execution generation ID must not be blank."
+        )
 
     if not accepted_run_id.strip():
         raise ValueError(
@@ -520,10 +600,14 @@ def build_fem_calibration_knowledge_record(
     record = FemCalibrationKnowledgeRecord(
         case_hash=resolved.case_hash,
         resolution_hash=resolved.resolution_hash,
+        geometry_identity=geometry_identity,
+        execution_generation_id=execution_generation_id,
         accepted_run_id=accepted_run_id,
         feature=build_fem_calibration_feature_vector(
             resolved,
             seed,
+            geometry_identity,
+            execution_generation_id,
         ),
         analytical_delta_temperature_c=(
             seed.predicted_delta_temperature_c
@@ -549,6 +633,8 @@ def predict_fem_warm_start(
     *,
     resolved: ResolvedCase,
     seed: ThermalPreloadCalibrationSeed,
+    geometry_identity: FemGeometryRealizationIdentity,
+    execution_generation_id: str,
     knowledge: tuple[
         FemCalibrationKnowledgeRecord,
         ...,
@@ -557,10 +643,17 @@ def predict_fem_warm_start(
 ) -> FemWarmStartPrediction:
     """Predict the first thermal FEM trial from accepted FEM history."""
 
+    if not execution_generation_id.strip():
+        raise ValueError(
+            "FEM execution generation ID must not be blank."
+        )
+
     target_feature = (
         build_fem_calibration_feature_vector(
             resolved,
             seed,
+            geometry_identity,
+            execution_generation_id,
         )
     )
 
@@ -570,6 +663,9 @@ def predict_fem_warm_start(
         if (
             record.case_hash == resolved.case_hash
             and record.resolution_hash == resolved.resolution_hash
+            and record.geometry_identity == geometry_identity
+            and record.execution_generation_id
+            == execution_generation_id
         )
     )
 

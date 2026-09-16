@@ -328,3 +328,116 @@ def check_analysis_capability(
         )
 
     raise ValueError(f"Unsupported preflight target: {target!r}.")
+
+def check_fem_backend_restrictions(
+    case: ThreadROMCase,
+    target,
+    *,
+    material_catalog=None,
+) -> tuple[PreflightFinding, ...]:
+    """Check restrictions of the current complete-joint FEM backend.
+
+    These restrictions belong to the current solver-transfer implementation,
+    not to the ThreadROM case model. Resolution, analytical work, and geometry
+    therefore remain free to represent configurations that the present FEM
+    backend cannot yet execute.
+    """
+
+    from math import isclose
+
+    from threadrom.case.preflight import PreflightTarget
+    from threadrom.materials.baseline_catalog import (
+        BASELINE_MATERIAL_CATALOG,
+    )
+
+    if target is not PreflightTarget.FEM:
+        return ()
+
+    if material_catalog is None:
+        material_catalog = BASELINE_MATERIAL_CATALOG
+
+    findings: list[PreflightFinding] = []
+
+    friction_values = (
+        case.interfaces.thread_friction_coefficient,
+        case.interfaces.head_bearing_friction_coefficient,
+        case.interfaces.nut_bearing_friction_coefficient,
+        case.interfaces.member_interface_friction_coefficient,
+    )
+
+    reference_friction = friction_values[0]
+
+    if not all(
+        isclose(
+            value,
+            reference_friction,
+            rel_tol=0.0,
+            abs_tol=1.0e-12,
+        )
+        for value in friction_values[1:]
+    ):
+        findings.append(
+            PreflightFinding(
+                code=PreflightRuleCode.FRICTION_ENVELOPE_SUPPORTED,
+                severity=PreflightSeverity.ERROR,
+                message=(
+                    "The current complete-joint FEM backend requires one "
+                    "common friction coefficient across thread, head-bearing, "
+                    "nut-bearing and member interfaces."
+                ),
+            )
+        )
+
+    material_ids = (
+        case.fastener.bolt_material_id,
+        case.fastener.nut_material_id,
+        *(
+            layer.material_id
+            for layer in case.members.layers
+        ),
+    )
+
+    materials = []
+
+    for material_id in material_ids:
+        try:
+            materials.append(
+                material_catalog.get_material(material_id)
+            )
+        except ValueError:
+            # Missing material records are already reported by
+            # check_material_data(); avoid duplicate cascading findings.
+            return tuple(findings)
+
+    reference_material = materials[0]
+
+    same_elastic_model = all(
+        isclose(
+            material.youngs_modulus_mpa,
+            reference_material.youngs_modulus_mpa,
+            rel_tol=1.0e-12,
+            abs_tol=1.0e-12,
+        )
+        and isclose(
+            material.poissons_ratio,
+            reference_material.poissons_ratio,
+            rel_tol=1.0e-12,
+            abs_tol=1.0e-12,
+        )
+        for material in materials[1:]
+    )
+
+    if not same_elastic_model:
+        findings.append(
+            PreflightFinding(
+                code=PreflightRuleCode.FEM_ELASTIC_MODEL_SUPPORTED,
+                severity=PreflightSeverity.ERROR,
+                message=(
+                    "The current complete-joint FEM backend requires common "
+                    "isotropic elastic properties across bolt, nut and "
+                    "clamped-member materials."
+                ),
+            )
+        )
+
+    return tuple(findings)

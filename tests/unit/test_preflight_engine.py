@@ -23,7 +23,7 @@ def test_reference_resolution_preflight_passes() -> None:
     assert report.disposition is PreflightDisposition.PASS
     assert report.can_proceed is True
     assert report.findings == ()
-    assert report.support_status is CaseSupportStatus.EXPERIMENTAL
+    assert report.support_status is CaseSupportStatus.SUPPORTED
 
 
 def test_reference_geometry_preflight_passes() -> None:

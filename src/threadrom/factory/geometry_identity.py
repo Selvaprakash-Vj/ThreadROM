@@ -24,12 +24,15 @@ from threadrom.factory.geometry_profile import (
     CERTIFIED_PHASE2_GEOMETRY_PROFILE,
     GeometryDefinitionProfile,
 )
+from threadrom.geometry.threaded_shank import (
+    EXTERNAL_THREAD_CONSTRUCTION_REVISION,
+)
 
 
-BOLT_GEOMETRY_SCHEMA_VERSION = 1
+BOLT_GEOMETRY_SCHEMA_VERSION = 2
 NUT_GEOMETRY_SCHEMA_VERSION = 1
 COMPONENT_GEOMETRY_SCHEMA_VERSION = 2
-JOINT_GEOMETRY_SCHEMA_VERSION = 1
+JOINT_GEOMETRY_SCHEMA_VERSION = 2
 
 
 def _sha256(payload: dict[str, object]) -> str:
@@ -60,6 +63,11 @@ def bolt_geometry_payload(
 
     return {
         "schema_version": BOLT_GEOMETRY_SCHEMA_VERSION,
+        "implementation": {
+            "external_thread_construction": (
+                EXTERNAL_THREAD_CONSTRUCTION_REVISION
+            ),
+        },
         "thread": {
             "nominal_diameter_mm": (
                 resolved.thread_standard.nominal_diameter_mm
@@ -301,6 +309,11 @@ def joint_geometry_bundle_payload(
 
     return {
         "schema_version": JOINT_GEOMETRY_SCHEMA_VERSION,
+        "implementation": {
+            "external_thread_construction": (
+                EXTERNAL_THREAD_CONSTRUCTION_REVISION
+            ),
+        },
         "bolt_component": {
             "nominal_diameter_mm": bolt_blank.nominal_diameter_mm,
             "underhead_length_mm": bolt_blank.underhead_length_mm,

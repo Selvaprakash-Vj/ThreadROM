@@ -170,7 +170,9 @@ def write_fem_preload_calibration_trial_deck(
         f"{case_run_id}_cal_"
     ):
         raise ValueError(
-            "Calibration trial does not belong to the prepared case."
+            "Calibration trial does not belong to the prepared case. "
+            f"prepared_case_run_id={case_run_id!r}; "
+            f"trial_run_id={trial.run_id!r}"
         )
 
     if not backend.step.nonlinear_geometry:

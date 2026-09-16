@@ -1,4 +1,4 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 
 import hashlib
 import json
@@ -11,6 +11,8 @@ from pathlib import Path
 from threadrom.case.resolver import resolve_case
 from threadrom.factory.fem_calibration_knowledge import (
     build_fem_calibration_knowledge_record,
+    LEGACY_SINGLE_STEP_EXECUTION_GENERATION_ID,
+    build_legacy_fem_geometry_identity,
     load_fem_warm_start_policy,
 )
 from threadrom.factory.preload_calibration_seed import (
@@ -83,6 +85,23 @@ EXPECTED_PREPARATION_CERT_SHA256 = (
     "e403145d098729e5540285f319befd5"
 )
 
+# Current governed policy file.
+EXPECTED_CURRENT_WARM_POLICY_SHA256 = (
+    "eb498f9ab7a0b1793084ccee8049bad6"
+    "c64fed76358e326182227777bfda25d9"
+)
+
+# Historical provenance token embedded in the immutable
+# CP8 warm-start knowledge artifact. No surviving Git
+# revision or ordinary byte-encoding variant reproduces
+# this digest, so it is preserved strictly as historical
+# record provenance and is not attributed to the current
+# governed policy file.
+FROZEN_CP8_RECORDED_WARM_POLICY_SHA256 = (
+    "408ccbfe67fefec86e31bf033dc36a731"
+    "e3bbc43f7ac564a9e74a1061562793b"
+)
+
 
 def sha256(path: Path) -> str:
     if (
@@ -123,6 +142,117 @@ def require_sha256(
 
 def relative(path: Path) -> str:
     return path.relative_to(ROOT).as_posix()
+
+
+def legacy_cp8_v1_knowledge_payload(
+    knowledge,
+) -> dict:
+    payload = asdict(knowledge)
+
+    required_modern_top_level = {
+        "resolution_hash",
+        "geometry_identity",
+    }
+
+    missing = (
+        required_modern_top_level
+        - set(payload)
+    )
+
+    if missing:
+        raise RuntimeError(
+            "Modern FEM knowledge record lacks fields "
+            "required for explicit CP8-v1 down-serialization: "
+            f"{sorted(missing)}"
+        )
+
+    payload.pop("resolution_hash")
+    payload.pop("geometry_identity")
+    payload.pop("execution_generation_id")
+
+    compatibility = payload[
+        "feature"
+    ]["compatibility"]
+
+    if "geometry_generation_id" not in compatibility:
+        raise RuntimeError(
+            "Modern FEM compatibility record lacks "
+            "geometry_generation_id."
+        )
+
+    compatibility.pop(
+        "geometry_generation_id"
+    )
+    compatibility.pop(
+        "execution_generation_id"
+    )
+
+    expected_top_level = {
+        "accepted_delta_temperature_c",
+        "accepted_run_id",
+        "analytical_delta_temperature_c",
+        "case_hash",
+        "feature",
+        "measured_mean_clamp_force_n",
+        "target_force_n",
+    }
+
+    expected_feature = {
+        "analytical_delta_temperature_abs_c",
+        "bolt_length_mm",
+        "clearance_to_outer_diameter",
+        "compatibility",
+        "engagement_to_pitch",
+        "external_axial_to_preload",
+        "head_bearing_friction",
+        "member_interface_friction",
+        "nut_bearing_friction",
+        "outer_diameter_to_bolt_length",
+        "protrusion_to_pitch",
+        "target_preload_n",
+        "thread_friction",
+        "total_grip_length_mm",
+        "upper_grip_fraction",
+    }
+
+    expected_compatibility = {
+        "bolt_material_id",
+        "bolt_property_class",
+        "bolt_standard",
+        "handedness",
+        "member_material_ids",
+        "nut_material_id",
+        "nut_property_class",
+        "nut_standard",
+        "starts",
+        "thread_designation",
+    }
+
+    if set(payload) != expected_top_level:
+        raise RuntimeError(
+            "CP8-v1 top-level knowledge schema drift: "
+            f"{sorted(payload)}"
+        )
+
+    if (
+        set(payload["feature"])
+        != expected_feature
+    ):
+        raise RuntimeError(
+            "CP8-v1 feature schema drift: "
+            f"{sorted(payload['feature'])}"
+        )
+
+    if (
+        set(compatibility)
+        != expected_compatibility
+    ):
+        raise RuntimeError(
+            "CP8-v1 compatibility schema drift: "
+            f"{sorted(compatibility)}"
+        )
+
+    return payload
 
 
 def walk_dicts(value):
@@ -551,8 +681,10 @@ preparation_cert_hash = require_sha256(
     "Preparation certification record",
 )
 
-warm_policy_hash = sha256(
-    WARM_POLICY_PATH
+warm_policy_hash = require_sha256(
+    WARM_POLICY_PATH,
+    EXPECTED_CURRENT_WARM_POLICY_SHA256,
+    "Current FEM warm-start policy",
 )
 
 warm_policy = load_fem_warm_start_policy(
@@ -668,10 +800,32 @@ for anchor in anchors:
             "temperature must be contraction."
         )
 
+    try:
+        anchor_mesh_sha256 = (
+            row[
+                "mesh_evidence"
+            ]["sha256"]
+        )
+    except KeyError as exc:
+        raise RuntimeError(
+            f"{anchor.case_id}: historical anchor "
+            "lacks certified mesh SHA-256 provenance."
+        ) from exc
+
+    geometry_identity = (
+        build_legacy_fem_geometry_identity(
+            mesh_sha256=anchor_mesh_sha256,
+        )
+    )
+
     knowledge = (
         build_fem_calibration_knowledge_record(
             resolved=resolved,
             seed=seed,
+            geometry_identity=geometry_identity,
+            execution_generation_id=(
+                LEGACY_SINGLE_STEP_EXECUTION_GENERATION_ID
+            ),
             accepted_run_id=accepted_run_id,
             accepted_delta_temperature_c=(
                 accepted_delta_c
@@ -727,7 +881,9 @@ for anchor in anchors:
                 knowledge.correction_factor
             ),
             "knowledge_record": (
-                asdict(knowledge)
+                legacy_cp8_v1_knowledge_payload(
+                    knowledge
+                )
             ),
             "status": "CERTIFIED_REUSABLE",
         }
@@ -776,7 +932,7 @@ record = {
             warm_policy.policy_id
         ),
         "policy_sha256": (
-            warm_policy_hash
+            FROZEN_CP8_RECORDED_WARM_POLICY_SHA256
         ),
         "maximum_neighbors": (
             warm_policy.maximum_neighbors

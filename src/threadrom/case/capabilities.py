@@ -1,4 +1,4 @@
-"""Governed capability assessment for ThreadROM product cases."""
+﻿"""Governed capability assessment for ThreadROM product cases."""
 
 from __future__ import annotations
 
@@ -6,77 +6,105 @@ from dataclasses import dataclass
 
 from threadrom.case import CaseSupportStatus
 from threadrom.case.contract import ThreadROMCase
-from threadrom.engineering.analytical_inputs import ThreadHandedness
+from threadrom.case.variant_capabilities import (
+    FastenerVariantKey,
+    PHASE3_FASTENER_VARIANT_CAPABILITIES,
+    VariantCapabilityLevel,
+)
 
 
 @dataclass(frozen=True)
 class CapabilityAssessment:
-    """End-to-end support status for one requested case."""
+    """Demonstrated maturity of one requested fastener variant.
+
+    This assessment describes maturity of the fastener geometry variant.
+    It does not by itself certify every material, member geometry, load,
+    interface, or analysis request using that variant.
+
+    Full-case execution permission remains governed by preflight and,
+    where applicable, ROM applicability checks.
+    """
 
     status: CaseSupportStatus
     reasons: tuple[str, ...]
 
 
-def assess_case_capability(case: ThreadROMCase) -> CapabilityAssessment:
-    """Assess current Phase-3 factory support for one product case.
+def assess_case_capability(
+    case: ThreadROMCase,
+) -> CapabilityAssessment:
+    """Assess governed maturity of the requested fastener variant."""
 
-    A representable case is not SUPPORTED until the complete
-    ThreadROMCase -> factory -> solver -> physics-acceptance path has
-    been demonstrated end-to-end.
+    fastener = case.fastener
+    registry = PHASE3_FASTENER_VARIANT_CAPABILITIES
 
-    CP1 therefore cannot return SUPPORTED. Promotion of the certified
-    baseline family is reserved for CP4 after automatic Phase-2
-    baseline reproduction.
-    """
+    known_bolt_standards = {
+        record.key.bolt_standard
+        for record in registry.records
+    }
+    known_nut_standards = {
+        record.key.nut_standard
+        for record in registry.records
+    }
 
     unsupported_reasons: list[str] = []
-    experimental_reasons: list[str] = []
 
-    if case.fastener.starts != 1:
+    if fastener.starts != 1:
         unsupported_reasons.append(
             "Multi-start threads are not supported by the current "
-            "certified thread-transfer model."
+            "certified thread-transfer topology."
         )
 
-    if case.fastener.bolt_standard != "ISO 4017:2022":
+    if fastener.bolt_standard not in known_bolt_standards:
         unsupported_reasons.append(
-            "No governed Phase-3 resolver currently exists for the "
-            "selected bolt standard."
+            "The selected bolt standard has no governed fastener-variant "
+            "capability family in the current registry."
         )
 
-    if case.fastener.nut_standard != "ISO 4032:2023":
+    if fastener.nut_standard not in known_nut_standards:
         unsupported_reasons.append(
-            "No governed Phase-3 resolver currently exists for the "
-            "selected nut standard."
+            "The selected nut standard has no governed fastener-variant "
+            "capability family in the current registry."
         )
-
-    if case.fastener.handedness is not ThreadHandedness.RIGHT:
-        experimental_reasons.append(
-            "Left-hand threads are representable but not end-to-end "
-            "certified."
-        )
-
-    if case.fastener.thread_designation != "M10x1.5":
-        experimental_reasons.append(
-            "Non-M10x1.5 metric threads have not yet been reproduced "
-            "through the complete Phase-3 factory."
-        )
-
-    experimental_reasons.append(
-        "The new Phase-3 ThreadROMCase factory path has not yet "
-        "reproduced the certified Phase-2 baseline; CP4 certification "
-        "is required before any case is promoted to SUPPORTED."
-    )
 
     if unsupported_reasons:
         return CapabilityAssessment(
             status=CaseSupportStatus.UNSUPPORTED,
-            reasons=tuple(
-                unsupported_reasons + experimental_reasons
+            reasons=tuple(unsupported_reasons),
+        )
+
+    key = FastenerVariantKey(
+        bolt_standard=fastener.bolt_standard,
+        thread_designation=fastener.thread_designation,
+        nut_standard=fastener.nut_standard,
+        handedness=fastener.handedness,
+        starts=fastener.starts,
+    )
+
+    record = registry.find(key)
+
+    if record is None:
+        return CapabilityAssessment(
+            status=CaseSupportStatus.EXPERIMENTAL,
+            reasons=(
+                "The requested fastener variant is representable by the "
+                "parametric case architecture but has not yet been admitted "
+                "to the governed variant-capability registry.",
             ),
+        )
+
+    if record.capability in {
+        VariantCapabilityLevel.FEM_CERTIFIED,
+        VariantCapabilityLevel.ROM_SUPPORTED,
+    }:
+        return CapabilityAssessment(
+            status=CaseSupportStatus.SUPPORTED,
+            reasons=(),
         )
 
     return CapabilityAssessment(
         status=CaseSupportStatus.EXPERIMENTAL,
-        reasons=tuple(experimental_reasons),
+        reasons=(
+            "The requested fastener variant is governed but has not yet "
+            "reached certified FEM maturity.",
+        ),
     )

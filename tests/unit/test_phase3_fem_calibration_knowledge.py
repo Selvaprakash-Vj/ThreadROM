@@ -9,6 +9,7 @@ import pytest
 
 from threadrom.case.resolver import resolve_case
 from threadrom.factory.fem_calibration_knowledge import (
+    FemGeometryRealizationIdentity,
     FemWarmStartApplicability,
     FemWarmStartSource,
     build_fem_calibration_feature_vector,
@@ -27,6 +28,22 @@ from threadrom.factory.preload_calibration_seed import (
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
+
+TEST_GEOMETRY_GENERATION = (
+    "canonical_additive_external_thread_v2_physical_minor_core"
+)
+
+
+_TEST_EXECUTION_GENERATION_ID = "test_execution_generation_v1"
+
+def _geometry_identity(resolved):
+    return FemGeometryRealizationIdentity(
+        generation_id=TEST_GEOMETRY_GENERATION,
+        realization_id=(
+            "test-joint-geometry-"
+            + resolved.case_hash[:16]
+        ),
+    )
 
 
 def _pilot(case_id: PilotDoeCaseId):
@@ -64,6 +81,8 @@ def test_exact_case_reuses_accepted_fem_temperature() -> None:
     record = build_fem_calibration_knowledge_record(
         resolved=resolved,
         seed=seed,
+        geometry_identity=_geometry_identity(resolved),
+        execution_generation_id=_TEST_EXECUTION_GENERATION_ID,
         accepted_run_id="accepted-p03",
         accepted_delta_temperature_c=-263.562942251128,
         measured_mean_clamp_force_n=19820.576667,
@@ -72,6 +91,8 @@ def test_exact_case_reuses_accepted_fem_temperature() -> None:
     prediction = predict_fem_warm_start(
         resolved=resolved,
         seed=seed,
+        geometry_identity=_geometry_identity(resolved),
+        execution_generation_id=_TEST_EXECUTION_GENERATION_ID,
         knowledge=(record,),
         policy=_policy(),
     )
@@ -100,6 +121,8 @@ def test_single_neighbor_falls_back_to_analytical() -> None:
         build_fem_calibration_knowledge_record(
             resolved=baseline,
             seed=baseline_seed,
+            geometry_identity=_geometry_identity(baseline),
+            execution_generation_id=_TEST_EXECUTION_GENERATION_ID,
             accepted_run_id="accepted-baseline",
             accepted_delta_temperature_c=-243.2744971,
             measured_mean_clamp_force_n=20063.5,
@@ -113,6 +136,8 @@ def test_single_neighbor_falls_back_to_analytical() -> None:
     prediction = predict_fem_warm_start(
         resolved=low,
         seed=low_seed,
+        geometry_identity=_geometry_identity(low),
+        execution_generation_id=_TEST_EXECUTION_GENERATION_ID,
         knowledge=(baseline_record,),
         policy=_policy(),
     )
@@ -152,6 +177,8 @@ def test_asymmetric_grip_is_distinct_feature_space() -> None:
         build_fem_calibration_feature_vector(
             baseline,
             baseline_seed,
+            _geometry_identity(baseline),
+            _TEST_EXECUTION_GENERATION_ID,
         )
     )
 
@@ -159,6 +186,8 @@ def test_asymmetric_grip_is_distinct_feature_space() -> None:
         build_fem_calibration_feature_vector(
             asymmetric,
             asymmetric_seed,
+            _geometry_identity(asymmetric),
+            _TEST_EXECUTION_GENERATION_ID,
         )
     )
 
@@ -194,10 +223,14 @@ def test_radial_geometry_is_distinct_feature_space() -> None:
         build_fem_calibration_feature_vector(
             baseline,
             baseline_seed,
+            _geometry_identity(baseline),
+            _TEST_EXECUTION_GENERATION_ID,
         ),
         build_fem_calibration_feature_vector(
             radial,
             radial_seed,
+            _geometry_identity(radial),
+            _TEST_EXECUTION_GENERATION_ID,
         ),
     )
 
@@ -213,6 +246,8 @@ def test_incompatible_material_family_falls_back_to_analytical() -> None:
     record = build_fem_calibration_knowledge_record(
         resolved=baseline,
         seed=baseline_seed,
+        geometry_identity=_geometry_identity(baseline),
+        execution_generation_id=_TEST_EXECUTION_GENERATION_ID,
         accepted_run_id="accepted-baseline",
         accepted_delta_temperature_c=-243.2744971,
         measured_mean_clamp_force_n=20063.5,
@@ -235,6 +270,8 @@ def test_incompatible_material_family_falls_back_to_analytical() -> None:
     prediction = predict_fem_warm_start(
         resolved=baseline,
         seed=baseline_seed,
+        geometry_identity=_geometry_identity(baseline),
+        execution_generation_id=_TEST_EXECUTION_GENERATION_ID,
         knowledge=(incompatible_record,),
         policy=_policy(),
     )
@@ -271,6 +308,8 @@ def test_two_fem_neighbors_interpolate_correction_factor() -> None:
         build_fem_calibration_knowledge_record(
             resolved=baseline,
             seed=baseline_seed,
+            geometry_identity=_geometry_identity(baseline),
+            execution_generation_id=_TEST_EXECUTION_GENERATION_ID,
             accepted_run_id="accepted-baseline",
             accepted_delta_temperature_c=-243.2744971,
             measured_mean_clamp_force_n=20063.5,
@@ -281,6 +320,8 @@ def test_two_fem_neighbors_interpolate_correction_factor() -> None:
         build_fem_calibration_knowledge_record(
             resolved=asymmetric,
             seed=asymmetric_seed,
+            geometry_identity=_geometry_identity(asymmetric),
+            execution_generation_id=_TEST_EXECUTION_GENERATION_ID,
             accepted_run_id="accepted-p03",
             accepted_delta_temperature_c=-263.562942251128,
             measured_mean_clamp_force_n=19820.576667,
@@ -290,6 +331,8 @@ def test_two_fem_neighbors_interpolate_correction_factor() -> None:
     prediction = predict_fem_warm_start(
         resolved=radial,
         seed=radial_seed,
+        geometry_identity=_geometry_identity(radial),
+        execution_generation_id=_TEST_EXECUTION_GENERATION_ID,
         knowledge=(
             baseline_record,
             asymmetric_record,
@@ -330,6 +373,8 @@ def test_high_preload_extrapolation_falls_back_to_analytical() -> None:
         build_fem_calibration_knowledge_record(
             resolved=baseline,
             seed=baseline_seed,
+            geometry_identity=_geometry_identity(baseline),
+            execution_generation_id=_TEST_EXECUTION_GENERATION_ID,
             accepted_run_id="accepted-baseline",
             accepted_delta_temperature_c=-243.2744971,
             measured_mean_clamp_force_n=20063.5,
@@ -340,6 +385,8 @@ def test_high_preload_extrapolation_falls_back_to_analytical() -> None:
         build_fem_calibration_knowledge_record(
             resolved=asymmetric,
             seed=asymmetric_seed,
+            geometry_identity=_geometry_identity(asymmetric),
+            execution_generation_id=_TEST_EXECUTION_GENERATION_ID,
             accepted_run_id="accepted-p03",
             accepted_delta_temperature_c=-263.562942251128,
             measured_mean_clamp_force_n=19820.576667,
@@ -349,6 +396,8 @@ def test_high_preload_extrapolation_falls_back_to_analytical() -> None:
     prediction = predict_fem_warm_start(
         resolved=high,
         seed=high_seed,
+        geometry_identity=_geometry_identity(high),
+        execution_generation_id=_TEST_EXECUTION_GENERATION_ID,
         knowledge=(
             baseline_record,
             asymmetric_record,

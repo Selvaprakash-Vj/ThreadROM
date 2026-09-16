@@ -1,4 +1,4 @@
-﻿"""Governed provenance for dimensional engineering data."""
+"""Governed provenance for dimensional engineering data."""
 
 from __future__ import annotations
 
@@ -12,6 +12,7 @@ class DimensionEvidenceBasis(StrEnum):
     """Engineering basis from which one dimensional datum is admitted."""
 
     STANDARD_DERIVED = "standard_derived"
+    STANDARD_RANGE_SELECTED = "standard_range_selected"
     CERTIFIED_REALIZED_BASELINE = "certified_realized_baseline"
 
 
@@ -44,6 +45,10 @@ class GovernedDimensionEvidence:
     verification_reference: str | None = None
     verified_on: date | None = None
 
+    standard_minimum_mm: float | None = None
+    standard_maximum_mm: float | None = None
+    selection_rule: str | None = None
+
     def __post_init__(self) -> None:
         for value, name in (
             (self.evidence_id, "Evidence identity"),
@@ -64,6 +69,12 @@ class GovernedDimensionEvidence:
                 "Dimensional value must be finite and positive."
             )
 
+        range_metadata = (
+            self.standard_minimum_mm,
+            self.standard_maximum_mm,
+            self.selection_rule,
+        )
+
         if self.evidence_basis is DimensionEvidenceBasis.STANDARD_DERIVED:
             if (
                 self.standard_reference is None
@@ -74,6 +85,64 @@ class GovernedDimensionEvidence:
                     "standard reference."
                 )
 
+            if any(
+                value is not None
+                for value in range_metadata
+            ):
+                raise ValueError(
+                    "Exact standard-derived dimensional evidence must "
+                    "not claim standard-range selection metadata."
+                )
+
+        elif (
+            self.evidence_basis
+            is DimensionEvidenceBasis.STANDARD_RANGE_SELECTED
+        ):
+            if (
+                self.standard_reference is None
+                or not self.standard_reference.strip()
+            ):
+                raise ValueError(
+                    "Standard-range-selected dimensional evidence "
+                    "requires a standard reference."
+                )
+
+            if (
+                self.standard_minimum_mm is None
+                or self.standard_maximum_mm is None
+                or self.selection_rule is None
+                or not self.selection_rule.strip()
+            ):
+                raise ValueError(
+                    "Standard-range-selected dimensional evidence "
+                    "requires a complete standard range and selection rule."
+                )
+
+            minimum = self.standard_minimum_mm
+            maximum = self.standard_maximum_mm
+
+            if (
+                not math.isfinite(minimum)
+                or not math.isfinite(maximum)
+                or minimum <= 0.0
+                or maximum <= 0.0
+                or minimum > maximum
+            ):
+                raise ValueError(
+                    "Standard dimensional range must contain positive, "
+                    "finite, correctly ordered limits."
+                )
+
+            if not (
+                minimum
+                <= self.value_mm
+                <= maximum
+            ):
+                raise ValueError(
+                    "Selected dimensional value must lie within the "
+                    "governed standard range."
+                )
+
         elif (
             self.evidence_basis
             is DimensionEvidenceBasis.CERTIFIED_REALIZED_BASELINE
@@ -82,6 +151,15 @@ class GovernedDimensionEvidence:
                 raise ValueError(
                     "Certified realised baseline dimensional evidence "
                     "must not claim a standard-derived reference."
+                )
+
+            if any(
+                value is not None
+                for value in range_metadata
+            ):
+                raise ValueError(
+                    "Certified realised baseline dimensional evidence "
+                    "must not claim standard-range selection metadata."
                 )
 
         if self.verification_status is DimensionVerificationStatus.VERIFIED:

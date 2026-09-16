@@ -1,4 +1,4 @@
-﻿"""Governed orchestration for ThreadROM case preflight."""
+"""Governed orchestration for ThreadROM case preflight."""
 
 from __future__ import annotations
 
@@ -12,6 +12,7 @@ from threadrom.case.preflight import (
 from threadrom.case.preflight_rules import (
     check_analysis_capability,
     check_bolt_length_feasible,
+    check_fem_backend_restrictions,
     check_material_data,
     check_product_topology,
     check_property_class_data,
@@ -84,6 +85,14 @@ def preflight_case(
         check_analysis_capability(
             case,
             target,
+        )
+    )
+
+    findings.extend(
+        check_fem_backend_restrictions(
+            case,
+            target,
+            material_catalog=material_catalog,
         )
     )
 
