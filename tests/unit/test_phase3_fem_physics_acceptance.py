@@ -486,6 +486,9 @@ def test_non_reference_case_passes_without_reproduction_oracle() -> None:
         ),
         return_code=0,
         stdout="CalculiX\nJob finished",
+        external_equilibrium_payload={
+            "overall_status": "pass",
+        },
     )
 
     assert result.passed
@@ -505,4 +508,116 @@ def test_non_reference_case_passes_without_reproduction_oracle() -> None:
     assert retry.kind is FemAcceptanceCheckKind.DIAGNOSTIC
     assert retry.passed
     assert retry.measured == 2
+
+
+def test_external_support_equilibrium_is_a_fail_closed_hard_gate() -> None:
+    from threadrom.factory.fem_acceptance_policy import (
+        FemPhysicsAcceptancePolicy,
+    )
+
+    policy = FemPhysicsAcceptancePolicy(
+        policy_id="gate4d_external_equilibrium_test",
+        intended_thread_flank_normal_family=(
+            FemThreadFlankNormalFamily.NEGATIVE_Z
+        ),
+        nonlinear_retry_policy=(
+            FemNonlinearRetryPolicy.ALLOW
+        ),
+        require_native_thread_contact_force=True,
+        require_external_support_equilibrium=True,
+    )
+
+    common = dict(
+        policy=policy,
+        preload_decision=_cp4_preload_decision(),
+        thread_normal_force_n=15_318.240,
+        axial_state=_cp4_axial_state(),
+        deformation_state=_cp4_deformation_state(),
+        thread_flank_state=_flank_state(
+            positive_mean_mpa=38.442914,
+            negative_mean_mpa=317.140284,
+        ),
+        accepted_increments=(
+            _cp4_accepted_increment(),
+        ),
+        return_code=0,
+        stdout="CalculiX\nJob finished",
+    )
+
+    passing = evaluate_fem_physics_acceptance(
+        **common,
+        external_equilibrium_payload={
+            "overall_status": "pass",
+        },
+    )
+
+    assert passing.passed
+
+    check = next(
+        item
+        for item in passing.checks
+        if item.name == "external support equilibrium"
+    )
+
+    assert check.kind is FemAcceptanceCheckKind.HARD_GATE
+    assert check.passed
+    assert check.measured == "pass"
+    assert check.expected == "pass"
+
+    for payload in (
+        None,
+        {"overall_status": "pending"},
+        {"overall_status": "fail"},
+        {"overall_status": 123},
+        {},
+    ):
+        result = evaluate_fem_physics_acceptance(
+            **common,
+            external_equilibrium_payload=payload,
+        )
+
+        assert not result.passed
+
+        failed_names = tuple(
+            item.name
+            for item in result.failed_checks
+        )
+
+        assert failed_names == (
+            "external support equilibrium",
+        )
+
+
+def test_complete_joint_policy_requires_external_support_equilibrium() -> None:
+    assembly = ResolvedAssembly(
+        assembly_id="gate4d_policy_joint",
+        bolt_length_mm=42.0,
+        pitch_mm=2.0,
+        upper_member_thickness_mm=14.0,
+        lower_member_thickness_mm=12.0,
+        total_grip_length_mm=26.0,
+        nut_thickness_mm=10.0,
+        thread_engagement_length_mm=9.0,
+        protrusion_length_mm=6.0,
+        clearance_hole_diameter_mm=14.0,
+        outer_diameter_mm=36.0,
+    )
+
+    policy = derive_complete_joint_physics_acceptance_policy(
+        assembly
+    )
+
+    assert policy.require_external_support_equilibrium
+    assert (
+        policy.policy_id
+        == "complete_joint_general_v2_"
+        "external_support_equilibrium"
+    )
+
+    payload = policy.to_payload()
+
+    assert (
+        payload["require_external_support_equilibrium"]
+        is True
+    )
 

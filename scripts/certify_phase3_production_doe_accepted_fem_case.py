@@ -15,6 +15,19 @@ from threadrom.factory.fem_run_adjudication import (
 from threadrom.factory.fem_preload_calibration_measurement import (
     extract_clamp_force_measurement_from_dat,
 )
+from threadrom.postprocessing.calculix_external_equilibrium import (
+    write_external_equilibrium_json,
+)
+from threadrom.postprocessing.calculix_nonlinear_progress import (
+    write_nonlinear_progress_json,
+)
+from threadrom.postprocessing.calculix_total_force_dat import (
+    write_total_force_json,
+)
+from threadrom.solver.complete_joint_boundary_regions import (
+    HEAD_SUPPORT,
+    load_complete_joint_boundary_region_definition,
+)
 from threadrom.factory.preload_calibration_campaign import (
     PreloadCalibrationDisposition,
     PreloadCalibrationTrial,
@@ -1125,6 +1138,19 @@ def main() -> int:
         )
     )
 
+    boundary = (
+        load_complete_joint_boundary_region_definition(
+            CONFIG
+            / "complete_joint_boundary_regions.toml"
+        )
+    )
+
+    support_set_name = (
+        boundary.region(
+            HEAD_SUPPORT
+        ).name
+    )
+
     measurement1 = (
         extract_clamp_force_measurement_from_dat(
             dat_path=trial1_dat,
@@ -1230,6 +1256,98 @@ def main() -> int:
             "Governed ACCEPT unexpectedly produced "
             "another calibration trial."
         )
+
+    # ---------------------------------------------------------
+    # GATE 4D:
+    # PRELOAD ACCEPTANCE != EXTERNAL EQUILIBRIUM
+    #
+    # Thermal preload is an internal self-equilibrated action.
+    # When governed policy requires equilibrium, the physical
+    # external support reaction must independently PASS the
+    # existing CalculiX equilibrium validator.
+    # ---------------------------------------------------------
+
+    equilibrium_payload = None
+    equilibrium_path = None
+
+    if preload.validation.require_global_equilibrium:
+        trial2_sta = (
+            trial2_dir
+            / f"{trial2_run_id}.sta"
+        )
+
+        trial2_cvg = (
+            trial2_dir
+            / f"{trial2_run_id}.cvg"
+        )
+
+        progress_path = (
+            trial2_dir
+            / "nonlinear_progress.json"
+        )
+
+        total_force_path = (
+            trial2_dir
+            / "support_total_force.json"
+        )
+
+        equilibrium_path = (
+            trial2_dir
+            / "external_support_equilibrium.json"
+        )
+
+        for required_path in (
+            trial2_sta,
+            trial2_cvg,
+            trial2_dat,
+        ):
+            if (
+                not required_path.is_file()
+                or required_path.stat().st_size <= 0
+            ):
+                raise RuntimeError(
+                    "External-equilibrium certification "
+                    "requires existing solved evidence: "
+                    f"{required_path}"
+                )
+
+        write_nonlinear_progress_json(
+            trial2_sta,
+            trial2_cvg,
+            progress_path,
+        )
+
+        write_total_force_json(
+            trial2_dat,
+            total_force_path,
+            set_names=(
+                support_set_name,
+            ),
+        )
+
+        equilibrium_payload = (
+            write_external_equilibrium_json(
+                progress_path,
+                total_force_path,
+                equilibrium_path,
+                support_set_name=(
+                    support_set_name
+                ),
+            )
+        )
+
+        if (
+            equilibrium_payload.get(
+                "overall_status"
+            )
+            != "pass"
+        ):
+            raise RuntimeError(
+                "Trial 2 external-support equilibrium "
+                "did not explicitly PASS. "
+                "Reusable FEM certification refused. "
+                f"Status={equilibrium_payload.get('overall_status')!r}"
+            )
 
     forces = (
         measurement2.under_head_force_n,
@@ -1492,6 +1610,18 @@ def main() -> int:
                 ]
             ),
             "governed_calibration_accept_verified": True,
+            "external_support_equilibrium_verified": (
+                equilibrium_payload is not None
+                and equilibrium_payload.get("overall_status")
+                == "pass"
+                if preload.validation.require_global_equilibrium
+                else True
+            ),
+            "external_support_equilibrium_artifact": (
+                relative(equilibrium_path)
+                if equilibrium_path is not None
+                else None
+            ),
             "trial_1_preserved": True,
             "trial_2_is_accepted_physics_solve": True,
             "additional_calibration_required": False,

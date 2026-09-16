@@ -37,6 +37,7 @@ class FemPhysicsAcceptancePolicy:
     )
     nonlinear_retry_policy: FemNonlinearRetryPolicy
     require_native_thread_contact_force: bool = True
+    require_external_support_equilibrium: bool = False
 
     def __post_init__(self) -> None:
         if not self.policy_id.strip():
@@ -66,6 +67,9 @@ class FemPhysicsAcceptancePolicy:
             "policy_id": self.policy_id,
             "require_native_thread_contact_force": (
                 self.require_native_thread_contact_force
+            ),
+            "require_external_support_equilibrium": (
+                self.require_external_support_equilibrium
             ),
         }
 
@@ -104,7 +108,10 @@ def derive_complete_joint_thread_flank_normal_family(
 def derive_complete_joint_physics_acceptance_policy(
     assembly: ResolvedAssembly,
     *,
-    policy_id: str = "complete_joint_general_v1",
+    policy_id: str = (
+        "complete_joint_general_v2_"
+        "external_support_equilibrium"
+    ),
     nonlinear_retry_policy: FemNonlinearRetryPolicy = (
         FemNonlinearRetryPolicy.ALLOW
     ),
@@ -120,5 +127,6 @@ def derive_complete_joint_physics_acceptance_policy(
         ),
         nonlinear_retry_policy=nonlinear_retry_policy,
         require_native_thread_contact_force=True,
+        require_external_support_equilibrium=True,
     )
 

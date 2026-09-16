@@ -13,6 +13,7 @@ from pathlib import Path
 from threadrom.case.resolver import ResolvedCase
 from threadrom.factory.preload_calibration_seed import (
     ThermalPreloadCalibrationSeed,
+    ThermalPreloadCalibrationSeedV2,
 )
 
 

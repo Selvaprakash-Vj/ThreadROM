@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from collections.abc import Mapping
+
 from dataclasses import dataclass
 
 from threadrom.factory.fem_acceptance_policy import (
@@ -311,6 +313,59 @@ def build_policy_numerical_completion_acceptance_checks(
     )
 
 
+
+def build_external_support_equilibrium_acceptance_checks(
+    *,
+    external_equilibrium_payload: (
+        Mapping[str, object] | None
+    ),
+    required: bool,
+) -> tuple[FemAcceptanceCheck, ...]:
+    """Build the preload-only external-support equilibrium gate.
+
+    Thermal preload is an internal self-equilibrated action. For the
+    currently governed preload-only model, the physical support
+    reaction must therefore remain near zero.
+
+    This check intentionally consumes the result of the governed
+    CalculiX external-equilibrium validator rather than reimplementing
+    its numerical logic here.
+
+    It is specifically an external-support-equilibrium check. It must
+    not be described as proof that every internal or guidance reaction
+    in the model has independently been balanced.
+    """
+
+    if not required:
+        return ()
+
+    status: str | None = None
+
+    if external_equilibrium_payload is not None:
+        value = external_equilibrium_payload.get(
+            "overall_status"
+        )
+
+        if isinstance(value, str):
+            status = value.strip().lower()
+
+    passed = status == "pass"
+
+    return (
+        FemAcceptanceCheck(
+            name="external support equilibrium",
+            kind=FemAcceptanceCheckKind.HARD_GATE,
+            passed=passed,
+            measured=status,
+            expected="pass",
+            reason=(
+                "The governed preload-only external-equilibrium "
+                "artifact must explicitly PASS. Missing, malformed, "
+                "pending, or failed evidence is rejected."
+            ),
+        ),
+    )
+
 def evaluate_fem_physics_acceptance(
     *,
     policy: FemPhysicsAcceptancePolicy,
@@ -320,6 +375,9 @@ def evaluate_fem_physics_acceptance(
     deformation_state: CompleteJointDeformationState,
     thread_flank_state: ThreadFlankStressState,
     accepted_increments: tuple[AcceptedIncrement, ...],
+    external_equilibrium_payload: (
+        Mapping[str, object] | None
+    ) = None,
     return_code: int | None,
     stdout: str,
     require_process_return_code: bool = True,
@@ -342,6 +400,14 @@ def evaluate_fem_physics_acceptance(
         ),
         *build_deformation_acceptance_checks(
             deformation_state
+        ),
+        *build_external_support_equilibrium_acceptance_checks(
+            external_equilibrium_payload=(
+                external_equilibrium_payload
+            ),
+            required=(
+                policy.require_external_support_equilibrium
+            ),
         ),
         *build_policy_thread_flank_acceptance_checks(
             state=thread_flank_state,

@@ -20,8 +20,8 @@ from threadrom.factory.preload_calibration_campaign import (
     PreloadCalibrationTrialEvaluation,
 )
 from threadrom.factory.preload_calibration_seed import (
-    ThermalPreloadCalibrationSeed,
-    derive_analytical_thermal_preload_seed,
+    ThermalPreloadCalibrationSeedV2,
+    derive_analytical_thermal_preload_seed_v2,
 )
 from threadrom.solver.complete_joint_boundary_regions import (
     CompleteJointBoundaryRegionDefinition,
@@ -64,7 +64,7 @@ class FemCaseDefinitionBundle:
     contact: CompleteJointContactDefinition
     boundary: CompleteJointBoundaryRegionDefinition
     guidance_geometry: FemGuidanceGeometry
-    calibration_seed: ThermalPreloadCalibrationSeed
+    calibration_seed: ThermalPreloadCalibrationSeedV2
     calibration_policy: PreloadCalibrationCampaignPolicy
 
 
@@ -147,7 +147,7 @@ def build_generic_fem_definition_bundle(
     )
 
     calibration_seed = (
-        derive_analytical_thermal_preload_seed(
+        derive_analytical_thermal_preload_seed_v2(
             resolved
         )
     )

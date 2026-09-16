@@ -17,6 +17,7 @@ from threadrom.factory.preload_calibration_controller import (
 )
 from threadrom.factory.preload_calibration_seed import (
     ThermalPreloadCalibrationSeed,
+    ThermalPreloadCalibrationSeedV2,
 )
 
 
@@ -166,7 +167,10 @@ def derive_fem_warm_start_preload_calibration_trial(
 
 def derive_initial_preload_calibration_trial(
     *,
-    seed: ThermalPreloadCalibrationSeed,
+    seed: (
+        ThermalPreloadCalibrationSeed
+        | ThermalPreloadCalibrationSeedV2
+    ),
     case_run_id: str,
 ) -> PreloadCalibrationTrial:
     """Create trial 1 directly from the analytical compatibility seed."""
