@@ -373,6 +373,54 @@ def write_fem_preload_calibration_trial_deck(
             "TOTALS=ONLY"
         ),
         "RF",
+        (
+            "*NODE PRINT, "
+            f"NSET={BOLT_HEAD_GUIDANCE_REFERENCE}, "
+            "TOTALS=ONLY"
+        ),
+        "RF",
+        (
+            "*NODE PRINT, "
+            f"NSET={NUT_TRANSLATION_GUIDANCE_REFERENCE}, "
+            "TOTALS=ONLY"
+        ),
+        "RF",
+        (
+            "*NODE PRINT, "
+            f"NSET={NUT_MEMBER_GUIDANCE_REFERENCE}, "
+            "TOTALS=ONLY"
+        ),
+        "RF",
+        (
+            "*NODE PRINT, "
+            f"NSET={NUT_ROTATION_GUIDANCE_REFERENCE}, "
+            "TOTALS=ONLY"
+        ),
+        "RF",
+        (
+            "*NODE PRINT, "
+            f"NSET={BOLT_HEAD_ROTATION_X_REFERENCE}, "
+            "TOTALS=ONLY"
+        ),
+        "RF",
+        (
+            "*NODE PRINT, "
+            f"NSET={BOLT_HEAD_ROTATION_Y_REFERENCE}, "
+            "TOTALS=ONLY"
+        ),
+        "RF",
+        (
+            "*NODE PRINT, "
+            f"NSET={NUT_ROTATION_X_REFERENCE}, "
+            "TOTALS=ONLY"
+        ),
+        "RF",
+        (
+            "*NODE PRINT, "
+            f"NSET={NUT_ROTATION_Y_REFERENCE}, "
+            "TOTALS=ONLY"
+        ),
+        "RF",
         "*NODE FILE",
         "U, RF",
         "*EL FILE",
