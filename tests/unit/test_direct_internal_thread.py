@@ -139,7 +139,7 @@ def test_full_length_compact_internal_thread_is_valid(
     assert measurements.volume_mm3 > 0.0
 
     assert measurements.profile_edge_count == 4
-    assert measurements.thread_segment_count == 6
+    assert measurements.thread_segment_count == 3
 
     assert measurements.z_min_mm == pytest.approx(
         0.0,

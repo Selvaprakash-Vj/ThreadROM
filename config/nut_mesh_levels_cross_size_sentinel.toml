@@ -1,0 +1,28 @@
+[identity]
+policy_id = "TRM-MLP-P3-XFEM-NUT-001"
+mesh_id = "TRM-MSH-P3-XFEM-NUT-001"
+geometry_id = "TRM-GEO-000001"
+status = "development"
+level_order = ["coarse", "medium", "fine"]
+
+# Cross-size sentinel-only nut mesh hierarchy.
+#
+# The Medium level preserves the governed Medium global maximum
+# while using the already-proven Fine thread/minimum sizing on
+# the nut. This reproduces the qualified M8/M12 0.67/0.22/0.22
+# recipe without altering the standard M10 mesh policy.
+
+[levels.coarse]
+maximum_size_pitch_factor = 1.00
+minimum_size_thread_depth_factor = 0.50
+thread_surface_size_depth_factor = 0.50
+
+[levels.medium]
+maximum_size_pitch_factor = 0.67
+minimum_size_thread_depth_factor = 0.22
+thread_surface_size_depth_factor = 0.22
+
+[levels.fine]
+maximum_size_pitch_factor = 0.45
+minimum_size_thread_depth_factor = 0.22
+thread_surface_size_depth_factor = 0.22

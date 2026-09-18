@@ -4,6 +4,10 @@ from __future__ import annotations
 
 from pathlib import Path
 
+import cadquery as cq
+import pytest
+
+import threadrom.geometry.complete_joint_assembly as complete_joint_assembly_module
 from threadrom.engineering.baseline_assembly import (
     BaselineAssembly,
     load_baseline_assembly,
@@ -17,6 +21,7 @@ from threadrom.geometry.complete_bolt import (
 from threadrom.geometry.complete_joint_assembly import (
     AssemblyGeometryValidationPolicy,
     CompleteJointAssemblyBuild,
+    _measure_pairwise_intersection_volume_mm3,
     build_complete_joint_assembly,
     export_and_reimport_complete_joint_assembly,
     load_assembly_geometry_validation_policy,
@@ -104,6 +109,114 @@ def build_test_joint() -> tuple[
     return joint, assembly_definition, policy
 
 
+def _box_shape(
+    *,
+    x_offset_mm: float,
+) -> cq.Shape:
+    """Build one unit box for Boolean-intersection regression tests."""
+
+    value = (
+        cq.Workplane("XY")
+        .box(1.0, 1.0, 1.0)
+        .translate((x_offset_mm, 0.0, 0.0))
+        .val()
+    )
+
+    assert isinstance(value, cq.Shape)
+
+    return value
+
+
+def test_pairwise_intersection_is_zero_for_disjoint_solids() -> None:
+    """Separated solids have no material interference."""
+
+    first = _box_shape(x_offset_mm=0.0)
+    second = _box_shape(x_offset_mm=2.0)
+
+    assert (
+        _measure_pairwise_intersection_volume_mm3(
+            first,
+            second,
+        )
+        == 0.0
+    )
+
+
+def test_pairwise_intersection_is_zero_for_touching_solids() -> None:
+    """Face contact is not volumetric material interference."""
+
+    first = _box_shape(x_offset_mm=0.0)
+    second = _box_shape(x_offset_mm=1.0)
+
+    assert (
+        _measure_pairwise_intersection_volume_mm3(
+            first,
+            second,
+        )
+        == 0.0
+    )
+
+
+def test_pairwise_intersection_reports_positive_overlap() -> None:
+    """True volumetric overlap is reported as unsigned volume."""
+
+    first = _box_shape(x_offset_mm=0.0)
+    second = _box_shape(x_offset_mm=0.5)
+
+    assert (
+        _measure_pairwise_intersection_volume_mm3(
+            first,
+            second,
+        )
+        == pytest.approx(
+            0.5,
+            rel=0.0,
+            abs=1.0e-12,
+        )
+    )
+
+
+def test_pairwise_intersection_boolean_failure_fails_closed(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """A failed interference Boolean can never be treated as zero."""
+
+    class FailedCommon:
+        def __init__(
+            self,
+            first: object,
+            second: object,
+        ) -> None:
+            del first
+            del second
+
+        def Build(self) -> None:
+            pass
+
+        def IsDone(self) -> bool:
+            return False
+
+    monkeypatch.setattr(
+        complete_joint_assembly_module,
+        "BRepAlgoAPI_Common",
+        FailedCommon,
+    )
+
+    first = _box_shape(x_offset_mm=0.0)
+    second = _box_shape(x_offset_mm=2.0)
+
+    with pytest.raises(
+        RuntimeError,
+        match=(
+            "material-interference Boolean operation failed"
+        ),
+    ):
+        _measure_pairwise_intersection_volume_mm3(
+            first,
+            second,
+        )
+
+
 def test_complete_joint_contains_four_solids() -> None:
     """Every baseline component remains independent."""
 
@@ -145,6 +258,8 @@ def test_complete_joint_passes_geometry_gates() -> None:
     assert len(measurements.interferences) == 6
 
     for result in measurements.interferences:
+        assert result.intersection_volume_mm3 >= 0.0
+
         component_pair = frozenset(
             (
                 result.first_component,

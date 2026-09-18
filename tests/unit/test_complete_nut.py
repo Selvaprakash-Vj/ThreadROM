@@ -120,7 +120,7 @@ def test_complete_threaded_nut_is_valid(
     assert measurements.added_thread_material_mm3 > 1.0
     assert measurements.removed_thread_volume_mm3 > 1.0
 
-    assert measurements.thread_segment_count == 6
+    assert measurements.thread_segment_count == 3
 
     assert (
         measurements.thread_construction_volume_mm3

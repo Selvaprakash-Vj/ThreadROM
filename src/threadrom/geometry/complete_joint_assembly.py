@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import math
 import tomllib
 from collections.abc import Mapping
 from dataclasses import dataclass
@@ -9,6 +10,7 @@ from pathlib import Path
 from typing import cast
 
 import cadquery as cq
+from OCP.BRepAlgoAPI import BRepAlgoAPI_Common
 
 from threadrom.engineering.baseline_assembly import (
     BaselineAssembly,
@@ -226,6 +228,81 @@ def _require_shape(
     return value
 
 
+def _measure_pairwise_intersection_volume_mm3(
+    first_shape: cq.Shape,
+    second_shape: cq.Shape,
+) -> float:
+    """Return physical volumetric material intersection.
+
+    Pairwise assembly interference is a hard geometry gate, so the
+    measurement must not rely on CadQuery's high-level ``intersect()``
+    wrapper for coincident mating surfaces.
+
+    The OpenCascade COMMON result is interpreted as follows:
+
+    - failed Boolean operation -> fail closed;
+    - null result -> zero volumetric interference;
+    - valid result containing no solids -> zero volumetric interference
+      (for example, coincident/touching faces or edges);
+    - invalid result topology -> fail closed;
+    - valid solids -> sum their unsigned physical volumes.
+
+    This deliberately distinguishes zero-volume surface contact from
+    material penetration and prevents signed solid orientation from
+    suppressing a real interference gate.
+    """
+
+    operation = BRepAlgoAPI_Common(
+        first_shape.wrapped,
+        second_shape.wrapped,
+    )
+    operation.Build()
+
+    if not operation.IsDone():
+        raise RuntimeError(
+            "Pairwise material-interference Boolean operation failed."
+        )
+
+    result = operation.Shape()
+
+    if result.IsNull():
+        return 0.0
+
+    intersection = cq.Shape.cast(result)
+
+    if not intersection.isValid():
+        raise RuntimeError(
+            "Pairwise material-interference Boolean produced "
+            "invalid topology."
+        )
+
+    solids = tuple(intersection.Solids())
+
+    if not solids:
+        return 0.0
+
+    volumes: list[float] = []
+
+    for solid in solids:
+        if not solid.isValid():
+            raise RuntimeError(
+                "Pairwise material-interference Boolean produced "
+                "an invalid intersection solid."
+            )
+
+        volume_mm3 = abs(solid.Volume())
+
+        if not math.isfinite(volume_mm3):
+            raise RuntimeError(
+                "Pairwise material-interference Boolean produced "
+                "a non-finite intersection volume."
+            )
+
+        volumes.append(volume_mm3)
+
+    return sum(volumes)
+
+
 def build_complete_joint_assembly(
     bolt_nut: BoltNutAssemblyBuild,
     definition: BaselineAssembly,
@@ -336,16 +413,15 @@ def measure_complete_joint_assembly(
             second_name,
             second_shape,
         ) in components[first_index + 1 :]:
-            intersection = first_shape.intersect(
-                second_shape
-            )
-
             interference_results.append(
                 ComponentInterferenceMeasurement(
                     first_component=first_name,
                     second_component=second_name,
                     intersection_volume_mm3=(
-                        intersection.Volume()
+                        _measure_pairwise_intersection_volume_mm3(
+                            first_shape,
+                            second_shape,
+                        )
                     ),
                 )
             )

@@ -21,6 +21,11 @@ _PROFILE_SPLINE_TOLERANCE_MM = 1.0e-8
 _SEGMENT_FUSION_TOLERANCE_MM = 1.0e-7
 _LENGTH_EPSILON_MM = 1.0e-12
 
+# Cross-size Gate-2C qualification established two full pitches as
+# the smallest seam-reducing span that preserves the canonical
+# internal-thread oracle for M8x1.25, M10x1.5 and M12x1.75.
+_MAX_SEGMENT_FULL_TURNS = 2
+
 
 @dataclass(frozen=True)
 class DirectInternalThreadMeasurements:
@@ -349,7 +354,15 @@ def build_direct_internal_thread_segments(
     definition: InternalThreadCutterDefinition,
     radial_overlap_mm: float,
 ) -> tuple[cq.Shape, ...]:
-    """Build reusable screw cells spanning at most one pitch each."""
+    """Build bounded canonical screw chunks.
+
+    Each ordinary chunk spans at most two complete thread pitches.
+    Any fractional terminal remainder is absorbed into the final chunk
+    rather than emitted as a separate sliver-length construction cell.
+
+    This reduces artificial pitch-plane topology while retaining the
+    canonical metric-thread profile and rigid screw motion.
+    """
 
     if definition.thread_length_mm <= 0.0:
         raise ValueError(
@@ -385,80 +398,49 @@ def build_direct_internal_thread_segments(
     if abs(remainder_mm) <= _LENGTH_EPSILON_MM:
         remainder_mm = 0.0
 
+    spans_mm: list[float] = []
+    remaining_full_turns = full_turn_count
+
+    while (
+        remaining_full_turns
+        > _MAX_SEGMENT_FULL_TURNS
+    ):
+        spans_mm.append(
+            _MAX_SEGMENT_FULL_TURNS
+            * pitch_mm
+        )
+        remaining_full_turns -= (
+            _MAX_SEGMENT_FULL_TURNS
+        )
+
+    final_span_mm = (
+        remaining_full_turns
+        * pitch_mm
+        + remainder_mm
+    )
+
+    if final_span_mm > _LENGTH_EPSILON_MM:
+        spans_mm.append(
+            final_span_mm
+        )
+
+    if not spans_mm:
+        raise RuntimeError(
+            "Internal-thread segmentation produced no chunks."
+        )
+
     hand_sign = _hand_sign(
         definition
     )
 
     segments: list[cq.Shape] = []
+    z_start_mm = 0.0
 
-    if full_turn_count > 0:
-        full_pitch_cell = (
-            cq.Solid.extrudeLinearWithRotation(
-                _outer_wire(
-                    sleeve_outer_radius_mm,
-                    0.0,
-                ),
-                [
-                    _inner_profile_wire(
-                        definition,
-                        0.0,
-                    )
-                ],
-                cq.Vector(
-                    0.0,
-                    0.0,
-                    0.0,
-                ),
-                cq.Vector(
-                    0.0,
-                    0.0,
-                    pitch_mm,
-                ),
-                hand_sign * 360.0,
-            )
-        )
-
-        _validate_segment(
-            full_pitch_cell,
-            1,
-        )
-
-        for index in range(
-            full_turn_count
-        ):
-            if index == 0:
-                segment: cq.Shape = (
-                    full_pitch_cell
-                )
-            else:
-                segment = (
-                    full_pitch_cell.moved(
-                        cq.Location(
-                            cq.Vector(
-                                0.0,
-                                0.0,
-                                index * pitch_mm,
-                            )
-                        )
-                    )
-                )
-
-            _validate_segment(
-                segment,
-                index + 1,
-            )
-
-            segments.append(
-                segment
-            )
-
-    if remainder_mm > _LENGTH_EPSILON_MM:
-        z_start_mm = (
-            full_turn_count
-            * pitch_mm
-        )
-
-        remainder_cell = (
+    for segment_index, span_mm in enumerate(
+        spans_mm,
+        start=1,
+    ):
+        segment = (
             cq.Solid.extrudeLinearWithRotation(
                 _outer_wire(
                     sleeve_outer_radius_mm,
@@ -478,30 +460,57 @@ def build_direct_internal_thread_segments(
                 cq.Vector(
                     0.0,
                     0.0,
-                    remainder_mm,
+                    span_mm,
                 ),
                 (
                     hand_sign
                     * 360.0
-                    * remainder_mm
+                    * span_mm
                     / pitch_mm
                 ),
             )
         )
 
-        _validate_segment(
-            remainder_cell,
-            len(segments) + 1,
-        )
+        if segment.isNull():
+            raise RuntimeError(
+                f"Internal-thread segment "
+                f"{segment_index} is null."
+            )
+
+        if segment.Volume() <= 0.0:
+            raise RuntimeError(
+                f"Internal-thread segment "
+                f"{segment_index} has zero volume."
+            )
+
+        if len(segment.Solids()) != 1:
+            raise RuntimeError(
+                f"Internal-thread segment "
+                f"{segment_index} did not produce "
+                "exactly one solid."
+            )
+
+        if not segment.isValid():
+            raise RuntimeError(
+                f"Internal-thread segment "
+                f"{segment_index} is invalid."
+            )
 
         segments.append(
-            remainder_cell
+            segment
         )
 
-    if not segments:
+        z_start_mm += span_mm
+
+    if not math.isclose(
+        z_start_mm,
+        length_mm,
+        rel_tol=0.0,
+        abs_tol=1.0e-10,
+    ):
         raise RuntimeError(
-            "Direct internal-thread construction "
-            "produced no screw segments."
+            "Internal-thread chunks do not span the "
+            "governed thread length."
         )
 
     return tuple(
@@ -580,10 +589,18 @@ def measure_direct_internal_thread_sleeve(
 
     bounding_box = sleeve.BoundingBox()
 
-    segment_count = math.ceil(
+    full_turn_count = math.floor(
         definition.thread_length_mm
         / definition.pitch_mm
-        - _LENGTH_EPSILON_MM
+        + _LENGTH_EPSILON_MM
+    )
+
+    segment_count = max(
+        1,
+        math.ceil(
+            full_turn_count
+            / _MAX_SEGMENT_FULL_TURNS
+        ),
     )
 
     return DirectInternalThreadMeasurements(
