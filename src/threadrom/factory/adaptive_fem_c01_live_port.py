@@ -4,6 +4,13 @@ import subprocess
 import sys
 from pathlib import Path
 
+from threadrom.factory.adaptive_fem_independent_certificate import (
+    recover_c01_independent_certificate,
+)
+from threadrom.factory.adaptive_fem_physics_records import (
+    persist_preliminary_c01_assessment,
+    recover_preliminary_c01_assessment,
+)
 from threadrom.factory.adaptive_fem_c01_adapter import (
     C01_CORRECTIVE_RULE,
     decide_c01_lifecycle,
@@ -124,15 +131,41 @@ class C01LiveFactoryPort:
             decision.action
             is LifecycleAction.ASSESS_VERIFIED_PHYSICS
         ):
-            # C01 preload acceptance does not establish acceptance
-            # of equilibrium, contact, stress or other full physics.
+            # Only a persisted, source-pinned report may transition
+            # preliminary physics to PASS/REVIEW. Never infer a certificate.
+            result = recover_preliminary_c01_assessment(
+                repo_root=self.root,
+                case_id=self.case_id,
+                case_run_id=self.case.case_run_id,
+                run_id=plan.last_completed_run_id,
+                trial_index=plan.completed_trial_count,
+            )
+            if result is None:
+                physics = PhysicsDisposition.NOT_ASSESSED
+            elif result["physics_gates"] == "PASS_PENDING_INDEPENDENT_CERTIFICATION":
+                physics = PhysicsDisposition.ACCEPTED
+            else:
+                physics = PhysicsDisposition.REVIEW_REQUIRED
+
+            certified = False
+            if physics is PhysicsDisposition.ACCEPTED:
+                certified = recover_c01_independent_certificate(
+                    repo_root=self.root,
+                    case_id=self.case_id,
+                    case_run_id=self.case.case_run_id,
+                    case_hash=self.case.case_hash,
+                    run_id=plan.last_completed_run_id,
+                    trial_index=plan.completed_trial_count,
+                    preliminary_result=result,
+                )
             return FEMLifecycleSnapshot(
                 run_id=plan.last_completed_run_id,
                 trial_index=plan.completed_trial_count,
                 maximum_trials=self.maximum_trials,
                 phase=RunPhase.COMPLETED,
                 completed_evidence_verified=True,
-                physics=PhysicsDisposition.NOT_ASSESSED,
+                physics=physics,
+                full_physics_acceptance_verified=certified,
             )
 
         if (
@@ -270,13 +303,59 @@ class C01LiveFactoryPort:
         # next snapshot before considering another action.
         return True
 
-    def assess_verified_physics(self, snapshot) -> None:
-        raise RuntimeError(
-            "FULL_PHYSICS_ASSESSMENT_NOT_YET_CERTIFIED: "
-            "preload acceptance alone cannot close the FEM run."
+    def assess_verified_physics(self, snapshot: FEMLifecycleSnapshot) -> None:
+        # Recovery and preparation are separate from assessment. C01's
+        # original Trial-1 013–016 checker is the first validated adapter;
+        # later trial physics must have its own verified evidence mapping.
+        if self.snapshot() != snapshot or snapshot.phase is not RunPhase.COMPLETED \
+                or snapshot.physics is not PhysicsDisposition.NOT_ASSESSED:
+            raise RuntimeError("Physics snapshot changed before assessment.")
+        if self.case_id not in {"D-INT-013", "D-INT-014", "D-INT-015", "D-INT-016"} \
+                or snapshot.trial_index != 1:
+            raise RuntimeError(
+                "C01 later-trial full-physics evidence adapter is not certified; "
+                "no FEM launch or physics PASS permitted."
+            )
+
+        # Imports here avoid an assessment-only dependency for ordinary
+        # read-only campaign recovery, and never import/run a solver.
+        from threadrom.factory.production_doe_c01_physics import (
+            assess_c01_saved_trial,
         )
 
+        result = assess_c01_saved_trial(
+            repo_root=self.root, case_id=self.case_id,
+        )
+        if result.get("run_id") != snapshot.run_id:
+            raise RuntimeError("Physics evidence changed during assessment.")
+        if self.snapshot() != snapshot:
+            raise RuntimeError("Physics predecessor changed; refusing stale record.")
+
+        persist_preliminary_c01_assessment(
+            repo_root=self.root,
+            case_id=self.case_id,
+            case_run_id=self.case.case_run_id,
+            run_id=snapshot.run_id,
+            trial_index=snapshot.trial_index,
+            result=result,
+        )
+        # Subsequent snapshot recovers the durable result. Independent
+        # full-physics certification and .rout retirement remain locked.
+
     def verify_full_physics_certificate(self, snapshot) -> bool:
-        # Will be implemented only with an independent, verifiable
-        # full-physics acceptance certificate.
-        return False
+        # Read-only recovery: never issue, amend or infer a certificate.
+        if (
+            snapshot.phase is not RunPhase.COMPLETED
+            or snapshot.physics is not PhysicsDisposition.ACCEPTED
+            or snapshot.completed_evidence_verified is not True
+            or snapshot.full_physics_acceptance_verified is True
+        ):
+            raise RuntimeError(
+                "Certificate request does not match pending accepted physics."
+            )
+        latest = self.snapshot()
+        if latest.run_id != snapshot.run_id or latest.trial_index != snapshot.trial_index:
+            raise RuntimeError("Completed run changed before certificate recovery.")
+        if latest.phase is not RunPhase.COMPLETED or latest.physics is not PhysicsDisposition.ACCEPTED:
+            raise RuntimeError("Physics disposition changed before certification.")
+        return latest.full_physics_acceptance_verified

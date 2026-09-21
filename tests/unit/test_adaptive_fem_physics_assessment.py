@@ -67,23 +67,31 @@ def test_existing_evaluator_receives_all_physics_evidence(
 
 
 @pytest.mark.parametrize("equilibrium", [None, "fail", "unknown"])
-def test_missing_or_failed_equilibrium_never_evaluates(
+def test_missing_or_failed_equilibrium_is_review_not_pass(
     monkeypatch, equilibrium
 ):
-    monkeypatch.setattr(
-        bridge,
-        "evaluate_fem_physics_acceptance",
-        lambda **kwargs: pytest.fail(
-            "Evaluator must not run without required equilibrium."
-        ),
-    )
+    captured = []
 
-    with pytest.raises(
-        RuntimeError, match="BLOCKED_EQUILIBRIUM_EVIDENCE"
-    ):
-        assess_extracted_fem_physics(
-            **inputs(equilibrium=equilibrium)
+    def evaluator(**kwargs):
+        captured.append(kwargs["external_equilibrium_payload"])
+        # Even a future evaluator bug that returns PASS cannot bypass
+        # the independent complete-equilibrium guard in the bridge.
+        return SimpleNamespace(
+            passed=True,
+            policy_id="synthetic-governed-policy",
+            failed_checks=(),
         )
+
+    monkeypatch.setattr(
+        bridge, "evaluate_fem_physics_acceptance", evaluator,
+    )
+    assessment = assess_extracted_fem_physics(
+        **inputs(equilibrium=equilibrium)
+    )
+    assert len(captured) == 1
+    assert assessment.disposition is D.ENGINEERING_REVIEW_REQUIRED
+    assert "external support equilibrium" in assessment.failed_governed_checks
+    assert not assessment.full_physics_certified
 
 
 def test_weakened_equilibrium_policy_is_rejected():

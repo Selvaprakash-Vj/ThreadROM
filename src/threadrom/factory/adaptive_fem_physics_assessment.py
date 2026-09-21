@@ -71,15 +71,9 @@ def assess_extracted_fem_physics(
                 "equilibrium gate was disabled."
             )
 
-        if (
-            external_equilibrium_payload is None
-            or external_equilibrium_payload.get("overall_status")
-            != "pass"
-        ):
-            raise RuntimeError(
-                "BLOCKED_EQUILIBRIUM_EVIDENCE: required complete "
-                "external-support equilibrium has no PASS witness."
-            )
+        # The governed evaluator records absent/failed equilibrium as
+        # a failed HARD_GATE. Continue assessing the other physics gates
+        # to provide an actionable report; never manufacture PASS.
 
     if (
         getattr(evidence, "return_code", None) != 0
@@ -107,6 +101,14 @@ def assess_extracted_fem_physics(
     failed = tuple(
         check.name for check in result.failed_checks
     )
+    # Defense in depth: even a future evaluator regression must not
+    # promote absent/failed complete equilibrium to provisional PASS.
+    if require_external_support_equilibrium and (
+        external_equilibrium_payload is None
+        or external_equilibrium_payload.get("overall_status") != "pass"
+    ):
+        if "external support equilibrium" not in failed:
+            failed += ("external support equilibrium",)
 
     return AdaptiveFEMPhysicsAssessment(
         disposition=(
@@ -265,5 +267,3 @@ def assess_verified_completed_fem(
         ),
         require_external_support_equilibrium=True,
     )
-
-

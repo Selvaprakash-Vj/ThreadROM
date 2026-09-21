@@ -19,6 +19,17 @@ from threadrom.factory.adaptive_fem_supervisor import (
 from threadrom.factory.production_doe_gate0_evidence import (
     GATE0_CASE_IDS,
 )
+from threadrom.factory.adaptive_fem_retirement_integration import (
+    retire_c01_certified_rout,
+)
+from threadrom.factory.production_doe_launch_fence import (
+    count_running_ccx,
+)
+
+# Independently reviewed, repository-pinned permit hashes ONLY. Empty by default:
+# the four existing 13-gate certificates do not authorize .rout retirement.
+# Never populate from an untrusted local permit, CLI argument, or environment.
+INDEPENDENT_RETIREMENT_PINS: dict[tuple[str, str], str] = {}
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -80,6 +91,22 @@ def run_cycle(*, execute: bool, max_actions: int) -> tuple[bool, bool]:
             flush=True,
         )
 
+        if result.stop is SupervisorStop.COMPLETE:
+            # Retirement is a separate, independently pinned post-certification
+            # action. A missing permit gives a HOLD and performs no deletion.
+            retirement = retire_c01_certified_rout(
+                port=port,
+                expected_permit_sha256=INDEPENDENT_RETIREMENT_PINS.get(
+                    (case_id, result.last_run_id),
+                ),
+                active_solver_count=count_running_ccx,
+                execute=True,
+            )
+            print(
+                f"{case_id}: rout_retirement={retirement.status}",
+                flush=True,
+            )
+
         if result.stop is not SupervisorStop.COMPLETE:
             all_done = False
 
@@ -102,6 +129,14 @@ def main() -> int:
         "--watch",
         action="store_true",
         help="Repeat evidence recovery until stopped or complete.",
+    )
+    parser.add_argument(
+        "--assess-existing",
+        action="store_true",
+        help=(
+            "Assess only the four completed, preload-accepted C01 Trial-1 "
+            "runs; persist preliminary gate reports. Never prepares or launches FEM."
+        ),
     )
     parser.add_argument(
         "--execute",
@@ -129,6 +164,45 @@ def main() -> int:
     )
 
     args = parser.parse_args()
+
+    if args.assess_existing:
+        if args.execute or args.watch:
+            parser.error("--assess-existing cannot combine with --execute/--watch.")
+        failed = False
+        for case_id in ("D-INT-013", "D-INT-014", "D-INT-015", "D-INT-016"):
+            try:
+                port = C01LiveFactoryPort(repo_root=ROOT, case_id=case_id)
+                before = port.snapshot()
+                action = decide_fem_lifecycle(before).action
+                if action is LifecycleAction.ASSESS_VERIFIED_PHYSICS:
+                    port.assess_verified_physics(before)
+                elif action not in {
+                    LifecycleAction.REQUIRE_ACCEPTANCE_CERTIFICATION,
+                    LifecycleAction.CERTIFIED_COMPLETE,
+                }:
+                    raise RuntimeError(
+                        f"Unexpected state {action.value}; no FEM requested."
+                    )
+                after = port.snapshot()
+                verdict = decide_fem_lifecycle(after).action
+                print(
+                    f"{case_id}: trial={after.trial_index} "
+                    f"run={after.run_id} preliminary_physics={after.physics.value} "
+                    f"next={verdict.value} full_certified="
+                    f"{after.full_physics_acceptance_verified}",
+                    flush=True,
+                )
+                if verdict not in {
+                    LifecycleAction.REQUIRE_ACCEPTANCE_CERTIFICATION,
+                    LifecycleAction.CERTIFIED_COMPLETE,
+                }:
+                    failed = True
+            except Exception as exc:
+                failed = True
+                print(f"{case_id}: ASSESSMENT_BLOCKED: {exc}", flush=True)
+        print("No FEM launches, adaptive preparation or .rout retirement performed.",
+              flush=True)
+        return 2 if failed else 0
 
     if args.execute and not args.watch:
         parser.error(
