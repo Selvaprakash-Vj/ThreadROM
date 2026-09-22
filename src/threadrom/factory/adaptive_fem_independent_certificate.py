@@ -21,7 +21,10 @@ from threadrom.factory.adaptive_fem_physics_records import (
 
 CERTIFICATE_FILENAME = "independent_governed_physics_certificate.json"
 CERTIFICATE_SCHEMA = "threadrom.c01.governed_physics_certificate.v1"
-_CERTIFIED_CASES = frozenset({"D-INT-013", "D-INT-014", "D-INT-015", "D-INT-016"})
+ACCEPTED_TRIAL_CERTIFICATE_SCHEMA = "threadrom.c01.governed_physics_certificate.v2"
+_CERTIFIED_CASES = frozenset({
+    "D-INT-012", "D-INT-013", "D-INT-014", "D-INT-015", "D-INT-016"
+})
 _ARTIFACT_SUFFIXES = {
     "input_deck": ".inp",
     "dat": ".dat",
@@ -88,7 +91,20 @@ def recover_c01_independent_certificate(
     This verifier never creates certificates, accepts ungoverned moment claims,
     authorizes another FEM run, or deletes/authorizes retiring an artifact.
     """
-    if case_id not in _CERTIFIED_CASES or trial_index != 1:
+    if (
+        case_id not in _CERTIFIED_CASES
+        or type(trial_index) is not int
+        or trial_index < 1
+        or (trial_index == 1 and case_id == "D-INT-012")
+    ):
+        return False
+    # Reject a stale trial/run pairing before touching the evidence store.
+    # Governed run IDs may carry a suffix after their trial number.
+    trial_prefix = f"{case_run_id}_cal_{trial_index:02d}"
+    if not (
+        run_id == trial_prefix
+        or run_id.startswith(trial_prefix + "_")
+    ):
         return False
     root = repo_root.resolve(strict=True)
     if not run_id.startswith(case_run_id + "_cal_"):
@@ -104,6 +120,27 @@ def recover_c01_independent_certificate(
         return False
     if not path.is_file():
         raise RuntimeError("Governed certificate path is not a file.")
+
+    if trial_index > 1:
+        # Later-trial certificates must identify the currently accepted
+        # completed run. Historical Trial-1 certificates retain their
+        # original recovery contract.
+        from threadrom.factory.production_doe_c01_physics import (
+            resolve_accepted_completed_trial,
+        )
+
+        accepted = resolve_accepted_completed_trial(
+            repo_root=root, case_id=case_id,
+        )
+        if (
+            accepted["governed"].case_run_id != case_run_id
+            or accepted["governed"].case_hash != case_hash
+            or accepted["run_id"] != run_id
+            or accepted["trial_index"] != trial_index
+        ):
+            raise RuntimeError(
+                "Later-trial certificate does not identify the accepted run."
+            )
 
     # Recover source-pinned preliminary physics on every certification check.
     verified_preliminary = recover_preliminary_c01_assessment(
@@ -121,7 +158,7 @@ def recover_c01_independent_certificate(
     if (
         verified_preliminary["physics_gates"]
         != "PASS_PENDING_INDEPENDENT_CERTIFICATION"
-        or verified_preliminary["calibration"] != "ACCEPTED_TRIAL_1"
+        or verified_preliminary["calibration"] != f"ACCEPTED_TRIAL_{trial_index}"
         or verified_preliminary["equilibrium_status"] != "pass"
         or verified_preliminary["rotational_moment_equilibrium_status"] != "not_assessed"
         or verified_preliminary["final_physics_certified"] is not False
@@ -140,14 +177,17 @@ def recover_c01_independent_certificate(
         raise RuntimeError("Independent physics certificate is malformed.") from exc
     if (
         not isinstance(certificate, dict)
-        or certificate.get("schema") != CERTIFICATE_SCHEMA
+        or certificate.get("schema") != (
+            CERTIFICATE_SCHEMA if trial_index == 1
+            else ACCEPTED_TRIAL_CERTIFICATE_SCHEMA
+        )
         or certificate.get("record_status") != "FINAL"
         or certificate.get("disposition") != "GOVERNED_13_HARD_GATES_CERTIFIED"
         or certificate.get("case_id") != case_id
         or certificate.get("case_run_id") != case_run_id
         or certificate.get("case_hash") != case_hash
         or certificate.get("run_id") != run_id
-        or certificate.get("trial_index") != 1
+        or certificate.get("trial_index") != trial_index
         or certificate.get("governed_hard_gates_passed") != 13
         or certificate.get("accepted_reaction_states") != 20
         or certificate.get("translational_force_tolerance_n") != 0.001

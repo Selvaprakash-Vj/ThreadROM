@@ -56,6 +56,7 @@ def reserve_adaptive_trial_launch(
     campaign_root: Path,
     case_run_id: str,
     trial_run_id: str,
+    maximum_authorized_ccx: int | None = None,
 ) -> Iterator[Path]:
     """Hold the campaign launch lock across the ENTIRE solver operation.
 
@@ -152,7 +153,24 @@ def reserve_adaptive_trial_launch(
                     f"CalculiX capacity exhausted: {running} running; "
                     f"limit {MAXIMUM_CONCURRENT_CCX}. No trial launched."
                 )
+            # Enforce the independently authorized capacity before
+            # creating a durable launch claim.
+            if maximum_authorized_ccx is not None:
+                if (
+                    type(maximum_authorized_ccx) is not int
+                    or not 1 <= maximum_authorized_ccx <= MAXIMUM_CONCURRENT_CCX
+                ):
+                    raise RuntimeError(
+                        "Invalid independently authorized solver-capacity limit."
+                    )
 
+                if running >= maximum_authorized_ccx:
+                    raise RuntimeError(
+                        "BLOCKED_SOLVER_CAPACITY: "
+                        f"{running} CalculiX processes running; "
+                        f"authorized limit {maximum_authorized_ccx}. "
+                        "No launch claim created."
+                    )
             # Atomic exclusive creation. A partial claim also fails closed.
             with claim_path.open("x", encoding="utf-8") as stream:
                 json.dump(

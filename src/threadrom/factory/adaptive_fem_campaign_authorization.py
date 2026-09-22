@@ -92,6 +92,7 @@ def verify_adaptive_campaign_authorization(
             "cases",
             "adaptive_policy",
             "permissions",
+            "authorized_trial",
         },
         "unexpected certificate schema",
     )
@@ -128,6 +129,28 @@ def verify_adaptive_campaign_authorization(
         case_id in governed_cases,
         "requested case is outside the governed cohort",
     )
+
+
+    authorized_trial = record["authorized_trial"]
+
+    if authorized_trial is not None:
+        _require(
+            type(authorized_trial) is dict
+            and set(authorized_trial) == {
+                "case_id",
+                "trial_index",
+                "trial_run_id",
+            },
+            "unexpected authorized-trial scope",
+        )
+
+        _require(
+            authorized_trial["case_id"] == case_id
+            and type(authorized_trial["trial_index"]) is int
+            and authorized_trial["trial_index"] == trial_index
+            and authorized_trial["trial_run_id"] == trial_run_id,
+            "requested trial is outside independent authorization scope",
+        )
 
     policy = record["adaptive_policy"]
 
@@ -215,4 +238,102 @@ def verify_adaptive_campaign_authorization(
         corrective_rule_id=required_corrective_rule_id,
         maximum_trials=maximum_trials,
         maximum_concurrent_solvers=solver_limit,
+    )
+
+def verify_owner_execution_approval(
+    *,
+    approval_path: Path,
+    expected_approval_sha256: str,
+    expected_certificate_sha256: str,
+    expected_case_id: str,
+    expected_trial_index: int,
+    expected_trial_run_id: str,
+    expected_maximum_concurrent_solvers: int,
+) -> None:
+    """Verify a separately recorded project-owner execution decision.
+
+    This is owner authorization, not independent human review.
+    This function never launches FEM or issues a physics certificate.
+    """
+
+    _require(
+        isinstance(expected_approval_sha256, str)
+        and len(expected_approval_sha256) == 64
+        and all(
+            char in "0123456789abcdef"
+            for char in expected_approval_sha256
+        ),
+        "invalid owner-approval SHA-256 pin",
+    )
+
+    raw = approval_path.read_bytes()
+    actual_sha256 = hashlib.sha256(raw).hexdigest()
+
+    _require(
+        actual_sha256 == expected_approval_sha256,
+        "owner-approval record SHA-256 drift",
+    )
+
+    approval = json.loads(
+        raw.decode("utf-8"),
+        object_pairs_hook=_unique_pairs,
+    )
+
+    _require(
+        type(approval) is dict
+        and set(approval) == {
+            "schema_version",
+            "authorization_type",
+            "approval_status",
+            "approved_by",
+            "approved_at",
+            "independent_human_review",
+            "campaign_id",
+            "case_id",
+            "trial_index",
+            "trial_run_id",
+            "certificate_sha256",
+            "maximum_concurrent_solvers",
+            "additional_trials_authorized",
+            "artifact_retirement_authorized",
+            "full_physics_certification_authorized",
+            "holdout_access_authorized",
+        },
+        "unexpected owner-approval schema",
+    )
+
+    _require(
+        type(approval["schema_version"]) is int
+        and approval["schema_version"] == 1
+        and approval["authorization_type"] == "OWNER_AUTHORIZATION"
+        and approval["approval_status"]
+        == "OWNER_APPROVED_PENDING_TECHNICAL_LAUNCH_GATES"
+        and approval["approved_by"]
+        == "Selva - ThreadROM project owner"
+        and isinstance(approval["approved_at"], str)
+        and bool(approval["approved_at"].strip())
+        and approval["independent_human_review"] is False
+        and approval["campaign_id"] == "TRM-PDOE-C01",
+        "owner authorization identity or status mismatch",
+    )
+
+    _require(
+        approval["certificate_sha256"]
+        == expected_certificate_sha256
+        and approval["case_id"] == expected_case_id
+        and type(approval["trial_index"]) is int
+        and approval["trial_index"] == expected_trial_index
+        and approval["trial_run_id"] == expected_trial_run_id
+        and type(approval["maximum_concurrent_solvers"]) is int
+        and approval["maximum_concurrent_solvers"]
+        == expected_maximum_concurrent_solvers,
+        "owner approval differs from requested execution scope",
+    )
+
+    _require(
+        approval["additional_trials_authorized"] is False
+        and approval["artifact_retirement_authorized"] is False
+        and approval["full_physics_certification_authorized"] is False
+        and approval["holdout_access_authorized"] is False,
+        "owner approval contains prohibited permissions",
     )

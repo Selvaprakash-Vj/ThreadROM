@@ -36,6 +36,7 @@ def certificate():
             "maximum_delta_temperature_c": -200.0,
             "maximum_concurrent_solvers": 4,
         },
+        "authorized_trial": None,
         "permissions": {
             "automatic_governed_adaptation": True,
             "execute_adaptive_trials": True,
@@ -144,3 +145,48 @@ def test_unapproved_holdout_access_is_blocked(tmp_path):
     record["permissions"]["access_holdouts"] = True
     with pytest.raises(RuntimeError, match="permissions"):
         verify(tmp_path, record)
+
+
+def test_restricted_certificate_accepts_exact_trial(tmp_path):
+    record = certificate()
+    record["authorized_trial"] = {
+        "case_id": CASE_ID,
+        "trial_index": 2,
+        "trial_run_id": f"{RUN_ID}_cal_02",
+    }
+
+    result = verify(tmp_path, record, trial=2)
+
+    assert result.case_id == CASE_ID
+    assert result.trial_index == 2
+    assert result.trial_run_id == f"{RUN_ID}_cal_02"
+
+
+def test_restricted_certificate_rejects_other_trial(tmp_path):
+    record = certificate()
+    record["authorized_trial"] = {
+        "case_id": CASE_ID,
+        "trial_index": 2,
+        "trial_run_id": f"{RUN_ID}_cal_02",
+    }
+
+    with pytest.raises(
+        RuntimeError,
+        match="outside independent authorization scope",
+    ):
+        verify(tmp_path, record, trial=3)
+
+
+def test_restricted_certificate_rejects_other_case(tmp_path):
+    record = certificate()
+    record["authorized_trial"] = {
+        "case_id": "SYNTHETIC-OTHER",
+        "trial_index": 2,
+        "trial_run_id": f"{RUN_ID}_cal_02",
+    }
+
+    with pytest.raises(
+        RuntimeError,
+        match="outside independent authorization scope",
+    ):
+        verify(tmp_path, record, trial=2)

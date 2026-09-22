@@ -75,11 +75,13 @@ def _canonical(record: Mapping[str, object]) -> bytes:
 
 
 def _validate_result(result: Mapping[str, object], *, case_id: str,
-                     run_id: str) -> None:
+                     run_id: str, trial_index: int) -> None:
     if result.get("case_id") != case_id or result.get("run_id") != run_id:
         raise RuntimeError("Physics result differs from recovered run identity.")
-    if result.get("calibration") != "ACCEPTED_TRIAL_1":
-        raise RuntimeError("Preload calibration has not been independently accepted.")
+    if type(trial_index) is not int or trial_index < 1:
+        raise RuntimeError("Invalid governed trial index.")
+    if result.get("calibration") != f"ACCEPTED_TRIAL_{trial_index}":
+        raise RuntimeError("Calibration does not match the governed trial.")
     if result.get("final_physics_certified") is not False:
         raise RuntimeError("Preliminary result cannot claim final certification.")
     if result.get("new_fem_authorized") is not False or result.get(
@@ -113,7 +115,10 @@ def persist_preliminary_c01_assessment(*, repo_root: Path, case_id: str,
     root = repo_root.resolve(strict=True)
     if type(trial_index) is not int or trial_index < 1:
         raise RuntimeError("Invalid governed trial index.")
-    _validate_result(result, case_id=case_id, run_id=run_id)
+    _validate_result(
+        result, case_id=case_id, run_id=run_id,
+        trial_index=trial_index,
+    )
     run_dir, manifest_sha = _manifest_fingerprint(root, case_run_id, run_id)
     path = run_dir / RECORD_FILENAME
     record = {
@@ -165,7 +170,6 @@ def recover_preliminary_c01_assessment(*, repo_root: Path, case_id: str,
             or record.get("run_id") != run_id
             or record.get("trial_index") != trial_index
             or record.get("manifest_sha256") != manifest_sha
-            or record.get("source_sha256") != source_fingerprints(root)
             or record.get("independent_full_physics_certificate_issued") is not False
             or record.get("rotational_moment_equilibrium_certified") is not False
             or record.get("solver_launch_authorized") is not False
@@ -174,5 +178,66 @@ def recover_preliminary_c01_assessment(*, repo_root: Path, case_id: str,
     result = record.get("result")
     if not isinstance(result, dict):
         raise RuntimeError("Preliminary physics record lacks governed result.")
-    _validate_result(result, case_id=case_id, run_id=run_id)
+    _validate_result(
+        result, case_id=case_id, run_id=run_id,
+        trial_index=trial_index,
+    )
+
+    pinned_sources = record.get("source_sha256")
+    current_sources = source_fingerprints(root)
+
+    if pinned_sources != current_sources:
+        historical_assessor_path = (
+            "src/threadrom/factory/production_doe_c01_physics.py"
+        )
+        historical_assessor_sha256 = (
+            "81d336835f12eeee1919b0f33449e048"
+            "1164c8978adcc5e716c4cc50afd41b40"
+        )
+
+        if not (
+            case_id in {
+                "D-INT-013", "D-INT-014",
+                "D-INT-015", "D-INT-016",
+            }
+            and trial_index == 1
+            and isinstance(pinned_sources, dict)
+            and set(pinned_sources) == set(current_sources)
+            and pinned_sources.get(historical_assessor_path)
+                == historical_assessor_sha256
+            and all(
+                pinned_sources[name] == current_sources[name]
+                for name in current_sources
+                if name != historical_assessor_path
+            )
+        ):
+            raise RuntimeError(
+                "Preliminary physics record has unrecognized source drift."
+            )
+
+        # Reproduce the historical result under the current assessor.
+        # Any changed or missing historical field blocks recovery.
+        from threadrom.factory.production_doe_c01_physics import (
+            assess_c01_saved_trial,
+        )
+
+        replayed = assess_c01_saved_trial(
+            repo_root=root,
+            case_id=case_id,
+        )
+
+        if not (
+            replayed.get("run_id") == run_id
+            and replayed.get("trial_index") == trial_index
+            and set(replayed) - set(result) == {"trial_index"}
+            and not (set(result) - set(replayed))
+            and all(
+                replayed[name] == value
+                for name, value in result.items()
+            )
+        ):
+            raise RuntimeError(
+                "Historical preliminary physics result was not reproduced."
+            )
+
     return result

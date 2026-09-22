@@ -87,7 +87,7 @@ CAMPAIGN_ROOT = (
     / "simulations/staging/phase3_cp8_production_doe"
     / "TRM-PDOE-C01"
 )
-
+SOLVER_ROOT = CAMPAIGN_ROOT / "solver_preparation"
 # First independently pinned real-case evidence. The coordinator
 # must fail closed for cases not yet added through governed review.
 # Deliberately EMPTY until a separately reviewed, immutable
@@ -95,7 +95,14 @@ CAMPAIGN_ROOT = (
 # Never derive a trusted hash from the certificate being checked.
 # Empty until a real bounded campaign certificate is
 # independently reviewed, approved and SHA-pinned.
-CAMPAIGN_AUTHORIZATION_PINS = {}
+CAMPAIGN_AUTHORIZATION_PINS = {
+    "TRM-PDOE-C01": {
+        "certificate_relative_path": "simulations/staging/phase3_cp8_production_doe/TRM-PDOE-C01/authorization_review/D-INT-012_trial2_campaign_authorization_FINAL_CANDIDATE.json",
+        "certificate_sha256": "47b4860aa7c70b5f91336e95874b2c031b6ba9a4dd7e2e573c165f01b96e0bc9",
+        "owner_approval_relative_path": "simulations/staging/phase3_cp8_production_doe/TRM-PDOE-C01/authorization_review/D-INT-012_trial2_OWNER_APPROVAL.json",
+        "owner_approval_sha256": "19ac3173651f7bd3294a39f1ed269c66b04f0bc5df5fc563d132f5d27a1a6aa5",
+    },
+}
 
 CONTINUATION_AUTHORIZATION_PINS = {}
 
@@ -114,6 +121,7 @@ def execute_generic_governed_continuation(
 
     from threadrom.factory.adaptive_fem_campaign_authorization import (
         verify_adaptive_campaign_authorization,
+        verify_owner_execution_approval,
     )
     from threadrom.factory.adaptive_fem_c01_adapter import (
         C01_CORRECTIVE_RULE,
@@ -220,6 +228,20 @@ def execute_generic_governed_continuation(
             certified_solver_limit=MAXIMUM_CONCURRENT_CCX,
         )
 
+        # Owner-authorized research execution, not independent human review.
+        # Fail closed if the recorded approval or its scope changes.
+        verify_owner_execution_approval(
+            approval_path=ROOT / registration["owner_approval_relative_path"],
+            expected_approval_sha256=registration["owner_approval_sha256"],
+            expected_certificate_sha256=authorized.certificate_sha256,
+            expected_case_id=case_id,
+            expected_trial_index=trial_index,
+            expected_trial_run_id=trial_run_id,
+            expected_maximum_concurrent_solvers=(
+                authorized.maximum_concurrent_solvers
+            ),
+        )
+
         preparation_sha = sha256(prep_path)
         sidecar = prep_path.with_suffix(".sha256")
 
@@ -265,16 +287,25 @@ def execute_generic_governed_continuation(
             == sha256(deck_path),
             "Prepared trial identity, temperature or deck drift.",
         )
-
+        require(
+            count_running_ccx()
+            < authorized.maximum_concurrent_solvers,
+            "BLOCKED_SOLVER_CAPACITY: "
+            "independently authorized concurrency limit reached.",
+        )
         return authorized
 
+
     # Read-only preflight must succeed before a durable claim exists.
-    verify_live_inputs()
+    preflight_authorization = verify_live_inputs()
 
     with reserve_adaptive_trial_launch(
         campaign_root=CAMPAIGN_ROOT,
         case_run_id=case_run_id,
         trial_run_id=trial_run_id,
+        maximum_authorized_ccx=(
+            preflight_authorization.maximum_concurrent_solvers
+        ),
     ):
         # The shared fence reserves the launch, rejects duplicates,
         # and checks live global CalculiX occupancy.
@@ -316,8 +347,9 @@ def execute_generic_governed_continuation(
             ),
         )
 
+        disposition = result.manifest.disposition
         require(
-            str(result.manifest.disposition) == "succeeded",
+            getattr(disposition, "value", disposition) == "succeeded",
             "CalculiX did not produce a successful run disposition.",
         )
 
