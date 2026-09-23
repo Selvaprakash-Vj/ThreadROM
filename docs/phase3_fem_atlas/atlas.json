@@ -1,0 +1,1370 @@
+{
+  "acceptance_source_count": 22,
+  "atlas_name": "threadrom_phase3_accepted_fem_evidence",
+  "cases": [
+    {
+      "case_hash": "a5e86e9150fbed8b3b17cd9617c9b78d919124baaa373310fa997f7c9bc72799",
+      "case_id": "D-BND-001",
+      "case_run_id": "trm_fem_a5e86e9150fb",
+      "dataset_partition": null,
+      "engineering_inputs": {
+        "bolt_material_id": "fastener_steel",
+        "configuration_sources": [
+          {
+            "kind": "GOVERNED_PREPARATION",
+            "path": "simulations/staging/phase3_cp8_production_doe/TRM-PDOE-C01/prepared_cases/trm_fem_a5e86e9150fb/production_doe_preparation_record.json",
+            "sha256": "676661b8124d001ab87378182dac05860eb732ef5899bf473c525ef3366a770f"
+          }
+        ],
+        "configuration_status": "C01_POLICY_AND_CASE_COORDINATES_VERIFIED",
+        "external_axial_load_n": 0.0,
+        "fastener_fixed_configuration": {
+          "bolt_length_mm": 30.0,
+          "bolt_material_id": "fastener_steel",
+          "bolt_property_class": "8.8",
+          "bolt_standard": "ISO 4017:2022",
+          "handedness": "right",
+          "nut_material_id": "fastener_steel",
+          "nut_property_class": "8",
+          "nut_standard": "ISO 4032:2023",
+          "starts": 1,
+          "thread_designation": "M10x1.5"
+        },
+        "head_bearing_friction_coefficient": 0.15,
+        "head_member_material_id": "steel_member",
+        "head_member_thickness_mm": 8.0,
+        "member_clearance_hole_diameter_mm": 11.0,
+        "member_interface_friction_coefficient": 0.15,
+        "member_outer_diameter_mm": 30.0,
+        "normalized_coordinates": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "nut_bearing_friction_coefficient": 0.15,
+        "nut_material_id": "fastener_steel",
+        "nut_member_material_id": "steel_member",
+        "nut_member_thickness_mm": 12.0,
+        "target_preload_n": 15000.0,
+        "thread_designation": "M10x1.5",
+        "thread_friction_coefficient": 0.15
+      },
+      "evidence": [
+        {
+          "accepted_run_id": "trm_fem_a5e86e9150fb_cal_02",
+          "certification_scope": "Governed FEM calibration accepted; broader physics and ROM dataset admission are separate decisions.",
+          "disposition": "PRODUCTION_DOE_FEM_CALIBRATION_ACCEPTED",
+          "kind": "CALIBRATION_ACCEPTED",
+          "path": "simulations/staging/phase3_cp8_production_doe/TRM-PDOE-C01/solver_preparation/trm_fem_a5e86e9150fb/production_doe_accepted_fem_evidence.json",
+          "run_directory": "simulations/staging/phase3_cp8_production_doe/TRM-PDOE-C01/solver_preparation/trm_fem_a5e86e9150fb/trm_fem_a5e86e9150fb_cal_02",
+          "run_directory_status": "LOCATED",
+          "sha256": "daf2325a7a6c6fd8f77f263f091140e4e9d7389cd44cf9856c1284631b3ac07d"
+        }
+      ],
+      "primary_evidence_path": "simulations/staging/phase3_cp8_production_doe/TRM-PDOE-C01/solver_preparation/trm_fem_a5e86e9150fb/production_doe_accepted_fem_evidence.json",
+      "primary_run_directory": "simulations/staging/phase3_cp8_production_doe/TRM-PDOE-C01/solver_preparation/trm_fem_a5e86e9150fb/trm_fem_a5e86e9150fb_cal_02",
+      "rom_admission_status": "NOT_EVALUATED"
+    },
+    {
+      "case_hash": "4ec5fd41259571b82418ef03a7b5891278ff02618939118aa88037b7cb02e630",
+      "case_id": "D-BND-002",
+      "case_run_id": "trm_fem_4ec5fd412595",
+      "dataset_partition": null,
+      "engineering_inputs": {
+        "bolt_material_id": "fastener_steel",
+        "configuration_sources": [
+          {
+            "kind": "GOVERNED_PREPARATION",
+            "path": "simulations/staging/phase3_cp8_production_doe/TRM-PDOE-C01/prepared_cases/trm_fem_4ec5fd412595/production_doe_preparation_record.json",
+            "sha256": "b9e07b05db0041a5787b371b87f395330308527afcdfe95fc9efc2cb6631323c"
+          }
+        ],
+        "configuration_status": "C01_POLICY_AND_CASE_COORDINATES_VERIFIED",
+        "external_axial_load_n": 0.0,
+        "fastener_fixed_configuration": {
+          "bolt_length_mm": 30.0,
+          "bolt_material_id": "fastener_steel",
+          "bolt_property_class": "8.8",
+          "bolt_standard": "ISO 4017:2022",
+          "handedness": "right",
+          "nut_material_id": "fastener_steel",
+          "nut_property_class": "8",
+          "nut_standard": "ISO 4032:2023",
+          "starts": 1,
+          "thread_designation": "M10x1.5"
+        },
+        "head_bearing_friction_coefficient": 0.15,
+        "head_member_material_id": "steel_member",
+        "head_member_thickness_mm": 8.0,
+        "member_clearance_hole_diameter_mm": 12.0,
+        "member_interface_friction_coefficient": 0.15,
+        "member_outer_diameter_mm": 36.0,
+        "normalized_coordinates": [
+          0.0,
+          0.0,
+          1.0
+        ],
+        "nut_bearing_friction_coefficient": 0.15,
+        "nut_material_id": "fastener_steel",
+        "nut_member_material_id": "steel_member",
+        "nut_member_thickness_mm": 12.0,
+        "target_preload_n": 15000.0,
+        "thread_designation": "M10x1.5",
+        "thread_friction_coefficient": 0.15
+      },
+      "evidence": [
+        {
+          "accepted_run_id": "trm_fem_4ec5fd412595_cal_02",
+          "certification_scope": "Governed FEM calibration accepted; broader physics and ROM dataset admission are separate decisions.",
+          "disposition": "PRODUCTION_DOE_FEM_CALIBRATION_ACCEPTED",
+          "kind": "CALIBRATION_ACCEPTED",
+          "path": "simulations/staging/phase3_cp8_production_doe/TRM-PDOE-C01/solver_preparation/trm_fem_4ec5fd412595/production_doe_accepted_fem_evidence.json",
+          "run_directory": "simulations/staging/phase3_cp8_production_doe/TRM-PDOE-C01/solver_preparation/trm_fem_4ec5fd412595/trm_fem_4ec5fd412595_cal_02",
+          "run_directory_status": "LOCATED",
+          "sha256": "4c0ffc372d257bf263b738d165ce3c411e1ee7c021d4e9998eae26ad1c028517"
+        }
+      ],
+      "primary_evidence_path": "simulations/staging/phase3_cp8_production_doe/TRM-PDOE-C01/solver_preparation/trm_fem_4ec5fd412595/production_doe_accepted_fem_evidence.json",
+      "primary_run_directory": "simulations/staging/phase3_cp8_production_doe/TRM-PDOE-C01/solver_preparation/trm_fem_4ec5fd412595/trm_fem_4ec5fd412595_cal_02",
+      "rom_admission_status": "NOT_EVALUATED"
+    },
+    {
+      "case_hash": "132f5f2b979503889a4f5a463a705b1f19699adcf55b5ec6cf0df9db48628b3b",
+      "case_id": "D-BND-003",
+      "case_run_id": "trm_fem_132f5f2b9795",
+      "dataset_partition": null,
+      "engineering_inputs": {
+        "bolt_material_id": "fastener_steel",
+        "configuration_sources": [
+          {
+            "kind": "GOVERNED_PREPARATION",
+            "path": "simulations/staging/phase3_cp8_production_doe/TRM-PDOE-C01/prepared_cases/trm_fem_132f5f2b9795/production_doe_preparation_record.json",
+            "sha256": "e85ea33e93dfc0b5065ea7269a21d502d6014fd64764f3f1b4b36c0b8bd2e5bd"
+          }
+        ],
+        "configuration_status": "C01_POLICY_AND_CASE_COORDINATES_VERIFIED",
+        "external_axial_load_n": 0.0,
+        "fastener_fixed_configuration": {
+          "bolt_length_mm": 30.0,
+          "bolt_material_id": "fastener_steel",
+          "bolt_property_class": "8.8",
+          "bolt_standard": "ISO 4017:2022",
+          "handedness": "right",
+          "nut_material_id": "fastener_steel",
+          "nut_property_class": "8",
+          "nut_standard": "ISO 4032:2023",
+          "starts": 1,
+          "thread_designation": "M10x1.5"
+        },
+        "head_bearing_friction_coefficient": 0.15,
+        "head_member_material_id": "steel_member",
+        "head_member_thickness_mm": 10.0,
+        "member_clearance_hole_diameter_mm": 12.0,
+        "member_interface_friction_coefficient": 0.15,
+        "member_outer_diameter_mm": 36.0,
+        "normalized_coordinates": [
+          0.0,
+          1.0,
+          1.0
+        ],
+        "nut_bearing_friction_coefficient": 0.15,
+        "nut_material_id": "fastener_steel",
+        "nut_member_material_id": "steel_member",
+        "nut_member_thickness_mm": 10.0,
+        "target_preload_n": 15000.0,
+        "thread_designation": "M10x1.5",
+        "thread_friction_coefficient": 0.15
+      },
+      "evidence": [
+        {
+          "accepted_run_id": "trm_fem_132f5f2b9795_cal_02",
+          "certification_scope": "Governed FEM calibration accepted; broader physics and ROM dataset admission are separate decisions.",
+          "disposition": "PRODUCTION_DOE_FEM_CALIBRATION_ACCEPTED",
+          "kind": "CALIBRATION_ACCEPTED",
+          "path": "simulations/staging/phase3_cp8_production_doe/TRM-PDOE-C01/solver_preparation/trm_fem_132f5f2b9795/production_doe_accepted_fem_evidence.json",
+          "run_directory": "simulations/staging/phase3_cp8_production_doe/TRM-PDOE-C01/solver_preparation/trm_fem_132f5f2b9795/trm_fem_132f5f2b9795_cal_02",
+          "run_directory_status": "LOCATED",
+          "sha256": "e70286dc187829b9ab3eb7eea699c92d6b0491343b33419cc39567abfaf1580d"
+        }
+      ],
+      "primary_evidence_path": "simulations/staging/phase3_cp8_production_doe/TRM-PDOE-C01/solver_preparation/trm_fem_132f5f2b9795/production_doe_accepted_fem_evidence.json",
+      "primary_run_directory": "simulations/staging/phase3_cp8_production_doe/TRM-PDOE-C01/solver_preparation/trm_fem_132f5f2b9795/trm_fem_132f5f2b9795_cal_02",
+      "rom_admission_status": "NOT_EVALUATED"
+    },
+    {
+      "case_hash": "9d11902c8c53632a573986b9a62c63be9299500a32b43698f353fd55a05f5fdc",
+      "case_id": "D-BND-004",
+      "case_run_id": "trm_fem_9d11902c8c53",
+      "dataset_partition": null,
+      "engineering_inputs": {
+        "bolt_material_id": "fastener_steel",
+        "configuration_sources": [
+          {
+            "kind": "GEOMETRY_MESH_REUSE",
+            "path": "simulations/staging/phase3_cp8_production_doe/TRM-PDOE-C01/prepared_cases/trm_fem_9d11902c8c53/production_doe_geometry_mesh_reuse_record.json",
+            "sha256": "2303b32c0cdddd6173cc099d041504996763d22c848247032269c0e9156a1765",
+            "source_case_id": "D-BND-002",
+            "source_preparation_path": "simulations/staging/phase3_cp8_production_doe/TRM-PDOE-C01/prepared_cases/trm_fem_4ec5fd412595/production_doe_preparation_record.json",
+            "source_preparation_sha256": "b9e07b05db0041a5787b371b87f395330308527afcdfe95fc9efc2cb6631323c"
+          }
+        ],
+        "configuration_status": "C01_POLICY_AND_CASE_COORDINATES_VERIFIED",
+        "external_axial_load_n": 0.0,
+        "fastener_fixed_configuration": {
+          "bolt_length_mm": 30.0,
+          "bolt_material_id": "fastener_steel",
+          "bolt_property_class": "8.8",
+          "bolt_standard": "ISO 4017:2022",
+          "handedness": "right",
+          "nut_material_id": "fastener_steel",
+          "nut_property_class": "8",
+          "nut_standard": "ISO 4032:2023",
+          "starts": 1,
+          "thread_designation": "M10x1.5"
+        },
+        "head_bearing_friction_coefficient": 0.15,
+        "head_member_material_id": "steel_member",
+        "head_member_thickness_mm": 8.0,
+        "member_clearance_hole_diameter_mm": 12.0,
+        "member_interface_friction_coefficient": 0.15,
+        "member_outer_diameter_mm": 36.0,
+        "normalized_coordinates": [
+          1.0,
+          0.0,
+          1.0
+        ],
+        "nut_bearing_friction_coefficient": 0.15,
+        "nut_material_id": "fastener_steel",
+        "nut_member_material_id": "steel_member",
+        "nut_member_thickness_mm": 12.0,
+        "target_preload_n": 20000.0,
+        "thread_designation": "M10x1.5",
+        "thread_friction_coefficient": 0.15
+      },
+      "evidence": [
+        {
+          "accepted_run_id": "trm_fem_9d11902c8c53_cal_02",
+          "certification_scope": "Governed FEM calibration accepted; broader physics and ROM dataset admission are separate decisions.",
+          "disposition": "PRODUCTION_DOE_FEM_CALIBRATION_ACCEPTED",
+          "kind": "CALIBRATION_ACCEPTED",
+          "path": "simulations/staging/phase3_cp8_production_doe/TRM-PDOE-C01/solver_preparation/trm_fem_9d11902c8c53/production_doe_accepted_fem_evidence.json",
+          "run_directory": "simulations/staging/phase3_cp8_production_doe/TRM-PDOE-C01/solver_preparation/trm_fem_9d11902c8c53/trm_fem_9d11902c8c53_cal_02",
+          "run_directory_status": "LOCATED",
+          "sha256": "aa31658699e020a79f1c43a45c561a813b07c15103f6800c1f509e3d7abe26dc"
+        }
+      ],
+      "primary_evidence_path": "simulations/staging/phase3_cp8_production_doe/TRM-PDOE-C01/solver_preparation/trm_fem_9d11902c8c53/production_doe_accepted_fem_evidence.json",
+      "primary_run_directory": "simulations/staging/phase3_cp8_production_doe/TRM-PDOE-C01/solver_preparation/trm_fem_9d11902c8c53/trm_fem_9d11902c8c53_cal_02",
+      "rom_admission_status": "NOT_EVALUATED"
+    },
+    {
+      "case_hash": "762a30bed2663dec4a47fea35978689529bea79adc21315e92d56092114269a0",
+      "case_id": "D-INT-001",
+      "case_run_id": "trm_fem_762a30bed266",
+      "dataset_partition": null,
+      "engineering_inputs": {
+        "bolt_material_id": "fastener_steel",
+        "configuration_sources": [
+          {
+            "kind": "GOVERNED_PREPARATION",
+            "path": "simulations/staging/phase3_cp8_production_doe/TRM-PDOE-C01/prepared_cases/trm_fem_762a30bed266/production_doe_preparation_record.json",
+            "sha256": "98cb9f80e8de9e3fd155a646054c2342499ba71eb8c56aeb050a473cd0c714b0"
+          }
+        ],
+        "configuration_status": "C01_POLICY_AND_CASE_COORDINATES_VERIFIED",
+        "external_axial_load_n": 0.0,
+        "fastener_fixed_configuration": {
+          "bolt_length_mm": 30.0,
+          "bolt_material_id": "fastener_steel",
+          "bolt_property_class": "8.8",
+          "bolt_standard": "ISO 4017:2022",
+          "handedness": "right",
+          "nut_material_id": "fastener_steel",
+          "nut_property_class": "8",
+          "nut_standard": "ISO 4032:2023",
+          "starts": 1,
+          "thread_designation": "M10x1.5"
+        },
+        "head_bearing_friction_coefficient": 0.15,
+        "head_member_material_id": "steel_member",
+        "head_member_thickness_mm": 9.535522261558732,
+        "member_clearance_hole_diameter_mm": 11.953738866327082,
+        "member_interface_friction_coefficient": 0.15,
+        "member_outer_diameter_mm": 35.722433197962495,
+        "normalized_coordinates": [
+          0.8958238289850826,
+          0.7677611307793665,
+          0.9537388663270822
+        ],
+        "nut_bearing_friction_coefficient": 0.15,
+        "nut_material_id": "fastener_steel",
+        "nut_member_material_id": "steel_member",
+        "nut_member_thickness_mm": 10.464477738441268,
+        "target_preload_n": 19479.11914492541,
+        "thread_designation": "M10x1.5",
+        "thread_friction_coefficient": 0.15
+      },
+      "evidence": [
+        {
+          "accepted_run_id": "trm_fem_762a30bed266_cal_01_wsv21_rv2",
+          "certification_scope": "Governed FEM calibration accepted; broader physics and ROM dataset admission are separate decisions.",
+          "disposition": "PRODUCTION_DOE_FEM_CALIBRATION_ACCEPTED",
+          "kind": "CALIBRATION_ACCEPTED",
+          "path": "simulations/staging/phase3_cp8_production_doe/TRM-PDOE-C01/solver_preparation/trm_fem_762a30bed266/production_doe_accepted_fem_evidence.json",
+          "run_directory": "simulations/staging/phase3_cp8_production_doe/TRM-PDOE-C01/solver_preparation/trm_fem_762a30bed266/trm_fem_762a30bed266_cal_01_wsv21_rv2",
+          "run_directory_status": "LOCATED",
+          "sha256": "6395b3cdfcbaa449d2a7c760c6d1835b74953234924896dece45716c770195fd"
+        }
+      ],
+      "primary_evidence_path": "simulations/staging/phase3_cp8_production_doe/TRM-PDOE-C01/solver_preparation/trm_fem_762a30bed266/production_doe_accepted_fem_evidence.json",
+      "primary_run_directory": "simulations/staging/phase3_cp8_production_doe/TRM-PDOE-C01/solver_preparation/trm_fem_762a30bed266/trm_fem_762a30bed266_cal_01_wsv21_rv2",
+      "rom_admission_status": "NOT_EVALUATED"
+    },
+    {
+      "case_hash": "cd79bd4336c0c7d17a914190cd07eec85c9090daa6770cbb62afd480a076aaaa",
+      "case_id": "D-INT-002",
+      "case_run_id": "trm_fem_cd79bd4336c0",
+      "dataset_partition": null,
+      "engineering_inputs": {
+        "bolt_material_id": "fastener_steel",
+        "configuration_sources": [
+          {
+            "kind": "GOVERNED_PREPARATION",
+            "path": "simulations/staging/phase3_cp8_production_doe/TRM-PDOE-C01/prepared_cases/trm_fem_cd79bd4336c0/production_doe_preparation_record.json",
+            "sha256": "4ceec7f81f4561e92aa13e642318b56422974a17e1790f399315f5026fd4c23f"
+          }
+        ],
+        "configuration_status": "C01_POLICY_AND_CASE_COORDINATES_VERIFIED",
+        "external_axial_load_n": 0.0,
+        "fastener_fixed_configuration": {
+          "bolt_length_mm": 30.0,
+          "bolt_material_id": "fastener_steel",
+          "bolt_property_class": "8.8",
+          "bolt_standard": "ISO 4017:2022",
+          "handedness": "right",
+          "nut_material_id": "fastener_steel",
+          "nut_property_class": "8",
+          "nut_standard": "ISO 4032:2023",
+          "starts": 1,
+          "thread_designation": "M10x1.5"
+        },
+        "head_bearing_friction_coefficient": 0.15,
+        "head_member_material_id": "steel_member",
+        "head_member_thickness_mm": 9.336290916252501,
+        "member_clearance_hole_diameter_mm": 11.14118488148731,
+        "member_interface_friction_coefficient": 0.15,
+        "member_outer_diameter_mm": 30.84710928892386,
+        "normalized_coordinates": [
+          0.05995141283701415,
+          0.6681454581262507,
+          0.14118488148730987
+        ],
+        "nut_bearing_friction_coefficient": 0.15,
+        "nut_material_id": "fastener_steel",
+        "nut_member_material_id": "steel_member",
+        "nut_member_thickness_mm": 10.663709083747499,
+        "target_preload_n": 15299.75706418507,
+        "thread_designation": "M10x1.5",
+        "thread_friction_coefficient": 0.15
+      },
+      "evidence": [
+        {
+          "accepted_run_id": "trm_fem_cd79bd4336c0_cal_02",
+          "certification_scope": "Governed FEM calibration accepted; broader physics and ROM dataset admission are separate decisions.",
+          "disposition": "PRODUCTION_DOE_FEM_CALIBRATION_ACCEPTED",
+          "kind": "CALIBRATION_ACCEPTED",
+          "path": "simulations/staging/phase3_cp8_production_doe/TRM-PDOE-C01/solver_preparation/trm_fem_cd79bd4336c0/production_doe_accepted_fem_evidence.json",
+          "run_directory": "simulations/staging/phase3_cp8_production_doe/TRM-PDOE-C01/solver_preparation/trm_fem_cd79bd4336c0/trm_fem_cd79bd4336c0_cal_02",
+          "run_directory_status": "LOCATED",
+          "sha256": "9f565605379c5f74dd8818ed98003909fc096e7d5340f6a6d643a4b780d6e4db"
+        }
+      ],
+      "primary_evidence_path": "simulations/staging/phase3_cp8_production_doe/TRM-PDOE-C01/solver_preparation/trm_fem_cd79bd4336c0/production_doe_accepted_fem_evidence.json",
+      "primary_run_directory": "simulations/staging/phase3_cp8_production_doe/TRM-PDOE-C01/solver_preparation/trm_fem_cd79bd4336c0/trm_fem_cd79bd4336c0_cal_02",
+      "rom_admission_status": "NOT_EVALUATED"
+    },
+    {
+      "case_hash": "226154f7ef4edd150b25250986538fab4ac24e7ed274c4a50923c95c19839642",
+      "case_id": "D-INT-003",
+      "case_run_id": "trm_fem_226154f7ef4e",
+      "dataset_partition": null,
+      "engineering_inputs": {
+        "bolt_material_id": "fastener_steel",
+        "configuration_sources": [
+          {
+            "kind": "GOVERNED_PREPARATION",
+            "path": "simulations/staging/phase3_cp8_production_doe/TRM-PDOE-C01/prepared_cases/trm_fem_226154f7ef4e/production_doe_preparation_record.json",
+            "sha256": "a180ee329a51b07220673b6cf031a90319691f24b3e307798254cf40701b882f"
+          }
+        ],
+        "configuration_status": "C01_POLICY_AND_CASE_COORDINATES_VERIFIED",
+        "external_axial_load_n": 0.0,
+        "fastener_fixed_configuration": {
+          "bolt_length_mm": 30.0,
+          "bolt_material_id": "fastener_steel",
+          "bolt_property_class": "8.8",
+          "bolt_standard": "ISO 4017:2022",
+          "handedness": "right",
+          "nut_material_id": "fastener_steel",
+          "nut_property_class": "8",
+          "nut_standard": "ISO 4032:2023",
+          "starts": 1,
+          "thread_designation": "M10x1.5"
+        },
+        "head_bearing_friction_coefficient": 0.15,
+        "head_member_material_id": "steel_member",
+        "head_member_thickness_mm": 8.20792609577422,
+        "member_clearance_hole_diameter_mm": 11.51494371090853,
+        "member_interface_friction_coefficient": 0.15,
+        "member_outer_diameter_mm": 33.08966226545118,
+        "normalized_coordinates": [
+          0.5468396257755145,
+          0.10396304788710961,
+          0.5149437109085306
+        ],
+        "nut_bearing_friction_coefficient": 0.15,
+        "nut_material_id": "fastener_steel",
+        "nut_member_material_id": "steel_member",
+        "nut_member_thickness_mm": 11.79207390422578,
+        "target_preload_n": 17734.19812887757,
+        "thread_designation": "M10x1.5",
+        "thread_friction_coefficient": 0.15
+      },
+      "evidence": [
+        {
+          "accepted_run_id": "trm_fem_226154f7ef4e_cal_01_wsv21_rv2",
+          "certification_scope": "Governed FEM calibration accepted; broader physics and ROM dataset admission are separate decisions.",
+          "disposition": "PRODUCTION_DOE_FEM_CALIBRATION_ACCEPTED",
+          "kind": "CALIBRATION_ACCEPTED",
+          "path": "simulations/staging/phase3_cp8_production_doe/TRM-PDOE-C01/solver_preparation/trm_fem_226154f7ef4e/production_doe_accepted_fem_evidence.json",
+          "run_directory": "simulations/staging/phase3_cp8_production_doe/TRM-PDOE-C01/solver_preparation/trm_fem_226154f7ef4e/trm_fem_226154f7ef4e_cal_01_wsv21_rv2",
+          "run_directory_status": "LOCATED",
+          "sha256": "df7d9833893315eddf34810cfa24d77c33138ab80a21a1f91c041c69bf8527c5"
+        }
+      ],
+      "primary_evidence_path": "simulations/staging/phase3_cp8_production_doe/TRM-PDOE-C01/solver_preparation/trm_fem_226154f7ef4e/production_doe_accepted_fem_evidence.json",
+      "primary_run_directory": "simulations/staging/phase3_cp8_production_doe/TRM-PDOE-C01/solver_preparation/trm_fem_226154f7ef4e/trm_fem_226154f7ef4e_cal_01_wsv21_rv2",
+      "rom_admission_status": "NOT_EVALUATED"
+    },
+    {
+      "case_hash": "d0bfb12d44c25f6b7a1adf2a9c4f14615a125fe6e95c90fdeda06b59eab86faa",
+      "case_id": "D-INT-004",
+      "case_run_id": "trm_fem_d0bfb12d44c2",
+      "dataset_partition": null,
+      "engineering_inputs": {
+        "bolt_material_id": "fastener_steel",
+        "configuration_sources": [
+          {
+            "kind": "GOVERNED_PREPARATION",
+            "path": "simulations/staging/phase3_cp8_production_doe/TRM-PDOE-C01/prepared_cases/trm_fem_d0bfb12d44c2/production_doe_preparation_record.json",
+            "sha256": "2c705ca420b550ff2e01bd705f360b2299f6a6671e85c6f7d3aeaa1755690c9a"
+          }
+        ],
+        "configuration_status": "C01_POLICY_AND_CASE_COORDINATES_VERIFIED",
+        "external_axial_load_n": 0.0,
+        "fastener_fixed_configuration": {
+          "bolt_length_mm": 30.0,
+          "bolt_material_id": "fastener_steel",
+          "bolt_property_class": "8.8",
+          "bolt_standard": "ISO 4017:2022",
+          "handedness": "right",
+          "nut_material_id": "fastener_steel",
+          "nut_property_class": "8",
+          "nut_standard": "ISO 4032:2023",
+          "starts": 1,
+          "thread_designation": "M10x1.5"
+        },
+        "head_bearing_friction_coefficient": 0.15,
+        "head_member_material_id": "steel_member",
+        "head_member_thickness_mm": 9.990951568276326,
+        "member_clearance_hole_diameter_mm": 11.091081180703393,
+        "member_interface_friction_coefficient": 0.15,
+        "member_outer_diameter_mm": 30.546487084220356,
+        "normalized_coordinates": [
+          0.2964160438953053,
+          0.9954757841381628,
+          0.09108118070339287
+        ],
+        "nut_bearing_friction_coefficient": 0.15,
+        "nut_material_id": "fastener_steel",
+        "nut_member_material_id": "steel_member",
+        "nut_member_thickness_mm": 10.009048431723674,
+        "target_preload_n": 16482.080219476527,
+        "thread_designation": "M10x1.5",
+        "thread_friction_coefficient": 0.15
+      },
+      "evidence": [
+        {
+          "accepted_run_id": "trm_fem_d0bfb12d44c2_cal_02",
+          "certification_scope": "Governed FEM calibration accepted; broader physics and ROM dataset admission are separate decisions.",
+          "disposition": "PRODUCTION_DOE_FEM_CALIBRATION_ACCEPTED",
+          "kind": "CALIBRATION_ACCEPTED",
+          "path": "simulations/staging/phase3_cp8_production_doe/TRM-PDOE-C01/solver_preparation/trm_fem_d0bfb12d44c2/production_doe_accepted_fem_evidence.json",
+          "run_directory": "simulations/staging/phase3_cp8_production_doe/TRM-PDOE-C01/solver_preparation/trm_fem_d0bfb12d44c2/trm_fem_d0bfb12d44c2_cal_02",
+          "run_directory_status": "LOCATED",
+          "sha256": "e35b5023950abd512ad1915b4bba56896d84e257ab94bdffa22012328000645b"
+        }
+      ],
+      "primary_evidence_path": "simulations/staging/phase3_cp8_production_doe/TRM-PDOE-C01/solver_preparation/trm_fem_d0bfb12d44c2/production_doe_accepted_fem_evidence.json",
+      "primary_run_directory": "simulations/staging/phase3_cp8_production_doe/TRM-PDOE-C01/solver_preparation/trm_fem_d0bfb12d44c2/trm_fem_d0bfb12d44c2_cal_02",
+      "rom_admission_status": "NOT_EVALUATED"
+    },
+    {
+      "case_hash": "4e77db0d0c1211f6f1d7eb9ef6bb604c2aa1bce41f4ad8e448480ae047617994",
+      "case_id": "D-INT-005",
+      "case_run_id": "trm_fem_4e77db0d0c12",
+      "dataset_partition": null,
+      "engineering_inputs": {
+        "bolt_material_id": "fastener_steel",
+        "configuration_sources": [
+          {
+            "kind": "GOVERNED_PREPARATION",
+            "path": "simulations/staging/phase3_cp8_production_doe/TRM-PDOE-C01/prepared_cases/trm_fem_4e77db0d0c12/production_doe_preparation_record.json",
+            "sha256": "907d34fb5a64b95d7380fa1a457322e9d4827956eed6b37acd58e657730f5875"
+          }
+        ],
+        "configuration_status": "C01_POLICY_AND_CASE_COORDINATES_VERIFIED",
+        "external_axial_load_n": 0.0,
+        "fastener_fixed_configuration": {
+          "bolt_length_mm": 30.0,
+          "bolt_material_id": "fastener_steel",
+          "bolt_property_class": "8.8",
+          "bolt_standard": "ISO 4017:2022",
+          "handedness": "right",
+          "nut_material_id": "fastener_steel",
+          "nut_property_class": "8",
+          "nut_standard": "ISO 4032:2023",
+          "starts": 1,
+          "thread_designation": "M10x1.5"
+        },
+        "head_bearing_friction_coefficient": 0.15,
+        "head_member_material_id": "steel_member",
+        "head_member_thickness_mm": 9.784176625560347,
+        "member_clearance_hole_diameter_mm": 11.827820724098169,
+        "member_interface_friction_coefficient": 0.15,
+        "member_outer_diameter_mm": 34.96692434458901,
+        "normalized_coordinates": [
+          0.243312722013117,
+          0.8920883127801735,
+          0.8278207240981684
+        ],
+        "nut_bearing_friction_coefficient": 0.15,
+        "nut_material_id": "fastener_steel",
+        "nut_member_material_id": "steel_member",
+        "nut_member_thickness_mm": 10.215823374439653,
+        "target_preload_n": 16216.563610065585,
+        "thread_designation": "M10x1.5",
+        "thread_friction_coefficient": 0.15
+      },
+      "evidence": [
+        {
+          "accepted_run_id": "trm_fem_4e77db0d0c12_cal_01_wsv21_rv2",
+          "certification_scope": "Governed FEM calibration accepted; broader physics and ROM dataset admission are separate decisions.",
+          "disposition": "PRODUCTION_DOE_FEM_CALIBRATION_ACCEPTED",
+          "kind": "CALIBRATION_ACCEPTED",
+          "path": "simulations/staging/phase3_cp8_production_doe/TRM-PDOE-C01/solver_preparation/trm_fem_4e77db0d0c12/production_doe_accepted_fem_evidence.json",
+          "run_directory": "simulations/staging/phase3_cp8_production_doe/TRM-PDOE-C01/solver_preparation/trm_fem_4e77db0d0c12/trm_fem_4e77db0d0c12_cal_01_wsv21_rv2",
+          "run_directory_status": "LOCATED",
+          "sha256": "b89f2b0bc98016313b21afcc794a4242123992cc39ada8dc3b62daa5c8ddd09d"
+        }
+      ],
+      "primary_evidence_path": "simulations/staging/phase3_cp8_production_doe/TRM-PDOE-C01/solver_preparation/trm_fem_4e77db0d0c12/production_doe_accepted_fem_evidence.json",
+      "primary_run_directory": "simulations/staging/phase3_cp8_production_doe/TRM-PDOE-C01/solver_preparation/trm_fem_4e77db0d0c12/trm_fem_4e77db0d0c12_cal_01_wsv21_rv2",
+      "rom_admission_status": "NOT_EVALUATED"
+    },
+    {
+      "case_hash": "6c0eb1807bb0e3c3f59ef39314d6b6b68fca739f345eee9b686fa5b182d7d966",
+      "case_id": "D-INT-006",
+      "case_run_id": "trm_fem_6c0eb1807bb0",
+      "dataset_partition": null,
+      "engineering_inputs": {
+        "bolt_material_id": "fastener_steel",
+        "configuration_sources": [
+          {
+            "kind": "GOVERNED_PREPARATION",
+            "path": "simulations/staging/phase3_cp8_production_doe/TRM-PDOE-C01/prepared_cases/trm_fem_6c0eb1807bb0/production_doe_preparation_record.json",
+            "sha256": "e47f9fab9d0ab1eeabf5abfcf2732e8a316c8a3c0cc03105fcff477f529a4b31"
+          }
+        ],
+        "configuration_status": "C01_POLICY_AND_CASE_COORDINATES_VERIFIED",
+        "external_axial_load_n": 0.0,
+        "fastener_fixed_configuration": {
+          "bolt_length_mm": 30.0,
+          "bolt_material_id": "fastener_steel",
+          "bolt_property_class": "8.8",
+          "bolt_standard": "ISO 4017:2022",
+          "handedness": "right",
+          "nut_material_id": "fastener_steel",
+          "nut_property_class": "8",
+          "nut_standard": "ISO 4032:2023",
+          "starts": 1,
+          "thread_designation": "M10x1.5"
+        },
+        "head_bearing_friction_coefficient": 0.15,
+        "head_member_material_id": "steel_member",
+        "head_member_thickness_mm": 9.468590125676517,
+        "member_clearance_hole_diameter_mm": 11.45650750884827,
+        "member_interface_friction_coefficient": 0.15,
+        "member_outer_diameter_mm": 32.739045053089626,
+        "normalized_coordinates": [
+          0.10668332779639358,
+          0.7342950628382584,
+          0.45650750884827107
+        ],
+        "nut_bearing_friction_coefficient": 0.15,
+        "nut_material_id": "fastener_steel",
+        "nut_member_material_id": "steel_member",
+        "nut_member_thickness_mm": 10.531409874323483,
+        "target_preload_n": 15533.416638981967,
+        "thread_designation": "M10x1.5",
+        "thread_friction_coefficient": 0.15
+      },
+      "evidence": [
+        {
+          "accepted_run_id": "trm_fem_6c0eb1807bb0_cal_02",
+          "certification_scope": "Governed FEM calibration accepted; broader physics and ROM dataset admission are separate decisions.",
+          "disposition": "PRODUCTION_DOE_FEM_CALIBRATION_ACCEPTED",
+          "kind": "CALIBRATION_ACCEPTED",
+          "path": "simulations/staging/phase3_cp8_production_doe/TRM-PDOE-C01/solver_preparation/trm_fem_6c0eb1807bb0/production_doe_accepted_fem_evidence.json",
+          "run_directory": "simulations/staging/phase3_cp8_production_doe/TRM-PDOE-C01/solver_preparation/trm_fem_6c0eb1807bb0/trm_fem_6c0eb1807bb0_cal_02",
+          "run_directory_status": "LOCATED",
+          "sha256": "e1229c0d33e858d764fb4ad51b98aca3a081e1f08ebcd525d8f5641478fc3bee"
+        }
+      ],
+      "primary_evidence_path": "simulations/staging/phase3_cp8_production_doe/TRM-PDOE-C01/solver_preparation/trm_fem_6c0eb1807bb0/production_doe_accepted_fem_evidence.json",
+      "primary_run_directory": "simulations/staging/phase3_cp8_production_doe/TRM-PDOE-C01/solver_preparation/trm_fem_6c0eb1807bb0/trm_fem_6c0eb1807bb0_cal_02",
+      "rom_admission_status": "NOT_EVALUATED"
+    },
+    {
+      "case_hash": "4766e95d0d13506af04271e28edc2b5df2f8718edcb2edf1b097ca79f373916d",
+      "case_id": "D-INT-007",
+      "case_run_id": "trm_fem_4766e95d0d13",
+      "dataset_partition": null,
+      "engineering_inputs": {
+        "bolt_material_id": "fastener_steel",
+        "configuration_sources": [
+          {
+            "kind": "GOVERNED_PREPARATION",
+            "path": "simulations/staging/phase3_cp8_production_doe/TRM-PDOE-C01/prepared_cases/trm_fem_4766e95d0d13/production_doe_preparation_record.json",
+            "sha256": "91639a2972f7b38d9e933e2a81be0bc7a4e0874eb1bd61ebd14a74911d1aad3c"
+          }
+        ],
+        "configuration_status": "C01_POLICY_AND_CASE_COORDINATES_VERIFIED",
+        "external_axial_load_n": 0.0,
+        "fastener_fixed_configuration": {
+          "bolt_length_mm": 30.0,
+          "bolt_material_id": "fastener_steel",
+          "bolt_property_class": "8.8",
+          "bolt_standard": "ISO 4017:2022",
+          "handedness": "right",
+          "nut_material_id": "fastener_steel",
+          "nut_property_class": "8",
+          "nut_standard": "ISO 4032:2023",
+          "starts": 1,
+          "thread_designation": "M10x1.5"
+        },
+        "head_bearing_friction_coefficient": 0.15,
+        "head_member_material_id": "steel_member",
+        "head_member_thickness_mm": 8.383012502652148,
+        "member_clearance_hole_diameter_mm": 11.354694633502495,
+        "member_interface_friction_coefficient": 0.15,
+        "member_outer_diameter_mm": 32.128167801014975,
+        "normalized_coordinates": [
+          0.8738589390042204,
+          0.1915062513260739,
+          0.35469463350249586
+        ],
+        "nut_bearing_friction_coefficient": 0.15,
+        "nut_material_id": "fastener_steel",
+        "nut_member_material_id": "steel_member",
+        "nut_member_thickness_mm": 11.616987497347852,
+        "target_preload_n": 19369.2946950211,
+        "thread_designation": "M10x1.5",
+        "thread_friction_coefficient": 0.15
+      },
+      "evidence": [
+        {
+          "accepted_run_id": "trm_fem_4766e95d0d13_cal_02",
+          "certification_scope": "Governed FEM calibration accepted; broader physics and ROM dataset admission are separate decisions.",
+          "disposition": "PRODUCTION_DOE_FEM_CALIBRATION_ACCEPTED",
+          "kind": "CALIBRATION_ACCEPTED",
+          "path": "simulations/staging/phase3_cp8_production_doe/TRM-PDOE-C01/solver_preparation/trm_fem_4766e95d0d13/production_doe_accepted_fem_evidence.json",
+          "run_directory": "simulations/staging/phase3_cp8_production_doe/TRM-PDOE-C01/solver_preparation/trm_fem_4766e95d0d13/trm_fem_4766e95d0d13_cal_02",
+          "run_directory_status": "LOCATED",
+          "sha256": "b7d2fc2019e973894b90ce3e4f7efcdcf645c27595bddc28da0d544edca4a70a"
+        }
+      ],
+      "primary_evidence_path": "simulations/staging/phase3_cp8_production_doe/TRM-PDOE-C01/solver_preparation/trm_fem_4766e95d0d13/production_doe_accepted_fem_evidence.json",
+      "primary_run_directory": "simulations/staging/phase3_cp8_production_doe/TRM-PDOE-C01/solver_preparation/trm_fem_4766e95d0d13/trm_fem_4766e95d0d13_cal_02",
+      "rom_admission_status": "NOT_EVALUATED"
+    },
+    {
+      "case_hash": "1faafccbbc3b9eb2068af0f45c8d91951a29d85917c60871d82535d2ca857315",
+      "case_id": "D-INT-008",
+      "case_run_id": "trm_fem_1faafccbbc3b",
+      "dataset_partition": null,
+      "engineering_inputs": {
+        "bolt_material_id": "fastener_steel",
+        "configuration_sources": [
+          {
+            "kind": "GOVERNED_PREPARATION",
+            "path": "simulations/staging/phase3_cp8_production_doe/TRM-PDOE-C01/prepared_cases/trm_fem_1faafccbbc3b/production_doe_preparation_record.json",
+            "sha256": "14ea5d6c27b0100bfd5626558b635f0f018d556ec601af2c004248f55f72666b"
+          }
+        ],
+        "configuration_status": "C01_POLICY_AND_CASE_COORDINATES_VERIFIED",
+        "external_axial_load_n": 0.0,
+        "fastener_fixed_configuration": {
+          "bolt_length_mm": 30.0,
+          "bolt_material_id": "fastener_steel",
+          "bolt_property_class": "8.8",
+          "bolt_standard": "ISO 4017:2022",
+          "handedness": "right",
+          "nut_material_id": "fastener_steel",
+          "nut_property_class": "8",
+          "nut_standard": "ISO 4032:2023",
+          "starts": 1,
+          "thread_designation": "M10x1.5"
+        },
+        "head_bearing_friction_coefficient": 0.15,
+        "head_member_material_id": "steel_member",
+        "head_member_thickness_mm": 8.92374500562429,
+        "member_clearance_hole_diameter_mm": 11.387268407866376,
+        "member_interface_friction_coefficient": 0.15,
+        "member_outer_diameter_mm": 32.323610447198256,
+        "normalized_coordinates": [
+          0.338688726937794,
+          0.46187250281214554,
+          0.387268407866376
+        ],
+        "nut_bearing_friction_coefficient": 0.15,
+        "nut_material_id": "fastener_steel",
+        "nut_member_material_id": "steel_member",
+        "nut_member_thickness_mm": 11.07625499437571,
+        "target_preload_n": 16693.44363468897,
+        "thread_designation": "M10x1.5",
+        "thread_friction_coefficient": 0.15
+      },
+      "evidence": [
+        {
+          "accepted_run_id": "trm_fem_1faafccbbc3b_cal_01_wsv21",
+          "certification_scope": "Governed FEM calibration accepted; broader physics and ROM dataset admission are separate decisions.",
+          "disposition": "PRODUCTION_DOE_FEM_CALIBRATION_ACCEPTED",
+          "kind": "CALIBRATION_ACCEPTED",
+          "path": "simulations/staging/phase3_cp8_production_doe/TRM-PDOE-C01/solver_preparation/trm_fem_1faafccbbc3b/production_doe_accepted_fem_evidence.json",
+          "run_directory": "simulations/staging/phase3_cp8_production_doe/TRM-PDOE-C01/solver_preparation/trm_fem_1faafccbbc3b/trm_fem_1faafccbbc3b_cal_01_wsv21",
+          "run_directory_status": "LOCATED",
+          "sha256": "455e36738f9298b1671f5f994f5f28947990390ce4c7f1e7492eb0d5d08cb45e"
+        }
+      ],
+      "primary_evidence_path": "simulations/staging/phase3_cp8_production_doe/TRM-PDOE-C01/solver_preparation/trm_fem_1faafccbbc3b/production_doe_accepted_fem_evidence.json",
+      "primary_run_directory": "simulations/staging/phase3_cp8_production_doe/TRM-PDOE-C01/solver_preparation/trm_fem_1faafccbbc3b/trm_fem_1faafccbbc3b_cal_01_wsv21",
+      "rom_admission_status": "NOT_EVALUATED"
+    },
+    {
+      "case_hash": "37ea3dfbef25a86ed76232879f319ff41cc69a82d0dc46985d1dea90ebb500f7",
+      "case_id": "D-INT-009",
+      "case_run_id": "trm_fem_37ea3dfbef25",
+      "dataset_partition": null,
+      "engineering_inputs": {
+        "bolt_material_id": "fastener_steel",
+        "configuration_sources": [
+          {
+            "kind": "GOVERNED_PREPARATION",
+            "path": "simulations/staging/phase3_cp8_production_doe/TRM-PDOE-C01/prepared_cases/trm_fem_37ea3dfbef25/production_doe_preparation_record.json",
+            "sha256": "4472a4b45e7d20b4b68147c181901e50e092c2107460641baf066c0707f1621a"
+          }
+        ],
+        "configuration_status": "C01_POLICY_AND_CASE_COORDINATES_VERIFIED",
+        "external_axial_load_n": 0.0,
+        "fastener_fixed_configuration": {
+          "bolt_length_mm": 30.0,
+          "bolt_material_id": "fastener_steel",
+          "bolt_property_class": "8.8",
+          "bolt_standard": "ISO 4017:2022",
+          "handedness": "right",
+          "nut_material_id": "fastener_steel",
+          "nut_property_class": "8",
+          "nut_standard": "ISO 4032:2023",
+          "starts": 1,
+          "thread_designation": "M10x1.5"
+        },
+        "head_bearing_friction_coefficient": 0.15,
+        "head_member_material_id": "steel_member",
+        "head_member_thickness_mm": 8.852899676435836,
+        "member_clearance_hole_diameter_mm": 11.897144386722669,
+        "member_interface_friction_coefficient": 0.15,
+        "member_outer_diameter_mm": 35.382866320336014,
+        "normalized_coordinates": [
+          0.6696983259690454,
+          0.4264498382179185,
+          0.8971443867226693
+        ],
+        "nut_bearing_friction_coefficient": 0.15,
+        "nut_material_id": "fastener_steel",
+        "nut_member_material_id": "steel_member",
+        "nut_member_thickness_mm": 11.147100323564164,
+        "target_preload_n": 18348.491629845226,
+        "thread_designation": "M10x1.5",
+        "thread_friction_coefficient": 0.15
+      },
+      "evidence": [
+        {
+          "accepted_run_id": "trm_fem_37ea3dfbef25_cal_01_wsv21_rv2",
+          "certification_scope": "Governed FEM calibration accepted; broader physics and ROM dataset admission are separate decisions.",
+          "disposition": "PRODUCTION_DOE_FEM_CALIBRATION_ACCEPTED",
+          "kind": "CALIBRATION_ACCEPTED",
+          "path": "simulations/staging/phase3_cp8_production_doe/TRM-PDOE-C01/solver_preparation/trm_fem_37ea3dfbef25/production_doe_accepted_fem_evidence.json",
+          "run_directory": "simulations/staging/phase3_cp8_production_doe/TRM-PDOE-C01/solver_preparation/trm_fem_37ea3dfbef25/trm_fem_37ea3dfbef25_cal_01_wsv21_rv2",
+          "run_directory_status": "LOCATED",
+          "sha256": "b75a1f75c7e292278eae7075232fe0fe4249e691ab4fb242d2cd3d58703fd858"
+        }
+      ],
+      "primary_evidence_path": "simulations/staging/phase3_cp8_production_doe/TRM-PDOE-C01/solver_preparation/trm_fem_37ea3dfbef25/production_doe_accepted_fem_evidence.json",
+      "primary_run_directory": "simulations/staging/phase3_cp8_production_doe/TRM-PDOE-C01/solver_preparation/trm_fem_37ea3dfbef25/trm_fem_37ea3dfbef25_cal_01_wsv21_rv2",
+      "rom_admission_status": "NOT_EVALUATED"
+    },
+    {
+      "case_hash": "dded29952881183e95ca96e8bd35201644461dfcaf272b94a4df7f4e781c6ba4",
+      "case_id": "D-INT-010",
+      "case_run_id": "trm_fem_dded29952881",
+      "dataset_partition": null,
+      "engineering_inputs": {
+        "bolt_material_id": "fastener_steel",
+        "configuration_sources": [
+          {
+            "kind": "GOVERNED_PREPARATION",
+            "path": "simulations/staging/phase3_cp8_production_doe/TRM-PDOE-C01/prepared_cases/trm_fem_dded29952881/production_doe_preparation_record.json",
+            "sha256": "4c62ff12b5c02d1fe101aa869014e6b0bf3d616b6526fe790956dbd0960043aa"
+          }
+        ],
+        "configuration_status": "C01_POLICY_AND_CASE_COORDINATES_VERIFIED",
+        "external_axial_load_n": 0.0,
+        "fastener_fixed_configuration": {
+          "bolt_length_mm": 30.0,
+          "bolt_material_id": "fastener_steel",
+          "bolt_property_class": "8.8",
+          "bolt_standard": "ISO 4017:2022",
+          "handedness": "right",
+          "nut_material_id": "fastener_steel",
+          "nut_property_class": "8",
+          "nut_standard": "ISO 4032:2023",
+          "starts": 1,
+          "thread_designation": "M10x1.5"
+        },
+        "head_bearing_friction_coefficient": 0.15,
+        "head_member_material_id": "steel_member",
+        "head_member_thickness_mm": 9.003206566770443,
+        "member_clearance_hole_diameter_mm": 11.7525408170679,
+        "member_interface_friction_coefficient": 0.15,
+        "member_outer_diameter_mm": 34.5152449024074,
+        "normalized_coordinates": [
+          0.3884259094216256,
+          0.5016032833852213,
+          0.7525408170679
+        ],
+        "nut_bearing_friction_coefficient": 0.15,
+        "nut_material_id": "fastener_steel",
+        "nut_member_material_id": "steel_member",
+        "nut_member_thickness_mm": 10.996793433229557,
+        "target_preload_n": 16942.12954710813,
+        "thread_designation": "M10x1.5",
+        "thread_friction_coefficient": 0.15
+      },
+      "evidence": [
+        {
+          "accepted_run_id": "trm_fem_dded29952881_cal_02",
+          "certification_scope": "Governed FEM calibration accepted; broader physics and ROM dataset admission are separate decisions.",
+          "disposition": "PRODUCTION_DOE_FEM_CALIBRATION_ACCEPTED",
+          "kind": "CALIBRATION_ACCEPTED",
+          "path": "simulations/staging/phase3_cp8_production_doe/TRM-PDOE-C01/solver_preparation/trm_fem_dded29952881/production_doe_accepted_fem_evidence.json",
+          "run_directory": "simulations/staging/phase3_cp8_production_doe/TRM-PDOE-C01/solver_preparation/trm_fem_dded29952881/trm_fem_dded29952881_cal_02",
+          "run_directory_status": "LOCATED",
+          "sha256": "4ae4455eabdaff752036745e38550ae16a334e5f88643e8b4f2adbaf0b3d51aa"
+        }
+      ],
+      "primary_evidence_path": "simulations/staging/phase3_cp8_production_doe/TRM-PDOE-C01/solver_preparation/trm_fem_dded29952881/production_doe_accepted_fem_evidence.json",
+      "primary_run_directory": "simulations/staging/phase3_cp8_production_doe/TRM-PDOE-C01/solver_preparation/trm_fem_dded29952881/trm_fem_dded29952881_cal_02",
+      "rom_admission_status": "NOT_EVALUATED"
+    },
+    {
+      "case_hash": "06046fe91597028e6aa098c1e3d22f8f94e1b50d16b573f89399b8b7a046d396",
+      "case_id": "D-INT-011",
+      "case_run_id": "trm_fem_06046fe91597",
+      "dataset_partition": null,
+      "engineering_inputs": {
+        "bolt_material_id": "fastener_steel",
+        "configuration_sources": [
+          {
+            "kind": "GOVERNED_PREPARATION",
+            "path": "simulations/staging/phase3_cp8_production_doe/TRM-PDOE-C01/prepared_cases/trm_fem_06046fe91597/production_doe_preparation_record.json",
+            "sha256": "3f7038386ebea24f81c8c15ef8281a425cd9f4fdd14cc84773c601a29957f500"
+          }
+        ],
+        "configuration_status": "C01_POLICY_AND_CASE_COORDINATES_VERIFIED",
+        "external_axial_load_n": 0.0,
+        "fastener_fixed_configuration": {
+          "bolt_length_mm": 30.0,
+          "bolt_material_id": "fastener_steel",
+          "bolt_property_class": "8.8",
+          "bolt_standard": "ISO 4017:2022",
+          "handedness": "right",
+          "nut_material_id": "fastener_steel",
+          "nut_property_class": "8",
+          "nut_standard": "ISO 4032:2023",
+          "starts": 1,
+          "thread_designation": "M10x1.5"
+        },
+        "head_bearing_friction_coefficient": 0.15,
+        "head_member_material_id": "steel_member",
+        "head_member_thickness_mm": 8.595671446005145,
+        "member_clearance_hole_diameter_mm": 11.012364625694907,
+        "member_interface_friction_coefficient": 0.15,
+        "member_outer_diameter_mm": 30.07418775416944,
+        "normalized_coordinates": [
+          0.7809134146524126,
+          0.2978357230025728,
+          0.012364625694906699
+        ],
+        "nut_bearing_friction_coefficient": 0.15,
+        "nut_material_id": "fastener_steel",
+        "nut_member_material_id": "steel_member",
+        "nut_member_thickness_mm": 11.404328553994855,
+        "target_preload_n": 18904.567073262064,
+        "thread_designation": "M10x1.5",
+        "thread_friction_coefficient": 0.15
+      },
+      "evidence": [
+        {
+          "accepted_run_id": "trm_fem_06046fe91597_cal_02",
+          "certification_scope": "Governed FEM calibration accepted; broader physics and ROM dataset admission are separate decisions.",
+          "disposition": "PRODUCTION_DOE_FEM_CALIBRATION_ACCEPTED",
+          "kind": "CALIBRATION_ACCEPTED",
+          "path": "simulations/staging/phase3_cp8_production_doe/TRM-PDOE-C01/solver_preparation/trm_fem_06046fe91597/production_doe_accepted_fem_evidence.json",
+          "run_directory": "simulations/staging/phase3_cp8_production_doe/TRM-PDOE-C01/solver_preparation/trm_fem_06046fe91597/trm_fem_06046fe91597_cal_02",
+          "run_directory_status": "LOCATED",
+          "sha256": "70b92a213350921a6bd97a8de3c5cac2845f052e292280415e7dc0d2673c6cdd"
+        }
+      ],
+      "primary_evidence_path": "simulations/staging/phase3_cp8_production_doe/TRM-PDOE-C01/solver_preparation/trm_fem_06046fe91597/production_doe_accepted_fem_evidence.json",
+      "primary_run_directory": "simulations/staging/phase3_cp8_production_doe/TRM-PDOE-C01/solver_preparation/trm_fem_06046fe91597/trm_fem_06046fe91597_cal_02",
+      "rom_admission_status": "NOT_EVALUATED"
+    },
+    {
+      "case_hash": "d667bb1aca2720b10e8a80dbcfba700b042b45a20289927feb5e97a33f3b244c",
+      "case_id": "D-INT-012",
+      "case_run_id": "trm_fem_d667bb1aca27",
+      "dataset_partition": null,
+      "engineering_inputs": {
+        "bolt_material_id": "fastener_steel",
+        "configuration_sources": [
+          {
+            "kind": "GOVERNED_PREPARATION",
+            "path": "simulations/staging/phase3_cp8_production_doe/TRM-PDOE-C01/prepared_cases/trm_fem_d667bb1aca27/production_doe_preparation_record.json",
+            "sha256": "10d9f007f1491a966ddde4cfef734d1b23f63e9ba0c43ae09bb1fd3bae9ae6e5"
+          }
+        ],
+        "configuration_status": "C01_POLICY_AND_CASE_COORDINATES_VERIFIED",
+        "external_axial_load_n": 0.0,
+        "fastener_fixed_configuration": {
+          "bolt_length_mm": 30.0,
+          "bolt_material_id": "fastener_steel",
+          "bolt_property_class": "8.8",
+          "bolt_standard": "ISO 4017:2022",
+          "handedness": "right",
+          "nut_material_id": "fastener_steel",
+          "nut_property_class": "8",
+          "nut_standard": "ISO 4032:2023",
+          "starts": 1,
+          "thread_designation": "M10x1.5"
+        },
+        "head_bearing_friction_coefficient": 0.15,
+        "head_member_material_id": "steel_member",
+        "head_member_thickness_mm": 9.731376670271587,
+        "member_clearance_hole_diameter_mm": 11.713008747647065,
+        "member_interface_friction_coefficient": 0.15,
+        "member_outer_diameter_mm": 34.278052485882384,
+        "normalized_coordinates": [
+          0.9921474272131019,
+          0.8656883351357931,
+          0.7130087476470638
+        ],
+        "nut_bearing_friction_coefficient": 0.15,
+        "nut_material_id": "fastener_steel",
+        "nut_member_material_id": "steel_member",
+        "nut_member_thickness_mm": 10.268623329728413,
+        "target_preload_n": 19960.73713606551,
+        "thread_designation": "M10x1.5",
+        "thread_friction_coefficient": 0.15
+      },
+      "evidence": [
+        {
+          "accepted_run_id": "trm_fem_d667bb1aca27_cal_02",
+          "certification_scope": "Certifies the existing governed 13 hard gates, including translational force equilibrium; does not certify rotational-moment equilibrium.",
+          "disposition": "GOVERNED_13_HARD_GATES_CERTIFIED",
+          "kind": "13_HARD_GATES_CERTIFIED",
+          "path": "simulations/staging/phase3_cp8_production_doe/TRM-PDOE-C01/solver_preparation/trm_fem_d667bb1aca27/trm_fem_d667bb1aca27_cal_02/independent_governed_physics_certificate.json",
+          "run_directory": "simulations/staging/phase3_cp8_production_doe/TRM-PDOE-C01/solver_preparation/trm_fem_d667bb1aca27/trm_fem_d667bb1aca27_cal_02",
+          "run_directory_status": "LOCATED",
+          "sha256": "32db92807e84df6a96cd2361ffc68d2043e1bf6d8375b553abb54143cd427691"
+        }
+      ],
+      "primary_evidence_path": "simulations/staging/phase3_cp8_production_doe/TRM-PDOE-C01/solver_preparation/trm_fem_d667bb1aca27/trm_fem_d667bb1aca27_cal_02/independent_governed_physics_certificate.json",
+      "primary_run_directory": "simulations/staging/phase3_cp8_production_doe/TRM-PDOE-C01/solver_preparation/trm_fem_d667bb1aca27/trm_fem_d667bb1aca27_cal_02",
+      "rom_admission_status": "NOT_EVALUATED"
+    },
+    {
+      "case_hash": "0390537674178f7761b27927ff5b1cb34a04c8617fcd34544dd03339b079f175",
+      "case_id": "D-INT-013",
+      "case_run_id": "trm_fem_039053767417",
+      "dataset_partition": null,
+      "engineering_inputs": {
+        "bolt_material_id": "fastener_steel",
+        "configuration_sources": [
+          {
+            "kind": "GOVERNED_PREPARATION",
+            "path": "simulations/staging/phase3_cp8_production_doe/TRM-PDOE-C01/prepared_cases/trm_fem_039053767417/production_doe_preparation_record.json",
+            "sha256": "ded3da7d114591ce9beb15a2790ed0e0e79caf3793f3f47a1809463f66b46438"
+          }
+        ],
+        "configuration_status": "C01_POLICY_AND_CASE_COORDINATES_VERIFIED",
+        "external_axial_load_n": 0.0,
+        "fastener_fixed_configuration": {
+          "bolt_length_mm": 30.0,
+          "bolt_material_id": "fastener_steel",
+          "bolt_property_class": "8.8",
+          "bolt_standard": "ISO 4017:2022",
+          "handedness": "right",
+          "nut_material_id": "fastener_steel",
+          "nut_property_class": "8",
+          "nut_standard": "ISO 4032:2023",
+          "starts": 1,
+          "thread_designation": "M10x1.5"
+        },
+        "head_bearing_friction_coefficient": 0.15,
+        "head_member_material_id": "steel_member",
+        "head_member_thickness_mm": 8.334796056533978,
+        "member_clearance_hole_diameter_mm": 11.273229894783796,
+        "member_interface_friction_coefficient": 0.15,
+        "member_outer_diameter_mm": 31.639379368702773,
+        "normalized_coordinates": [
+          0.4515764149676274,
+          0.16739802826698907,
+          0.2732298947837953
+        ],
+        "nut_bearing_friction_coefficient": 0.15,
+        "nut_material_id": "fastener_steel",
+        "nut_member_material_id": "steel_member",
+        "nut_member_thickness_mm": 11.665203943466022,
+        "target_preload_n": 17257.882074838137,
+        "thread_designation": "M10x1.5",
+        "thread_friction_coefficient": 0.15
+      },
+      "evidence": [
+        {
+          "accepted_run_id": "trm_fem_039053767417_cal_01_wsv21_rfobs1",
+          "certification_scope": "Certifies the existing governed 13 hard gates, including translational force equilibrium; does not certify rotational-moment equilibrium.",
+          "disposition": "GOVERNED_13_HARD_GATES_CERTIFIED",
+          "kind": "13_HARD_GATES_CERTIFIED",
+          "path": "simulations/staging/phase3_cp8_production_doe/TRM-PDOE-C01/solver_preparation/trm_fem_039053767417/trm_fem_039053767417_cal_01_wsv21_rfobs1/independent_governed_physics_certificate.json",
+          "run_directory": "simulations/staging/phase3_cp8_production_doe/TRM-PDOE-C01/solver_preparation/trm_fem_039053767417/trm_fem_039053767417_cal_01_wsv21_rfobs1",
+          "run_directory_status": "LOCATED",
+          "sha256": "a6c9874266098789f3c92ca3236265fbff88dcc6a5689e51d721c6e153132a14"
+        }
+      ],
+      "primary_evidence_path": "simulations/staging/phase3_cp8_production_doe/TRM-PDOE-C01/solver_preparation/trm_fem_039053767417/trm_fem_039053767417_cal_01_wsv21_rfobs1/independent_governed_physics_certificate.json",
+      "primary_run_directory": "simulations/staging/phase3_cp8_production_doe/TRM-PDOE-C01/solver_preparation/trm_fem_039053767417/trm_fem_039053767417_cal_01_wsv21_rfobs1",
+      "rom_admission_status": "NOT_EVALUATED"
+    },
+    {
+      "case_hash": "941ce23d715ccb2243dfbcda088c86d64877ea8a0da5cd295256f704f79e87f7",
+      "case_id": "D-INT-014",
+      "case_run_id": "trm_fem_941ce23d715c",
+      "dataset_partition": null,
+      "engineering_inputs": {
+        "bolt_material_id": "fastener_steel",
+        "configuration_sources": [
+          {
+            "kind": "GOVERNED_PREPARATION",
+            "path": "simulations/staging/phase3_cp8_production_doe/TRM-PDOE-C01/prepared_cases/trm_fem_941ce23d715c/production_doe_preparation_record.json",
+            "sha256": "e9c155c89dcadd84293090e3454d75a0f22d3e1a60ccc72f37eabdf55a20600d"
+          }
+        ],
+        "configuration_status": "C01_POLICY_AND_CASE_COORDINATES_VERIFIED",
+        "external_axial_load_n": 0.0,
+        "fastener_fixed_configuration": {
+          "bolt_length_mm": 30.0,
+          "bolt_material_id": "fastener_steel",
+          "bolt_property_class": "8.8",
+          "bolt_standard": "ISO 4017:2022",
+          "handedness": "right",
+          "nut_material_id": "fastener_steel",
+          "nut_property_class": "8",
+          "nut_standard": "ISO 4032:2023",
+          "starts": 1,
+          "thread_designation": "M10x1.5"
+        },
+        "head_bearing_friction_coefficient": 0.15,
+        "head_member_material_id": "steel_member",
+        "head_member_thickness_mm": 8.039504170940509,
+        "member_clearance_hole_diameter_mm": 11.226517765332824,
+        "member_interface_friction_coefficient": 0.15,
+        "member_outer_diameter_mm": 31.359106591996948,
+        "normalized_coordinates": [
+          0.14950037181045286,
+          0.019752085470254067,
+          0.22651776533282447
+        ],
+        "nut_bearing_friction_coefficient": 0.15,
+        "nut_material_id": "fastener_steel",
+        "nut_member_material_id": "steel_member",
+        "nut_member_thickness_mm": 11.960495829059491,
+        "target_preload_n": 15747.501859052265,
+        "thread_designation": "M10x1.5",
+        "thread_friction_coefficient": 0.15
+      },
+      "evidence": [
+        {
+          "accepted_run_id": "trm_fem_941ce23d715c_cal_01_wsv21_rfobs1",
+          "certification_scope": "Certifies the existing governed 13 hard gates, including translational force equilibrium; does not certify rotational-moment equilibrium.",
+          "disposition": "GOVERNED_13_HARD_GATES_CERTIFIED",
+          "kind": "13_HARD_GATES_CERTIFIED",
+          "path": "simulations/staging/phase3_cp8_production_doe/TRM-PDOE-C01/solver_preparation/trm_fem_941ce23d715c/trm_fem_941ce23d715c_cal_01_wsv21_rfobs1/independent_governed_physics_certificate.json",
+          "run_directory": "simulations/staging/phase3_cp8_production_doe/TRM-PDOE-C01/solver_preparation/trm_fem_941ce23d715c/trm_fem_941ce23d715c_cal_01_wsv21_rfobs1",
+          "run_directory_status": "LOCATED",
+          "sha256": "bf9df0ba1f2456b3bed3b5fad1a1f4e5376e8254b9d9bf71eaa4f4406b7beb4b"
+        }
+      ],
+      "primary_evidence_path": "simulations/staging/phase3_cp8_production_doe/TRM-PDOE-C01/solver_preparation/trm_fem_941ce23d715c/trm_fem_941ce23d715c_cal_01_wsv21_rfobs1/independent_governed_physics_certificate.json",
+      "primary_run_directory": "simulations/staging/phase3_cp8_production_doe/TRM-PDOE-C01/solver_preparation/trm_fem_941ce23d715c/trm_fem_941ce23d715c_cal_01_wsv21_rfobs1",
+      "rom_admission_status": "NOT_EVALUATED"
+    },
+    {
+      "case_hash": "34fffb87e0f7128da9bd5d642859037079999bccb2bcf0f336b3e179f8fb8ce0",
+      "case_id": "D-INT-015",
+      "case_run_id": "trm_fem_34fffb87e0f7",
+      "dataset_partition": null,
+      "engineering_inputs": {
+        "bolt_material_id": "fastener_steel",
+        "configuration_sources": [
+          {
+            "kind": "GOVERNED_PREPARATION",
+            "path": "simulations/staging/phase3_cp8_production_doe/TRM-PDOE-C01/prepared_cases/trm_fem_34fffb87e0f7/production_doe_preparation_record.json",
+            "sha256": "539d384c562462ea592154ab6c62b01503ecdf196f47df51bbaec1335bbd80e3"
+          }
+        ],
+        "configuration_status": "C01_POLICY_AND_CASE_COORDINATES_VERIFIED",
+        "external_axial_load_n": 0.0,
+        "fastener_fixed_configuration": {
+          "bolt_length_mm": 30.0,
+          "bolt_material_id": "fastener_steel",
+          "bolt_property_class": "8.8",
+          "bolt_standard": "ISO 4017:2022",
+          "handedness": "right",
+          "nut_material_id": "fastener_steel",
+          "nut_property_class": "8",
+          "nut_standard": "ISO 4032:2023",
+          "starts": 1,
+          "thread_designation": "M10x1.5"
+        },
+        "head_bearing_friction_coefficient": 0.15,
+        "head_member_material_id": "steel_member",
+        "head_member_thickness_mm": 8.689663287572511,
+        "member_clearance_hole_diameter_mm": 11.668497798772856,
+        "member_interface_friction_coefficient": 0.15,
+        "member_outer_diameter_mm": 34.010986792637134,
+        "normalized_coordinates": [
+          0.7263110337393176,
+          0.34483164378625514,
+          0.6684977987728554
+        ],
+        "nut_bearing_friction_coefficient": 0.15,
+        "nut_material_id": "fastener_steel",
+        "nut_member_material_id": "steel_member",
+        "nut_member_thickness_mm": 11.310336712427489,
+        "target_preload_n": 18631.55516869659,
+        "thread_designation": "M10x1.5",
+        "thread_friction_coefficient": 0.15
+      },
+      "evidence": [
+        {
+          "accepted_run_id": "trm_fem_34fffb87e0f7_cal_01_wsv21_rfobs1",
+          "certification_scope": "Certifies the existing governed 13 hard gates, including translational force equilibrium; does not certify rotational-moment equilibrium.",
+          "disposition": "GOVERNED_13_HARD_GATES_CERTIFIED",
+          "kind": "13_HARD_GATES_CERTIFIED",
+          "path": "simulations/staging/phase3_cp8_production_doe/TRM-PDOE-C01/solver_preparation/trm_fem_34fffb87e0f7/trm_fem_34fffb87e0f7_cal_01_wsv21_rfobs1/independent_governed_physics_certificate.json",
+          "run_directory": "simulations/staging/phase3_cp8_production_doe/TRM-PDOE-C01/solver_preparation/trm_fem_34fffb87e0f7/trm_fem_34fffb87e0f7_cal_01_wsv21_rfobs1",
+          "run_directory_status": "LOCATED",
+          "sha256": "c9cba444ddd3a8ca080d7cda1eb4bf76e0972d0ce7e5d01b714cb15e5904f5ae"
+        }
+      ],
+      "primary_evidence_path": "simulations/staging/phase3_cp8_production_doe/TRM-PDOE-C01/solver_preparation/trm_fem_34fffb87e0f7/trm_fem_34fffb87e0f7_cal_01_wsv21_rfobs1/independent_governed_physics_certificate.json",
+      "primary_run_directory": "simulations/staging/phase3_cp8_production_doe/TRM-PDOE-C01/solver_preparation/trm_fem_34fffb87e0f7/trm_fem_34fffb87e0f7_cal_01_wsv21_rfobs1",
+      "rom_admission_status": "NOT_EVALUATED"
+    },
+    {
+      "case_hash": "c74956ffff17fe376f5ebe7e48b91eb5661c914cbd327a03a62f8d40a1cc4e27",
+      "case_id": "D-INT-016",
+      "case_run_id": "trm_fem_c74956ffff17",
+      "dataset_partition": null,
+      "engineering_inputs": {
+        "bolt_material_id": "fastener_steel",
+        "configuration_sources": [
+          {
+            "kind": "GOVERNED_PREPARATION",
+            "path": "simulations/staging/phase3_cp8_production_doe/TRM-PDOE-C01/prepared_cases/trm_fem_c74956ffff17/production_doe_preparation_record.json",
+            "sha256": "cc7a1f83929453d64dd13c45f4581d2506096f94ec49bf41243159940f501b74"
+          }
+        ],
+        "configuration_status": "C01_POLICY_AND_CASE_COORDINATES_VERIFIED",
+        "external_axial_load_n": 0.0,
+        "fastener_fixed_configuration": {
+          "bolt_length_mm": 30.0,
+          "bolt_material_id": "fastener_steel",
+          "bolt_property_class": "8.8",
+          "bolt_standard": "ISO 4017:2022",
+          "handedness": "right",
+          "nut_material_id": "fastener_steel",
+          "nut_property_class": "8",
+          "nut_standard": "ISO 4032:2023",
+          "starts": 1,
+          "thread_designation": "M10x1.5"
+        },
+        "head_bearing_friction_coefficient": 0.15,
+        "head_member_material_id": "steel_member",
+        "head_member_thickness_mm": 9.21733584601063,
+        "member_clearance_hole_diameter_mm": 11.597941079235616,
+        "member_interface_friction_coefficient": 0.15,
+        "member_outer_diameter_mm": 33.58764647541369,
+        "normalized_coordinates": [
+          0.5661364758398558,
+          0.6086679230053152,
+          0.5979410792356152
+        ],
+        "nut_bearing_friction_coefficient": 0.15,
+        "nut_material_id": "fastener_steel",
+        "nut_member_material_id": "steel_member",
+        "nut_member_thickness_mm": 10.78266415398937,
+        "target_preload_n": 17830.68237919928,
+        "thread_designation": "M10x1.5",
+        "thread_friction_coefficient": 0.15
+      },
+      "evidence": [
+        {
+          "accepted_run_id": "trm_fem_c74956ffff17_cal_01_wsv21_rfobs1",
+          "certification_scope": "Certifies the existing governed 13 hard gates, including translational force equilibrium; does not certify rotational-moment equilibrium.",
+          "disposition": "GOVERNED_13_HARD_GATES_CERTIFIED",
+          "kind": "13_HARD_GATES_CERTIFIED",
+          "path": "simulations/staging/phase3_cp8_production_doe/TRM-PDOE-C01/solver_preparation/trm_fem_c74956ffff17/trm_fem_c74956ffff17_cal_01_wsv21_rfobs1/independent_governed_physics_certificate.json",
+          "run_directory": "simulations/staging/phase3_cp8_production_doe/TRM-PDOE-C01/solver_preparation/trm_fem_c74956ffff17/trm_fem_c74956ffff17_cal_01_wsv21_rfobs1",
+          "run_directory_status": "LOCATED",
+          "sha256": "e8f9b75b2ffda1fd7d2ba3362a6365cd7e366ad0c20b0408142674acb8c49b25"
+        }
+      ],
+      "primary_evidence_path": "simulations/staging/phase3_cp8_production_doe/TRM-PDOE-C01/solver_preparation/trm_fem_c74956ffff17/trm_fem_c74956ffff17_cal_01_wsv21_rfobs1/independent_governed_physics_certificate.json",
+      "primary_run_directory": "simulations/staging/phase3_cp8_production_doe/TRM-PDOE-C01/solver_preparation/trm_fem_c74956ffff17/trm_fem_c74956ffff17_cal_01_wsv21_rfobs1",
+      "rom_admission_status": "NOT_EVALUATED"
+    },
+    {
+      "case_hash": "c2386623c11def2e3dc447c885c1408408a2d136c04a5a5e53b1958de062f5da",
+      "case_id": "TRM-XFEM-M12-001",
+      "case_run_id": "trm_fem_4606556202c1",
+      "dataset_partition": null,
+      "engineering_inputs": {
+        "bolt_material_id": null,
+        "configuration_sources": [
+          {
+            "kind": "PINNED_SENTINEL_PREPARATION",
+            "path": "simulations/staging/phase3_cp11_m12_two_pitch_nut022_proof/prepared_cases/trm_fem_4606556202c1/cross_size_fem_sentinel_preparation_record.json",
+            "sha256": "eea304f92752f3ec54da14531221d59226ae0bffd231974960004c7e667cc6d9"
+          }
+        ],
+        "configuration_status": "CROSS_SIZE_FULL_INPUTS_UNRESOLVED",
+        "external_axial_load_n": null,
+        "fastener_fixed_configuration": null,
+        "head_bearing_friction_coefficient": null,
+        "head_member_material_id": null,
+        "head_member_thickness_mm": null,
+        "member_clearance_hole_diameter_mm": null,
+        "member_interface_friction_coefficient": null,
+        "member_outer_diameter_mm": null,
+        "normalized_coordinates": null,
+        "nut_bearing_friction_coefficient": null,
+        "nut_material_id": null,
+        "nut_member_material_id": null,
+        "nut_member_thickness_mm": null,
+        "target_preload_n": 29062.639806666983,
+        "thread_designation": "M12x1.75",
+        "thread_friction_coefficient": null
+      },
+      "evidence": [
+        {
+          "accepted_run_id": "trm_fem_4606556202c1_cal_02",
+          "certification_scope": "Cross-size FEM physics certified under its recorded policy; full-system external-support-equilibrium acceptance is not claimed by the sentinel governance.",
+          "disposition": "CROSS_SIZE_FEM_PHYSICS_CERTIFIED",
+          "kind": "CROSS_SIZE_PHYSICS_CERTIFIED",
+          "path": "simulations/staging/phase3_cp11_cross_size_fem_campaign/physics_certification/TRM-XFEM-M12-001/cross_size_fem_physics_certificate.json",
+          "run_directory": null,
+          "run_directory_status": "NOT_VERIFIED",
+          "sha256": "77ed89b200c1b8a98558afe804e2cf80af884273ab34735156be8db8a2a1f608"
+        }
+      ],
+      "primary_evidence_path": "simulations/staging/phase3_cp11_cross_size_fem_campaign/physics_certification/TRM-XFEM-M12-001/cross_size_fem_physics_certificate.json",
+      "primary_run_directory": null,
+      "rom_admission_status": "NOT_EVALUATED"
+    },
+    {
+      "case_hash": "e1628981295e3fc47ecf623e5743362c8e048c01c7cb7a5def44a75a40b9e27c",
+      "case_id": "TRM-XFEM-M8-001",
+      "case_run_id": "trm_fem_771a201b2752",
+      "dataset_partition": null,
+      "engineering_inputs": {
+        "bolt_material_id": null,
+        "configuration_sources": [
+          {
+            "kind": "PINNED_SENTINEL_PREPARATION",
+            "path": "simulations/staging/phase3_cp11_m8_two_pitch_nut022_final/prepared_cases/trm_fem_771a201b2752/cross_size_fem_sentinel_preparation_record.json",
+            "sha256": "8d5107b5e9ef7aa7fd437a351cf71e80abce5c38dfe45f92e5fb2b90b287056b"
+          }
+        ],
+        "configuration_status": "CROSS_SIZE_FULL_INPUTS_UNRESOLVED",
+        "external_axial_load_n": null,
+        "fastener_fixed_configuration": null,
+        "head_bearing_friction_coefficient": null,
+        "head_member_material_id": null,
+        "head_member_thickness_mm": null,
+        "member_clearance_hole_diameter_mm": null,
+        "member_interface_friction_coefficient": null,
+        "member_outer_diameter_mm": null,
+        "normalized_coordinates": null,
+        "nut_bearing_friction_coefficient": null,
+        "nut_material_id": null,
+        "nut_member_material_id": null,
+        "nut_member_thickness_mm": null,
+        "target_preload_n": 12625.90024059998,
+        "thread_designation": "M8x1.25",
+        "thread_friction_coefficient": null
+      },
+      "evidence": [
+        {
+          "accepted_run_id": "trm_fem_771a201b2752_cal_02",
+          "certification_scope": "Cross-size FEM physics certified under its recorded policy; full-system external-support-equilibrium acceptance is not claimed by the sentinel governance.",
+          "disposition": "CROSS_SIZE_FEM_PHYSICS_CERTIFIED",
+          "kind": "CROSS_SIZE_PHYSICS_CERTIFIED",
+          "path": "simulations/staging/phase3_cp11_cross_size_fem_campaign/physics_certification/TRM-XFEM-M8-001/cross_size_fem_physics_certificate.json",
+          "run_directory": null,
+          "run_directory_status": "NOT_VERIFIED",
+          "sha256": "f65050dcb36ded51fdb575ec6858a9131f71cf31c0ff5f30c350be931de68324"
+        }
+      ],
+      "primary_evidence_path": "simulations/staging/phase3_cp11_cross_size_fem_campaign/physics_certification/TRM-XFEM-M8-001/cross_size_fem_physics_certificate.json",
+      "primary_run_directory": null,
+      "rom_admission_status": "NOT_EVALUATED"
+    }
+  ],
+  "distinct_case_count": 22,
+  "governing_c01_policy_path": "config/phase3_production_doe.toml",
+  "governing_c01_policy_sha256": "43032557cb2abead0118362bcfc6a9b2e5246a7d363ca83eef5fcf35054befc1",
+  "meaning": "Persistent acceptance-evidence registry; not a ROM dataset-admission or dataset-freeze certificate.",
+  "schema_version": 1
+}
