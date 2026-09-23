@@ -62,3 +62,68 @@ simulation knowledge object.
 
 Research and engineering implementation in progress. ThreadROM is not currently
 intended for certified design, production approval or safety-critical use.
+
+<!-- THREADROM_DOCUMENTATION_ENTRY_POINT_V1 -->
+
+## Documentation and current project status
+
+**Start here:** [Current State](docs/CURRENT_STATE.md) is the
+short project handover. Read it first when returning to ThreadROM or
+starting a new development conversation. It records the last verified
+checkpoint, the outstanding work and the next governed action.
+
+**Checkpoint recorded on 2026-09-23:** Six of six bounded Phase-3
+factory-qualification gates were closed; the full repository regression
+reported 1,157 passing tests. The governed DOE still requires
+case-level evidence disposition, any genuinely necessary additional
+FEM work and a certified dataset freeze. The first ROM belongs to
+Phase 4.
+
+That checkpoint is historical: verify the current Git state, active
+jobs and authoritative case evidence before acting. Factory software
+qualification does not imply universal metric-fastener FEM validation,
+complete DOE physics certification or a ROM-ready dataset.
+
+### Choose the right reference
+
+| When you need to? | Read |
+|---|---|
+| Resume work and identify the exact next action | [Current State](docs/CURRENT_STATE.md) |
+| Operate, monitor or recover the FEM factory safely | [Operating Runbook](docs/OPERATING_RUNBOOK.md) |
+| Understand trial evidence, acceptance and ROM dataset admission | [Evidence and Dataset Guide](docs/EVIDENCE_AND_DATASET_GUIDE.md) |
+| Understand subsystems, responsibilities and interface boundaries | [Architecture and Interfaces](docs/ARCHITECTURE_AND_INTERFACES.md) |
+| Understand why important engineering choices were made | [Engineering Decisions](docs/DECISIONS.md) |
+| Review detailed Phase-3 qualification, limitations and ROM roadmap | [Phase-3 Factory and ROM Roadmap](docs/THREADROM_PHASE3_FACTORY_AND_ROM_ROADMAP.md) |
+| Find source files, public symbols, imports and relevant tests | [Repository Atlas](docs/THREADROM_REPOSITORY_ATLAS.md) |
+
+The Repository Atlas is generated from the selected repository file
+inventory. Regenerate it after adding or reorganizing source files,
+tests or documentation; do not manually maintain its generated tables.
+
+### Safe starting checks
+
+From the repository root, inspect the actual working tree:
+
+```powershell
+Set-Location D:\ThreadROM
+git branch --show-current
+git rev-parse HEAD
+git status --short
+git diff --check
+```
+
+Verify whether an FEM job is already active before performing any
+solver-related operation. No new solver launch is authorized by this
+README or by the six-gate factory checkpoint.
+
+To verify that the Repository Atlas matches the current selected
+repository inventory:
+
+```powershell
+Set-Location D:\ThreadROM
+.\.venv\Scripts\python.exe .\scripts\generate_threadrom_repository_atlas.py --check
+```
+
+**Working principle:** Locate and verify existing engineering evidence
+before preparing or launching anything new. Keep execution, physics
+acceptance, dataset admission and ROM validation separate.
