@@ -30,8 +30,8 @@
 | `D-INT-014` | M10x1.5 | 13_HARD_GATES_CERTIFIED | 15.7475 | C01_POLICY_AND_CASE_COORDINATES_VERIFIED | [Acceptance record](../../simulations/staging/phase3_cp8_production_doe/TRM-PDOE-C01/solver_preparation/trm_fem_941ce23d715c/trm_fem_941ce23d715c_cal_01_wsv21_rfobs1/independent_governed_physics_certificate.json) |
 | `D-INT-015` | M10x1.5 | 13_HARD_GATES_CERTIFIED | 18.6316 | C01_POLICY_AND_CASE_COORDINATES_VERIFIED | [Acceptance record](../../simulations/staging/phase3_cp8_production_doe/TRM-PDOE-C01/solver_preparation/trm_fem_34fffb87e0f7/trm_fem_34fffb87e0f7_cal_01_wsv21_rfobs1/independent_governed_physics_certificate.json) |
 | `D-INT-016` | M10x1.5 | 13_HARD_GATES_CERTIFIED | 17.8307 | C01_POLICY_AND_CASE_COORDINATES_VERIFIED | [Acceptance record](../../simulations/staging/phase3_cp8_production_doe/TRM-PDOE-C01/solver_preparation/trm_fem_c74956ffff17/trm_fem_c74956ffff17_cal_01_wsv21_rfobs1/independent_governed_physics_certificate.json) |
-| `TRM-XFEM-M12-001` | M12x1.75 | CROSS_SIZE_PHYSICS_CERTIFIED | 29.0626 | CROSS_SIZE_FULL_INPUTS_UNRESOLVED | [Acceptance record](../../simulations/staging/phase3_cp11_cross_size_fem_campaign/physics_certification/TRM-XFEM-M12-001/cross_size_fem_physics_certificate.json) |
-| `TRM-XFEM-M8-001` | M8x1.25 | CROSS_SIZE_PHYSICS_CERTIFIED | 12.6259 | CROSS_SIZE_FULL_INPUTS_UNRESOLVED | [Acceptance record](../../simulations/staging/phase3_cp11_cross_size_fem_campaign/physics_certification/TRM-XFEM-M8-001/cross_size_fem_physics_certificate.json) |
+| `TRM-XFEM-M12-001` | M12x1.75 | CROSS_SIZE_PHYSICS_CERTIFIED | 29.0626 | CROSS_SIZE_CANONICAL_CASE_HASH_VERIFIED | [Acceptance record](../../simulations/staging/phase3_cp11_cross_size_fem_campaign/physics_certification/TRM-XFEM-M12-001/cross_size_fem_physics_certificate.json) |
+| `TRM-XFEM-M8-001` | M8x1.25 | CROSS_SIZE_PHYSICS_CERTIFIED | 12.6259 | CROSS_SIZE_CANONICAL_CASE_HASH_VERIFIED | [Acceptance record](../../simulations/staging/phase3_cp11_cross_size_fem_campaign/physics_certification/TRM-XFEM-M8-001/cross_size_fem_physics_certificate.json) |
 
 ## How to navigate a case
 
@@ -42,7 +42,7 @@ The CSV contains one row per **distinct case identity**, not one row per calibra
 ## Boundaries
 
 - The 15 C01 calibration-accepted results, five independently 13-hard-gate-certified results and two cross-size certificates retain their **different documented acceptance scopes**.
-- M8/M12 material, member geometry, friction and external-load fields remain unresolved until their source-pinned canonical inputs are recovered.
+- The baseline M8/M12 configurations were reconstructed from their governed case builder and verified against historical canonical case hashes. Future campaigns require their own governed configuration resolvers.
 - `rom_admission_status = NOT_EVALUATED` is deliberate. ROM target extraction, sufficiency, admission and dataset freeze are separate governed checkpoints.
 - Trial-1 attempts and rejected results are not counted as additional accepted case identities. Their provenance remains in the original acceptance records.
 

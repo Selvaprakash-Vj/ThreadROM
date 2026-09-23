@@ -1271,31 +1271,99 @@
       "case_run_id": "trm_fem_4606556202c1",
       "dataset_partition": null,
       "engineering_inputs": {
-        "bolt_material_id": null,
+        "bolt_material_id": "fastener_steel",
         "configuration_sources": [
           {
             "kind": "PINNED_SENTINEL_PREPARATION",
             "path": "simulations/staging/phase3_cp11_m12_two_pitch_nut022_proof/prepared_cases/trm_fem_4606556202c1/cross_size_fem_sentinel_preparation_record.json",
             "sha256": "eea304f92752f3ec54da14531221d59226ae0bffd231974960004c7e667cc6d9"
+          },
+          {
+            "case_sha256": "c2386623c11def2e3dc447c885c1408408a2d136c04a5a5e53b1958de062f5da",
+            "kind": "HISTORICAL_CANONICAL_CASE_HASH_PARITY",
+            "path": "src/threadrom/factory/cross_size_fem_sentinel.py",
+            "recovery_source_commit": "993272112af8c828ad8a7f50037e87e7bbe8ebe5"
           }
         ],
-        "configuration_status": "CROSS_SIZE_FULL_INPUTS_UNRESOLVED",
-        "external_axial_load_n": null,
-        "fastener_fixed_configuration": null,
-        "head_bearing_friction_coefficient": null,
-        "head_member_material_id": null,
-        "head_member_thickness_mm": null,
-        "member_clearance_hole_diameter_mm": null,
-        "member_interface_friction_coefficient": null,
-        "member_outer_diameter_mm": null,
+        "configuration_status": "CROSS_SIZE_CANONICAL_CASE_HASH_VERIFIED",
+        "external_axial_load_n": 0.0,
+        "fastener_fixed_configuration": {
+          "bolt_length_mm": 40.0,
+          "bolt_material_id": "fastener_steel",
+          "bolt_property_class": "8.8",
+          "bolt_standard": "ISO 4017:2022",
+          "handedness": "right",
+          "nut_material_id": "fastener_steel",
+          "nut_property_class": "8",
+          "nut_standard": "ISO 4032:2023",
+          "starts": 1,
+          "thread_designation": "M12x1.75"
+        },
+        "head_bearing_friction_coefficient": 0.15,
+        "head_member_material_id": "steel_member",
+        "head_member_thickness_mm": 12.0,
+        "member_clearance_hole_diameter_mm": 13.2,
+        "member_interface_friction_coefficient": 0.15,
+        "member_outer_diameter_mm": 36.0,
         "normalized_coordinates": null,
-        "nut_bearing_friction_coefficient": null,
-        "nut_material_id": null,
-        "nut_member_material_id": null,
-        "nut_member_thickness_mm": null,
+        "nut_bearing_friction_coefficient": 0.15,
+        "nut_material_id": "fastener_steel",
+        "nut_member_material_id": "steel_member",
+        "nut_member_thickness_mm": 12.0,
+        "resolved_product_case": {
+          "analysis": {
+            "calculation_mode": "auto",
+            "fidelity": "production"
+          },
+          "fastener": {
+            "bolt_length_mm": 40.0,
+            "bolt_material_id": "fastener_steel",
+            "bolt_property_class": "8.8",
+            "bolt_standard": "ISO 4017:2022",
+            "handedness": "right",
+            "nut_material_id": "fastener_steel",
+            "nut_property_class": "8",
+            "nut_standard": "ISO 4032:2023",
+            "starts": 1,
+            "thread_designation": "M12x1.75"
+          },
+          "interfaces": {
+            "head_bearing_friction_coefficient": 0.15,
+            "member_interface_friction_coefficient": 0.15,
+            "nut_bearing_friction_coefficient": 0.15,
+            "thread_friction_coefficient": 0.15
+          },
+          "loading": {
+            "external_axial_load_n": 0.0,
+            "target_preload_n": 29062.639806666983
+          },
+          "members": {
+            "layers": [
+              {
+                "clearance_hole_diameter_mm": 13.2,
+                "layer_id": "head_side_member",
+                "material_id": "steel_member",
+                "outer_diameter_mm": 36.0,
+                "thickness_mm": 12.0
+              },
+              {
+                "clearance_hole_diameter_mm": 13.2,
+                "layer_id": "nut_side_member",
+                "material_id": "steel_member",
+                "outer_diameter_mm": 36.0,
+                "thickness_mm": 12.0
+              }
+            ]
+          },
+          "metadata": {
+            "name": "",
+            "notes": "Cross-size FEM certification sentinel TRM-XFEM-M12-001; certification-only, not Production DOE."
+          },
+          "schema_version": 1
+        },
         "target_preload_n": 29062.639806666983,
         "thread_designation": "M12x1.75",
-        "thread_friction_coefficient": null
+        "thread_friction_coefficient": 0.15
       },
       "evidence": [
         {
@@ -1319,31 +1387,99 @@
       "case_run_id": "trm_fem_771a201b2752",
       "dataset_partition": null,
       "engineering_inputs": {
-        "bolt_material_id": null,
+        "bolt_material_id": "fastener_steel",
         "configuration_sources": [
           {
             "kind": "PINNED_SENTINEL_PREPARATION",
             "path": "simulations/staging/phase3_cp11_m8_two_pitch_nut022_final/prepared_cases/trm_fem_771a201b2752/cross_size_fem_sentinel_preparation_record.json",
             "sha256": "8d5107b5e9ef7aa7fd437a351cf71e80abce5c38dfe45f92e5fb2b90b287056b"
+          },
+          {
+            "case_sha256": "e1628981295e3fc47ecf623e5743362c8e048c01c7cb7a5def44a75a40b9e27c",
+            "kind": "HISTORICAL_CANONICAL_CASE_HASH_PARITY",
+            "path": "src/threadrom/factory/cross_size_fem_sentinel.py",
+            "recovery_source_commit": "993272112af8c828ad8a7f50037e87e7bbe8ebe5"
           }
         ],
-        "configuration_status": "CROSS_SIZE_FULL_INPUTS_UNRESOLVED",
-        "external_axial_load_n": null,
-        "fastener_fixed_configuration": null,
-        "head_bearing_friction_coefficient": null,
-        "head_member_material_id": null,
-        "head_member_thickness_mm": null,
-        "member_clearance_hole_diameter_mm": null,
-        "member_interface_friction_coefficient": null,
-        "member_outer_diameter_mm": null,
+        "configuration_status": "CROSS_SIZE_CANONICAL_CASE_HASH_VERIFIED",
+        "external_axial_load_n": 0.0,
+        "fastener_fixed_configuration": {
+          "bolt_length_mm": 30.0,
+          "bolt_material_id": "fastener_steel",
+          "bolt_property_class": "8.8",
+          "bolt_standard": "ISO 4017:2022",
+          "handedness": "right",
+          "nut_material_id": "fastener_steel",
+          "nut_property_class": "8",
+          "nut_standard": "ISO 4032:2023",
+          "starts": 1,
+          "thread_designation": "M8x1.25"
+        },
+        "head_bearing_friction_coefficient": 0.15,
+        "head_member_material_id": "steel_member",
+        "head_member_thickness_mm": 8.0,
+        "member_clearance_hole_diameter_mm": 8.8,
+        "member_interface_friction_coefficient": 0.15,
+        "member_outer_diameter_mm": 24.0,
         "normalized_coordinates": null,
-        "nut_bearing_friction_coefficient": null,
-        "nut_material_id": null,
-        "nut_member_material_id": null,
-        "nut_member_thickness_mm": null,
+        "nut_bearing_friction_coefficient": 0.15,
+        "nut_material_id": "fastener_steel",
+        "nut_member_material_id": "steel_member",
+        "nut_member_thickness_mm": 8.0,
+        "resolved_product_case": {
+          "analysis": {
+            "calculation_mode": "auto",
+            "fidelity": "production"
+          },
+          "fastener": {
+            "bolt_length_mm": 30.0,
+            "bolt_material_id": "fastener_steel",
+            "bolt_property_class": "8.8",
+            "bolt_standard": "ISO 4017:2022",
+            "handedness": "right",
+            "nut_material_id": "fastener_steel",
+            "nut_property_class": "8",
+            "nut_standard": "ISO 4032:2023",
+            "starts": 1,
+            "thread_designation": "M8x1.25"
+          },
+          "interfaces": {
+            "head_bearing_friction_coefficient": 0.15,
+            "member_interface_friction_coefficient": 0.15,
+            "nut_bearing_friction_coefficient": 0.15,
+            "thread_friction_coefficient": 0.15
+          },
+          "loading": {
+            "external_axial_load_n": 0.0,
+            "target_preload_n": 12625.90024059998
+          },
+          "members": {
+            "layers": [
+              {
+                "clearance_hole_diameter_mm": 8.8,
+                "layer_id": "head_side_member",
+                "material_id": "steel_member",
+                "outer_diameter_mm": 24.0,
+                "thickness_mm": 8.0
+              },
+              {
+                "clearance_hole_diameter_mm": 8.8,
+                "layer_id": "nut_side_member",
+                "material_id": "steel_member",
+                "outer_diameter_mm": 24.0,
+                "thickness_mm": 8.0
+              }
+            ]
+          },
+          "metadata": {
+            "name": "",
+            "notes": "Cross-size FEM certification sentinel TRM-XFEM-M8-001; certification-only, not Production DOE."
+          },
+          "schema_version": 1
+        },
         "target_preload_n": 12625.90024059998,
         "thread_designation": "M8x1.25",
-        "thread_friction_coefficient": null
+        "thread_friction_coefficient": 0.15
       },
       "evidence": [
         {

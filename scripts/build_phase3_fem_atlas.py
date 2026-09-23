@@ -1,4 +1,4 @@
-﻿"""ThreadROM Phase-3 accepted-FEM atlas.
+"""ThreadROM Phase-3 accepted-FEM atlas.
 
 Evidence registry, not a ROM dataset-admission certificate.
 Reads small governed acceptance records; never launches a solver.
@@ -509,7 +509,14 @@ def c01_inputs(group, policy, policy_sha, boundary_points):
 
 
 def sentinel_inputs(group):
-    record = group["source_records"][0]["record"]
+    """Recover a historical sentinel only after canonical hash parity."""
+    from dataclasses import asdict
+
+    from threadrom.case.serialization import case_sha256
+    from threadrom.factory.cross_size_fem_sentinel import (
+        build_phase3_cross_size_fem_sentinels,
+    )
+
     case_id = group["case_id"]
 
     if case_id not in {
@@ -518,45 +525,137 @@ def sentinel_inputs(group):
     }:
         fail(f"Unexpected baseline sentinel identity: {case_id}")
 
+    if len(group["source_records"]) != 1:
+        fail(f"{case_id}: unexpected historical evidence count.")
+
+    record = group["source_records"][0]["record"]
     reference = record.get("preparation_record")
+
     if not isinstance(reference, dict):
         fail(f"{case_id}: preparation reference missing.")
 
     path = safe_path(reference.get("path"))
-    preparation, actual_sha = read_json(path)
+    preparation, preparation_sha = read_json(path)
 
     if (
-        actual_sha != reference.get("sha256")
+        preparation_sha != reference.get("sha256")
         or preparation.get("case_hash") != group["case_hash"]
         or preparation.get("thread_designation")
         != record.get("thread_designation")
     ):
-        fail(f"{case_id}: pinned preparation mismatch.")
+        fail(f"{case_id}: pinned historical preparation mismatch.")
+
+    sentinels = {
+        sentinel.definition.sentinel_id: sentinel
+        for sentinel in build_phase3_cross_size_fem_sentinels()
+    }
+
+    if set(sentinels) != {
+        "TRM-XFEM-M8-001",
+        "TRM-XFEM-M12-001",
+    }:
+        fail("Cross-size builder returned unexpected sentinel identities.")
+
+    sentinel = sentinels[case_id]
+    reconstructed_hash = case_sha256(sentinel.case)
+
+    if (
+        reconstructed_hash != group["case_hash"]
+        or reconstructed_hash != record.get("case_hash")
+    ):
+        fail(
+            f"{case_id}: canonical case hash differs from historical FEM. "
+            "Existing atlas configuration must remain unchanged."
+        )
+
+    if (
+        sentinel.definition.thread_designation
+        != record.get("thread_designation")
+        or abs(
+            sentinel.target_preload_n
+            - float(record["target_preload_n"])
+        ) > 1e-8
+    ):
+        fail(f"{case_id}: historical designation/preload mismatch.")
+
+    product_case = json.loads(
+        json.dumps(asdict(sentinel.case), sort_keys=True)
+    )
+    fastener = product_case["fastener"]
+    members = product_case["members"]["layers"]
+    interfaces = product_case["interfaces"]
+    loading = product_case["loading"]
+
+    if (
+        len(members) != 2
+        or members[0]["layer_id"] != "head_side_member"
+        or members[1]["layer_id"] != "nut_side_member"
+    ):
+        fail(f"{case_id}: unexpected member-stack structure.")
+
+    upper, lower = members
+
+    if (
+        fastener["bolt_material_id"] != fastener["nut_material_id"]
+        or upper["material_id"] != lower["material_id"]
+    ):
+        fail(f"{case_id}: paired-material rule is not satisfied.")
+
+    for field in (
+        "outer_diameter_mm",
+        "clearance_hole_diameter_mm",
+    ):
+        if upper[field] != lower[field]:
+            fail(f"{case_id}: shared member geometry differs for {field}.")
+
+    if abs(
+        float(loading["target_preload_n"])
+        - sentinel.target_preload_n
+    ) > 1e-8:
+        fail(f"{case_id}: case loading/preload mismatch.")
 
     return {
-        "thread_designation": record["thread_designation"],
-        "target_preload_n": record["target_preload_n"],
-        "head_member_thickness_mm": None,
-        "nut_member_thickness_mm": None,
-        "member_outer_diameter_mm": None,
-        "member_clearance_hole_diameter_mm": None,
-        "bolt_material_id": None,
-        "nut_material_id": None,
-        "head_member_material_id": None,
-        "nut_member_material_id": None,
-        "thread_friction_coefficient": None,
-        "head_bearing_friction_coefficient": None,
-        "nut_bearing_friction_coefficient": None,
-        "member_interface_friction_coefficient": None,
-        "external_axial_load_n": None,
+        "thread_designation": fastener["thread_designation"],
+        "target_preload_n": sentinel.target_preload_n,
+        "head_member_thickness_mm": upper["thickness_mm"],
+        "nut_member_thickness_mm": lower["thickness_mm"],
+        "member_outer_diameter_mm": upper["outer_diameter_mm"],
+        "member_clearance_hole_diameter_mm":
+            upper["clearance_hole_diameter_mm"],
+        "bolt_material_id": fastener["bolt_material_id"],
+        "nut_material_id": fastener["nut_material_id"],
+        "head_member_material_id": upper["material_id"],
+        "nut_member_material_id": lower["material_id"],
+        "thread_friction_coefficient":
+            interfaces["thread_friction_coefficient"],
+        "head_bearing_friction_coefficient":
+            interfaces["head_bearing_friction_coefficient"],
+        "nut_bearing_friction_coefficient":
+            interfaces["nut_bearing_friction_coefficient"],
+        "member_interface_friction_coefficient":
+            interfaces["member_interface_friction_coefficient"],
+        "external_axial_load_n":
+            loading["external_axial_load_n"],
         "normalized_coordinates": None,
-        "configuration_status": "CROSS_SIZE_FULL_INPUTS_UNRESOLVED",
-        "configuration_sources": [{
-            "kind": "PINNED_SENTINEL_PREPARATION",
-            "path": relative_path(path),
-            "sha256": actual_sha,
-        }],
-        "fastener_fixed_configuration": None,
+        "configuration_status":
+            "CROSS_SIZE_CANONICAL_CASE_HASH_VERIFIED",
+        "configuration_sources": [
+            {
+                "kind": "PINNED_SENTINEL_PREPARATION",
+                "path": relative_path(path),
+                "sha256": preparation_sha,
+            },
+            {
+                "kind": "HISTORICAL_CANONICAL_CASE_HASH_PARITY",
+                "path":
+                    "src/threadrom/factory/cross_size_fem_sentinel.py",
+                "case_sha256": reconstructed_hash,
+                "recovery_source_commit":
+                    "993272112af8c828ad8a7f50037e87e7bbe8ebe5",
+            },
+        ],
+        "fastener_fixed_configuration": fastener,
+        "resolved_product_case": product_case,
     }
 
 
@@ -700,7 +799,7 @@ def assemble_cases(source_paths, policy, policy_sha, boundary_points):
     return cases
 
 
-def check_prior_atlas(cases, previous):
+def check_prior_atlas(cases, previous, *, allow_cross_size_upgrade=False):
     if previous is None:
         return [], []
 
@@ -732,10 +831,57 @@ def check_prior_atlas(cases, previous):
             fail(f"Existing case identity changed: {case_id}")
 
         if old["engineering_inputs"] != new["engineering_inputs"]:
-            fail(
-                f"Existing case configuration changed: {case_id}. "
-                "A governed atlas migration is required."
+            old_inputs = old["engineering_inputs"]
+            new_inputs = new["engineering_inputs"]
+
+            allowed = (
+                allow_cross_size_upgrade
+                and case_id in {
+                    "TRM-XFEM-M8-001",
+                    "TRM-XFEM-M12-001",
+                }
+                and old_inputs.get("configuration_status")
+                == "CROSS_SIZE_FULL_INPUTS_UNRESOLVED"
+                and new_inputs.get("configuration_status")
+                == "CROSS_SIZE_CANONICAL_CASE_HASH_VERIFIED"
+                and old.get("rom_admission_status")
+                == new.get("rom_admission_status")
+                == "NOT_EVALUATED"
+                and old.get("dataset_partition")
+                == new.get("dataset_partition")
             )
+
+            if allowed:
+                for key, old_value in old_inputs.items():
+                    if key in {
+                        "configuration_status",
+                        "configuration_sources",
+                    }:
+                        continue
+                    if (
+                        old_value is not None
+                        and new_inputs.get(key) != old_value
+                    ):
+                        allowed = False
+                        break
+
+                if allowed:
+                    old_sources = old_inputs.get(
+                        "configuration_sources", []
+                    )
+                    new_sources = new_inputs.get(
+                        "configuration_sources", []
+                    )
+                    allowed = all(
+                        source in new_sources
+                        for source in old_sources
+                    )
+
+            if not allowed:
+                fail(
+                    f"Existing case configuration changed: {case_id}. "
+                    "A governed atlas migration is required."
+                )
 
         old_sources = {
             source["path"]: source["sha256"]
@@ -891,9 +1037,10 @@ def markdown_content(cases, policy_sha):
         "- The 15 C01 calibration-accepted results, five independently "
         "13-hard-gate-certified results and two cross-size certificates "
         "retain their **different documented acceptance scopes**.",
-        "- M8/M12 material, member geometry, friction and external-load "
-        "fields remain unresolved until their source-pinned canonical "
-        "inputs are recovered.",
+        "- The baseline M8/M12 configurations were reconstructed from "
+        "their governed case builder and verified against historical "
+        "canonical case hashes. Future campaigns require their own "
+        "governed configuration resolvers.",
         "- `rom_admission_status = NOT_EVALUATED` is deliberate. "
         "ROM target extraction, sufficiency, admission and dataset "
         "freeze are separate governed checkpoints.",
@@ -966,6 +1113,14 @@ def main():
         help="Register an additional final accepted evidence record.",
     )
     parser.add_argument(
+        "--promote-cross-size-inputs",
+        action="store_true",
+        help=(
+            "Explicitly promote only the two baseline M8/M12 cases "
+            "after historical canonical case-hash parity verification."
+        ),
+    )
+    parser.add_argument(
         "--audit",
         action="store_true",
         help="List supported acceptance filenames not yet registered.",
@@ -1009,7 +1164,11 @@ def main():
         return
 
     cases = assemble_cases(sources, policy, policy_sha, boundaries)
-    added_cases, added_evidence = check_prior_atlas(cases, previous)
+    added_cases, added_evidence = check_prior_atlas(
+        cases,
+        previous,
+        allow_cross_size_upgrade=args.promote_cross_size_inputs,
+    )
 
     atlas = {
         "schema_version": 1,
@@ -1053,11 +1212,15 @@ def main():
     for path in added_evidence:
         print("  NEW EVIDENCE:", path)
 
+    verified_statuses = {
+        "C01_POLICY_AND_CASE_COORDINATES_VERIFIED",
+        "CROSS_SIZE_CANONICAL_CASE_HASH_VERIFIED",
+    }
     unresolved = [
         case["case_id"]
         for case in cases
         if case["engineering_inputs"]["configuration_status"]
-        != "C01_POLICY_AND_CASE_COORDINATES_VERIFIED"
+        not in verified_statuses
     ]
 
     print("Cases awaiting full input-coordinate resolution:", len(unresolved))
