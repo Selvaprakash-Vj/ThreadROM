@@ -18,6 +18,12 @@ from threadrom.factory.fem_case_mesh import (
 from threadrom.factory.fem_case_preparation import (
     derive_fem_case_preparation,
 )
+from threadrom.factory.governed_fem_physical_preparation import (
+    prepare_governed_fem_geometry_mesh,
+)
+from threadrom.factory.governed_fem_preparation_scope import (
+    verify_governed_preparation_scope,
+)
 from threadrom.factory.production_doe import (
     build_phase3_production_doe,
     load_phase3_production_doe_policy,
@@ -252,47 +258,37 @@ def main() -> None:
     # GOVERNANCE INTEGRITY
     # --------------------------------------------------
 
-    doe_policy_hash = require_sha256(
-        DOE_POLICY_PATH,
-        EXPECTED_DOE_POLICY_SHA256,
-        "Production DOE policy",
+    preparation_scope = verify_governed_preparation_scope(
+        repo_root=ROOT,
+        campaign_root=CAMPAIGN_ROOT,
+        artifact_root=ARTIFACT_ROOT,
+        policy_path=DOE_POLICY_PATH,
+        manifest_path=CAMPAIGN_MANIFEST_PATH,
+        expected_policy_sha256=EXPECTED_DOE_POLICY_SHA256,
+        expected_manifest_sha256=EXPECTED_CAMPAIGN_SHA256,
+        anchor_binding_path=ANCHOR_BINDING_PATH,
+        expected_anchor_binding_sha256=(
+            EXPECTED_ANCHOR_BINDING_SHA256
+        ),
     )
 
-    campaign_hash = require_sha256(
-        CAMPAIGN_MANIFEST_PATH,
-        EXPECTED_CAMPAIGN_SHA256,
-        "Production DOE campaign manifest",
+    doe_policy_hash = preparation_scope.policy_sha256
+    campaign_hash = preparation_scope.campaign_manifest_sha256
+    anchor_binding_hash = preparation_scope.anchor_binding_sha256
+
+    from threadrom.factory.governed_fem_campaign_context import (
+        resolve_governed_fem_campaign_context,
     )
 
-    anchor_binding_hash = require_sha256(
-        ANCHOR_BINDING_PATH,
-        EXPECTED_ANCHOR_BINDING_SHA256,
-        "Existing-anchor binding record",
+    governed_context = resolve_governed_fem_campaign_context(
+        verified_scope=preparation_scope,
+        requested_case_id=arguments.case_id,
     )
 
-    policy = load_phase3_production_doe_policy(
-        DOE_POLICY_PATH
-    )
-
-    campaign = build_phase3_production_doe(
-        policy
-    )
-
-    # IMPORTANT:
-    # Search design_cases only. Holdouts remain sealed.
-    try:
-        doe_case = next(
-            item
-            for item in campaign.design_cases
-            if item.case_id == arguments.case_id
-        )
-    except StopIteration as exc:
-        raise RuntimeError(
-            "Requested case is not an authorized "
-            "Production DOE design case. Holdout cases "
-            "are intentionally inaccessible here: "
-            f"{arguments.case_id}"
-        ) from exc
+    policy = governed_context.policy
+    campaign = governed_context.campaign
+    governed_case = governed_context.governed_case
+    doe_case = governed_context.production_case
 
     if doe_case.source_case_id is not None:
         raise RuntimeError(
@@ -474,116 +470,33 @@ def main() -> None:
     # CASE GEOMETRY
     # --------------------------------------------------
 
-    geometry_artifact = (
-        build_fem_case_geometry(
-            resolved,
-            artifact_root=ARTIFACT_ROOT,
-            validation_policy=(
-                validation_policy
-            ),
-        )
+    physical_artifacts = prepare_governed_fem_geometry_mesh(
+        resolved_case=resolved,
+        expected_case_hash=doe_case.case_hash,
+        expected_run_id=preparation.identity.run_id,
+        expected_mesh_policy_name=doe_case.mesh_policy_name,
+        artifact_root=ARTIFACT_ROOT,
+        validation_policy=validation_policy,
+        mesh_template=mesh_template,
+        joint_classification_template=joint_classification_template,
+        bolt_classification_template=bolt_classification_template,
+        nut_classification_template=nut_classification_template,
+        bolt_mesh_level_policy=bolt_mesh_level_policy,
+        nut_mesh_level_policy=nut_mesh_level_policy,
+        local_refinement_policy=local_refinement_policy,
     )
 
-    if (
-        geometry_artifact.case_hash
-        != doe_case.case_hash
-    ):
-        raise RuntimeError(
-            "Geometry artifact case hash mismatch."
-        )
+    geometry_artifact = physical_artifacts.geometry_artifact
+    mesh_artifact = physical_artifacts.mesh_artifact
+    step_path = physical_artifacts.step_path
+    msh_path = physical_artifacts.msh_path
 
-    if (
-        geometry_artifact.run_id
-        != preparation.identity.run_id
-    ):
-        raise RuntimeError(
-            "Geometry artifact run ID mismatch."
-        )
-
-    step_path = geometry_artifact.step_path
-
-    if (
-        not step_path.is_file()
-        or step_path.stat().st_size <= 0
-    ):
-        raise RuntimeError(
-            "Validated STEP artifact was not produced."
-        )
-
-    # --------------------------------------------------
-    # GOVERNED GROUPED MESH
-    # --------------------------------------------------
-
-    mesh_artifact = (
-        generate_fem_case_grouped_mesh(
-            resolved,
-            geometry_artifact.geometry,
-            step_path=step_path,
-            artifact_root=ARTIFACT_ROOT,
-            mesh_template=mesh_template,
-            joint_classification_template=(
-                joint_classification_template
-            ),
-            bolt_classification_template=(
-                bolt_classification_template
-            ),
-            nut_classification_template=(
-                nut_classification_template
-            ),
-            bolt_mesh_level_policy=(
-                bolt_mesh_level_policy
-            ),
-            nut_mesh_level_policy=(
-                nut_mesh_level_policy
-            ),
-            local_refinement_policy=(
-                local_refinement_policy
-            ),
-        )
-    )
-
-    if (
-        mesh_artifact.case_hash
-        != doe_case.case_hash
-    ):
-        raise RuntimeError(
-            "Mesh artifact case hash mismatch."
-        )
-
-    if (
-        mesh_artifact.run_id
-        != preparation.identity.run_id
-    ):
-        raise RuntimeError(
-            "Mesh artifact run ID mismatch."
-        )
-
-    msh_path = mesh_artifact.msh_path
-
-    if (
-        not msh_path.is_file()
-        or msh_path.stat().st_size <= 0
-    ):
-        raise RuntimeError(
-            "Governed grouped mesh was not produced."
-        )
-
+    # Preserve the downstream preparation-record mesh-variant field.
     actual_mesh_variant = (
         mesh_artifact.sizes.level_name
         if mesh_artifact.local_refinement is None
         else mesh_artifact.local_refinement.policy_name
     )
-
-    if (
-        actual_mesh_variant
-        != doe_case.mesh_policy_name
-    ):
-        raise RuntimeError(
-            "Produced mesh variant does not match "
-            "the frozen DOE mesh policy.\n"
-            f"Frozen  : {doe_case.mesh_policy_name}\n"
-            f"Produced: {actual_mesh_variant}"
-        )
 
     # --------------------------------------------------
     # FAIL-CLOSED MESH QUALITY

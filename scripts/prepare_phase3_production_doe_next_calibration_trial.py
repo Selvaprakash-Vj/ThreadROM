@@ -360,17 +360,26 @@ def main() -> int:
     # GOVERNANCE
     # --------------------------------------------------
 
-    doe_policy_hash = require_sha256(
-        DOE_POLICY_PATH,
-        EXPECTED_DOE_POLICY_SHA256,
-        "Production DOE policy",
+    # Verify campaign evidence using the same pinned scope as
+    # initial preparation. This does not authorize another trial.
+    from threadrom.factory.governed_fem_preparation_scope import (
+        verify_governed_preparation_scope,
     )
 
-    campaign_hash = require_sha256(
-        CAMPAIGN_MANIFEST_PATH,
-        EXPECTED_CAMPAIGN_SHA256,
-        "Production DOE campaign",
+    preparation_scope = verify_governed_preparation_scope(
+        repo_root=DOE_POLICY_PATH.parent.parent,
+        campaign_root=CAMPAIGN_MANIFEST_PATH.parent,
+        artifact_root=(
+            CAMPAIGN_MANIFEST_PATH.parent / "prepared_cases"
+        ),
+        policy_path=DOE_POLICY_PATH,
+        manifest_path=CAMPAIGN_MANIFEST_PATH,
+        expected_policy_sha256=EXPECTED_DOE_POLICY_SHA256,
+        expected_manifest_sha256=EXPECTED_CAMPAIGN_SHA256,
     )
+
+    doe_policy_hash = preparation_scope.policy_sha256
+    campaign_hash = preparation_scope.campaign_manifest_sha256
 
     preparation_cert_hash = require_sha256(
         PREPARATION_CERT_PATH,
@@ -384,30 +393,19 @@ def main() -> int:
         "Warm-start knowledge",
     )
 
-    policy = (
-        load_phase3_production_doe_policy(
-            DOE_POLICY_PATH
-        )
+    from threadrom.factory.governed_fem_campaign_context import (
+        resolve_governed_fem_campaign_context,
     )
 
-    campaign = (
-        build_phase3_production_doe(
-            policy
-        )
+    governed_context = resolve_governed_fem_campaign_context(
+        verified_scope=preparation_scope,
+        requested_case_id=args.case_id,
     )
 
-    try:
-        doe_case = next(
-            item
-            for item in campaign.design_cases
-            if item.case_id == args.case_id
-        )
-    except StopIteration as exc:
-        raise RuntimeError(
-            "Case is not an authorized Production DOE "
-            "design row. Holdouts remain inaccessible: "
-            f"{args.case_id}"
-        ) from exc
+    policy = governed_context.policy
+    campaign = governed_context.campaign
+    governed_case = governed_context.governed_case
+    doe_case = governed_context.production_case
 
     if doe_case.source_case_id is not None:
         raise RuntimeError(

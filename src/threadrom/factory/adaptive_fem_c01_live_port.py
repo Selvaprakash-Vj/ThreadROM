@@ -304,18 +304,11 @@ class C01LiveFactoryPort:
         return True
 
     def assess_verified_physics(self, snapshot: FEMLifecycleSnapshot) -> None:
-        # Recovery and preparation are separate from assessment. C01's
-        # original Trial-1 013–016 checker is the first validated adapter;
-        # later trial physics must have its own verified evidence mapping.
+        # The shared assessor resolves the calibration-accepted trial
+        # from verified FEM history.
         if self.snapshot() != snapshot or snapshot.phase is not RunPhase.COMPLETED \
                 or snapshot.physics is not PhysicsDisposition.NOT_ASSESSED:
             raise RuntimeError("Physics snapshot changed before assessment.")
-        if self.case_id not in {"D-INT-013", "D-INT-014", "D-INT-015", "D-INT-016"} \
-                or snapshot.trial_index != 1:
-            raise RuntimeError(
-                "C01 later-trial full-physics evidence adapter is not certified; "
-                "no FEM launch or physics PASS permitted."
-            )
 
         # Imports here avoid an assessment-only dependency for ordinary
         # read-only campaign recovery, and never import/run a solver.

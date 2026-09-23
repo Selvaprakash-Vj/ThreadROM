@@ -58,6 +58,8 @@ class CompleteJointCalculixTransferDefinition:
     minimum_node_count: int
     minimum_element_count: int
     required_boundary_groups: tuple[str, ...]
+    member_youngs_modulus_mpa: float | None = None
+    member_poissons_ratio: float | None = None
 
     def volume_name(
         self,
@@ -844,6 +846,75 @@ class CompleteJointCalculixModelDeck:
     ]
 
 
+def render_governed_elastic_material_cards(
+    definition: CompleteJointCalculixTransferDefinition,
+) -> dict[str, tuple[str, str, str]]:
+    """Emit the actual per-group CalculiX elastic cards.
+
+    None/None retains the historical common-property transfer.
+    Partial, nonphysical or colliding mixed-material assignments fail.
+    """
+    from math import isfinite
+
+    member_e = definition.member_youngs_modulus_mpa
+    member_nu = definition.member_poissons_ratio
+
+    if (member_e is None) != (member_nu is None):
+        raise ValueError(
+            "Member elastic properties must be supplied together."
+        )
+
+    if member_e is None:
+        member_e = definition.youngs_modulus_mpa
+        member_nu = definition.poissons_ratio
+
+    properties = (
+        (definition.youngs_modulus_mpa, definition.poissons_ratio),
+        (member_e, member_nu),
+    )
+
+    for modulus, ratio in properties:
+        if (
+            not isfinite(modulus)
+            or modulus <= 0.0
+            or not isfinite(ratio)
+            or not -1.0 < ratio < 0.5
+        ):
+            raise ValueError(
+                "Invalid governed elastic material properties."
+            )
+
+    fastener_names = (
+        definition.bolt_material_name,
+        definition.nut_material_name,
+    )
+    member_name = definition.member_material_name
+
+    if (
+        member_name in fastener_names
+        and properties[0] != properties[1]
+    ):
+        raise ValueError(
+            "Different fastener and member properties require "
+            "different CalculiX material names."
+        )
+
+    result = {}
+
+    for name, (modulus, ratio) in (
+        (definition.bolt_material_name, properties[0]),
+        (definition.nut_material_name, properties[0]),
+        (member_name, properties[1]),
+    ):
+        result[name] = (
+            f"*MATERIAL, NAME={_calculix_name(name)}",
+            "*ELASTIC",
+            f"{modulus:.12e}, {ratio:.12e}",
+        )
+
+    return result
+
+
 def render_complete_joint_calculix_model(
     mesh_data: CompleteJointCalculixMeshData,
     definition: CompleteJointCalculixTransferDefinition,
@@ -1032,20 +1103,12 @@ def render_complete_joint_calculix_model(
             )
         )
 
+    material_cards = render_governed_elastic_material_cards(
+        definition
+    )
+
     for material_name in material_definitions:
-        lines.extend(
-            [
-                (
-                    "*MATERIAL, NAME="
-                    f"{_calculix_name(material_name)}"
-                ),
-                "*ELASTIC",
-                (
-                    f"{definition.youngs_modulus_mpa:.12e}, "
-                    f"{definition.poissons_ratio:.12e}"
-                ),
-            ]
-        )
+        lines.extend(material_cards[material_name])
 
         lines.extend(
             material_extensions.get(

@@ -134,6 +134,13 @@ def require_sha256(
     return actual
 
 
+# Independent Trial-1 launch pins.
+# Empty until case-specific authorization and owner approval
+# are separately reviewed and their record hashes pinned.
+# Never populate from a CLI flag or a file being verified.
+INITIAL_TRIAL_AUTHORIZATION_PINS: dict[str, dict[str, str]] = {}
+
+
 def main() -> int:
     args = parse_arguments()
 
@@ -434,17 +441,50 @@ def main() -> int:
         flush=True,
     )
 
-    result = orchestrate_calculix_run(
-        project_root=ROOT,
-        input_path=input_path,
-        definition=definition,
-        run_id=trial_run_id,
-        case_hash=doe_case.case_hash,
-        backend_policy_id=backend.policy_id,
-        solver_name=backend.solver_name,
-        solver_version=backend.solver_version,
-        manifest_path=manifest_path,
+    # Verify independently pinned, case/deck-specific permission.
+    # This check does not reserve a solver slot or authorize a retry.
+    from threadrom.factory.governed_fem_initial_launch_authorization import (
+        require_initial_trial_authorization,
     )
+
+    require_initial_trial_authorization(
+        repo_root=ROOT,
+        campaign_root=CAMPAIGN_MANIFEST_PATH.parent,
+        pins=INITIAL_TRIAL_AUTHORIZATION_PINS,
+        campaign_id="TRM-PDOE-C01",
+        case_id=doe_case.case_id,
+        case_hash=doe_case.case_hash,
+        case_run_id=case_run_id,
+        trial_run_id=trial_run_id,
+        deck_sha256=prep["deck"]["sha256"],
+        policy_sha256=EXPECTED_DOE_POLICY_SHA256,
+        manifest_sha256=EXPECTED_CAMPAIGN_SHA256,
+    )
+
+    # The independent authorization check above remains mandatory.
+    # The campaign lock stays held until the solver operation returns.
+    from threadrom.factory.production_doe_launch_fence import (
+        reserve_adaptive_trial_launch,
+    )
+
+    with reserve_adaptive_trial_launch(
+        campaign_root=CAMPAIGN_MANIFEST_PATH.parent,
+        case_run_id=case_run_id,
+        trial_run_id=trial_run_id,
+        maximum_authorized_ccx=1,
+        allow_initial_trial=True,
+    ):
+        result = orchestrate_calculix_run(
+            project_root=ROOT,
+            input_path=input_path,
+            definition=definition,
+            run_id=trial_run_id,
+            case_hash=doe_case.case_hash,
+            backend_policy_id=backend.policy_id,
+            solver_name=backend.solver_name,
+            solver_version=backend.solver_version,
+            manifest_path=manifest_path,
+        )
 
     print()
     print(

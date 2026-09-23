@@ -57,6 +57,7 @@ def reserve_adaptive_trial_launch(
     case_run_id: str,
     trial_run_id: str,
     maximum_authorized_ccx: int | None = None,
+    allow_initial_trial: bool = False,
 ) -> Iterator[Path]:
     """Hold the campaign launch lock across the ENTIRE solver operation.
 
@@ -69,7 +70,20 @@ def reserve_adaptive_trial_launch(
     if not re.fullmatch(r"trm_fem_[0-9a-f]{12}", case_run_id):
         raise RuntimeError("Invalid governed case-run identity.")
 
-    if not re.fullmatch(
+    if type(allow_initial_trial) is not bool:
+        raise RuntimeError("Invalid initial-trial reservation flag.")
+
+    if allow_initial_trial:
+        if trial_run_id != f"{case_run_id}_cal_01":
+            raise RuntimeError(
+                "Invalid bounded initial-trial identity."
+            )
+        if maximum_authorized_ccx is None:
+            raise RuntimeError(
+                "Initial-trial reservation requires an explicit "
+                "authorized capacity limit."
+            )
+    elif not re.fullmatch(
         re.escape(case_run_id) + r"_cal_0[2-6]",
         trial_run_id,
     ):

@@ -56,6 +56,8 @@ class FemCasePhysicsInputs:
     poissons_ratio: float
     bolt_thermal_expansion_per_c: float
     bolt_thermal_source_reference: str
+    member_youngs_modulus_mpa: float | None = None
+    member_poissons_ratio: float | None = None
 
     def __post_init__(self) -> None:
         if (
@@ -89,6 +91,26 @@ class FemCasePhysicsInputs:
             raise ValueError(
                 "FEM Poisson's ratio must lie between -1 and 0.5."
             )
+
+        member_e = self.member_youngs_modulus_mpa
+        member_nu = self.member_poissons_ratio
+
+        if (member_e is None) != (member_nu is None):
+            raise ValueError(
+                "Member elastic modulus and Poisson ratio must "
+                "be supplied together."
+            )
+
+        if member_e is not None:
+            if (
+                not math.isfinite(member_e)
+                or member_e <= 0.0
+                or not math.isfinite(member_nu)
+                or not -1.0 < member_nu < 0.5
+            ):
+                raise ValueError(
+                    "Invalid governed member-group elastic properties."
+                )
 
         if (
             not math.isfinite(self.bolt_thermal_expansion_per_c)
@@ -209,6 +231,86 @@ def derive_common_elastic_properties(
     )
 
 
+def derive_two_group_elastic_properties(
+    resolved: ResolvedCase,
+    *,
+    relative_tolerance: float = 1.0e-12,
+    absolute_tolerance: float = 1.0e-12,
+) -> tuple[float, float, float, float]:
+    """Return (fastener E, fastener nu, member E, member nu).
+
+    Bolt and nut must have the same material identity and elastic
+    properties. Both clamped members must likewise match each other.
+    The two groups may differ. This is not DOE material certification.
+    """
+    fastener = resolved.source_case.fastener
+    layers = tuple(resolved.source_case.members.layers)
+    member_materials = tuple(resolved.member_materials)
+
+    if (
+        fastener.bolt_material_id != fastener.nut_material_id
+        or len(layers) != 2
+        or len(member_materials) != 2
+        or layers[0].material_id != layers[1].material_id
+    ):
+        raise ValueError(
+            "Governed FEM requires one bolt/nut material identity "
+            "and one common upper/lower member material identity."
+        )
+
+    def require_matching(first, second, label):
+        for property_name in (
+            "youngs_modulus_mpa",
+            "poissons_ratio",
+        ):
+            first_value = getattr(first, property_name)
+            second_value = getattr(second, property_name)
+            if not (
+                math.isfinite(first_value)
+                and math.isfinite(second_value)
+                and math.isclose(
+                    first_value,
+                    second_value,
+                    rel_tol=relative_tolerance,
+                    abs_tol=absolute_tolerance,
+                )
+            ):
+                raise ValueError(
+                    f"{label} elastic-property mismatch: "
+                    f"{property_name}"
+                )
+
+    require_matching(
+        resolved.bolt_material,
+        resolved.nut_material,
+        "Bolt/nut",
+    )
+    require_matching(
+        member_materials[0],
+        member_materials[1],
+        "Upper/lower member",
+    )
+
+    fastener_e = resolved.bolt_material.youngs_modulus_mpa
+    fastener_nu = resolved.bolt_material.poissons_ratio
+    member_e = member_materials[0].youngs_modulus_mpa
+    member_nu = member_materials[0].poissons_ratio
+
+    for modulus, ratio in (
+        (fastener_e, fastener_nu),
+        (member_e, member_nu),
+    ):
+        if (
+            modulus <= 0.0
+            or not -1.0 < ratio < 0.5
+        ):
+            raise ValueError(
+                "Invalid two-group isotropic elastic properties."
+            )
+
+    return fastener_e, fastener_nu, member_e, member_nu
+
+
 def derive_bolt_thermal_expansion(
     resolved: ResolvedCase,
 ) -> tuple[float, str]:
@@ -260,11 +362,12 @@ def derive_fem_case_preparation(
         resolved.source_case
     )
 
-    youngs_modulus_mpa, poissons_ratio = (
-        derive_common_elastic_properties(
-            resolved
-        )
-    )
+    (
+        youngs_modulus_mpa,
+        poissons_ratio,
+        member_youngs_modulus_mpa,
+        member_poissons_ratio,
+    ) = derive_two_group_elastic_properties(resolved)
 
     (
         bolt_thermal_expansion_per_c,
@@ -287,6 +390,8 @@ def derive_fem_case_preparation(
             common_friction_coefficient=friction,
             youngs_modulus_mpa=youngs_modulus_mpa,
             poissons_ratio=poissons_ratio,
+            member_youngs_modulus_mpa=member_youngs_modulus_mpa,
+            member_poissons_ratio=member_poissons_ratio,
             bolt_thermal_expansion_per_c=(
                 bolt_thermal_expansion_per_c
             ),

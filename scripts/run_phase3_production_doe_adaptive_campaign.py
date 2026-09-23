@@ -26,6 +26,10 @@ from threadrom.factory.production_doe_launch_fence import (
     count_running_ccx,
 )
 
+from threadrom.factory.governed_fem_campaign import (
+    run_governed_campaign_cycle,
+)
+
 # Independently reviewed, repository-pinned permit hashes ONLY. Empty by default:
 # the four existing 13-gate certificates do not authorize .rout retirement.
 # Never populate from an untrusted local permit, CLI argument, or environment.
@@ -79,15 +83,20 @@ def run_cycle(*, execute: bool, max_actions: int) -> tuple[bool, bool]:
 
         # The port delegates every real launch to the existing
         # campaign-authorized coordinator and shared capacity fence.
-        result = drive_fem_supervisor(
-            port,
-            max_actions=max_actions,
+        # Reuse the shared governed campaign orchestrator.
+        # C01 execution and authorization remain owned by its port.
+        campaign_result = run_governed_campaign_cycle(
+            case_ids=(case_id,),
+            registrations={case_id: lambda port=port: port},
+            execute=True,
+            max_actions_per_case=max_actions,
         )
+        result = campaign_result.cases[0]
 
         print(
             f"{case_id}: stop={result.stop.value} "
             f"actions={result.actions_performed} "
-            f"run={result.last_run_id}",
+            f"run={result.run_id}",
             flush=True,
         )
 
@@ -97,7 +106,7 @@ def run_cycle(*, execute: bool, max_actions: int) -> tuple[bool, bool]:
             retirement = retire_c01_certified_rout(
                 port=port,
                 expected_permit_sha256=INDEPENDENT_RETIREMENT_PINS.get(
-                    (case_id, result.last_run_id),
+                    (case_id, result.run_id),
                 ),
                 active_solver_count=count_running_ccx,
                 execute=True,

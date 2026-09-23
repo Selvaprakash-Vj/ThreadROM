@@ -10,6 +10,9 @@ from threadrom.factory.production_doe import (
     build_phase3_production_doe,
     load_phase3_production_doe_policy,
 )
+from threadrom.factory.governed_fem_case_resolution import (
+    resolve_governed_design_case,
+)
 
 
 EXPECTED_POLICY_SHA256 = (
@@ -66,29 +69,15 @@ def resolve_governed_c01_case(
     policy = load_phase3_production_doe_policy(policy_path)
     campaign = build_phase3_production_doe(policy)
 
-    matches = [
-        case for case in campaign.design_cases
-        if case.case_id == requested_case_id
-    ]
-
-    if len(matches) != 1:
-        raise RuntimeError(
-            "Case absent or ambiguous in governed C01 design cases. "
-            "Holdouts are not eligible."
-        )
-
-    case = matches[0]
-
-    if case.source_case_id is not None:
-        raise RuntimeError(
-            "Certified anchor must be reused, not recalculated."
-        )
-
-    if not re.fullmatch(r"[0-9a-f]{64}", case.case_hash):
-        raise RuntimeError("Invalid governed case hash.")
+    # The frozen C01 policy and manifest have already been verified.
+    # Shared case resolution does not grant solver authorization.
+    resolved = resolve_governed_design_case(
+        campaign=campaign,
+        requested_case_id=requested_case_id,
+    )
 
     return GovernedC01Case(
-        case_id=case.case_id,
-        case_hash=case.case_hash,
-        case_run_id=f"trm_fem_{case.case_hash[:12]}",
+        case_id=resolved.case_id,
+        case_hash=resolved.case_hash,
+        case_run_id=resolved.case_run_id,
     )

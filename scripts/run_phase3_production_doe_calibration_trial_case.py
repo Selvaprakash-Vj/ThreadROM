@@ -142,6 +142,12 @@ def require_sha256(
 
 
 def main() -> int:
+    raise RuntimeError(
+        "LEGACY_DIRECT_CALIBRATION_LAUNCH_DISABLED: "
+        "use the governed Production DOE adaptive coordinator. "
+        "A preparation PASS is not solve authorization."
+    )
+
     args = parse_arguments()
 
     # --------------------------------------------------

@@ -170,6 +170,12 @@ def build_generic_fem_definition_bundle(
         poissons_ratio=(
             preparation.physics.poissons_ratio
         ),
+        member_youngs_modulus_mpa=(
+            preparation.physics.member_youngs_modulus_mpa
+        ),
+        member_poissons_ratio=(
+            preparation.physics.member_poissons_ratio
+        ),
     )
 
     template_pair_names = tuple(
