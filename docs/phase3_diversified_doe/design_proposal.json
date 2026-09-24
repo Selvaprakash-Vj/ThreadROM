@@ -1,0 +1,4130 @@
+{
+  "atlas_sha256": "eed5e52f4e9baaad5e2eb89634de48bbdf53c14c584921d8afb0df00631ffc60",
+  "campaign_id": "TRM-DDOE-001",
+  "cases": [
+    {
+      "case_hash": "e1628981295e3fc47ecf623e5743362c8e048c01c7cb7a5def44a75a40b9e27c",
+      "dataset_admission_status": "NOT_EVALUATED",
+      "evidence_status": "EXACT_HISTORICAL_ANCHOR_ADMISSION_PENDING",
+      "fem_execution_authorized": false,
+      "historical_case_id": "TRM-XFEM-M8-001",
+      "member_material_id": "steel_member",
+      "normalized_coordinates": [
+        1.0,
+        1.0,
+        0.0
+      ],
+      "product_case": null,
+      "proposal_id": "TRM-DDOE-D-M8x1_25__steel_member-01",
+      "thread_designation": "M8x1.25"
+    },
+    {
+      "case_hash": "b8d94af800f7402ed92446e5d9f8c32bb72963b5058427815b475b6b38ab802f",
+      "dataset_admission_status": "NOT_EVALUATED",
+      "evidence_status": "NEW_EVIDENCE_REQUIRED_NO_EXECUTION_AUTHORITY",
+      "fem_execution_authorized": false,
+      "historical_case_id": null,
+      "member_material_id": "steel_member",
+      "normalized_coordinates": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "preparation_run_id": "trm_fem_72692e66979c",
+      "product_case": {
+        "analysis": {
+          "calculation_mode": "auto",
+          "fidelity": "production"
+        },
+        "fastener": {
+          "bolt_length_mm": 30.0,
+          "bolt_material_id": "fastener_steel",
+          "bolt_property_class": "8.8",
+          "bolt_standard": "ISO 4017:2022",
+          "handedness": "right",
+          "nut_material_id": "fastener_steel",
+          "nut_property_class": "8",
+          "nut_standard": "ISO 4032:2023",
+          "starts": 1,
+          "thread_designation": "M8x1.25"
+        },
+        "interfaces": {
+          "head_bearing_friction_coefficient": 0.15,
+          "member_interface_friction_coefficient": 0.15,
+          "nut_bearing_friction_coefficient": 0.15,
+          "thread_friction_coefficient": 0.15
+        },
+        "loading": {
+          "external_axial_load_n": 0.0,
+          "target_preload_n": 9469.425180449985
+        },
+        "members": {
+          "layers": [
+            {
+              "clearance_hole_diameter_mm": 9.6,
+              "layer_id": "head_side_member",
+              "material_id": "steel_member",
+              "outer_diameter_mm": 28.8,
+              "thickness_mm": 6.4
+            },
+            {
+              "clearance_hole_diameter_mm": 9.6,
+              "layer_id": "nut_side_member",
+              "material_id": "steel_member",
+              "outer_diameter_mm": 28.8,
+              "thickness_mm": 9.6
+            }
+          ]
+        },
+        "metadata": {
+          "name": "Phase 3 diversified DOE design proposal",
+          "notes": "Unsealed design proposal; no FEM authorization or physics certification."
+        },
+        "schema_version": 1
+      },
+      "proposal_id": "TRM-DDOE-D-M8x1_25__steel_member-02",
+      "thread_designation": "M8x1.25"
+    },
+    {
+      "case_hash": "e3ded579dee728ba54aca311e96620b7952fe1ec1ca67947926200dff48131b8",
+      "dataset_admission_status": "NOT_EVALUATED",
+      "evidence_status": "NEW_EVIDENCE_REQUIRED_NO_EXECUTION_AUTHORITY",
+      "fem_execution_authorized": false,
+      "historical_case_id": null,
+      "member_material_id": "steel_member",
+      "normalized_coordinates": [
+        0.0,
+        0.5,
+        0.0
+      ],
+      "preparation_run_id": "trm_fem_55548230f5fd",
+      "product_case": {
+        "analysis": {
+          "calculation_mode": "auto",
+          "fidelity": "production"
+        },
+        "fastener": {
+          "bolt_length_mm": 30.0,
+          "bolt_material_id": "fastener_steel",
+          "bolt_property_class": "8.8",
+          "bolt_standard": "ISO 4017:2022",
+          "handedness": "right",
+          "nut_material_id": "fastener_steel",
+          "nut_property_class": "8",
+          "nut_standard": "ISO 4032:2023",
+          "starts": 1,
+          "thread_designation": "M8x1.25"
+        },
+        "interfaces": {
+          "head_bearing_friction_coefficient": 0.15,
+          "member_interface_friction_coefficient": 0.15,
+          "nut_bearing_friction_coefficient": 0.15,
+          "thread_friction_coefficient": 0.15
+        },
+        "loading": {
+          "external_axial_load_n": 0.0,
+          "target_preload_n": 9469.425180449985
+        },
+        "members": {
+          "layers": [
+            {
+              "clearance_hole_diameter_mm": 8.8,
+              "layer_id": "head_side_member",
+              "material_id": "steel_member",
+              "outer_diameter_mm": 24.0,
+              "thickness_mm": 7.2
+            },
+            {
+              "clearance_hole_diameter_mm": 8.8,
+              "layer_id": "nut_side_member",
+              "material_id": "steel_member",
+              "outer_diameter_mm": 24.0,
+              "thickness_mm": 8.8
+            }
+          ]
+        },
+        "metadata": {
+          "name": "Phase 3 diversified DOE design proposal",
+          "notes": "Unsealed design proposal; no FEM authorization or physics certification."
+        },
+        "schema_version": 1
+      },
+      "proposal_id": "TRM-DDOE-D-M8x1_25__steel_member-03",
+      "thread_designation": "M8x1.25"
+    },
+    {
+      "case_hash": "14c033b59aab075d68d68ff908a8fbfcd925699b94b55afc38120e1cde11d9fa",
+      "dataset_admission_status": "NOT_EVALUATED",
+      "evidence_status": "NEW_EVIDENCE_REQUIRED_NO_EXECUTION_AUTHORITY",
+      "fem_execution_authorized": false,
+      "historical_case_id": null,
+      "member_material_id": "steel_member",
+      "normalized_coordinates": [
+        0.5,
+        1.0,
+        1.0
+      ],
+      "preparation_run_id": "trm_fem_bd0d9701545d",
+      "product_case": {
+        "analysis": {
+          "calculation_mode": "auto",
+          "fidelity": "production"
+        },
+        "fastener": {
+          "bolt_length_mm": 30.0,
+          "bolt_material_id": "fastener_steel",
+          "bolt_property_class": "8.8",
+          "bolt_standard": "ISO 4017:2022",
+          "handedness": "right",
+          "nut_material_id": "fastener_steel",
+          "nut_property_class": "8",
+          "nut_standard": "ISO 4032:2023",
+          "starts": 1,
+          "thread_designation": "M8x1.25"
+        },
+        "interfaces": {
+          "head_bearing_friction_coefficient": 0.15,
+          "member_interface_friction_coefficient": 0.15,
+          "nut_bearing_friction_coefficient": 0.15,
+          "thread_friction_coefficient": 0.15
+        },
+        "loading": {
+          "external_axial_load_n": 0.0,
+          "target_preload_n": 11047.662710524983
+        },
+        "members": {
+          "layers": [
+            {
+              "clearance_hole_diameter_mm": 9.6,
+              "layer_id": "head_side_member",
+              "material_id": "steel_member",
+              "outer_diameter_mm": 28.8,
+              "thickness_mm": 8.0
+            },
+            {
+              "clearance_hole_diameter_mm": 9.6,
+              "layer_id": "nut_side_member",
+              "material_id": "steel_member",
+              "outer_diameter_mm": 28.8,
+              "thickness_mm": 8.0
+            }
+          ]
+        },
+        "metadata": {
+          "name": "Phase 3 diversified DOE design proposal",
+          "notes": "Unsealed design proposal; no FEM authorization or physics certification."
+        },
+        "schema_version": 1
+      },
+      "proposal_id": "TRM-DDOE-D-M8x1_25__steel_member-04",
+      "thread_designation": "M8x1.25"
+    },
+    {
+      "case_hash": "c24ef8f4f7739d3215515b7ce31910c0b7e7df08769de4db6c35a5a00f90f7d5",
+      "dataset_admission_status": "NOT_EVALUATED",
+      "evidence_status": "NEW_EVIDENCE_REQUIRED_NO_EXECUTION_AUTHORITY",
+      "fem_execution_authorized": false,
+      "historical_case_id": null,
+      "member_material_id": "steel_member",
+      "normalized_coordinates": [
+        1.0,
+        0.0,
+        0.5
+      ],
+      "preparation_run_id": "trm_fem_7502b070aaeb",
+      "product_case": {
+        "analysis": {
+          "calculation_mode": "auto",
+          "fidelity": "production"
+        },
+        "fastener": {
+          "bolt_length_mm": 30.0,
+          "bolt_material_id": "fastener_steel",
+          "bolt_property_class": "8.8",
+          "bolt_standard": "ISO 4017:2022",
+          "handedness": "right",
+          "nut_material_id": "fastener_steel",
+          "nut_property_class": "8",
+          "nut_standard": "ISO 4032:2023",
+          "starts": 1,
+          "thread_designation": "M8x1.25"
+        },
+        "interfaces": {
+          "head_bearing_friction_coefficient": 0.15,
+          "member_interface_friction_coefficient": 0.15,
+          "nut_bearing_friction_coefficient": 0.15,
+          "thread_friction_coefficient": 0.15
+        },
+        "loading": {
+          "external_axial_load_n": 0.0,
+          "target_preload_n": 12625.90024059998
+        },
+        "members": {
+          "layers": [
+            {
+              "clearance_hole_diameter_mm": 9.2,
+              "layer_id": "head_side_member",
+              "material_id": "steel_member",
+              "outer_diameter_mm": 26.4,
+              "thickness_mm": 6.4
+            },
+            {
+              "clearance_hole_diameter_mm": 9.2,
+              "layer_id": "nut_side_member",
+              "material_id": "steel_member",
+              "outer_diameter_mm": 26.4,
+              "thickness_mm": 9.6
+            }
+          ]
+        },
+        "metadata": {
+          "name": "Phase 3 diversified DOE design proposal",
+          "notes": "Unsealed design proposal; no FEM authorization or physics certification."
+        },
+        "schema_version": 1
+      },
+      "proposal_id": "TRM-DDOE-D-M8x1_25__steel_member-05",
+      "thread_designation": "M8x1.25"
+    },
+    {
+      "case_hash": "0fe8be2d5f15e86d4cc2df704731be6886de9e3143b970aff9b2b93be49aa0df",
+      "dataset_admission_status": "NOT_EVALUATED",
+      "evidence_status": "NEW_EVIDENCE_REQUIRED_NO_EXECUTION_AUTHORITY",
+      "fem_execution_authorized": false,
+      "historical_case_id": null,
+      "member_material_id": "steel_member",
+      "normalized_coordinates": [
+        0.0,
+        1.0,
+        0.5
+      ],
+      "preparation_run_id": "trm_fem_87699f08356e",
+      "product_case": {
+        "analysis": {
+          "calculation_mode": "auto",
+          "fidelity": "production"
+        },
+        "fastener": {
+          "bolt_length_mm": 30.0,
+          "bolt_material_id": "fastener_steel",
+          "bolt_property_class": "8.8",
+          "bolt_standard": "ISO 4017:2022",
+          "handedness": "right",
+          "nut_material_id": "fastener_steel",
+          "nut_property_class": "8",
+          "nut_standard": "ISO 4032:2023",
+          "starts": 1,
+          "thread_designation": "M8x1.25"
+        },
+        "interfaces": {
+          "head_bearing_friction_coefficient": 0.15,
+          "member_interface_friction_coefficient": 0.15,
+          "nut_bearing_friction_coefficient": 0.15,
+          "thread_friction_coefficient": 0.15
+        },
+        "loading": {
+          "external_axial_load_n": 0.0,
+          "target_preload_n": 9469.425180449985
+        },
+        "members": {
+          "layers": [
+            {
+              "clearance_hole_diameter_mm": 9.2,
+              "layer_id": "head_side_member",
+              "material_id": "steel_member",
+              "outer_diameter_mm": 26.4,
+              "thickness_mm": 8.0
+            },
+            {
+              "clearance_hole_diameter_mm": 9.2,
+              "layer_id": "nut_side_member",
+              "material_id": "steel_member",
+              "outer_diameter_mm": 26.4,
+              "thickness_mm": 8.0
+            }
+          ]
+        },
+        "metadata": {
+          "name": "Phase 3 diversified DOE design proposal",
+          "notes": "Unsealed design proposal; no FEM authorization or physics certification."
+        },
+        "schema_version": 1
+      },
+      "proposal_id": "TRM-DDOE-D-M8x1_25__steel_member-06",
+      "thread_designation": "M8x1.25"
+    },
+    {
+      "case_hash": "7232d4c8e1ccbb6524c2c115061c119936bb501a8b40eb99e0932a9bd3a8de01",
+      "dataset_admission_status": "NOT_EVALUATED",
+      "evidence_status": "NEW_EVIDENCE_REQUIRED_NO_EXECUTION_AUTHORITY",
+      "fem_execution_authorized": false,
+      "historical_case_id": null,
+      "member_material_id": "steel_member",
+      "normalized_coordinates": [
+        0.5,
+        0.0,
+        0.0
+      ],
+      "preparation_run_id": "trm_fem_80ede393cc26",
+      "product_case": {
+        "analysis": {
+          "calculation_mode": "auto",
+          "fidelity": "production"
+        },
+        "fastener": {
+          "bolt_length_mm": 30.0,
+          "bolt_material_id": "fastener_steel",
+          "bolt_property_class": "8.8",
+          "bolt_standard": "ISO 4017:2022",
+          "handedness": "right",
+          "nut_material_id": "fastener_steel",
+          "nut_property_class": "8",
+          "nut_standard": "ISO 4032:2023",
+          "starts": 1,
+          "thread_designation": "M8x1.25"
+        },
+        "interfaces": {
+          "head_bearing_friction_coefficient": 0.15,
+          "member_interface_friction_coefficient": 0.15,
+          "nut_bearing_friction_coefficient": 0.15,
+          "thread_friction_coefficient": 0.15
+        },
+        "loading": {
+          "external_axial_load_n": 0.0,
+          "target_preload_n": 11047.662710524983
+        },
+        "members": {
+          "layers": [
+            {
+              "clearance_hole_diameter_mm": 8.8,
+              "layer_id": "head_side_member",
+              "material_id": "steel_member",
+              "outer_diameter_mm": 24.0,
+              "thickness_mm": 6.4
+            },
+            {
+              "clearance_hole_diameter_mm": 8.8,
+              "layer_id": "nut_side_member",
+              "material_id": "steel_member",
+              "outer_diameter_mm": 24.0,
+              "thickness_mm": 9.6
+            }
+          ]
+        },
+        "metadata": {
+          "name": "Phase 3 diversified DOE design proposal",
+          "notes": "Unsealed design proposal; no FEM authorization or physics certification."
+        },
+        "schema_version": 1
+      },
+      "proposal_id": "TRM-DDOE-D-M8x1_25__steel_member-07",
+      "thread_designation": "M8x1.25"
+    },
+    {
+      "case_hash": "5bf5719232f517846d8c2baf7dafe559f7b3c187c58c0a300e51cd59f6dd6411",
+      "dataset_admission_status": "NOT_EVALUATED",
+      "evidence_status": "NEW_EVIDENCE_REQUIRED_NO_EXECUTION_AUTHORITY",
+      "fem_execution_authorized": false,
+      "historical_case_id": null,
+      "member_material_id": "steel_member",
+      "normalized_coordinates": [
+        0.5,
+        0.5,
+        0.5
+      ],
+      "preparation_run_id": "trm_fem_654455aba438",
+      "product_case": {
+        "analysis": {
+          "calculation_mode": "auto",
+          "fidelity": "production"
+        },
+        "fastener": {
+          "bolt_length_mm": 30.0,
+          "bolt_material_id": "fastener_steel",
+          "bolt_property_class": "8.8",
+          "bolt_standard": "ISO 4017:2022",
+          "handedness": "right",
+          "nut_material_id": "fastener_steel",
+          "nut_property_class": "8",
+          "nut_standard": "ISO 4032:2023",
+          "starts": 1,
+          "thread_designation": "M8x1.25"
+        },
+        "interfaces": {
+          "head_bearing_friction_coefficient": 0.15,
+          "member_interface_friction_coefficient": 0.15,
+          "nut_bearing_friction_coefficient": 0.15,
+          "thread_friction_coefficient": 0.15
+        },
+        "loading": {
+          "external_axial_load_n": 0.0,
+          "target_preload_n": 11047.662710524983
+        },
+        "members": {
+          "layers": [
+            {
+              "clearance_hole_diameter_mm": 9.2,
+              "layer_id": "head_side_member",
+              "material_id": "steel_member",
+              "outer_diameter_mm": 26.4,
+              "thickness_mm": 7.2
+            },
+            {
+              "clearance_hole_diameter_mm": 9.2,
+              "layer_id": "nut_side_member",
+              "material_id": "steel_member",
+              "outer_diameter_mm": 26.4,
+              "thickness_mm": 8.8
+            }
+          ]
+        },
+        "metadata": {
+          "name": "Phase 3 diversified DOE design proposal",
+          "notes": "Unsealed design proposal; no FEM authorization or physics certification."
+        },
+        "schema_version": 1
+      },
+      "proposal_id": "TRM-DDOE-D-M8x1_25__steel_member-08",
+      "thread_designation": "M8x1.25"
+    },
+    {
+      "case_hash": "5b703d48a4346450390cddf852c67f51ba2093c902d0ee56f3f29c8736fa98e0",
+      "dataset_admission_status": "NOT_EVALUATED",
+      "evidence_status": "NEW_EVIDENCE_REQUIRED_NO_EXECUTION_AUTHORITY",
+      "fem_execution_authorized": false,
+      "historical_case_id": null,
+      "member_material_id": "steel_member",
+      "normalized_coordinates": [
+        1.0,
+        0.5,
+        1.0
+      ],
+      "preparation_run_id": "trm_fem_8503f2efd632",
+      "product_case": {
+        "analysis": {
+          "calculation_mode": "auto",
+          "fidelity": "production"
+        },
+        "fastener": {
+          "bolt_length_mm": 30.0,
+          "bolt_material_id": "fastener_steel",
+          "bolt_property_class": "8.8",
+          "bolt_standard": "ISO 4017:2022",
+          "handedness": "right",
+          "nut_material_id": "fastener_steel",
+          "nut_property_class": "8",
+          "nut_standard": "ISO 4032:2023",
+          "starts": 1,
+          "thread_designation": "M8x1.25"
+        },
+        "interfaces": {
+          "head_bearing_friction_coefficient": 0.15,
+          "member_interface_friction_coefficient": 0.15,
+          "nut_bearing_friction_coefficient": 0.15,
+          "thread_friction_coefficient": 0.15
+        },
+        "loading": {
+          "external_axial_load_n": 0.0,
+          "target_preload_n": 12625.90024059998
+        },
+        "members": {
+          "layers": [
+            {
+              "clearance_hole_diameter_mm": 9.6,
+              "layer_id": "head_side_member",
+              "material_id": "steel_member",
+              "outer_diameter_mm": 28.8,
+              "thickness_mm": 7.2
+            },
+            {
+              "clearance_hole_diameter_mm": 9.6,
+              "layer_id": "nut_side_member",
+              "material_id": "steel_member",
+              "outer_diameter_mm": 28.8,
+              "thickness_mm": 8.8
+            }
+          ]
+        },
+        "metadata": {
+          "name": "Phase 3 diversified DOE design proposal",
+          "notes": "Unsealed design proposal; no FEM authorization or physics certification."
+        },
+        "schema_version": 1
+      },
+      "proposal_id": "TRM-DDOE-D-M8x1_25__steel_member-09",
+      "thread_designation": "M8x1.25"
+    },
+    {
+      "case_hash": "8bf047983e898e9fcf1161c30feb4cafd46660f739e569aa2a108c7efd78f4f5",
+      "dataset_admission_status": "NOT_EVALUATED",
+      "evidence_status": "NEW_EVIDENCE_REQUIRED_NO_EXECUTION_AUTHORITY",
+      "fem_execution_authorized": false,
+      "historical_case_id": null,
+      "member_material_id": "steel_member",
+      "normalized_coordinates": [
+        0.0,
+        0.0,
+        0.25
+      ],
+      "preparation_run_id": "trm_fem_4027c9a74360",
+      "product_case": {
+        "analysis": {
+          "calculation_mode": "auto",
+          "fidelity": "production"
+        },
+        "fastener": {
+          "bolt_length_mm": 30.0,
+          "bolt_material_id": "fastener_steel",
+          "bolt_property_class": "8.8",
+          "bolt_standard": "ISO 4017:2022",
+          "handedness": "right",
+          "nut_material_id": "fastener_steel",
+          "nut_property_class": "8",
+          "nut_standard": "ISO 4032:2023",
+          "starts": 1,
+          "thread_designation": "M8x1.25"
+        },
+        "interfaces": {
+          "head_bearing_friction_coefficient": 0.15,
+          "member_interface_friction_coefficient": 0.15,
+          "nut_bearing_friction_coefficient": 0.15,
+          "thread_friction_coefficient": 0.15
+        },
+        "loading": {
+          "external_axial_load_n": 0.0,
+          "target_preload_n": 9469.425180449985
+        },
+        "members": {
+          "layers": [
+            {
+              "clearance_hole_diameter_mm": 9.0,
+              "layer_id": "head_side_member",
+              "material_id": "steel_member",
+              "outer_diameter_mm": 25.2,
+              "thickness_mm": 6.4
+            },
+            {
+              "clearance_hole_diameter_mm": 9.0,
+              "layer_id": "nut_side_member",
+              "material_id": "steel_member",
+              "outer_diameter_mm": 25.2,
+              "thickness_mm": 9.6
+            }
+          ]
+        },
+        "metadata": {
+          "name": "Phase 3 diversified DOE design proposal",
+          "notes": "Unsealed design proposal; no FEM authorization or physics certification."
+        },
+        "schema_version": 1
+      },
+      "proposal_id": "TRM-DDOE-D-M8x1_25__steel_member-10",
+      "thread_designation": "M8x1.25"
+    },
+    {
+      "case_hash": "d4f64916d9d4989905ad9e362988643a04a2bdbef71a2e1f240e94ba72d56a07",
+      "dataset_admission_status": "NOT_EVALUATED",
+      "evidence_status": "NEW_EVIDENCE_REQUIRED_NO_EXECUTION_AUTHORITY",
+      "fem_execution_authorized": false,
+      "historical_case_id": null,
+      "member_material_id": "steel_member",
+      "normalized_coordinates": [
+        0.0,
+        0.5,
+        0.75
+      ],
+      "preparation_run_id": "trm_fem_f13aa2129321",
+      "product_case": {
+        "analysis": {
+          "calculation_mode": "auto",
+          "fidelity": "production"
+        },
+        "fastener": {
+          "bolt_length_mm": 30.0,
+          "bolt_material_id": "fastener_steel",
+          "bolt_property_class": "8.8",
+          "bolt_standard": "ISO 4017:2022",
+          "handedness": "right",
+          "nut_material_id": "fastener_steel",
+          "nut_property_class": "8",
+          "nut_standard": "ISO 4032:2023",
+          "starts": 1,
+          "thread_designation": "M8x1.25"
+        },
+        "interfaces": {
+          "head_bearing_friction_coefficient": 0.15,
+          "member_interface_friction_coefficient": 0.15,
+          "nut_bearing_friction_coefficient": 0.15,
+          "thread_friction_coefficient": 0.15
+        },
+        "loading": {
+          "external_axial_load_n": 0.0,
+          "target_preload_n": 9469.425180449985
+        },
+        "members": {
+          "layers": [
+            {
+              "clearance_hole_diameter_mm": 9.4,
+              "layer_id": "head_side_member",
+              "material_id": "steel_member",
+              "outer_diameter_mm": 27.6,
+              "thickness_mm": 7.2
+            },
+            {
+              "clearance_hole_diameter_mm": 9.4,
+              "layer_id": "nut_side_member",
+              "material_id": "steel_member",
+              "outer_diameter_mm": 27.6,
+              "thickness_mm": 8.8
+            }
+          ]
+        },
+        "metadata": {
+          "name": "Phase 3 diversified DOE design proposal",
+          "notes": "Unsealed design proposal; no FEM authorization or physics certification."
+        },
+        "schema_version": 1
+      },
+      "proposal_id": "TRM-DDOE-D-M8x1_25__steel_member-11",
+      "thread_designation": "M8x1.25"
+    },
+    {
+      "case_hash": "b75820842977f376b9adc4ad9525a32155464467b6ecbcbfe3a06d048cdedeab",
+      "dataset_admission_status": "NOT_EVALUATED",
+      "evidence_status": "NEW_EVIDENCE_REQUIRED_NO_EXECUTION_AUTHORITY",
+      "fem_execution_authorized": false,
+      "historical_case_id": null,
+      "member_material_id": "steel_member",
+      "normalized_coordinates": [
+        0.25,
+        1.0,
+        0.0
+      ],
+      "preparation_run_id": "trm_fem_b8f3cce4a230",
+      "product_case": {
+        "analysis": {
+          "calculation_mode": "auto",
+          "fidelity": "production"
+        },
+        "fastener": {
+          "bolt_length_mm": 30.0,
+          "bolt_material_id": "fastener_steel",
+          "bolt_property_class": "8.8",
+          "bolt_standard": "ISO 4017:2022",
+          "handedness": "right",
+          "nut_material_id": "fastener_steel",
+          "nut_property_class": "8",
+          "nut_standard": "ISO 4032:2023",
+          "starts": 1,
+          "thread_designation": "M8x1.25"
+        },
+        "interfaces": {
+          "head_bearing_friction_coefficient": 0.15,
+          "member_interface_friction_coefficient": 0.15,
+          "nut_bearing_friction_coefficient": 0.15,
+          "thread_friction_coefficient": 0.15
+        },
+        "loading": {
+          "external_axial_load_n": 0.0,
+          "target_preload_n": 10258.543945487483
+        },
+        "members": {
+          "layers": [
+            {
+              "clearance_hole_diameter_mm": 8.8,
+              "layer_id": "head_side_member",
+              "material_id": "steel_member",
+              "outer_diameter_mm": 24.0,
+              "thickness_mm": 8.0
+            },
+            {
+              "clearance_hole_diameter_mm": 8.8,
+              "layer_id": "nut_side_member",
+              "material_id": "steel_member",
+              "outer_diameter_mm": 24.0,
+              "thickness_mm": 8.0
+            }
+          ]
+        },
+        "metadata": {
+          "name": "Phase 3 diversified DOE design proposal",
+          "notes": "Unsealed design proposal; no FEM authorization or physics certification."
+        },
+        "schema_version": 1
+      },
+      "proposal_id": "TRM-DDOE-D-M8x1_25__steel_member-12",
+      "thread_designation": "M8x1.25"
+    },
+    {
+      "case_hash": "02bb37591d1a9b386abba4b01092f89d842faa7f3288bd29de579107ee98e0ee",
+      "dataset_admission_status": "NOT_EVALUATED",
+      "evidence_status": "NEW_EVIDENCE_REQUIRED_NO_EXECUTION_AUTHORITY",
+      "fem_execution_authorized": false,
+      "historical_case_id": null,
+      "member_material_id": "member_aluminium_en_aw_6082_t6",
+      "normalized_coordinates": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "preparation_run_id": "trm_fem_c58fd67718cd",
+      "product_case": {
+        "analysis": {
+          "calculation_mode": "auto",
+          "fidelity": "production"
+        },
+        "fastener": {
+          "bolt_length_mm": 30.0,
+          "bolt_material_id": "fastener_steel",
+          "bolt_property_class": "8.8",
+          "bolt_standard": "ISO 4017:2022",
+          "handedness": "right",
+          "nut_material_id": "fastener_steel",
+          "nut_property_class": "8",
+          "nut_standard": "ISO 4032:2023",
+          "starts": 1,
+          "thread_designation": "M8x1.25"
+        },
+        "interfaces": {
+          "head_bearing_friction_coefficient": 0.15,
+          "member_interface_friction_coefficient": 0.15,
+          "nut_bearing_friction_coefficient": 0.15,
+          "thread_friction_coefficient": 0.15
+        },
+        "loading": {
+          "external_axial_load_n": 0.0,
+          "target_preload_n": 9469.425180449985
+        },
+        "members": {
+          "layers": [
+            {
+              "clearance_hole_diameter_mm": 8.8,
+              "layer_id": "head_side_member",
+              "material_id": "member_aluminium_en_aw_6082_t6",
+              "outer_diameter_mm": 24.0,
+              "thickness_mm": 6.4
+            },
+            {
+              "clearance_hole_diameter_mm": 8.8,
+              "layer_id": "nut_side_member",
+              "material_id": "member_aluminium_en_aw_6082_t6",
+              "outer_diameter_mm": 24.0,
+              "thickness_mm": 9.6
+            }
+          ]
+        },
+        "metadata": {
+          "name": "Phase 3 diversified DOE design proposal",
+          "notes": "Unsealed design proposal; no FEM authorization or physics certification."
+        },
+        "schema_version": 1
+      },
+      "proposal_id": "TRM-DDOE-D-M8x1_25__member_aluminium_en_aw_6082_t6-01",
+      "thread_designation": "M8x1.25"
+    },
+    {
+      "case_hash": "2c2893c0baa941d67ea6540f5071e1a90ca0d2f3e60c98f0dfdaf1eaf5c7df8f",
+      "dataset_admission_status": "NOT_EVALUATED",
+      "evidence_status": "NEW_EVIDENCE_REQUIRED_NO_EXECUTION_AUTHORITY",
+      "fem_execution_authorized": false,
+      "historical_case_id": null,
+      "member_material_id": "member_aluminium_en_aw_6082_t6",
+      "normalized_coordinates": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "preparation_run_id": "trm_fem_6edeb234225b",
+      "product_case": {
+        "analysis": {
+          "calculation_mode": "auto",
+          "fidelity": "production"
+        },
+        "fastener": {
+          "bolt_length_mm": 30.0,
+          "bolt_material_id": "fastener_steel",
+          "bolt_property_class": "8.8",
+          "bolt_standard": "ISO 4017:2022",
+          "handedness": "right",
+          "nut_material_id": "fastener_steel",
+          "nut_property_class": "8",
+          "nut_standard": "ISO 4032:2023",
+          "starts": 1,
+          "thread_designation": "M8x1.25"
+        },
+        "interfaces": {
+          "head_bearing_friction_coefficient": 0.15,
+          "member_interface_friction_coefficient": 0.15,
+          "nut_bearing_friction_coefficient": 0.15,
+          "thread_friction_coefficient": 0.15
+        },
+        "loading": {
+          "external_axial_load_n": 0.0,
+          "target_preload_n": 12625.90024059998
+        },
+        "members": {
+          "layers": [
+            {
+              "clearance_hole_diameter_mm": 9.6,
+              "layer_id": "head_side_member",
+              "material_id": "member_aluminium_en_aw_6082_t6",
+              "outer_diameter_mm": 28.8,
+              "thickness_mm": 8.0
+            },
+            {
+              "clearance_hole_diameter_mm": 9.6,
+              "layer_id": "nut_side_member",
+              "material_id": "member_aluminium_en_aw_6082_t6",
+              "outer_diameter_mm": 28.8,
+              "thickness_mm": 8.0
+            }
+          ]
+        },
+        "metadata": {
+          "name": "Phase 3 diversified DOE design proposal",
+          "notes": "Unsealed design proposal; no FEM authorization or physics certification."
+        },
+        "schema_version": 1
+      },
+      "proposal_id": "TRM-DDOE-D-M8x1_25__member_aluminium_en_aw_6082_t6-02",
+      "thread_designation": "M8x1.25"
+    },
+    {
+      "case_hash": "c3a38bcc699ebe5a031942a9d8a4a7c24f2151c0c7824de777623878793b89ed",
+      "dataset_admission_status": "NOT_EVALUATED",
+      "evidence_status": "NEW_EVIDENCE_REQUIRED_NO_EXECUTION_AUTHORITY",
+      "fem_execution_authorized": false,
+      "historical_case_id": null,
+      "member_material_id": "member_aluminium_en_aw_6082_t6",
+      "normalized_coordinates": [
+        0.0,
+        0.5,
+        1.0
+      ],
+      "preparation_run_id": "trm_fem_c802d7334f6c",
+      "product_case": {
+        "analysis": {
+          "calculation_mode": "auto",
+          "fidelity": "production"
+        },
+        "fastener": {
+          "bolt_length_mm": 30.0,
+          "bolt_material_id": "fastener_steel",
+          "bolt_property_class": "8.8",
+          "bolt_standard": "ISO 4017:2022",
+          "handedness": "right",
+          "nut_material_id": "fastener_steel",
+          "nut_property_class": "8",
+          "nut_standard": "ISO 4032:2023",
+          "starts": 1,
+          "thread_designation": "M8x1.25"
+        },
+        "interfaces": {
+          "head_bearing_friction_coefficient": 0.15,
+          "member_interface_friction_coefficient": 0.15,
+          "nut_bearing_friction_coefficient": 0.15,
+          "thread_friction_coefficient": 0.15
+        },
+        "loading": {
+          "external_axial_load_n": 0.0,
+          "target_preload_n": 9469.425180449985
+        },
+        "members": {
+          "layers": [
+            {
+              "clearance_hole_diameter_mm": 9.6,
+              "layer_id": "head_side_member",
+              "material_id": "member_aluminium_en_aw_6082_t6",
+              "outer_diameter_mm": 28.8,
+              "thickness_mm": 7.2
+            },
+            {
+              "clearance_hole_diameter_mm": 9.6,
+              "layer_id": "nut_side_member",
+              "material_id": "member_aluminium_en_aw_6082_t6",
+              "outer_diameter_mm": 28.8,
+              "thickness_mm": 8.8
+            }
+          ]
+        },
+        "metadata": {
+          "name": "Phase 3 diversified DOE design proposal",
+          "notes": "Unsealed design proposal; no FEM authorization or physics certification."
+        },
+        "schema_version": 1
+      },
+      "proposal_id": "TRM-DDOE-D-M8x1_25__member_aluminium_en_aw_6082_t6-03",
+      "thread_designation": "M8x1.25"
+    },
+    {
+      "case_hash": "77b0399abf1ca260bc822e78e0761e8f66c706a4899eb0e1b93b03c747a9c405",
+      "dataset_admission_status": "NOT_EVALUATED",
+      "evidence_status": "NEW_EVIDENCE_REQUIRED_NO_EXECUTION_AUTHORITY",
+      "fem_execution_authorized": false,
+      "historical_case_id": null,
+      "member_material_id": "member_aluminium_en_aw_6082_t6",
+      "normalized_coordinates": [
+        0.5,
+        1.0,
+        0.0
+      ],
+      "preparation_run_id": "trm_fem_a0fb41c4ca5c",
+      "product_case": {
+        "analysis": {
+          "calculation_mode": "auto",
+          "fidelity": "production"
+        },
+        "fastener": {
+          "bolt_length_mm": 30.0,
+          "bolt_material_id": "fastener_steel",
+          "bolt_property_class": "8.8",
+          "bolt_standard": "ISO 4017:2022",
+          "handedness": "right",
+          "nut_material_id": "fastener_steel",
+          "nut_property_class": "8",
+          "nut_standard": "ISO 4032:2023",
+          "starts": 1,
+          "thread_designation": "M8x1.25"
+        },
+        "interfaces": {
+          "head_bearing_friction_coefficient": 0.15,
+          "member_interface_friction_coefficient": 0.15,
+          "nut_bearing_friction_coefficient": 0.15,
+          "thread_friction_coefficient": 0.15
+        },
+        "loading": {
+          "external_axial_load_n": 0.0,
+          "target_preload_n": 11047.662710524983
+        },
+        "members": {
+          "layers": [
+            {
+              "clearance_hole_diameter_mm": 8.8,
+              "layer_id": "head_side_member",
+              "material_id": "member_aluminium_en_aw_6082_t6",
+              "outer_diameter_mm": 24.0,
+              "thickness_mm": 8.0
+            },
+            {
+              "clearance_hole_diameter_mm": 8.8,
+              "layer_id": "nut_side_member",
+              "material_id": "member_aluminium_en_aw_6082_t6",
+              "outer_diameter_mm": 24.0,
+              "thickness_mm": 8.0
+            }
+          ]
+        },
+        "metadata": {
+          "name": "Phase 3 diversified DOE design proposal",
+          "notes": "Unsealed design proposal; no FEM authorization or physics certification."
+        },
+        "schema_version": 1
+      },
+      "proposal_id": "TRM-DDOE-D-M8x1_25__member_aluminium_en_aw_6082_t6-04",
+      "thread_designation": "M8x1.25"
+    },
+    {
+      "case_hash": "906bb02103aaed5833e961ee65cea1aa0b99a01145296969b623e9b44e50c879",
+      "dataset_admission_status": "NOT_EVALUATED",
+      "evidence_status": "NEW_EVIDENCE_REQUIRED_NO_EXECUTION_AUTHORITY",
+      "fem_execution_authorized": false,
+      "historical_case_id": null,
+      "member_material_id": "member_aluminium_en_aw_6082_t6",
+      "normalized_coordinates": [
+        1.0,
+        0.0,
+        0.5
+      ],
+      "preparation_run_id": "trm_fem_ffea5b511e8d",
+      "product_case": {
+        "analysis": {
+          "calculation_mode": "auto",
+          "fidelity": "production"
+        },
+        "fastener": {
+          "bolt_length_mm": 30.0,
+          "bolt_material_id": "fastener_steel",
+          "bolt_property_class": "8.8",
+          "bolt_standard": "ISO 4017:2022",
+          "handedness": "right",
+          "nut_material_id": "fastener_steel",
+          "nut_property_class": "8",
+          "nut_standard": "ISO 4032:2023",
+          "starts": 1,
+          "thread_designation": "M8x1.25"
+        },
+        "interfaces": {
+          "head_bearing_friction_coefficient": 0.15,
+          "member_interface_friction_coefficient": 0.15,
+          "nut_bearing_friction_coefficient": 0.15,
+          "thread_friction_coefficient": 0.15
+        },
+        "loading": {
+          "external_axial_load_n": 0.0,
+          "target_preload_n": 12625.90024059998
+        },
+        "members": {
+          "layers": [
+            {
+              "clearance_hole_diameter_mm": 9.2,
+              "layer_id": "head_side_member",
+              "material_id": "member_aluminium_en_aw_6082_t6",
+              "outer_diameter_mm": 26.4,
+              "thickness_mm": 6.4
+            },
+            {
+              "clearance_hole_diameter_mm": 9.2,
+              "layer_id": "nut_side_member",
+              "material_id": "member_aluminium_en_aw_6082_t6",
+              "outer_diameter_mm": 26.4,
+              "thickness_mm": 9.6
+            }
+          ]
+        },
+        "metadata": {
+          "name": "Phase 3 diversified DOE design proposal",
+          "notes": "Unsealed design proposal; no FEM authorization or physics certification."
+        },
+        "schema_version": 1
+      },
+      "proposal_id": "TRM-DDOE-D-M8x1_25__member_aluminium_en_aw_6082_t6-05",
+      "thread_designation": "M8x1.25"
+    },
+    {
+      "case_hash": "3d0ac7f48a2ceb342c24785316a71b5ad48d960a0e06dc9999d5f43732cd0f1a",
+      "dataset_admission_status": "NOT_EVALUATED",
+      "evidence_status": "NEW_EVIDENCE_REQUIRED_NO_EXECUTION_AUTHORITY",
+      "fem_execution_authorized": false,
+      "historical_case_id": null,
+      "member_material_id": "member_aluminium_en_aw_6082_t6",
+      "normalized_coordinates": [
+        0.0,
+        1.0,
+        0.5
+      ],
+      "preparation_run_id": "trm_fem_aca6a42cf281",
+      "product_case": {
+        "analysis": {
+          "calculation_mode": "auto",
+          "fidelity": "production"
+        },
+        "fastener": {
+          "bolt_length_mm": 30.0,
+          "bolt_material_id": "fastener_steel",
+          "bolt_property_class": "8.8",
+          "bolt_standard": "ISO 4017:2022",
+          "handedness": "right",
+          "nut_material_id": "fastener_steel",
+          "nut_property_class": "8",
+          "nut_standard": "ISO 4032:2023",
+          "starts": 1,
+          "thread_designation": "M8x1.25"
+        },
+        "interfaces": {
+          "head_bearing_friction_coefficient": 0.15,
+          "member_interface_friction_coefficient": 0.15,
+          "nut_bearing_friction_coefficient": 0.15,
+          "thread_friction_coefficient": 0.15
+        },
+        "loading": {
+          "external_axial_load_n": 0.0,
+          "target_preload_n": 9469.425180449985
+        },
+        "members": {
+          "layers": [
+            {
+              "clearance_hole_diameter_mm": 9.2,
+              "layer_id": "head_side_member",
+              "material_id": "member_aluminium_en_aw_6082_t6",
+              "outer_diameter_mm": 26.4,
+              "thickness_mm": 8.0
+            },
+            {
+              "clearance_hole_diameter_mm": 9.2,
+              "layer_id": "nut_side_member",
+              "material_id": "member_aluminium_en_aw_6082_t6",
+              "outer_diameter_mm": 26.4,
+              "thickness_mm": 8.0
+            }
+          ]
+        },
+        "metadata": {
+          "name": "Phase 3 diversified DOE design proposal",
+          "notes": "Unsealed design proposal; no FEM authorization or physics certification."
+        },
+        "schema_version": 1
+      },
+      "proposal_id": "TRM-DDOE-D-M8x1_25__member_aluminium_en_aw_6082_t6-06",
+      "thread_designation": "M8x1.25"
+    },
+    {
+      "case_hash": "2f0113b2be7d135452798b4f5d8a88f779bd7f6077fed292bd0e3036c029fb2e",
+      "dataset_admission_status": "NOT_EVALUATED",
+      "evidence_status": "NEW_EVIDENCE_REQUIRED_NO_EXECUTION_AUTHORITY",
+      "fem_execution_authorized": false,
+      "historical_case_id": null,
+      "member_material_id": "member_aluminium_en_aw_6082_t6",
+      "normalized_coordinates": [
+        0.5,
+        0.0,
+        1.0
+      ],
+      "preparation_run_id": "trm_fem_f8910e07a521",
+      "product_case": {
+        "analysis": {
+          "calculation_mode": "auto",
+          "fidelity": "production"
+        },
+        "fastener": {
+          "bolt_length_mm": 30.0,
+          "bolt_material_id": "fastener_steel",
+          "bolt_property_class": "8.8",
+          "bolt_standard": "ISO 4017:2022",
+          "handedness": "right",
+          "nut_material_id": "fastener_steel",
+          "nut_property_class": "8",
+          "nut_standard": "ISO 4032:2023",
+          "starts": 1,
+          "thread_designation": "M8x1.25"
+        },
+        "interfaces": {
+          "head_bearing_friction_coefficient": 0.15,
+          "member_interface_friction_coefficient": 0.15,
+          "nut_bearing_friction_coefficient": 0.15,
+          "thread_friction_coefficient": 0.15
+        },
+        "loading": {
+          "external_axial_load_n": 0.0,
+          "target_preload_n": 11047.662710524983
+        },
+        "members": {
+          "layers": [
+            {
+              "clearance_hole_diameter_mm": 9.6,
+              "layer_id": "head_side_member",
+              "material_id": "member_aluminium_en_aw_6082_t6",
+              "outer_diameter_mm": 28.8,
+              "thickness_mm": 6.4
+            },
+            {
+              "clearance_hole_diameter_mm": 9.6,
+              "layer_id": "nut_side_member",
+              "material_id": "member_aluminium_en_aw_6082_t6",
+              "outer_diameter_mm": 28.8,
+              "thickness_mm": 9.6
+            }
+          ]
+        },
+        "metadata": {
+          "name": "Phase 3 diversified DOE design proposal",
+          "notes": "Unsealed design proposal; no FEM authorization or physics certification."
+        },
+        "schema_version": 1
+      },
+      "proposal_id": "TRM-DDOE-D-M8x1_25__member_aluminium_en_aw_6082_t6-07",
+      "thread_designation": "M8x1.25"
+    },
+    {
+      "case_hash": "4562bb453eeb779c774fcc9c4338c6fc15427e3e565a2c5e2996e19891d8252e",
+      "dataset_admission_status": "NOT_EVALUATED",
+      "evidence_status": "NEW_EVIDENCE_REQUIRED_NO_EXECUTION_AUTHORITY",
+      "fem_execution_authorized": false,
+      "historical_case_id": null,
+      "member_material_id": "member_aluminium_en_aw_6082_t6",
+      "normalized_coordinates": [
+        0.5,
+        0.5,
+        0.5
+      ],
+      "preparation_run_id": "trm_fem_faa0235a9255",
+      "product_case": {
+        "analysis": {
+          "calculation_mode": "auto",
+          "fidelity": "production"
+        },
+        "fastener": {
+          "bolt_length_mm": 30.0,
+          "bolt_material_id": "fastener_steel",
+          "bolt_property_class": "8.8",
+          "bolt_standard": "ISO 4017:2022",
+          "handedness": "right",
+          "nut_material_id": "fastener_steel",
+          "nut_property_class": "8",
+          "nut_standard": "ISO 4032:2023",
+          "starts": 1,
+          "thread_designation": "M8x1.25"
+        },
+        "interfaces": {
+          "head_bearing_friction_coefficient": 0.15,
+          "member_interface_friction_coefficient": 0.15,
+          "nut_bearing_friction_coefficient": 0.15,
+          "thread_friction_coefficient": 0.15
+        },
+        "loading": {
+          "external_axial_load_n": 0.0,
+          "target_preload_n": 11047.662710524983
+        },
+        "members": {
+          "layers": [
+            {
+              "clearance_hole_diameter_mm": 9.2,
+              "layer_id": "head_side_member",
+              "material_id": "member_aluminium_en_aw_6082_t6",
+              "outer_diameter_mm": 26.4,
+              "thickness_mm": 7.2
+            },
+            {
+              "clearance_hole_diameter_mm": 9.2,
+              "layer_id": "nut_side_member",
+              "material_id": "member_aluminium_en_aw_6082_t6",
+              "outer_diameter_mm": 26.4,
+              "thickness_mm": 8.8
+            }
+          ]
+        },
+        "metadata": {
+          "name": "Phase 3 diversified DOE design proposal",
+          "notes": "Unsealed design proposal; no FEM authorization or physics certification."
+        },
+        "schema_version": 1
+      },
+      "proposal_id": "TRM-DDOE-D-M8x1_25__member_aluminium_en_aw_6082_t6-08",
+      "thread_designation": "M8x1.25"
+    },
+    {
+      "case_hash": "4c66ed72bc390d19cd9d6e62e28227149ae765fd8e276a4ad46aa5f382c81beb",
+      "dataset_admission_status": "NOT_EVALUATED",
+      "evidence_status": "NEW_EVIDENCE_REQUIRED_NO_EXECUTION_AUTHORITY",
+      "fem_execution_authorized": false,
+      "historical_case_id": null,
+      "member_material_id": "member_aluminium_en_aw_6082_t6",
+      "normalized_coordinates": [
+        1.0,
+        0.5,
+        0.0
+      ],
+      "preparation_run_id": "trm_fem_9efdb35e4eac",
+      "product_case": {
+        "analysis": {
+          "calculation_mode": "auto",
+          "fidelity": "production"
+        },
+        "fastener": {
+          "bolt_length_mm": 30.0,
+          "bolt_material_id": "fastener_steel",
+          "bolt_property_class": "8.8",
+          "bolt_standard": "ISO 4017:2022",
+          "handedness": "right",
+          "nut_material_id": "fastener_steel",
+          "nut_property_class": "8",
+          "nut_standard": "ISO 4032:2023",
+          "starts": 1,
+          "thread_designation": "M8x1.25"
+        },
+        "interfaces": {
+          "head_bearing_friction_coefficient": 0.15,
+          "member_interface_friction_coefficient": 0.15,
+          "nut_bearing_friction_coefficient": 0.15,
+          "thread_friction_coefficient": 0.15
+        },
+        "loading": {
+          "external_axial_load_n": 0.0,
+          "target_preload_n": 12625.90024059998
+        },
+        "members": {
+          "layers": [
+            {
+              "clearance_hole_diameter_mm": 8.8,
+              "layer_id": "head_side_member",
+              "material_id": "member_aluminium_en_aw_6082_t6",
+              "outer_diameter_mm": 24.0,
+              "thickness_mm": 7.2
+            },
+            {
+              "clearance_hole_diameter_mm": 8.8,
+              "layer_id": "nut_side_member",
+              "material_id": "member_aluminium_en_aw_6082_t6",
+              "outer_diameter_mm": 24.0,
+              "thickness_mm": 8.8
+            }
+          ]
+        },
+        "metadata": {
+          "name": "Phase 3 diversified DOE design proposal",
+          "notes": "Unsealed design proposal; no FEM authorization or physics certification."
+        },
+        "schema_version": 1
+      },
+      "proposal_id": "TRM-DDOE-D-M8x1_25__member_aluminium_en_aw_6082_t6-09",
+      "thread_designation": "M8x1.25"
+    },
+    {
+      "case_hash": "08ccf6a8056c65680faa240b456b70cae819a336cfd98fe0defc50eeb76885de",
+      "dataset_admission_status": "NOT_EVALUATED",
+      "evidence_status": "NEW_EVIDENCE_REQUIRED_NO_EXECUTION_AUTHORITY",
+      "fem_execution_authorized": false,
+      "historical_case_id": null,
+      "member_material_id": "member_aluminium_en_aw_6082_t6",
+      "normalized_coordinates": [
+        0.0,
+        0.0,
+        0.75
+      ],
+      "preparation_run_id": "trm_fem_0e31255dffb2",
+      "product_case": {
+        "analysis": {
+          "calculation_mode": "auto",
+          "fidelity": "production"
+        },
+        "fastener": {
+          "bolt_length_mm": 30.0,
+          "bolt_material_id": "fastener_steel",
+          "bolt_property_class": "8.8",
+          "bolt_standard": "ISO 4017:2022",
+          "handedness": "right",
+          "nut_material_id": "fastener_steel",
+          "nut_property_class": "8",
+          "nut_standard": "ISO 4032:2023",
+          "starts": 1,
+          "thread_designation": "M8x1.25"
+        },
+        "interfaces": {
+          "head_bearing_friction_coefficient": 0.15,
+          "member_interface_friction_coefficient": 0.15,
+          "nut_bearing_friction_coefficient": 0.15,
+          "thread_friction_coefficient": 0.15
+        },
+        "loading": {
+          "external_axial_load_n": 0.0,
+          "target_preload_n": 9469.425180449985
+        },
+        "members": {
+          "layers": [
+            {
+              "clearance_hole_diameter_mm": 9.4,
+              "layer_id": "head_side_member",
+              "material_id": "member_aluminium_en_aw_6082_t6",
+              "outer_diameter_mm": 27.6,
+              "thickness_mm": 6.4
+            },
+            {
+              "clearance_hole_diameter_mm": 9.4,
+              "layer_id": "nut_side_member",
+              "material_id": "member_aluminium_en_aw_6082_t6",
+              "outer_diameter_mm": 27.6,
+              "thickness_mm": 9.6
+            }
+          ]
+        },
+        "metadata": {
+          "name": "Phase 3 diversified DOE design proposal",
+          "notes": "Unsealed design proposal; no FEM authorization or physics certification."
+        },
+        "schema_version": 1
+      },
+      "proposal_id": "TRM-DDOE-D-M8x1_25__member_aluminium_en_aw_6082_t6-10",
+      "thread_designation": "M8x1.25"
+    },
+    {
+      "case_hash": "31cd08b99e0bdcc5ca2f2e79523ff62fb2d92459e720667332be16c1735a7e2e",
+      "dataset_admission_status": "NOT_EVALUATED",
+      "evidence_status": "NEW_EVIDENCE_REQUIRED_NO_EXECUTION_AUTHORITY",
+      "fem_execution_authorized": false,
+      "historical_case_id": null,
+      "member_material_id": "member_aluminium_en_aw_6082_t6",
+      "normalized_coordinates": [
+        0.0,
+        0.5,
+        0.25
+      ],
+      "preparation_run_id": "trm_fem_021dd05c9bc7",
+      "product_case": {
+        "analysis": {
+          "calculation_mode": "auto",
+          "fidelity": "production"
+        },
+        "fastener": {
+          "bolt_length_mm": 30.0,
+          "bolt_material_id": "fastener_steel",
+          "bolt_property_class": "8.8",
+          "bolt_standard": "ISO 4017:2022",
+          "handedness": "right",
+          "nut_material_id": "fastener_steel",
+          "nut_property_class": "8",
+          "nut_standard": "ISO 4032:2023",
+          "starts": 1,
+          "thread_designation": "M8x1.25"
+        },
+        "interfaces": {
+          "head_bearing_friction_coefficient": 0.15,
+          "member_interface_friction_coefficient": 0.15,
+          "nut_bearing_friction_coefficient": 0.15,
+          "thread_friction_coefficient": 0.15
+        },
+        "loading": {
+          "external_axial_load_n": 0.0,
+          "target_preload_n": 9469.425180449985
+        },
+        "members": {
+          "layers": [
+            {
+              "clearance_hole_diameter_mm": 9.0,
+              "layer_id": "head_side_member",
+              "material_id": "member_aluminium_en_aw_6082_t6",
+              "outer_diameter_mm": 25.2,
+              "thickness_mm": 7.2
+            },
+            {
+              "clearance_hole_diameter_mm": 9.0,
+              "layer_id": "nut_side_member",
+              "material_id": "member_aluminium_en_aw_6082_t6",
+              "outer_diameter_mm": 25.2,
+              "thickness_mm": 8.8
+            }
+          ]
+        },
+        "metadata": {
+          "name": "Phase 3 diversified DOE design proposal",
+          "notes": "Unsealed design proposal; no FEM authorization or physics certification."
+        },
+        "schema_version": 1
+      },
+      "proposal_id": "TRM-DDOE-D-M8x1_25__member_aluminium_en_aw_6082_t6-11",
+      "thread_designation": "M8x1.25"
+    },
+    {
+      "case_hash": "04111c592aee871ac8b15f8251066de47e9c94283d973f1e508f6b8bf75309c1",
+      "dataset_admission_status": "NOT_EVALUATED",
+      "evidence_status": "NEW_EVIDENCE_REQUIRED_NO_EXECUTION_AUTHORITY",
+      "fem_execution_authorized": false,
+      "historical_case_id": null,
+      "member_material_id": "member_aluminium_en_aw_6082_t6",
+      "normalized_coordinates": [
+        0.25,
+        1.0,
+        1.0
+      ],
+      "preparation_run_id": "trm_fem_3540fbf319ac",
+      "product_case": {
+        "analysis": {
+          "calculation_mode": "auto",
+          "fidelity": "production"
+        },
+        "fastener": {
+          "bolt_length_mm": 30.0,
+          "bolt_material_id": "fastener_steel",
+          "bolt_property_class": "8.8",
+          "bolt_standard": "ISO 4017:2022",
+          "handedness": "right",
+          "nut_material_id": "fastener_steel",
+          "nut_property_class": "8",
+          "nut_standard": "ISO 4032:2023",
+          "starts": 1,
+          "thread_designation": "M8x1.25"
+        },
+        "interfaces": {
+          "head_bearing_friction_coefficient": 0.15,
+          "member_interface_friction_coefficient": 0.15,
+          "nut_bearing_friction_coefficient": 0.15,
+          "thread_friction_coefficient": 0.15
+        },
+        "loading": {
+          "external_axial_load_n": 0.0,
+          "target_preload_n": 10258.543945487483
+        },
+        "members": {
+          "layers": [
+            {
+              "clearance_hole_diameter_mm": 9.6,
+              "layer_id": "head_side_member",
+              "material_id": "member_aluminium_en_aw_6082_t6",
+              "outer_diameter_mm": 28.8,
+              "thickness_mm": 8.0
+            },
+            {
+              "clearance_hole_diameter_mm": 9.6,
+              "layer_id": "nut_side_member",
+              "material_id": "member_aluminium_en_aw_6082_t6",
+              "outer_diameter_mm": 28.8,
+              "thickness_mm": 8.0
+            }
+          ]
+        },
+        "metadata": {
+          "name": "Phase 3 diversified DOE design proposal",
+          "notes": "Unsealed design proposal; no FEM authorization or physics certification."
+        },
+        "schema_version": 1
+      },
+      "proposal_id": "TRM-DDOE-D-M8x1_25__member_aluminium_en_aw_6082_t6-12",
+      "thread_designation": "M8x1.25"
+    },
+    {
+      "case_hash": "a5e86e9150fbed8b3b17cd9617c9b78d919124baaa373310fa997f7c9bc72799",
+      "dataset_admission_status": "NOT_EVALUATED",
+      "evidence_status": "EXACT_HISTORICAL_ANCHOR_ADMISSION_PENDING",
+      "fem_execution_authorized": false,
+      "historical_case_id": "D-BND-001",
+      "member_material_id": "steel_member",
+      "normalized_coordinates": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "product_case": null,
+      "proposal_id": "TRM-DDOE-D-M10x1_5__steel_member-01",
+      "thread_designation": "M10x1.5"
+    },
+    {
+      "case_hash": "4ec5fd41259571b82418ef03a7b5891278ff02618939118aa88037b7cb02e630",
+      "dataset_admission_status": "NOT_EVALUATED",
+      "evidence_status": "EXACT_HISTORICAL_ANCHOR_ADMISSION_PENDING",
+      "fem_execution_authorized": false,
+      "historical_case_id": "D-BND-002",
+      "member_material_id": "steel_member",
+      "normalized_coordinates": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "product_case": null,
+      "proposal_id": "TRM-DDOE-D-M10x1_5__steel_member-02",
+      "thread_designation": "M10x1.5"
+    },
+    {
+      "case_hash": "132f5f2b979503889a4f5a463a705b1f19699adcf55b5ec6cf0df9db48628b3b",
+      "dataset_admission_status": "NOT_EVALUATED",
+      "evidence_status": "EXACT_HISTORICAL_ANCHOR_ADMISSION_PENDING",
+      "fem_execution_authorized": false,
+      "historical_case_id": "D-BND-003",
+      "member_material_id": "steel_member",
+      "normalized_coordinates": [
+        0.0,
+        1.0,
+        1.0
+      ],
+      "product_case": null,
+      "proposal_id": "TRM-DDOE-D-M10x1_5__steel_member-03",
+      "thread_designation": "M10x1.5"
+    },
+    {
+      "case_hash": "9d11902c8c53632a573986b9a62c63be9299500a32b43698f353fd55a05f5fdc",
+      "dataset_admission_status": "NOT_EVALUATED",
+      "evidence_status": "EXACT_HISTORICAL_ANCHOR_ADMISSION_PENDING",
+      "fem_execution_authorized": false,
+      "historical_case_id": "D-BND-004",
+      "member_material_id": "steel_member",
+      "normalized_coordinates": [
+        1.0,
+        0.0,
+        1.0
+      ],
+      "product_case": null,
+      "proposal_id": "TRM-DDOE-D-M10x1_5__steel_member-04",
+      "thread_designation": "M10x1.5"
+    },
+    {
+      "case_hash": "d0bfb12d44c25f6b7a1adf2a9c4f14615a125fe6e95c90fdeda06b59eab86faa",
+      "dataset_admission_status": "NOT_EVALUATED",
+      "evidence_status": "EXACT_HISTORICAL_ANCHOR_ADMISSION_PENDING",
+      "fem_execution_authorized": false,
+      "historical_case_id": "D-INT-004",
+      "member_material_id": "steel_member",
+      "normalized_coordinates": [
+        0.2964160438953053,
+        0.9954757841381628,
+        0.09108118070339287
+      ],
+      "product_case": null,
+      "proposal_id": "TRM-DDOE-D-M10x1_5__steel_member-05",
+      "thread_designation": "M10x1.5"
+    },
+    {
+      "case_hash": "d667bb1aca2720b10e8a80dbcfba700b042b45a20289927feb5e97a33f3b244c",
+      "dataset_admission_status": "NOT_EVALUATED",
+      "evidence_status": "EXACT_HISTORICAL_ANCHOR_ADMISSION_PENDING",
+      "fem_execution_authorized": false,
+      "historical_case_id": "D-INT-012",
+      "member_material_id": "steel_member",
+      "normalized_coordinates": [
+        0.9921474272131019,
+        0.8656883351357931,
+        0.7130087476470638
+      ],
+      "product_case": null,
+      "proposal_id": "TRM-DDOE-D-M10x1_5__steel_member-06",
+      "thread_designation": "M10x1.5"
+    },
+    {
+      "case_hash": "06046fe91597028e6aa098c1e3d22f8f94e1b50d16b573f89399b8b7a046d396",
+      "dataset_admission_status": "NOT_EVALUATED",
+      "evidence_status": "EXACT_HISTORICAL_ANCHOR_ADMISSION_PENDING",
+      "fem_execution_authorized": false,
+      "historical_case_id": "D-INT-011",
+      "member_material_id": "steel_member",
+      "normalized_coordinates": [
+        0.7809134146524126,
+        0.2978357230025728,
+        0.012364625694906699
+      ],
+      "product_case": null,
+      "proposal_id": "TRM-DDOE-D-M10x1_5__steel_member-07",
+      "thread_designation": "M10x1.5"
+    },
+    {
+      "case_hash": "dded29952881183e95ca96e8bd35201644461dfcaf272b94a4df7f4e781c6ba4",
+      "dataset_admission_status": "NOT_EVALUATED",
+      "evidence_status": "EXACT_HISTORICAL_ANCHOR_ADMISSION_PENDING",
+      "fem_execution_authorized": false,
+      "historical_case_id": "D-INT-010",
+      "member_material_id": "steel_member",
+      "normalized_coordinates": [
+        0.3884259094216256,
+        0.5016032833852213,
+        0.7525408170679
+      ],
+      "product_case": null,
+      "proposal_id": "TRM-DDOE-D-M10x1_5__steel_member-08",
+      "thread_designation": "M10x1.5"
+    },
+    {
+      "case_hash": "226154f7ef4edd150b25250986538fab4ac24e7ed274c4a50923c95c19839642",
+      "dataset_admission_status": "NOT_EVALUATED",
+      "evidence_status": "EXACT_HISTORICAL_ANCHOR_ADMISSION_PENDING",
+      "fem_execution_authorized": false,
+      "historical_case_id": "D-INT-003",
+      "member_material_id": "steel_member",
+      "normalized_coordinates": [
+        0.5468396257755145,
+        0.10396304788710961,
+        0.5149437109085306
+      ],
+      "product_case": null,
+      "proposal_id": "TRM-DDOE-D-M10x1_5__steel_member-09",
+      "thread_designation": "M10x1.5"
+    },
+    {
+      "case_hash": "6c0eb1807bb0e3c3f59ef39314d6b6b68fca739f345eee9b686fa5b182d7d966",
+      "dataset_admission_status": "NOT_EVALUATED",
+      "evidence_status": "EXACT_HISTORICAL_ANCHOR_ADMISSION_PENDING",
+      "fem_execution_authorized": false,
+      "historical_case_id": "D-INT-006",
+      "member_material_id": "steel_member",
+      "normalized_coordinates": [
+        0.10668332779639358,
+        0.7342950628382584,
+        0.45650750884827107
+      ],
+      "product_case": null,
+      "proposal_id": "TRM-DDOE-D-M10x1_5__steel_member-10",
+      "thread_designation": "M10x1.5"
+    },
+    {
+      "case_hash": "4766e95d0d13506af04271e28edc2b5df2f8718edcb2edf1b097ca79f373916d",
+      "dataset_admission_status": "NOT_EVALUATED",
+      "evidence_status": "EXACT_HISTORICAL_ANCHOR_ADMISSION_PENDING",
+      "fem_execution_authorized": false,
+      "historical_case_id": "D-INT-007",
+      "member_material_id": "steel_member",
+      "normalized_coordinates": [
+        0.8738589390042204,
+        0.1915062513260739,
+        0.35469463350249586
+      ],
+      "product_case": null,
+      "proposal_id": "TRM-DDOE-D-M10x1_5__steel_member-11",
+      "thread_designation": "M10x1.5"
+    },
+    {
+      "case_hash": "1faafccbbc3b9eb2068af0f45c8d91951a29d85917c60871d82535d2ca857315",
+      "dataset_admission_status": "NOT_EVALUATED",
+      "evidence_status": "EXACT_HISTORICAL_ANCHOR_ADMISSION_PENDING",
+      "fem_execution_authorized": false,
+      "historical_case_id": "D-INT-008",
+      "member_material_id": "steel_member",
+      "normalized_coordinates": [
+        0.338688726937794,
+        0.46187250281214554,
+        0.387268407866376
+      ],
+      "product_case": null,
+      "proposal_id": "TRM-DDOE-D-M10x1_5__steel_member-12",
+      "thread_designation": "M10x1.5"
+    },
+    {
+      "case_hash": "db4f5abb0986d0527a06fd72849bfc948041448f6a8a320a4aad0a0858028d53",
+      "dataset_admission_status": "NOT_EVALUATED",
+      "evidence_status": "NEW_EVIDENCE_REQUIRED_NO_EXECUTION_AUTHORITY",
+      "fem_execution_authorized": false,
+      "historical_case_id": null,
+      "member_material_id": "member_aluminium_en_aw_6082_t6",
+      "normalized_coordinates": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "preparation_run_id": "trm_fem_0f92f7fbf611",
+      "product_case": {
+        "analysis": {
+          "calculation_mode": "auto",
+          "fidelity": "production"
+        },
+        "fastener": {
+          "bolt_length_mm": 30.0,
+          "bolt_material_id": "fastener_steel",
+          "bolt_property_class": "8.8",
+          "bolt_standard": "ISO 4017:2022",
+          "handedness": "right",
+          "nut_material_id": "fastener_steel",
+          "nut_property_class": "8",
+          "nut_standard": "ISO 4032:2023",
+          "starts": 1,
+          "thread_designation": "M10x1.5"
+        },
+        "interfaces": {
+          "head_bearing_friction_coefficient": 0.15,
+          "member_interface_friction_coefficient": 0.15,
+          "nut_bearing_friction_coefficient": 0.15,
+          "thread_friction_coefficient": 0.15
+        },
+        "loading": {
+          "external_axial_load_n": 0.0,
+          "target_preload_n": 15000.0
+        },
+        "members": {
+          "layers": [
+            {
+              "clearance_hole_diameter_mm": 11.0,
+              "layer_id": "head_side_member",
+              "material_id": "member_aluminium_en_aw_6082_t6",
+              "outer_diameter_mm": 30.0,
+              "thickness_mm": 8.0
+            },
+            {
+              "clearance_hole_diameter_mm": 11.0,
+              "layer_id": "nut_side_member",
+              "material_id": "member_aluminium_en_aw_6082_t6",
+              "outer_diameter_mm": 30.0,
+              "thickness_mm": 12.0
+            }
+          ]
+        },
+        "metadata": {
+          "name": "Phase 3 diversified DOE design proposal",
+          "notes": "Unsealed design proposal; no FEM authorization or physics certification."
+        },
+        "schema_version": 1
+      },
+      "proposal_id": "TRM-DDOE-D-M10x1_5__member_aluminium_en_aw_6082_t6-01",
+      "thread_designation": "M10x1.5"
+    },
+    {
+      "case_hash": "8da375401526a253cde3056662d358166dc3373f9200325c39ddf9514f6cb5f1",
+      "dataset_admission_status": "NOT_EVALUATED",
+      "evidence_status": "NEW_EVIDENCE_REQUIRED_NO_EXECUTION_AUTHORITY",
+      "fem_execution_authorized": false,
+      "historical_case_id": null,
+      "member_material_id": "member_aluminium_en_aw_6082_t6",
+      "normalized_coordinates": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "preparation_run_id": "trm_fem_d924d7c036b7",
+      "product_case": {
+        "analysis": {
+          "calculation_mode": "auto",
+          "fidelity": "production"
+        },
+        "fastener": {
+          "bolt_length_mm": 30.0,
+          "bolt_material_id": "fastener_steel",
+          "bolt_property_class": "8.8",
+          "bolt_standard": "ISO 4017:2022",
+          "handedness": "right",
+          "nut_material_id": "fastener_steel",
+          "nut_property_class": "8",
+          "nut_standard": "ISO 4032:2023",
+          "starts": 1,
+          "thread_designation": "M10x1.5"
+        },
+        "interfaces": {
+          "head_bearing_friction_coefficient": 0.15,
+          "member_interface_friction_coefficient": 0.15,
+          "nut_bearing_friction_coefficient": 0.15,
+          "thread_friction_coefficient": 0.15
+        },
+        "loading": {
+          "external_axial_load_n": 0.0,
+          "target_preload_n": 20000.0
+        },
+        "members": {
+          "layers": [
+            {
+              "clearance_hole_diameter_mm": 12.0,
+              "layer_id": "head_side_member",
+              "material_id": "member_aluminium_en_aw_6082_t6",
+              "outer_diameter_mm": 36.0,
+              "thickness_mm": 10.0
+            },
+            {
+              "clearance_hole_diameter_mm": 12.0,
+              "layer_id": "nut_side_member",
+              "material_id": "member_aluminium_en_aw_6082_t6",
+              "outer_diameter_mm": 36.0,
+              "thickness_mm": 10.0
+            }
+          ]
+        },
+        "metadata": {
+          "name": "Phase 3 diversified DOE design proposal",
+          "notes": "Unsealed design proposal; no FEM authorization or physics certification."
+        },
+        "schema_version": 1
+      },
+      "proposal_id": "TRM-DDOE-D-M10x1_5__member_aluminium_en_aw_6082_t6-02",
+      "thread_designation": "M10x1.5"
+    },
+    {
+      "case_hash": "eac55af4d11fd8b23203f51c738cac5190cf203b637fb9f5be16169fdcbdfd12",
+      "dataset_admission_status": "NOT_EVALUATED",
+      "evidence_status": "NEW_EVIDENCE_REQUIRED_NO_EXECUTION_AUTHORITY",
+      "fem_execution_authorized": false,
+      "historical_case_id": null,
+      "member_material_id": "member_aluminium_en_aw_6082_t6",
+      "normalized_coordinates": [
+        0.0,
+        0.5,
+        1.0
+      ],
+      "preparation_run_id": "trm_fem_a57f61f13b9d",
+      "product_case": {
+        "analysis": {
+          "calculation_mode": "auto",
+          "fidelity": "production"
+        },
+        "fastener": {
+          "bolt_length_mm": 30.0,
+          "bolt_material_id": "fastener_steel",
+          "bolt_property_class": "8.8",
+          "bolt_standard": "ISO 4017:2022",
+          "handedness": "right",
+          "nut_material_id": "fastener_steel",
+          "nut_property_class": "8",
+          "nut_standard": "ISO 4032:2023",
+          "starts": 1,
+          "thread_designation": "M10x1.5"
+        },
+        "interfaces": {
+          "head_bearing_friction_coefficient": 0.15,
+          "member_interface_friction_coefficient": 0.15,
+          "nut_bearing_friction_coefficient": 0.15,
+          "thread_friction_coefficient": 0.15
+        },
+        "loading": {
+          "external_axial_load_n": 0.0,
+          "target_preload_n": 15000.0
+        },
+        "members": {
+          "layers": [
+            {
+              "clearance_hole_diameter_mm": 12.0,
+              "layer_id": "head_side_member",
+              "material_id": "member_aluminium_en_aw_6082_t6",
+              "outer_diameter_mm": 36.0,
+              "thickness_mm": 9.0
+            },
+            {
+              "clearance_hole_diameter_mm": 12.0,
+              "layer_id": "nut_side_member",
+              "material_id": "member_aluminium_en_aw_6082_t6",
+              "outer_diameter_mm": 36.0,
+              "thickness_mm": 11.0
+            }
+          ]
+        },
+        "metadata": {
+          "name": "Phase 3 diversified DOE design proposal",
+          "notes": "Unsealed design proposal; no FEM authorization or physics certification."
+        },
+        "schema_version": 1
+      },
+      "proposal_id": "TRM-DDOE-D-M10x1_5__member_aluminium_en_aw_6082_t6-03",
+      "thread_designation": "M10x1.5"
+    },
+    {
+      "case_hash": "a833df6408f7587d3f6d28d467390b624748b71c6c4d0a2b558f9410624f7706",
+      "dataset_admission_status": "NOT_EVALUATED",
+      "evidence_status": "NEW_EVIDENCE_REQUIRED_NO_EXECUTION_AUTHORITY",
+      "fem_execution_authorized": false,
+      "historical_case_id": null,
+      "member_material_id": "member_aluminium_en_aw_6082_t6",
+      "normalized_coordinates": [
+        0.5,
+        1.0,
+        0.0
+      ],
+      "preparation_run_id": "trm_fem_c0b2237d5800",
+      "product_case": {
+        "analysis": {
+          "calculation_mode": "auto",
+          "fidelity": "production"
+        },
+        "fastener": {
+          "bolt_length_mm": 30.0,
+          "bolt_material_id": "fastener_steel",
+          "bolt_property_class": "8.8",
+          "bolt_standard": "ISO 4017:2022",
+          "handedness": "right",
+          "nut_material_id": "fastener_steel",
+          "nut_property_class": "8",
+          "nut_standard": "ISO 4032:2023",
+          "starts": 1,
+          "thread_designation": "M10x1.5"
+        },
+        "interfaces": {
+          "head_bearing_friction_coefficient": 0.15,
+          "member_interface_friction_coefficient": 0.15,
+          "nut_bearing_friction_coefficient": 0.15,
+          "thread_friction_coefficient": 0.15
+        },
+        "loading": {
+          "external_axial_load_n": 0.0,
+          "target_preload_n": 17500.0
+        },
+        "members": {
+          "layers": [
+            {
+              "clearance_hole_diameter_mm": 11.0,
+              "layer_id": "head_side_member",
+              "material_id": "member_aluminium_en_aw_6082_t6",
+              "outer_diameter_mm": 30.0,
+              "thickness_mm": 10.0
+            },
+            {
+              "clearance_hole_diameter_mm": 11.0,
+              "layer_id": "nut_side_member",
+              "material_id": "member_aluminium_en_aw_6082_t6",
+              "outer_diameter_mm": 30.0,
+              "thickness_mm": 10.0
+            }
+          ]
+        },
+        "metadata": {
+          "name": "Phase 3 diversified DOE design proposal",
+          "notes": "Unsealed design proposal; no FEM authorization or physics certification."
+        },
+        "schema_version": 1
+      },
+      "proposal_id": "TRM-DDOE-D-M10x1_5__member_aluminium_en_aw_6082_t6-04",
+      "thread_designation": "M10x1.5"
+    },
+    {
+      "case_hash": "dfb44775d3ad128f7d14d4410a65ddc062f2d22e8b2f79c846cae4d8d41247a2",
+      "dataset_admission_status": "NOT_EVALUATED",
+      "evidence_status": "NEW_EVIDENCE_REQUIRED_NO_EXECUTION_AUTHORITY",
+      "fem_execution_authorized": false,
+      "historical_case_id": null,
+      "member_material_id": "member_aluminium_en_aw_6082_t6",
+      "normalized_coordinates": [
+        1.0,
+        0.0,
+        0.5
+      ],
+      "preparation_run_id": "trm_fem_4ccebbc35697",
+      "product_case": {
+        "analysis": {
+          "calculation_mode": "auto",
+          "fidelity": "production"
+        },
+        "fastener": {
+          "bolt_length_mm": 30.0,
+          "bolt_material_id": "fastener_steel",
+          "bolt_property_class": "8.8",
+          "bolt_standard": "ISO 4017:2022",
+          "handedness": "right",
+          "nut_material_id": "fastener_steel",
+          "nut_property_class": "8",
+          "nut_standard": "ISO 4032:2023",
+          "starts": 1,
+          "thread_designation": "M10x1.5"
+        },
+        "interfaces": {
+          "head_bearing_friction_coefficient": 0.15,
+          "member_interface_friction_coefficient": 0.15,
+          "nut_bearing_friction_coefficient": 0.15,
+          "thread_friction_coefficient": 0.15
+        },
+        "loading": {
+          "external_axial_load_n": 0.0,
+          "target_preload_n": 20000.0
+        },
+        "members": {
+          "layers": [
+            {
+              "clearance_hole_diameter_mm": 11.5,
+              "layer_id": "head_side_member",
+              "material_id": "member_aluminium_en_aw_6082_t6",
+              "outer_diameter_mm": 33.0,
+              "thickness_mm": 8.0
+            },
+            {
+              "clearance_hole_diameter_mm": 11.5,
+              "layer_id": "nut_side_member",
+              "material_id": "member_aluminium_en_aw_6082_t6",
+              "outer_diameter_mm": 33.0,
+              "thickness_mm": 12.0
+            }
+          ]
+        },
+        "metadata": {
+          "name": "Phase 3 diversified DOE design proposal",
+          "notes": "Unsealed design proposal; no FEM authorization or physics certification."
+        },
+        "schema_version": 1
+      },
+      "proposal_id": "TRM-DDOE-D-M10x1_5__member_aluminium_en_aw_6082_t6-05",
+      "thread_designation": "M10x1.5"
+    },
+    {
+      "case_hash": "bcd9030cbcf1314fd948829b91aae865d1c50840c1f67e1a51228299c0334d1f",
+      "dataset_admission_status": "NOT_EVALUATED",
+      "evidence_status": "NEW_EVIDENCE_REQUIRED_NO_EXECUTION_AUTHORITY",
+      "fem_execution_authorized": false,
+      "historical_case_id": null,
+      "member_material_id": "member_aluminium_en_aw_6082_t6",
+      "normalized_coordinates": [
+        0.0,
+        1.0,
+        0.5
+      ],
+      "preparation_run_id": "trm_fem_b750f908561d",
+      "product_case": {
+        "analysis": {
+          "calculation_mode": "auto",
+          "fidelity": "production"
+        },
+        "fastener": {
+          "bolt_length_mm": 30.0,
+          "bolt_material_id": "fastener_steel",
+          "bolt_property_class": "8.8",
+          "bolt_standard": "ISO 4017:2022",
+          "handedness": "right",
+          "nut_material_id": "fastener_steel",
+          "nut_property_class": "8",
+          "nut_standard": "ISO 4032:2023",
+          "starts": 1,
+          "thread_designation": "M10x1.5"
+        },
+        "interfaces": {
+          "head_bearing_friction_coefficient": 0.15,
+          "member_interface_friction_coefficient": 0.15,
+          "nut_bearing_friction_coefficient": 0.15,
+          "thread_friction_coefficient": 0.15
+        },
+        "loading": {
+          "external_axial_load_n": 0.0,
+          "target_preload_n": 15000.0
+        },
+        "members": {
+          "layers": [
+            {
+              "clearance_hole_diameter_mm": 11.5,
+              "layer_id": "head_side_member",
+              "material_id": "member_aluminium_en_aw_6082_t6",
+              "outer_diameter_mm": 33.0,
+              "thickness_mm": 10.0
+            },
+            {
+              "clearance_hole_diameter_mm": 11.5,
+              "layer_id": "nut_side_member",
+              "material_id": "member_aluminium_en_aw_6082_t6",
+              "outer_diameter_mm": 33.0,
+              "thickness_mm": 10.0
+            }
+          ]
+        },
+        "metadata": {
+          "name": "Phase 3 diversified DOE design proposal",
+          "notes": "Unsealed design proposal; no FEM authorization or physics certification."
+        },
+        "schema_version": 1
+      },
+      "proposal_id": "TRM-DDOE-D-M10x1_5__member_aluminium_en_aw_6082_t6-06",
+      "thread_designation": "M10x1.5"
+    },
+    {
+      "case_hash": "e345263540b3fa0655249b6a7563986e223f24aa66d2feb73e119f01dc5837a1",
+      "dataset_admission_status": "NOT_EVALUATED",
+      "evidence_status": "NEW_EVIDENCE_REQUIRED_NO_EXECUTION_AUTHORITY",
+      "fem_execution_authorized": false,
+      "historical_case_id": null,
+      "member_material_id": "member_aluminium_en_aw_6082_t6",
+      "normalized_coordinates": [
+        0.5,
+        0.0,
+        1.0
+      ],
+      "preparation_run_id": "trm_fem_f54676dc6202",
+      "product_case": {
+        "analysis": {
+          "calculation_mode": "auto",
+          "fidelity": "production"
+        },
+        "fastener": {
+          "bolt_length_mm": 30.0,
+          "bolt_material_id": "fastener_steel",
+          "bolt_property_class": "8.8",
+          "bolt_standard": "ISO 4017:2022",
+          "handedness": "right",
+          "nut_material_id": "fastener_steel",
+          "nut_property_class": "8",
+          "nut_standard": "ISO 4032:2023",
+          "starts": 1,
+          "thread_designation": "M10x1.5"
+        },
+        "interfaces": {
+          "head_bearing_friction_coefficient": 0.15,
+          "member_interface_friction_coefficient": 0.15,
+          "nut_bearing_friction_coefficient": 0.15,
+          "thread_friction_coefficient": 0.15
+        },
+        "loading": {
+          "external_axial_load_n": 0.0,
+          "target_preload_n": 17500.0
+        },
+        "members": {
+          "layers": [
+            {
+              "clearance_hole_diameter_mm": 12.0,
+              "layer_id": "head_side_member",
+              "material_id": "member_aluminium_en_aw_6082_t6",
+              "outer_diameter_mm": 36.0,
+              "thickness_mm": 8.0
+            },
+            {
+              "clearance_hole_diameter_mm": 12.0,
+              "layer_id": "nut_side_member",
+              "material_id": "member_aluminium_en_aw_6082_t6",
+              "outer_diameter_mm": 36.0,
+              "thickness_mm": 12.0
+            }
+          ]
+        },
+        "metadata": {
+          "name": "Phase 3 diversified DOE design proposal",
+          "notes": "Unsealed design proposal; no FEM authorization or physics certification."
+        },
+        "schema_version": 1
+      },
+      "proposal_id": "TRM-DDOE-D-M10x1_5__member_aluminium_en_aw_6082_t6-07",
+      "thread_designation": "M10x1.5"
+    },
+    {
+      "case_hash": "5eda936760c9fc9f6ca7c1fd4f643a3441ad3cac890224813825bbdeb31d580c",
+      "dataset_admission_status": "NOT_EVALUATED",
+      "evidence_status": "NEW_EVIDENCE_REQUIRED_NO_EXECUTION_AUTHORITY",
+      "fem_execution_authorized": false,
+      "historical_case_id": null,
+      "member_material_id": "member_aluminium_en_aw_6082_t6",
+      "normalized_coordinates": [
+        0.5,
+        0.5,
+        0.5
+      ],
+      "preparation_run_id": "trm_fem_1f5db790a3f1",
+      "product_case": {
+        "analysis": {
+          "calculation_mode": "auto",
+          "fidelity": "production"
+        },
+        "fastener": {
+          "bolt_length_mm": 30.0,
+          "bolt_material_id": "fastener_steel",
+          "bolt_property_class": "8.8",
+          "bolt_standard": "ISO 4017:2022",
+          "handedness": "right",
+          "nut_material_id": "fastener_steel",
+          "nut_property_class": "8",
+          "nut_standard": "ISO 4032:2023",
+          "starts": 1,
+          "thread_designation": "M10x1.5"
+        },
+        "interfaces": {
+          "head_bearing_friction_coefficient": 0.15,
+          "member_interface_friction_coefficient": 0.15,
+          "nut_bearing_friction_coefficient": 0.15,
+          "thread_friction_coefficient": 0.15
+        },
+        "loading": {
+          "external_axial_load_n": 0.0,
+          "target_preload_n": 17500.0
+        },
+        "members": {
+          "layers": [
+            {
+              "clearance_hole_diameter_mm": 11.5,
+              "layer_id": "head_side_member",
+              "material_id": "member_aluminium_en_aw_6082_t6",
+              "outer_diameter_mm": 33.0,
+              "thickness_mm": 9.0
+            },
+            {
+              "clearance_hole_diameter_mm": 11.5,
+              "layer_id": "nut_side_member",
+              "material_id": "member_aluminium_en_aw_6082_t6",
+              "outer_diameter_mm": 33.0,
+              "thickness_mm": 11.0
+            }
+          ]
+        },
+        "metadata": {
+          "name": "Phase 3 diversified DOE design proposal",
+          "notes": "Unsealed design proposal; no FEM authorization or physics certification."
+        },
+        "schema_version": 1
+      },
+      "proposal_id": "TRM-DDOE-D-M10x1_5__member_aluminium_en_aw_6082_t6-08",
+      "thread_designation": "M10x1.5"
+    },
+    {
+      "case_hash": "c7497b209c2f0d909d8038b58fb5f736083bd5b35100c58937cdd31bfbbd68fe",
+      "dataset_admission_status": "NOT_EVALUATED",
+      "evidence_status": "NEW_EVIDENCE_REQUIRED_NO_EXECUTION_AUTHORITY",
+      "fem_execution_authorized": false,
+      "historical_case_id": null,
+      "member_material_id": "member_aluminium_en_aw_6082_t6",
+      "normalized_coordinates": [
+        1.0,
+        0.5,
+        0.0
+      ],
+      "preparation_run_id": "trm_fem_f89de5b0415a",
+      "product_case": {
+        "analysis": {
+          "calculation_mode": "auto",
+          "fidelity": "production"
+        },
+        "fastener": {
+          "bolt_length_mm": 30.0,
+          "bolt_material_id": "fastener_steel",
+          "bolt_property_class": "8.8",
+          "bolt_standard": "ISO 4017:2022",
+          "handedness": "right",
+          "nut_material_id": "fastener_steel",
+          "nut_property_class": "8",
+          "nut_standard": "ISO 4032:2023",
+          "starts": 1,
+          "thread_designation": "M10x1.5"
+        },
+        "interfaces": {
+          "head_bearing_friction_coefficient": 0.15,
+          "member_interface_friction_coefficient": 0.15,
+          "nut_bearing_friction_coefficient": 0.15,
+          "thread_friction_coefficient": 0.15
+        },
+        "loading": {
+          "external_axial_load_n": 0.0,
+          "target_preload_n": 20000.0
+        },
+        "members": {
+          "layers": [
+            {
+              "clearance_hole_diameter_mm": 11.0,
+              "layer_id": "head_side_member",
+              "material_id": "member_aluminium_en_aw_6082_t6",
+              "outer_diameter_mm": 30.0,
+              "thickness_mm": 9.0
+            },
+            {
+              "clearance_hole_diameter_mm": 11.0,
+              "layer_id": "nut_side_member",
+              "material_id": "member_aluminium_en_aw_6082_t6",
+              "outer_diameter_mm": 30.0,
+              "thickness_mm": 11.0
+            }
+          ]
+        },
+        "metadata": {
+          "name": "Phase 3 diversified DOE design proposal",
+          "notes": "Unsealed design proposal; no FEM authorization or physics certification."
+        },
+        "schema_version": 1
+      },
+      "proposal_id": "TRM-DDOE-D-M10x1_5__member_aluminium_en_aw_6082_t6-09",
+      "thread_designation": "M10x1.5"
+    },
+    {
+      "case_hash": "4544109f9b8a8905609b571e164666578e97b1dcc9ca6e59ac2ebc04aefc4a1c",
+      "dataset_admission_status": "NOT_EVALUATED",
+      "evidence_status": "NEW_EVIDENCE_REQUIRED_NO_EXECUTION_AUTHORITY",
+      "fem_execution_authorized": false,
+      "historical_case_id": null,
+      "member_material_id": "member_aluminium_en_aw_6082_t6",
+      "normalized_coordinates": [
+        0.0,
+        0.0,
+        0.75
+      ],
+      "preparation_run_id": "trm_fem_9a07bf7b4e15",
+      "product_case": {
+        "analysis": {
+          "calculation_mode": "auto",
+          "fidelity": "production"
+        },
+        "fastener": {
+          "bolt_length_mm": 30.0,
+          "bolt_material_id": "fastener_steel",
+          "bolt_property_class": "8.8",
+          "bolt_standard": "ISO 4017:2022",
+          "handedness": "right",
+          "nut_material_id": "fastener_steel",
+          "nut_property_class": "8",
+          "nut_standard": "ISO 4032:2023",
+          "starts": 1,
+          "thread_designation": "M10x1.5"
+        },
+        "interfaces": {
+          "head_bearing_friction_coefficient": 0.15,
+          "member_interface_friction_coefficient": 0.15,
+          "nut_bearing_friction_coefficient": 0.15,
+          "thread_friction_coefficient": 0.15
+        },
+        "loading": {
+          "external_axial_load_n": 0.0,
+          "target_preload_n": 15000.0
+        },
+        "members": {
+          "layers": [
+            {
+              "clearance_hole_diameter_mm": 11.75,
+              "layer_id": "head_side_member",
+              "material_id": "member_aluminium_en_aw_6082_t6",
+              "outer_diameter_mm": 34.5,
+              "thickness_mm": 8.0
+            },
+            {
+              "clearance_hole_diameter_mm": 11.75,
+              "layer_id": "nut_side_member",
+              "material_id": "member_aluminium_en_aw_6082_t6",
+              "outer_diameter_mm": 34.5,
+              "thickness_mm": 12.0
+            }
+          ]
+        },
+        "metadata": {
+          "name": "Phase 3 diversified DOE design proposal",
+          "notes": "Unsealed design proposal; no FEM authorization or physics certification."
+        },
+        "schema_version": 1
+      },
+      "proposal_id": "TRM-DDOE-D-M10x1_5__member_aluminium_en_aw_6082_t6-10",
+      "thread_designation": "M10x1.5"
+    },
+    {
+      "case_hash": "79f466e4d3c49c5a664c1cf5ef9b75a8f48f8d8ceabfcb806c3b77b19dff386a",
+      "dataset_admission_status": "NOT_EVALUATED",
+      "evidence_status": "NEW_EVIDENCE_REQUIRED_NO_EXECUTION_AUTHORITY",
+      "fem_execution_authorized": false,
+      "historical_case_id": null,
+      "member_material_id": "member_aluminium_en_aw_6082_t6",
+      "normalized_coordinates": [
+        0.0,
+        0.5,
+        0.25
+      ],
+      "preparation_run_id": "trm_fem_e87767575892",
+      "product_case": {
+        "analysis": {
+          "calculation_mode": "auto",
+          "fidelity": "production"
+        },
+        "fastener": {
+          "bolt_length_mm": 30.0,
+          "bolt_material_id": "fastener_steel",
+          "bolt_property_class": "8.8",
+          "bolt_standard": "ISO 4017:2022",
+          "handedness": "right",
+          "nut_material_id": "fastener_steel",
+          "nut_property_class": "8",
+          "nut_standard": "ISO 4032:2023",
+          "starts": 1,
+          "thread_designation": "M10x1.5"
+        },
+        "interfaces": {
+          "head_bearing_friction_coefficient": 0.15,
+          "member_interface_friction_coefficient": 0.15,
+          "nut_bearing_friction_coefficient": 0.15,
+          "thread_friction_coefficient": 0.15
+        },
+        "loading": {
+          "external_axial_load_n": 0.0,
+          "target_preload_n": 15000.0
+        },
+        "members": {
+          "layers": [
+            {
+              "clearance_hole_diameter_mm": 11.25,
+              "layer_id": "head_side_member",
+              "material_id": "member_aluminium_en_aw_6082_t6",
+              "outer_diameter_mm": 31.5,
+              "thickness_mm": 9.0
+            },
+            {
+              "clearance_hole_diameter_mm": 11.25,
+              "layer_id": "nut_side_member",
+              "material_id": "member_aluminium_en_aw_6082_t6",
+              "outer_diameter_mm": 31.5,
+              "thickness_mm": 11.0
+            }
+          ]
+        },
+        "metadata": {
+          "name": "Phase 3 diversified DOE design proposal",
+          "notes": "Unsealed design proposal; no FEM authorization or physics certification."
+        },
+        "schema_version": 1
+      },
+      "proposal_id": "TRM-DDOE-D-M10x1_5__member_aluminium_en_aw_6082_t6-11",
+      "thread_designation": "M10x1.5"
+    },
+    {
+      "case_hash": "9b1d67c721ad25e51191a186908539ec5790779dfb07050b5e68ab3d79ec20fd",
+      "dataset_admission_status": "NOT_EVALUATED",
+      "evidence_status": "NEW_EVIDENCE_REQUIRED_NO_EXECUTION_AUTHORITY",
+      "fem_execution_authorized": false,
+      "historical_case_id": null,
+      "member_material_id": "member_aluminium_en_aw_6082_t6",
+      "normalized_coordinates": [
+        0.25,
+        1.0,
+        1.0
+      ],
+      "preparation_run_id": "trm_fem_dc48d7091de0",
+      "product_case": {
+        "analysis": {
+          "calculation_mode": "auto",
+          "fidelity": "production"
+        },
+        "fastener": {
+          "bolt_length_mm": 30.0,
+          "bolt_material_id": "fastener_steel",
+          "bolt_property_class": "8.8",
+          "bolt_standard": "ISO 4017:2022",
+          "handedness": "right",
+          "nut_material_id": "fastener_steel",
+          "nut_property_class": "8",
+          "nut_standard": "ISO 4032:2023",
+          "starts": 1,
+          "thread_designation": "M10x1.5"
+        },
+        "interfaces": {
+          "head_bearing_friction_coefficient": 0.15,
+          "member_interface_friction_coefficient": 0.15,
+          "nut_bearing_friction_coefficient": 0.15,
+          "thread_friction_coefficient": 0.15
+        },
+        "loading": {
+          "external_axial_load_n": 0.0,
+          "target_preload_n": 16250.0
+        },
+        "members": {
+          "layers": [
+            {
+              "clearance_hole_diameter_mm": 12.0,
+              "layer_id": "head_side_member",
+              "material_id": "member_aluminium_en_aw_6082_t6",
+              "outer_diameter_mm": 36.0,
+              "thickness_mm": 10.0
+            },
+            {
+              "clearance_hole_diameter_mm": 12.0,
+              "layer_id": "nut_side_member",
+              "material_id": "member_aluminium_en_aw_6082_t6",
+              "outer_diameter_mm": 36.0,
+              "thickness_mm": 10.0
+            }
+          ]
+        },
+        "metadata": {
+          "name": "Phase 3 diversified DOE design proposal",
+          "notes": "Unsealed design proposal; no FEM authorization or physics certification."
+        },
+        "schema_version": 1
+      },
+      "proposal_id": "TRM-DDOE-D-M10x1_5__member_aluminium_en_aw_6082_t6-12",
+      "thread_designation": "M10x1.5"
+    },
+    {
+      "case_hash": "c2386623c11def2e3dc447c885c1408408a2d136c04a5a5e53b1958de062f5da",
+      "dataset_admission_status": "NOT_EVALUATED",
+      "evidence_status": "EXACT_HISTORICAL_ANCHOR_ADMISSION_PENDING",
+      "fem_execution_authorized": false,
+      "historical_case_id": "TRM-XFEM-M12-001",
+      "member_material_id": "steel_member",
+      "normalized_coordinates": [
+        1.0,
+        1.0,
+        0.0
+      ],
+      "product_case": null,
+      "proposal_id": "TRM-DDOE-D-M12x1_75__steel_member-01",
+      "thread_designation": "M12x1.75"
+    },
+    {
+      "case_hash": "b4fcf74bc0e1faf2f04eab3a8f1af538723d783cd639ea41dadc6b331a98ba58",
+      "dataset_admission_status": "NOT_EVALUATED",
+      "evidence_status": "NEW_EVIDENCE_REQUIRED_NO_EXECUTION_AUTHORITY",
+      "fem_execution_authorized": false,
+      "historical_case_id": null,
+      "member_material_id": "steel_member",
+      "normalized_coordinates": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "preparation_run_id": "trm_fem_ef97f5aa38de",
+      "product_case": {
+        "analysis": {
+          "calculation_mode": "auto",
+          "fidelity": "production"
+        },
+        "fastener": {
+          "bolt_length_mm": 40.0,
+          "bolt_material_id": "fastener_steel",
+          "bolt_property_class": "8.8",
+          "bolt_standard": "ISO 4017:2022",
+          "handedness": "right",
+          "nut_material_id": "fastener_steel",
+          "nut_property_class": "8",
+          "nut_standard": "ISO 4032:2023",
+          "starts": 1,
+          "thread_designation": "M12x1.75"
+        },
+        "interfaces": {
+          "head_bearing_friction_coefficient": 0.15,
+          "member_interface_friction_coefficient": 0.15,
+          "nut_bearing_friction_coefficient": 0.15,
+          "thread_friction_coefficient": 0.15
+        },
+        "loading": {
+          "external_axial_load_n": 0.0,
+          "target_preload_n": 21796.979855000238
+        },
+        "members": {
+          "layers": [
+            {
+              "clearance_hole_diameter_mm": 14.399999999999999,
+              "layer_id": "head_side_member",
+              "material_id": "steel_member",
+              "outer_diameter_mm": 43.2,
+              "thickness_mm": 9.600000000000001
+            },
+            {
+              "clearance_hole_diameter_mm": 14.399999999999999,
+              "layer_id": "nut_side_member",
+              "material_id": "steel_member",
+              "outer_diameter_mm": 43.2,
+              "thickness_mm": 14.399999999999999
+            }
+          ]
+        },
+        "metadata": {
+          "name": "Phase 3 diversified DOE design proposal",
+          "notes": "Unsealed design proposal; no FEM authorization or physics certification."
+        },
+        "schema_version": 1
+      },
+      "proposal_id": "TRM-DDOE-D-M12x1_75__steel_member-02",
+      "thread_designation": "M12x1.75"
+    },
+    {
+      "case_hash": "e86a17501ebe95d56da60e49d195c75d21a8fd29199cfbcf48eb5f97b2bbcab6",
+      "dataset_admission_status": "NOT_EVALUATED",
+      "evidence_status": "NEW_EVIDENCE_REQUIRED_NO_EXECUTION_AUTHORITY",
+      "fem_execution_authorized": false,
+      "historical_case_id": null,
+      "member_material_id": "steel_member",
+      "normalized_coordinates": [
+        0.0,
+        0.5,
+        0.0
+      ],
+      "preparation_run_id": "trm_fem_323293011028",
+      "product_case": {
+        "analysis": {
+          "calculation_mode": "auto",
+          "fidelity": "production"
+        },
+        "fastener": {
+          "bolt_length_mm": 40.0,
+          "bolt_material_id": "fastener_steel",
+          "bolt_property_class": "8.8",
+          "bolt_standard": "ISO 4017:2022",
+          "handedness": "right",
+          "nut_material_id": "fastener_steel",
+          "nut_property_class": "8",
+          "nut_standard": "ISO 4032:2023",
+          "starts": 1,
+          "thread_designation": "M12x1.75"
+        },
+        "interfaces": {
+          "head_bearing_friction_coefficient": 0.15,
+          "member_interface_friction_coefficient": 0.15,
+          "nut_bearing_friction_coefficient": 0.15,
+          "thread_friction_coefficient": 0.15
+        },
+        "loading": {
+          "external_axial_load_n": 0.0,
+          "target_preload_n": 21796.979855000238
+        },
+        "members": {
+          "layers": [
+            {
+              "clearance_hole_diameter_mm": 13.200000000000001,
+              "layer_id": "head_side_member",
+              "material_id": "steel_member",
+              "outer_diameter_mm": 36.0,
+              "thickness_mm": 10.8
+            },
+            {
+              "clearance_hole_diameter_mm": 13.200000000000001,
+              "layer_id": "nut_side_member",
+              "material_id": "steel_member",
+              "outer_diameter_mm": 36.0,
+              "thickness_mm": 13.2
+            }
+          ]
+        },
+        "metadata": {
+          "name": "Phase 3 diversified DOE design proposal",
+          "notes": "Unsealed design proposal; no FEM authorization or physics certification."
+        },
+        "schema_version": 1
+      },
+      "proposal_id": "TRM-DDOE-D-M12x1_75__steel_member-03",
+      "thread_designation": "M12x1.75"
+    },
+    {
+      "case_hash": "5d18f718ece649c3a9288bbd600fdc7bacf5be218f25ffba37429216a55b6f2e",
+      "dataset_admission_status": "NOT_EVALUATED",
+      "evidence_status": "NEW_EVIDENCE_REQUIRED_NO_EXECUTION_AUTHORITY",
+      "fem_execution_authorized": false,
+      "historical_case_id": null,
+      "member_material_id": "steel_member",
+      "normalized_coordinates": [
+        0.5,
+        1.0,
+        1.0
+      ],
+      "preparation_run_id": "trm_fem_2ce5c34997d5",
+      "product_case": {
+        "analysis": {
+          "calculation_mode": "auto",
+          "fidelity": "production"
+        },
+        "fastener": {
+          "bolt_length_mm": 40.0,
+          "bolt_material_id": "fastener_steel",
+          "bolt_property_class": "8.8",
+          "bolt_standard": "ISO 4017:2022",
+          "handedness": "right",
+          "nut_material_id": "fastener_steel",
+          "nut_property_class": "8",
+          "nut_standard": "ISO 4032:2023",
+          "starts": 1,
+          "thread_designation": "M12x1.75"
+        },
+        "interfaces": {
+          "head_bearing_friction_coefficient": 0.15,
+          "member_interface_friction_coefficient": 0.15,
+          "nut_bearing_friction_coefficient": 0.15,
+          "thread_friction_coefficient": 0.15
+        },
+        "loading": {
+          "external_axial_load_n": 0.0,
+          "target_preload_n": 25429.80983083361
+        },
+        "members": {
+          "layers": [
+            {
+              "clearance_hole_diameter_mm": 14.399999999999999,
+              "layer_id": "head_side_member",
+              "material_id": "steel_member",
+              "outer_diameter_mm": 43.2,
+              "thickness_mm": 12.0
+            },
+            {
+              "clearance_hole_diameter_mm": 14.399999999999999,
+              "layer_id": "nut_side_member",
+              "material_id": "steel_member",
+              "outer_diameter_mm": 43.2,
+              "thickness_mm": 12.0
+            }
+          ]
+        },
+        "metadata": {
+          "name": "Phase 3 diversified DOE design proposal",
+          "notes": "Unsealed design proposal; no FEM authorization or physics certification."
+        },
+        "schema_version": 1
+      },
+      "proposal_id": "TRM-DDOE-D-M12x1_75__steel_member-04",
+      "thread_designation": "M12x1.75"
+    },
+    {
+      "case_hash": "a684e642f0017811e2f557faccc02af596d7e65a768c3e321fb1e21122cc20e5",
+      "dataset_admission_status": "NOT_EVALUATED",
+      "evidence_status": "NEW_EVIDENCE_REQUIRED_NO_EXECUTION_AUTHORITY",
+      "fem_execution_authorized": false,
+      "historical_case_id": null,
+      "member_material_id": "steel_member",
+      "normalized_coordinates": [
+        1.0,
+        0.0,
+        0.5
+      ],
+      "preparation_run_id": "trm_fem_2282e77536c7",
+      "product_case": {
+        "analysis": {
+          "calculation_mode": "auto",
+          "fidelity": "production"
+        },
+        "fastener": {
+          "bolt_length_mm": 40.0,
+          "bolt_material_id": "fastener_steel",
+          "bolt_property_class": "8.8",
+          "bolt_standard": "ISO 4017:2022",
+          "handedness": "right",
+          "nut_material_id": "fastener_steel",
+          "nut_property_class": "8",
+          "nut_standard": "ISO 4032:2023",
+          "starts": 1,
+          "thread_designation": "M12x1.75"
+        },
+        "interfaces": {
+          "head_bearing_friction_coefficient": 0.15,
+          "member_interface_friction_coefficient": 0.15,
+          "nut_bearing_friction_coefficient": 0.15,
+          "thread_friction_coefficient": 0.15
+        },
+        "loading": {
+          "external_axial_load_n": 0.0,
+          "target_preload_n": 29062.639806666983
+        },
+        "members": {
+          "layers": [
+            {
+              "clearance_hole_diameter_mm": 13.799999999999999,
+              "layer_id": "head_side_member",
+              "material_id": "steel_member",
+              "outer_diameter_mm": 39.599999999999994,
+              "thickness_mm": 9.600000000000001
+            },
+            {
+              "clearance_hole_diameter_mm": 13.799999999999999,
+              "layer_id": "nut_side_member",
+              "material_id": "steel_member",
+              "outer_diameter_mm": 39.599999999999994,
+              "thickness_mm": 14.399999999999999
+            }
+          ]
+        },
+        "metadata": {
+          "name": "Phase 3 diversified DOE design proposal",
+          "notes": "Unsealed design proposal; no FEM authorization or physics certification."
+        },
+        "schema_version": 1
+      },
+      "proposal_id": "TRM-DDOE-D-M12x1_75__steel_member-05",
+      "thread_designation": "M12x1.75"
+    },
+    {
+      "case_hash": "04b4c5391962896926f4e09de1a62a5fec78f10cef52c73c8fce465d42aa518e",
+      "dataset_admission_status": "NOT_EVALUATED",
+      "evidence_status": "NEW_EVIDENCE_REQUIRED_NO_EXECUTION_AUTHORITY",
+      "fem_execution_authorized": false,
+      "historical_case_id": null,
+      "member_material_id": "steel_member",
+      "normalized_coordinates": [
+        0.0,
+        1.0,
+        0.5
+      ],
+      "preparation_run_id": "trm_fem_2bc32fecabbc",
+      "product_case": {
+        "analysis": {
+          "calculation_mode": "auto",
+          "fidelity": "production"
+        },
+        "fastener": {
+          "bolt_length_mm": 40.0,
+          "bolt_material_id": "fastener_steel",
+          "bolt_property_class": "8.8",
+          "bolt_standard": "ISO 4017:2022",
+          "handedness": "right",
+          "nut_material_id": "fastener_steel",
+          "nut_property_class": "8",
+          "nut_standard": "ISO 4032:2023",
+          "starts": 1,
+          "thread_designation": "M12x1.75"
+        },
+        "interfaces": {
+          "head_bearing_friction_coefficient": 0.15,
+          "member_interface_friction_coefficient": 0.15,
+          "nut_bearing_friction_coefficient": 0.15,
+          "thread_friction_coefficient": 0.15
+        },
+        "loading": {
+          "external_axial_load_n": 0.0,
+          "target_preload_n": 21796.979855000238
+        },
+        "members": {
+          "layers": [
+            {
+              "clearance_hole_diameter_mm": 13.799999999999999,
+              "layer_id": "head_side_member",
+              "material_id": "steel_member",
+              "outer_diameter_mm": 39.599999999999994,
+              "thickness_mm": 12.0
+            },
+            {
+              "clearance_hole_diameter_mm": 13.799999999999999,
+              "layer_id": "nut_side_member",
+              "material_id": "steel_member",
+              "outer_diameter_mm": 39.599999999999994,
+              "thickness_mm": 12.0
+            }
+          ]
+        },
+        "metadata": {
+          "name": "Phase 3 diversified DOE design proposal",
+          "notes": "Unsealed design proposal; no FEM authorization or physics certification."
+        },
+        "schema_version": 1
+      },
+      "proposal_id": "TRM-DDOE-D-M12x1_75__steel_member-06",
+      "thread_designation": "M12x1.75"
+    },
+    {
+      "case_hash": "dfe73bf29d5455fa34bd8f74bf96a1fc2e8f1d5b89823532076cb90146b9907b",
+      "dataset_admission_status": "NOT_EVALUATED",
+      "evidence_status": "NEW_EVIDENCE_REQUIRED_NO_EXECUTION_AUTHORITY",
+      "fem_execution_authorized": false,
+      "historical_case_id": null,
+      "member_material_id": "steel_member",
+      "normalized_coordinates": [
+        0.5,
+        0.0,
+        0.0
+      ],
+      "preparation_run_id": "trm_fem_d16fe50e0f41",
+      "product_case": {
+        "analysis": {
+          "calculation_mode": "auto",
+          "fidelity": "production"
+        },
+        "fastener": {
+          "bolt_length_mm": 40.0,
+          "bolt_material_id": "fastener_steel",
+          "bolt_property_class": "8.8",
+          "bolt_standard": "ISO 4017:2022",
+          "handedness": "right",
+          "nut_material_id": "fastener_steel",
+          "nut_property_class": "8",
+          "nut_standard": "ISO 4032:2023",
+          "starts": 1,
+          "thread_designation": "M12x1.75"
+        },
+        "interfaces": {
+          "head_bearing_friction_coefficient": 0.15,
+          "member_interface_friction_coefficient": 0.15,
+          "nut_bearing_friction_coefficient": 0.15,
+          "thread_friction_coefficient": 0.15
+        },
+        "loading": {
+          "external_axial_load_n": 0.0,
+          "target_preload_n": 25429.80983083361
+        },
+        "members": {
+          "layers": [
+            {
+              "clearance_hole_diameter_mm": 13.200000000000001,
+              "layer_id": "head_side_member",
+              "material_id": "steel_member",
+              "outer_diameter_mm": 36.0,
+              "thickness_mm": 9.600000000000001
+            },
+            {
+              "clearance_hole_diameter_mm": 13.200000000000001,
+              "layer_id": "nut_side_member",
+              "material_id": "steel_member",
+              "outer_diameter_mm": 36.0,
+              "thickness_mm": 14.399999999999999
+            }
+          ]
+        },
+        "metadata": {
+          "name": "Phase 3 diversified DOE design proposal",
+          "notes": "Unsealed design proposal; no FEM authorization or physics certification."
+        },
+        "schema_version": 1
+      },
+      "proposal_id": "TRM-DDOE-D-M12x1_75__steel_member-07",
+      "thread_designation": "M12x1.75"
+    },
+    {
+      "case_hash": "0a7f70fc4e59ae039d6d6d5d297dc49c2053c727013802519441c010ddb5530f",
+      "dataset_admission_status": "NOT_EVALUATED",
+      "evidence_status": "NEW_EVIDENCE_REQUIRED_NO_EXECUTION_AUTHORITY",
+      "fem_execution_authorized": false,
+      "historical_case_id": null,
+      "member_material_id": "steel_member",
+      "normalized_coordinates": [
+        0.5,
+        0.5,
+        0.5
+      ],
+      "preparation_run_id": "trm_fem_2297ba76c4cb",
+      "product_case": {
+        "analysis": {
+          "calculation_mode": "auto",
+          "fidelity": "production"
+        },
+        "fastener": {
+          "bolt_length_mm": 40.0,
+          "bolt_material_id": "fastener_steel",
+          "bolt_property_class": "8.8",
+          "bolt_standard": "ISO 4017:2022",
+          "handedness": "right",
+          "nut_material_id": "fastener_steel",
+          "nut_property_class": "8",
+          "nut_standard": "ISO 4032:2023",
+          "starts": 1,
+          "thread_designation": "M12x1.75"
+        },
+        "interfaces": {
+          "head_bearing_friction_coefficient": 0.15,
+          "member_interface_friction_coefficient": 0.15,
+          "nut_bearing_friction_coefficient": 0.15,
+          "thread_friction_coefficient": 0.15
+        },
+        "loading": {
+          "external_axial_load_n": 0.0,
+          "target_preload_n": 25429.80983083361
+        },
+        "members": {
+          "layers": [
+            {
+              "clearance_hole_diameter_mm": 13.799999999999999,
+              "layer_id": "head_side_member",
+              "material_id": "steel_member",
+              "outer_diameter_mm": 39.599999999999994,
+              "thickness_mm": 10.8
+            },
+            {
+              "clearance_hole_diameter_mm": 13.799999999999999,
+              "layer_id": "nut_side_member",
+              "material_id": "steel_member",
+              "outer_diameter_mm": 39.599999999999994,
+              "thickness_mm": 13.2
+            }
+          ]
+        },
+        "metadata": {
+          "name": "Phase 3 diversified DOE design proposal",
+          "notes": "Unsealed design proposal; no FEM authorization or physics certification."
+        },
+        "schema_version": 1
+      },
+      "proposal_id": "TRM-DDOE-D-M12x1_75__steel_member-08",
+      "thread_designation": "M12x1.75"
+    },
+    {
+      "case_hash": "b82c8cf55ca3cccbb333f217af4085b624e79895dd782cc6732db202f24fea1a",
+      "dataset_admission_status": "NOT_EVALUATED",
+      "evidence_status": "NEW_EVIDENCE_REQUIRED_NO_EXECUTION_AUTHORITY",
+      "fem_execution_authorized": false,
+      "historical_case_id": null,
+      "member_material_id": "steel_member",
+      "normalized_coordinates": [
+        1.0,
+        0.5,
+        1.0
+      ],
+      "preparation_run_id": "trm_fem_08d9ab76c926",
+      "product_case": {
+        "analysis": {
+          "calculation_mode": "auto",
+          "fidelity": "production"
+        },
+        "fastener": {
+          "bolt_length_mm": 40.0,
+          "bolt_material_id": "fastener_steel",
+          "bolt_property_class": "8.8",
+          "bolt_standard": "ISO 4017:2022",
+          "handedness": "right",
+          "nut_material_id": "fastener_steel",
+          "nut_property_class": "8",
+          "nut_standard": "ISO 4032:2023",
+          "starts": 1,
+          "thread_designation": "M12x1.75"
+        },
+        "interfaces": {
+          "head_bearing_friction_coefficient": 0.15,
+          "member_interface_friction_coefficient": 0.15,
+          "nut_bearing_friction_coefficient": 0.15,
+          "thread_friction_coefficient": 0.15
+        },
+        "loading": {
+          "external_axial_load_n": 0.0,
+          "target_preload_n": 29062.639806666983
+        },
+        "members": {
+          "layers": [
+            {
+              "clearance_hole_diameter_mm": 14.399999999999999,
+              "layer_id": "head_side_member",
+              "material_id": "steel_member",
+              "outer_diameter_mm": 43.2,
+              "thickness_mm": 10.8
+            },
+            {
+              "clearance_hole_diameter_mm": 14.399999999999999,
+              "layer_id": "nut_side_member",
+              "material_id": "steel_member",
+              "outer_diameter_mm": 43.2,
+              "thickness_mm": 13.2
+            }
+          ]
+        },
+        "metadata": {
+          "name": "Phase 3 diversified DOE design proposal",
+          "notes": "Unsealed design proposal; no FEM authorization or physics certification."
+        },
+        "schema_version": 1
+      },
+      "proposal_id": "TRM-DDOE-D-M12x1_75__steel_member-09",
+      "thread_designation": "M12x1.75"
+    },
+    {
+      "case_hash": "07997e22bff26cace11ffe6ee11e07fb89bfee19e974d0700151fcaea560f670",
+      "dataset_admission_status": "NOT_EVALUATED",
+      "evidence_status": "NEW_EVIDENCE_REQUIRED_NO_EXECUTION_AUTHORITY",
+      "fem_execution_authorized": false,
+      "historical_case_id": null,
+      "member_material_id": "steel_member",
+      "normalized_coordinates": [
+        0.0,
+        0.0,
+        0.25
+      ],
+      "preparation_run_id": "trm_fem_c339bcbf1982",
+      "product_case": {
+        "analysis": {
+          "calculation_mode": "auto",
+          "fidelity": "production"
+        },
+        "fastener": {
+          "bolt_length_mm": 40.0,
+          "bolt_material_id": "fastener_steel",
+          "bolt_property_class": "8.8",
+          "bolt_standard": "ISO 4017:2022",
+          "handedness": "right",
+          "nut_material_id": "fastener_steel",
+          "nut_property_class": "8",
+          "nut_standard": "ISO 4032:2023",
+          "starts": 1,
+          "thread_designation": "M12x1.75"
+        },
+        "interfaces": {
+          "head_bearing_friction_coefficient": 0.15,
+          "member_interface_friction_coefficient": 0.15,
+          "nut_bearing_friction_coefficient": 0.15,
+          "thread_friction_coefficient": 0.15
+        },
+        "loading": {
+          "external_axial_load_n": 0.0,
+          "target_preload_n": 21796.979855000238
+        },
+        "members": {
+          "layers": [
+            {
+              "clearance_hole_diameter_mm": 13.5,
+              "layer_id": "head_side_member",
+              "material_id": "steel_member",
+              "outer_diameter_mm": 37.8,
+              "thickness_mm": 9.600000000000001
+            },
+            {
+              "clearance_hole_diameter_mm": 13.5,
+              "layer_id": "nut_side_member",
+              "material_id": "steel_member",
+              "outer_diameter_mm": 37.8,
+              "thickness_mm": 14.399999999999999
+            }
+          ]
+        },
+        "metadata": {
+          "name": "Phase 3 diversified DOE design proposal",
+          "notes": "Unsealed design proposal; no FEM authorization or physics certification."
+        },
+        "schema_version": 1
+      },
+      "proposal_id": "TRM-DDOE-D-M12x1_75__steel_member-10",
+      "thread_designation": "M12x1.75"
+    },
+    {
+      "case_hash": "8f61e00287437d71c650abdac827ae10d52677cc0056bb237c4f5a11aeb9480b",
+      "dataset_admission_status": "NOT_EVALUATED",
+      "evidence_status": "NEW_EVIDENCE_REQUIRED_NO_EXECUTION_AUTHORITY",
+      "fem_execution_authorized": false,
+      "historical_case_id": null,
+      "member_material_id": "steel_member",
+      "normalized_coordinates": [
+        0.0,
+        0.5,
+        0.75
+      ],
+      "preparation_run_id": "trm_fem_049affd39bd1",
+      "product_case": {
+        "analysis": {
+          "calculation_mode": "auto",
+          "fidelity": "production"
+        },
+        "fastener": {
+          "bolt_length_mm": 40.0,
+          "bolt_material_id": "fastener_steel",
+          "bolt_property_class": "8.8",
+          "bolt_standard": "ISO 4017:2022",
+          "handedness": "right",
+          "nut_material_id": "fastener_steel",
+          "nut_property_class": "8",
+          "nut_standard": "ISO 4032:2023",
+          "starts": 1,
+          "thread_designation": "M12x1.75"
+        },
+        "interfaces": {
+          "head_bearing_friction_coefficient": 0.15,
+          "member_interface_friction_coefficient": 0.15,
+          "nut_bearing_friction_coefficient": 0.15,
+          "thread_friction_coefficient": 0.15
+        },
+        "loading": {
+          "external_axial_load_n": 0.0,
+          "target_preload_n": 21796.979855000238
+        },
+        "members": {
+          "layers": [
+            {
+              "clearance_hole_diameter_mm": 14.100000000000001,
+              "layer_id": "head_side_member",
+              "material_id": "steel_member",
+              "outer_diameter_mm": 41.400000000000006,
+              "thickness_mm": 10.8
+            },
+            {
+              "clearance_hole_diameter_mm": 14.100000000000001,
+              "layer_id": "nut_side_member",
+              "material_id": "steel_member",
+              "outer_diameter_mm": 41.400000000000006,
+              "thickness_mm": 13.2
+            }
+          ]
+        },
+        "metadata": {
+          "name": "Phase 3 diversified DOE design proposal",
+          "notes": "Unsealed design proposal; no FEM authorization or physics certification."
+        },
+        "schema_version": 1
+      },
+      "proposal_id": "TRM-DDOE-D-M12x1_75__steel_member-11",
+      "thread_designation": "M12x1.75"
+    },
+    {
+      "case_hash": "3170c5437c9679e35180f3a720cb8e1cf436c12f3cdff86470e9bd2942a0f9e1",
+      "dataset_admission_status": "NOT_EVALUATED",
+      "evidence_status": "NEW_EVIDENCE_REQUIRED_NO_EXECUTION_AUTHORITY",
+      "fem_execution_authorized": false,
+      "historical_case_id": null,
+      "member_material_id": "steel_member",
+      "normalized_coordinates": [
+        0.25,
+        1.0,
+        0.0
+      ],
+      "preparation_run_id": "trm_fem_a756711642a5",
+      "product_case": {
+        "analysis": {
+          "calculation_mode": "auto",
+          "fidelity": "production"
+        },
+        "fastener": {
+          "bolt_length_mm": 40.0,
+          "bolt_material_id": "fastener_steel",
+          "bolt_property_class": "8.8",
+          "bolt_standard": "ISO 4017:2022",
+          "handedness": "right",
+          "nut_material_id": "fastener_steel",
+          "nut_property_class": "8",
+          "nut_standard": "ISO 4032:2023",
+          "starts": 1,
+          "thread_designation": "M12x1.75"
+        },
+        "interfaces": {
+          "head_bearing_friction_coefficient": 0.15,
+          "member_interface_friction_coefficient": 0.15,
+          "nut_bearing_friction_coefficient": 0.15,
+          "thread_friction_coefficient": 0.15
+        },
+        "loading": {
+          "external_axial_load_n": 0.0,
+          "target_preload_n": 23613.394842916925
+        },
+        "members": {
+          "layers": [
+            {
+              "clearance_hole_diameter_mm": 13.200000000000001,
+              "layer_id": "head_side_member",
+              "material_id": "steel_member",
+              "outer_diameter_mm": 36.0,
+              "thickness_mm": 12.0
+            },
+            {
+              "clearance_hole_diameter_mm": 13.200000000000001,
+              "layer_id": "nut_side_member",
+              "material_id": "steel_member",
+              "outer_diameter_mm": 36.0,
+              "thickness_mm": 12.0
+            }
+          ]
+        },
+        "metadata": {
+          "name": "Phase 3 diversified DOE design proposal",
+          "notes": "Unsealed design proposal; no FEM authorization or physics certification."
+        },
+        "schema_version": 1
+      },
+      "proposal_id": "TRM-DDOE-D-M12x1_75__steel_member-12",
+      "thread_designation": "M12x1.75"
+    },
+    {
+      "case_hash": "2a318b956374e51119ea1979af799444f565547bc590dafad15d30422b2f46e2",
+      "dataset_admission_status": "NOT_EVALUATED",
+      "evidence_status": "NEW_EVIDENCE_REQUIRED_NO_EXECUTION_AUTHORITY",
+      "fem_execution_authorized": false,
+      "historical_case_id": null,
+      "member_material_id": "member_aluminium_en_aw_6082_t6",
+      "normalized_coordinates": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "preparation_run_id": "trm_fem_5b22a5376136",
+      "product_case": {
+        "analysis": {
+          "calculation_mode": "auto",
+          "fidelity": "production"
+        },
+        "fastener": {
+          "bolt_length_mm": 40.0,
+          "bolt_material_id": "fastener_steel",
+          "bolt_property_class": "8.8",
+          "bolt_standard": "ISO 4017:2022",
+          "handedness": "right",
+          "nut_material_id": "fastener_steel",
+          "nut_property_class": "8",
+          "nut_standard": "ISO 4032:2023",
+          "starts": 1,
+          "thread_designation": "M12x1.75"
+        },
+        "interfaces": {
+          "head_bearing_friction_coefficient": 0.15,
+          "member_interface_friction_coefficient": 0.15,
+          "nut_bearing_friction_coefficient": 0.15,
+          "thread_friction_coefficient": 0.15
+        },
+        "loading": {
+          "external_axial_load_n": 0.0,
+          "target_preload_n": 21796.979855000238
+        },
+        "members": {
+          "layers": [
+            {
+              "clearance_hole_diameter_mm": 13.200000000000001,
+              "layer_id": "head_side_member",
+              "material_id": "member_aluminium_en_aw_6082_t6",
+              "outer_diameter_mm": 36.0,
+              "thickness_mm": 9.600000000000001
+            },
+            {
+              "clearance_hole_diameter_mm": 13.200000000000001,
+              "layer_id": "nut_side_member",
+              "material_id": "member_aluminium_en_aw_6082_t6",
+              "outer_diameter_mm": 36.0,
+              "thickness_mm": 14.399999999999999
+            }
+          ]
+        },
+        "metadata": {
+          "name": "Phase 3 diversified DOE design proposal",
+          "notes": "Unsealed design proposal; no FEM authorization or physics certification."
+        },
+        "schema_version": 1
+      },
+      "proposal_id": "TRM-DDOE-D-M12x1_75__member_aluminium_en_aw_6082_t6-01",
+      "thread_designation": "M12x1.75"
+    },
+    {
+      "case_hash": "91e86a0b0eef6ac09ea2a27379c74e94dcaebaa3579178226d9ca0fff6da7d3c",
+      "dataset_admission_status": "NOT_EVALUATED",
+      "evidence_status": "NEW_EVIDENCE_REQUIRED_NO_EXECUTION_AUTHORITY",
+      "fem_execution_authorized": false,
+      "historical_case_id": null,
+      "member_material_id": "member_aluminium_en_aw_6082_t6",
+      "normalized_coordinates": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "preparation_run_id": "trm_fem_bfb674d30aad",
+      "product_case": {
+        "analysis": {
+          "calculation_mode": "auto",
+          "fidelity": "production"
+        },
+        "fastener": {
+          "bolt_length_mm": 40.0,
+          "bolt_material_id": "fastener_steel",
+          "bolt_property_class": "8.8",
+          "bolt_standard": "ISO 4017:2022",
+          "handedness": "right",
+          "nut_material_id": "fastener_steel",
+          "nut_property_class": "8",
+          "nut_standard": "ISO 4032:2023",
+          "starts": 1,
+          "thread_designation": "M12x1.75"
+        },
+        "interfaces": {
+          "head_bearing_friction_coefficient": 0.15,
+          "member_interface_friction_coefficient": 0.15,
+          "nut_bearing_friction_coefficient": 0.15,
+          "thread_friction_coefficient": 0.15
+        },
+        "loading": {
+          "external_axial_load_n": 0.0,
+          "target_preload_n": 29062.639806666983
+        },
+        "members": {
+          "layers": [
+            {
+              "clearance_hole_diameter_mm": 14.399999999999999,
+              "layer_id": "head_side_member",
+              "material_id": "member_aluminium_en_aw_6082_t6",
+              "outer_diameter_mm": 43.2,
+              "thickness_mm": 12.0
+            },
+            {
+              "clearance_hole_diameter_mm": 14.399999999999999,
+              "layer_id": "nut_side_member",
+              "material_id": "member_aluminium_en_aw_6082_t6",
+              "outer_diameter_mm": 43.2,
+              "thickness_mm": 12.0
+            }
+          ]
+        },
+        "metadata": {
+          "name": "Phase 3 diversified DOE design proposal",
+          "notes": "Unsealed design proposal; no FEM authorization or physics certification."
+        },
+        "schema_version": 1
+      },
+      "proposal_id": "TRM-DDOE-D-M12x1_75__member_aluminium_en_aw_6082_t6-02",
+      "thread_designation": "M12x1.75"
+    },
+    {
+      "case_hash": "602fde21267d63e3d3cb6c88b6b5757ef511506876f8c7c3a6b41ee199e81dad",
+      "dataset_admission_status": "NOT_EVALUATED",
+      "evidence_status": "NEW_EVIDENCE_REQUIRED_NO_EXECUTION_AUTHORITY",
+      "fem_execution_authorized": false,
+      "historical_case_id": null,
+      "member_material_id": "member_aluminium_en_aw_6082_t6",
+      "normalized_coordinates": [
+        0.0,
+        0.5,
+        1.0
+      ],
+      "preparation_run_id": "trm_fem_22c109e1e52b",
+      "product_case": {
+        "analysis": {
+          "calculation_mode": "auto",
+          "fidelity": "production"
+        },
+        "fastener": {
+          "bolt_length_mm": 40.0,
+          "bolt_material_id": "fastener_steel",
+          "bolt_property_class": "8.8",
+          "bolt_standard": "ISO 4017:2022",
+          "handedness": "right",
+          "nut_material_id": "fastener_steel",
+          "nut_property_class": "8",
+          "nut_standard": "ISO 4032:2023",
+          "starts": 1,
+          "thread_designation": "M12x1.75"
+        },
+        "interfaces": {
+          "head_bearing_friction_coefficient": 0.15,
+          "member_interface_friction_coefficient": 0.15,
+          "nut_bearing_friction_coefficient": 0.15,
+          "thread_friction_coefficient": 0.15
+        },
+        "loading": {
+          "external_axial_load_n": 0.0,
+          "target_preload_n": 21796.979855000238
+        },
+        "members": {
+          "layers": [
+            {
+              "clearance_hole_diameter_mm": 14.399999999999999,
+              "layer_id": "head_side_member",
+              "material_id": "member_aluminium_en_aw_6082_t6",
+              "outer_diameter_mm": 43.2,
+              "thickness_mm": 10.8
+            },
+            {
+              "clearance_hole_diameter_mm": 14.399999999999999,
+              "layer_id": "nut_side_member",
+              "material_id": "member_aluminium_en_aw_6082_t6",
+              "outer_diameter_mm": 43.2,
+              "thickness_mm": 13.2
+            }
+          ]
+        },
+        "metadata": {
+          "name": "Phase 3 diversified DOE design proposal",
+          "notes": "Unsealed design proposal; no FEM authorization or physics certification."
+        },
+        "schema_version": 1
+      },
+      "proposal_id": "TRM-DDOE-D-M12x1_75__member_aluminium_en_aw_6082_t6-03",
+      "thread_designation": "M12x1.75"
+    },
+    {
+      "case_hash": "33136e856536ffeeaf27ce77012828a0247234bfcac104f739d6503caab9e562",
+      "dataset_admission_status": "NOT_EVALUATED",
+      "evidence_status": "NEW_EVIDENCE_REQUIRED_NO_EXECUTION_AUTHORITY",
+      "fem_execution_authorized": false,
+      "historical_case_id": null,
+      "member_material_id": "member_aluminium_en_aw_6082_t6",
+      "normalized_coordinates": [
+        0.5,
+        1.0,
+        0.0
+      ],
+      "preparation_run_id": "trm_fem_dfae66d11e9d",
+      "product_case": {
+        "analysis": {
+          "calculation_mode": "auto",
+          "fidelity": "production"
+        },
+        "fastener": {
+          "bolt_length_mm": 40.0,
+          "bolt_material_id": "fastener_steel",
+          "bolt_property_class": "8.8",
+          "bolt_standard": "ISO 4017:2022",
+          "handedness": "right",
+          "nut_material_id": "fastener_steel",
+          "nut_property_class": "8",
+          "nut_standard": "ISO 4032:2023",
+          "starts": 1,
+          "thread_designation": "M12x1.75"
+        },
+        "interfaces": {
+          "head_bearing_friction_coefficient": 0.15,
+          "member_interface_friction_coefficient": 0.15,
+          "nut_bearing_friction_coefficient": 0.15,
+          "thread_friction_coefficient": 0.15
+        },
+        "loading": {
+          "external_axial_load_n": 0.0,
+          "target_preload_n": 25429.80983083361
+        },
+        "members": {
+          "layers": [
+            {
+              "clearance_hole_diameter_mm": 13.200000000000001,
+              "layer_id": "head_side_member",
+              "material_id": "member_aluminium_en_aw_6082_t6",
+              "outer_diameter_mm": 36.0,
+              "thickness_mm": 12.0
+            },
+            {
+              "clearance_hole_diameter_mm": 13.200000000000001,
+              "layer_id": "nut_side_member",
+              "material_id": "member_aluminium_en_aw_6082_t6",
+              "outer_diameter_mm": 36.0,
+              "thickness_mm": 12.0
+            }
+          ]
+        },
+        "metadata": {
+          "name": "Phase 3 diversified DOE design proposal",
+          "notes": "Unsealed design proposal; no FEM authorization or physics certification."
+        },
+        "schema_version": 1
+      },
+      "proposal_id": "TRM-DDOE-D-M12x1_75__member_aluminium_en_aw_6082_t6-04",
+      "thread_designation": "M12x1.75"
+    },
+    {
+      "case_hash": "3b214bccddd6f64d2931b14082fcd9deadced612f3c5e3091ee3dfe4890e1675",
+      "dataset_admission_status": "NOT_EVALUATED",
+      "evidence_status": "NEW_EVIDENCE_REQUIRED_NO_EXECUTION_AUTHORITY",
+      "fem_execution_authorized": false,
+      "historical_case_id": null,
+      "member_material_id": "member_aluminium_en_aw_6082_t6",
+      "normalized_coordinates": [
+        1.0,
+        0.0,
+        0.5
+      ],
+      "preparation_run_id": "trm_fem_ccb001371777",
+      "product_case": {
+        "analysis": {
+          "calculation_mode": "auto",
+          "fidelity": "production"
+        },
+        "fastener": {
+          "bolt_length_mm": 40.0,
+          "bolt_material_id": "fastener_steel",
+          "bolt_property_class": "8.8",
+          "bolt_standard": "ISO 4017:2022",
+          "handedness": "right",
+          "nut_material_id": "fastener_steel",
+          "nut_property_class": "8",
+          "nut_standard": "ISO 4032:2023",
+          "starts": 1,
+          "thread_designation": "M12x1.75"
+        },
+        "interfaces": {
+          "head_bearing_friction_coefficient": 0.15,
+          "member_interface_friction_coefficient": 0.15,
+          "nut_bearing_friction_coefficient": 0.15,
+          "thread_friction_coefficient": 0.15
+        },
+        "loading": {
+          "external_axial_load_n": 0.0,
+          "target_preload_n": 29062.639806666983
+        },
+        "members": {
+          "layers": [
+            {
+              "clearance_hole_diameter_mm": 13.799999999999999,
+              "layer_id": "head_side_member",
+              "material_id": "member_aluminium_en_aw_6082_t6",
+              "outer_diameter_mm": 39.599999999999994,
+              "thickness_mm": 9.600000000000001
+            },
+            {
+              "clearance_hole_diameter_mm": 13.799999999999999,
+              "layer_id": "nut_side_member",
+              "material_id": "member_aluminium_en_aw_6082_t6",
+              "outer_diameter_mm": 39.599999999999994,
+              "thickness_mm": 14.399999999999999
+            }
+          ]
+        },
+        "metadata": {
+          "name": "Phase 3 diversified DOE design proposal",
+          "notes": "Unsealed design proposal; no FEM authorization or physics certification."
+        },
+        "schema_version": 1
+      },
+      "proposal_id": "TRM-DDOE-D-M12x1_75__member_aluminium_en_aw_6082_t6-05",
+      "thread_designation": "M12x1.75"
+    },
+    {
+      "case_hash": "722a83f7122d79ad0cb32cddcd919b0597788c7e5a54016f886ab9a3f1e575d4",
+      "dataset_admission_status": "NOT_EVALUATED",
+      "evidence_status": "NEW_EVIDENCE_REQUIRED_NO_EXECUTION_AUTHORITY",
+      "fem_execution_authorized": false,
+      "historical_case_id": null,
+      "member_material_id": "member_aluminium_en_aw_6082_t6",
+      "normalized_coordinates": [
+        0.0,
+        1.0,
+        0.5
+      ],
+      "preparation_run_id": "trm_fem_b4cbff618f6e",
+      "product_case": {
+        "analysis": {
+          "calculation_mode": "auto",
+          "fidelity": "production"
+        },
+        "fastener": {
+          "bolt_length_mm": 40.0,
+          "bolt_material_id": "fastener_steel",
+          "bolt_property_class": "8.8",
+          "bolt_standard": "ISO 4017:2022",
+          "handedness": "right",
+          "nut_material_id": "fastener_steel",
+          "nut_property_class": "8",
+          "nut_standard": "ISO 4032:2023",
+          "starts": 1,
+          "thread_designation": "M12x1.75"
+        },
+        "interfaces": {
+          "head_bearing_friction_coefficient": 0.15,
+          "member_interface_friction_coefficient": 0.15,
+          "nut_bearing_friction_coefficient": 0.15,
+          "thread_friction_coefficient": 0.15
+        },
+        "loading": {
+          "external_axial_load_n": 0.0,
+          "target_preload_n": 21796.979855000238
+        },
+        "members": {
+          "layers": [
+            {
+              "clearance_hole_diameter_mm": 13.799999999999999,
+              "layer_id": "head_side_member",
+              "material_id": "member_aluminium_en_aw_6082_t6",
+              "outer_diameter_mm": 39.599999999999994,
+              "thickness_mm": 12.0
+            },
+            {
+              "clearance_hole_diameter_mm": 13.799999999999999,
+              "layer_id": "nut_side_member",
+              "material_id": "member_aluminium_en_aw_6082_t6",
+              "outer_diameter_mm": 39.599999999999994,
+              "thickness_mm": 12.0
+            }
+          ]
+        },
+        "metadata": {
+          "name": "Phase 3 diversified DOE design proposal",
+          "notes": "Unsealed design proposal; no FEM authorization or physics certification."
+        },
+        "schema_version": 1
+      },
+      "proposal_id": "TRM-DDOE-D-M12x1_75__member_aluminium_en_aw_6082_t6-06",
+      "thread_designation": "M12x1.75"
+    },
+    {
+      "case_hash": "9c574816c4fe2d261d70a23162de0394263fefab21278b4ac409244c41e14f86",
+      "dataset_admission_status": "NOT_EVALUATED",
+      "evidence_status": "NEW_EVIDENCE_REQUIRED_NO_EXECUTION_AUTHORITY",
+      "fem_execution_authorized": false,
+      "historical_case_id": null,
+      "member_material_id": "member_aluminium_en_aw_6082_t6",
+      "normalized_coordinates": [
+        0.5,
+        0.0,
+        1.0
+      ],
+      "preparation_run_id": "trm_fem_daad1f651474",
+      "product_case": {
+        "analysis": {
+          "calculation_mode": "auto",
+          "fidelity": "production"
+        },
+        "fastener": {
+          "bolt_length_mm": 40.0,
+          "bolt_material_id": "fastener_steel",
+          "bolt_property_class": "8.8",
+          "bolt_standard": "ISO 4017:2022",
+          "handedness": "right",
+          "nut_material_id": "fastener_steel",
+          "nut_property_class": "8",
+          "nut_standard": "ISO 4032:2023",
+          "starts": 1,
+          "thread_designation": "M12x1.75"
+        },
+        "interfaces": {
+          "head_bearing_friction_coefficient": 0.15,
+          "member_interface_friction_coefficient": 0.15,
+          "nut_bearing_friction_coefficient": 0.15,
+          "thread_friction_coefficient": 0.15
+        },
+        "loading": {
+          "external_axial_load_n": 0.0,
+          "target_preload_n": 25429.80983083361
+        },
+        "members": {
+          "layers": [
+            {
+              "clearance_hole_diameter_mm": 14.399999999999999,
+              "layer_id": "head_side_member",
+              "material_id": "member_aluminium_en_aw_6082_t6",
+              "outer_diameter_mm": 43.2,
+              "thickness_mm": 9.600000000000001
+            },
+            {
+              "clearance_hole_diameter_mm": 14.399999999999999,
+              "layer_id": "nut_side_member",
+              "material_id": "member_aluminium_en_aw_6082_t6",
+              "outer_diameter_mm": 43.2,
+              "thickness_mm": 14.399999999999999
+            }
+          ]
+        },
+        "metadata": {
+          "name": "Phase 3 diversified DOE design proposal",
+          "notes": "Unsealed design proposal; no FEM authorization or physics certification."
+        },
+        "schema_version": 1
+      },
+      "proposal_id": "TRM-DDOE-D-M12x1_75__member_aluminium_en_aw_6082_t6-07",
+      "thread_designation": "M12x1.75"
+    },
+    {
+      "case_hash": "ea429b3ea8017ba9b740b7af5352fe6ff9b423b2e83b65516654e362d22376c4",
+      "dataset_admission_status": "NOT_EVALUATED",
+      "evidence_status": "NEW_EVIDENCE_REQUIRED_NO_EXECUTION_AUTHORITY",
+      "fem_execution_authorized": false,
+      "historical_case_id": null,
+      "member_material_id": "member_aluminium_en_aw_6082_t6",
+      "normalized_coordinates": [
+        0.5,
+        0.5,
+        0.5
+      ],
+      "preparation_run_id": "trm_fem_fd73431a69e5",
+      "product_case": {
+        "analysis": {
+          "calculation_mode": "auto",
+          "fidelity": "production"
+        },
+        "fastener": {
+          "bolt_length_mm": 40.0,
+          "bolt_material_id": "fastener_steel",
+          "bolt_property_class": "8.8",
+          "bolt_standard": "ISO 4017:2022",
+          "handedness": "right",
+          "nut_material_id": "fastener_steel",
+          "nut_property_class": "8",
+          "nut_standard": "ISO 4032:2023",
+          "starts": 1,
+          "thread_designation": "M12x1.75"
+        },
+        "interfaces": {
+          "head_bearing_friction_coefficient": 0.15,
+          "member_interface_friction_coefficient": 0.15,
+          "nut_bearing_friction_coefficient": 0.15,
+          "thread_friction_coefficient": 0.15
+        },
+        "loading": {
+          "external_axial_load_n": 0.0,
+          "target_preload_n": 25429.80983083361
+        },
+        "members": {
+          "layers": [
+            {
+              "clearance_hole_diameter_mm": 13.799999999999999,
+              "layer_id": "head_side_member",
+              "material_id": "member_aluminium_en_aw_6082_t6",
+              "outer_diameter_mm": 39.599999999999994,
+              "thickness_mm": 10.8
+            },
+            {
+              "clearance_hole_diameter_mm": 13.799999999999999,
+              "layer_id": "nut_side_member",
+              "material_id": "member_aluminium_en_aw_6082_t6",
+              "outer_diameter_mm": 39.599999999999994,
+              "thickness_mm": 13.2
+            }
+          ]
+        },
+        "metadata": {
+          "name": "Phase 3 diversified DOE design proposal",
+          "notes": "Unsealed design proposal; no FEM authorization or physics certification."
+        },
+        "schema_version": 1
+      },
+      "proposal_id": "TRM-DDOE-D-M12x1_75__member_aluminium_en_aw_6082_t6-08",
+      "thread_designation": "M12x1.75"
+    },
+    {
+      "case_hash": "4c49dc055ee425801a42e5bdb1b17ed38bde66ef949fbabdd591629fc691635d",
+      "dataset_admission_status": "NOT_EVALUATED",
+      "evidence_status": "NEW_EVIDENCE_REQUIRED_NO_EXECUTION_AUTHORITY",
+      "fem_execution_authorized": false,
+      "historical_case_id": null,
+      "member_material_id": "member_aluminium_en_aw_6082_t6",
+      "normalized_coordinates": [
+        1.0,
+        0.5,
+        0.0
+      ],
+      "preparation_run_id": "trm_fem_be217da914b0",
+      "product_case": {
+        "analysis": {
+          "calculation_mode": "auto",
+          "fidelity": "production"
+        },
+        "fastener": {
+          "bolt_length_mm": 40.0,
+          "bolt_material_id": "fastener_steel",
+          "bolt_property_class": "8.8",
+          "bolt_standard": "ISO 4017:2022",
+          "handedness": "right",
+          "nut_material_id": "fastener_steel",
+          "nut_property_class": "8",
+          "nut_standard": "ISO 4032:2023",
+          "starts": 1,
+          "thread_designation": "M12x1.75"
+        },
+        "interfaces": {
+          "head_bearing_friction_coefficient": 0.15,
+          "member_interface_friction_coefficient": 0.15,
+          "nut_bearing_friction_coefficient": 0.15,
+          "thread_friction_coefficient": 0.15
+        },
+        "loading": {
+          "external_axial_load_n": 0.0,
+          "target_preload_n": 29062.639806666983
+        },
+        "members": {
+          "layers": [
+            {
+              "clearance_hole_diameter_mm": 13.200000000000001,
+              "layer_id": "head_side_member",
+              "material_id": "member_aluminium_en_aw_6082_t6",
+              "outer_diameter_mm": 36.0,
+              "thickness_mm": 10.8
+            },
+            {
+              "clearance_hole_diameter_mm": 13.200000000000001,
+              "layer_id": "nut_side_member",
+              "material_id": "member_aluminium_en_aw_6082_t6",
+              "outer_diameter_mm": 36.0,
+              "thickness_mm": 13.2
+            }
+          ]
+        },
+        "metadata": {
+          "name": "Phase 3 diversified DOE design proposal",
+          "notes": "Unsealed design proposal; no FEM authorization or physics certification."
+        },
+        "schema_version": 1
+      },
+      "proposal_id": "TRM-DDOE-D-M12x1_75__member_aluminium_en_aw_6082_t6-09",
+      "thread_designation": "M12x1.75"
+    },
+    {
+      "case_hash": "ae422183f90bad2a5f59ea82b0e134fafac5630312d295c8a5882a172b06d75e",
+      "dataset_admission_status": "NOT_EVALUATED",
+      "evidence_status": "NEW_EVIDENCE_REQUIRED_NO_EXECUTION_AUTHORITY",
+      "fem_execution_authorized": false,
+      "historical_case_id": null,
+      "member_material_id": "member_aluminium_en_aw_6082_t6",
+      "normalized_coordinates": [
+        0.0,
+        0.0,
+        0.75
+      ],
+      "preparation_run_id": "trm_fem_198b8b340a73",
+      "product_case": {
+        "analysis": {
+          "calculation_mode": "auto",
+          "fidelity": "production"
+        },
+        "fastener": {
+          "bolt_length_mm": 40.0,
+          "bolt_material_id": "fastener_steel",
+          "bolt_property_class": "8.8",
+          "bolt_standard": "ISO 4017:2022",
+          "handedness": "right",
+          "nut_material_id": "fastener_steel",
+          "nut_property_class": "8",
+          "nut_standard": "ISO 4032:2023",
+          "starts": 1,
+          "thread_designation": "M12x1.75"
+        },
+        "interfaces": {
+          "head_bearing_friction_coefficient": 0.15,
+          "member_interface_friction_coefficient": 0.15,
+          "nut_bearing_friction_coefficient": 0.15,
+          "thread_friction_coefficient": 0.15
+        },
+        "loading": {
+          "external_axial_load_n": 0.0,
+          "target_preload_n": 21796.979855000238
+        },
+        "members": {
+          "layers": [
+            {
+              "clearance_hole_diameter_mm": 14.100000000000001,
+              "layer_id": "head_side_member",
+              "material_id": "member_aluminium_en_aw_6082_t6",
+              "outer_diameter_mm": 41.400000000000006,
+              "thickness_mm": 9.600000000000001
+            },
+            {
+              "clearance_hole_diameter_mm": 14.100000000000001,
+              "layer_id": "nut_side_member",
+              "material_id": "member_aluminium_en_aw_6082_t6",
+              "outer_diameter_mm": 41.400000000000006,
+              "thickness_mm": 14.399999999999999
+            }
+          ]
+        },
+        "metadata": {
+          "name": "Phase 3 diversified DOE design proposal",
+          "notes": "Unsealed design proposal; no FEM authorization or physics certification."
+        },
+        "schema_version": 1
+      },
+      "proposal_id": "TRM-DDOE-D-M12x1_75__member_aluminium_en_aw_6082_t6-10",
+      "thread_designation": "M12x1.75"
+    },
+    {
+      "case_hash": "557f15d6d2f977e91a5e86eda136a26a902b0f6f15c9c972b3e1d0de5fa2bcdd",
+      "dataset_admission_status": "NOT_EVALUATED",
+      "evidence_status": "NEW_EVIDENCE_REQUIRED_NO_EXECUTION_AUTHORITY",
+      "fem_execution_authorized": false,
+      "historical_case_id": null,
+      "member_material_id": "member_aluminium_en_aw_6082_t6",
+      "normalized_coordinates": [
+        0.0,
+        0.5,
+        0.25
+      ],
+      "preparation_run_id": "trm_fem_55395af84ce2",
+      "product_case": {
+        "analysis": {
+          "calculation_mode": "auto",
+          "fidelity": "production"
+        },
+        "fastener": {
+          "bolt_length_mm": 40.0,
+          "bolt_material_id": "fastener_steel",
+          "bolt_property_class": "8.8",
+          "bolt_standard": "ISO 4017:2022",
+          "handedness": "right",
+          "nut_material_id": "fastener_steel",
+          "nut_property_class": "8",
+          "nut_standard": "ISO 4032:2023",
+          "starts": 1,
+          "thread_designation": "M12x1.75"
+        },
+        "interfaces": {
+          "head_bearing_friction_coefficient": 0.15,
+          "member_interface_friction_coefficient": 0.15,
+          "nut_bearing_friction_coefficient": 0.15,
+          "thread_friction_coefficient": 0.15
+        },
+        "loading": {
+          "external_axial_load_n": 0.0,
+          "target_preload_n": 21796.979855000238
+        },
+        "members": {
+          "layers": [
+            {
+              "clearance_hole_diameter_mm": 13.5,
+              "layer_id": "head_side_member",
+              "material_id": "member_aluminium_en_aw_6082_t6",
+              "outer_diameter_mm": 37.8,
+              "thickness_mm": 10.8
+            },
+            {
+              "clearance_hole_diameter_mm": 13.5,
+              "layer_id": "nut_side_member",
+              "material_id": "member_aluminium_en_aw_6082_t6",
+              "outer_diameter_mm": 37.8,
+              "thickness_mm": 13.2
+            }
+          ]
+        },
+        "metadata": {
+          "name": "Phase 3 diversified DOE design proposal",
+          "notes": "Unsealed design proposal; no FEM authorization or physics certification."
+        },
+        "schema_version": 1
+      },
+      "proposal_id": "TRM-DDOE-D-M12x1_75__member_aluminium_en_aw_6082_t6-11",
+      "thread_designation": "M12x1.75"
+    },
+    {
+      "case_hash": "02dfb08c0cfac6852adf8f1550ffd62a11e5721ad5aba1d5c564bcf6a510ed32",
+      "dataset_admission_status": "NOT_EVALUATED",
+      "evidence_status": "NEW_EVIDENCE_REQUIRED_NO_EXECUTION_AUTHORITY",
+      "fem_execution_authorized": false,
+      "historical_case_id": null,
+      "member_material_id": "member_aluminium_en_aw_6082_t6",
+      "normalized_coordinates": [
+        0.25,
+        1.0,
+        1.0
+      ],
+      "preparation_run_id": "trm_fem_848ee0814e01",
+      "product_case": {
+        "analysis": {
+          "calculation_mode": "auto",
+          "fidelity": "production"
+        },
+        "fastener": {
+          "bolt_length_mm": 40.0,
+          "bolt_material_id": "fastener_steel",
+          "bolt_property_class": "8.8",
+          "bolt_standard": "ISO 4017:2022",
+          "handedness": "right",
+          "nut_material_id": "fastener_steel",
+          "nut_property_class": "8",
+          "nut_standard": "ISO 4032:2023",
+          "starts": 1,
+          "thread_designation": "M12x1.75"
+        },
+        "interfaces": {
+          "head_bearing_friction_coefficient": 0.15,
+          "member_interface_friction_coefficient": 0.15,
+          "nut_bearing_friction_coefficient": 0.15,
+          "thread_friction_coefficient": 0.15
+        },
+        "loading": {
+          "external_axial_load_n": 0.0,
+          "target_preload_n": 23613.394842916925
+        },
+        "members": {
+          "layers": [
+            {
+              "clearance_hole_diameter_mm": 14.399999999999999,
+              "layer_id": "head_side_member",
+              "material_id": "member_aluminium_en_aw_6082_t6",
+              "outer_diameter_mm": 43.2,
+              "thickness_mm": 12.0
+            },
+            {
+              "clearance_hole_diameter_mm": 14.399999999999999,
+              "layer_id": "nut_side_member",
+              "material_id": "member_aluminium_en_aw_6082_t6",
+              "outer_diameter_mm": 43.2,
+              "thickness_mm": 12.0
+            }
+          ]
+        },
+        "metadata": {
+          "name": "Phase 3 diversified DOE design proposal",
+          "notes": "Unsealed design proposal; no FEM authorization or physics certification."
+        },
+        "schema_version": 1
+      },
+      "proposal_id": "TRM-DDOE-D-M12x1_75__member_aluminium_en_aw_6082_t6-12",
+      "thread_designation": "M12x1.75"
+    }
+  ],
+  "dataset_admission_authorized": false,
+  "design_frozen": false,
+  "design_state_count": 72,
+  "fem_execution_authorized": false,
+  "first_pilot_proposal_id": "TRM-DDOE-D-M10x1_5__member_aluminium_en_aw_6082_t6-01",
+  "geometry_execution_authorized": false,
+  "historical_reuse_candidates": 14,
+  "mesh_execution_authorized": false,
+  "new_design_states_requiring_evidence": 58,
+  "policy_sha256": "6d0e45c109b1ba0a279ec0f06467ea91392760171b9a91bf0467d763896108d9",
+  "schema_version": 1,
+  "source_commit": "31ba80b8425926ecea81aaaad14f2ef7d430ba05",
+  "status": "PROVISIONAL_DESIGN_NOT_EXECUTION_AUTHORIZATION",
+  "validation_states": "18 reserved; configurations not generated"
+}
