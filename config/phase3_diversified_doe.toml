@@ -236,3 +236,16 @@ preload_retention_qualification_required = true
 physical_acceptance_qualification_required = true
 solver_launch_authorized = false
 rom_dataset_admission_authorized = false
+
+# Provisional allocation only. This is NOT a generated or frozen design.
+# A cohort-level reuse ceiling is not an exact case-hash match and does
+# not establish ROM-dataset admission or reduce solver launch gates.
+[provisional_allocation]
+status = "proposal_only_not_frozen"
+design_slots_per_cohort = 12
+sealed_validation_slots_per_cohort = 3
+proposed_total_distinct_states = 90
+historical_reuse_must_match_exact_canonical_case_hash = true
+historical_reuse_requires_separate_evidence_admission = true
+holdout_configurations_must_not_be_generated_by_planning_preview = true
+additional_enrichment_not_included_in_budget = true
