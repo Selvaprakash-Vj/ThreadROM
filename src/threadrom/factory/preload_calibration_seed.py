@@ -1,6 +1,7 @@
 """Physics-derived initial thermal-preload calibration seed."""
 
 from __future__ import annotations
+from threadrom.materials.catalog import MaterialCatalog
 
 import math
 from dataclasses import dataclass
@@ -70,6 +71,8 @@ class ThermalPreloadCompatibilityMechanics:
 
 def derive_thermal_preload_compatibility_mechanics(
     resolved: ResolvedCase,
+    *,
+    material_catalog: MaterialCatalog | None = None,
 ) -> ThermalPreloadCompatibilityMechanics:
     """Derive the V2 analytical thermal-preload load path.
 
@@ -95,9 +98,14 @@ def derive_thermal_preload_compatibility_mechanics(
     bolt-force fraction through the engagement.
     """
 
-    joint = build_analytical_joint_input(
-        resolved
-    )
+    joint = (
+     build_analytical_joint_input(resolved)
+     if material_catalog is None
+     else build_analytical_joint_input(
+         resolved,
+         material_catalog=material_catalog,
+     )
+ )
 
     bolt = calculate_analytical_bolt_mechanics(
         joint
@@ -419,16 +427,28 @@ class ThermalPreloadCalibrationSeedV2:
 
 def derive_analytical_thermal_preload_seed_v2(
     resolved: ResolvedCase,
+    *,
+    material_catalog: MaterialCatalog | None = None,
 ) -> ThermalPreloadCalibrationSeedV2:
     """Derive the physics-separated V2 FEM preload seed."""
 
-    joint = build_analytical_joint_input(
-        resolved
+    joint = (
+        build_analytical_joint_input(resolved)
+        if material_catalog is None
+        else build_analytical_joint_input(
+            resolved,
+            material_catalog=material_catalog,
+        )
     )
 
     compatibility = (
-        derive_thermal_preload_compatibility_mechanics(
-            resolved
+        (
+            derive_thermal_preload_compatibility_mechanics(resolved)
+            if material_catalog is None
+            else derive_thermal_preload_compatibility_mechanics(
+                resolved,
+                material_catalog=material_catalog,
+            )
         )
     )
 

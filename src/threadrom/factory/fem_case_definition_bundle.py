@@ -1,6 +1,7 @@
 """Generic governed FEM solver-definition bundle."""
 
 from __future__ import annotations
+from threadrom.materials.catalog import MaterialCatalog
 
 import math
 from dataclasses import dataclass, replace
@@ -97,6 +98,7 @@ def build_generic_fem_definition_bundle(
     calibration_policy: PreloadCalibrationCampaignPolicy = (
         PreloadCalibrationCampaignPolicy()
     ),
+    material_catalog: MaterialCatalog | None = None,
 ) -> FemCaseDefinitionBundle:
     """Build generic FEM definitions without certification-oracle coupling.
 
@@ -147,8 +149,11 @@ def build_generic_fem_definition_bundle(
     )
 
     calibration_seed = (
-        derive_analytical_thermal_preload_seed_v2(
-            resolved
+        derive_analytical_thermal_preload_seed_v2(resolved)
+        if material_catalog is None
+        else derive_analytical_thermal_preload_seed_v2(
+            resolved,
+            material_catalog=material_catalog,
         )
     )
 
