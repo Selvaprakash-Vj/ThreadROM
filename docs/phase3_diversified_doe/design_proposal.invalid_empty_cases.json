@@ -1,0 +1,19 @@
+{
+  "atlas_sha256": "eed5e52f4e9baaad5e2eb89634de48bbdf53c14c584921d8afb0df00631ffc60",
+  "campaign_id": "TRM-DDOE-001",
+  "cases": [],
+  "dataset_admission_authorized": false,
+  "design_frozen": false,
+  "design_state_count": 72,
+  "fem_execution_authorized": false,
+  "first_pilot_proposal_id": "TRM-DDOE-D-M10x1_5__member_aluminium_en_aw_6082_t6-01",
+  "geometry_execution_authorized": false,
+  "historical_reuse_candidates": 14,
+  "mesh_execution_authorized": false,
+  "new_design_states_requiring_evidence": 58,
+  "policy_sha256": "6d0e45c109b1ba0a279ec0f06467ea91392760171b9a91bf0467d763896108d9",
+  "schema_version": 1,
+  "source_commit": "31ba80b8425926ecea81aaaad14f2ef7d430ba05",
+  "status": "PROVISIONAL_DESIGN_NOT_EXECUTION_AUTHORIZATION",
+  "validation_states": "18 reserved; configurations not generated"
+}

@@ -1,0 +1,176 @@
+{
+  "cases": [
+    {
+      "analytical_relative_error": 0.3692241913713949,
+      "case_hash": "02bb37591d1a9b386abba4b01092f89d842faa7f3288bd29de579107ee98e0ee",
+      "case_id": "TRM-DDOE-D-M8x1_25__member_aluminium_en_aw_6082_t6-01",
+      "execution_generation_id": "legacy_diversified_w01_unversioned_execution",
+      "prediction": {
+        "applicability": "insufficient_neighbors",
+        "correction_factor": 1.0,
+        "nearest_distance": 0.2392990467156796,
+        "neighbor_case_ids": [],
+        "predicted_delta_temperature_c": -154.1165902217525,
+        "relative_error_to_replayed_truth": 0.3692241913713949,
+        "reused_case_count": 0,
+        "source": "analytical_fallback"
+      },
+      "truth_correction_factor": 1.5853493211385832
+    },
+    {
+      "analytical_relative_error": 0.3936371064997034,
+      "case_hash": "2a318b956374e51119ea1979af799444f565547bc590dafad15d30422b2f46e2",
+      "case_id": "TRM-DDOE-D-M12x1_75__member_aluminium_en_aw_6082_t6-01",
+      "execution_generation_id": "legacy_diversified_w01_unversioned_execution",
+      "prediction": {
+        "applicability": "insufficient_neighbors",
+        "correction_factor": 1.0,
+        "nearest_distance": 0.2392990467156796,
+        "neighbor_case_ids": [],
+        "predicted_delta_temperature_c": -155.41743857590214,
+        "relative_error_to_replayed_truth": 0.3936371064997034,
+        "reused_case_count": 0,
+        "source": "analytical_fallback"
+      },
+      "truth_correction_factor": 1.6491774327208413
+    },
+    {
+      "analytical_relative_error": 0.42534851470264645,
+      "case_hash": "2c2893c0baa941d67ea6540f5071e1a90ca0d2f3e60c98f0dfdaf1eaf5c7df8f",
+      "case_id": "TRM-DDOE-D-M8x1_25__member_aluminium_en_aw_6082_t6-02",
+      "execution_generation_id": "phase3_diversified_adaptive_factory_direct_v1",
+      "prediction": {
+        "applicability": "preload_extrapolation",
+        "correction_factor": 1.0,
+        "nearest_distance": 0.23879512908380093,
+        "neighbor_case_ids": [],
+        "predicted_delta_temperature_c": -193.05990374982903,
+        "relative_error_to_replayed_truth": 0.42534851470264645,
+        "reused_case_count": 0,
+        "source": "analytical_fallback"
+      },
+      "truth_correction_factor": 1.74018518282007
+    },
+    {
+      "analytical_relative_error": 0.331667556328226,
+      "case_hash": "3170c5437c9679e35180f3a720cb8e1cf436c12f3cdff86470e9bd2942a0f9e1",
+      "case_id": "TRM-DDOE-D-M12x1_75__steel_member-12",
+      "execution_generation_id": "legacy_diversified_w01_unversioned_execution",
+      "prediction": {
+        "applicability": "insufficient_neighbors",
+        "correction_factor": 1.0,
+        "nearest_distance": 0.23929485963786096,
+        "neighbor_case_ids": [],
+        "predicted_delta_temperature_c": -147.09739488869164,
+        "relative_error_to_replayed_truth": 0.331667556328226,
+        "reused_case_count": 0,
+        "source": "analytical_fallback"
+      },
+      "truth_correction_factor": 1.4962613433908227
+    },
+    {
+      "analytical_relative_error": 0.4446603334367628,
+      "case_hash": "8da375401526a253cde3056662d358166dc3373f9200325c39ddf9514f6cb5f1",
+      "case_id": "TRM-DDOE-D-M10x1_5__member_aluminium_en_aw_6082_t6-02",
+      "execution_generation_id": "phase3_diversified_adaptive_factory_direct_v1",
+      "prediction": {
+        "applicability": "interpolation",
+        "correction_factor": 1.7938229806597201,
+        "nearest_distance": 0.19378697654108293,
+        "neighbor_case_ids": [
+          "TRM-DDOE-D-M12x1_75__member_aluminium_en_aw_6082_t6-02",
+          "TRM-DDOE-D-M8x1_25__member_aluminium_en_aw_6082_t6-02"
+        ],
+        "predicted_delta_temperature_c": -344.6255763069081,
+        "relative_error_to_replayed_truth": 0.0038189440469587497,
+        "reused_case_count": 2,
+        "source": "observation_neighbors"
+      },
+      "truth_correction_factor": 1.8006997522589696
+    },
+    {
+      "analytical_relative_error": 0.4532970607096649,
+      "case_hash": "91e86a0b0eef6ac09ea2a27379c74e94dcaebaa3579178226d9ca0fff6da7d3c",
+      "case_id": "TRM-DDOE-D-M12x1_75__member_aluminium_en_aw_6082_t6-02",
+      "execution_generation_id": "phase3_diversified_adaptive_factory_direct_v1",
+      "prediction": {
+        "applicability": "preload_extrapolation",
+        "correction_factor": 1.0,
+        "nearest_distance": 0.19378697654108293,
+        "neighbor_case_ids": [],
+        "predicted_delta_temperature_c": -194.50807780569463,
+        "relative_error_to_replayed_truth": 0.4532970607096649,
+        "reused_case_count": 0,
+        "source": "analytical_fallback"
+      },
+      "truth_correction_factor": 1.8291469244670266
+    },
+    {
+      "analytical_relative_error": 0.3708924579538437,
+      "case_hash": "b4fcf74bc0e1faf2f04eab3a8f1af538723d783cd639ea41dadc6b331a98ba58",
+      "case_id": "TRM-DDOE-D-M12x1_75__steel_member-02",
+      "execution_generation_id": "phase3_diversified_adaptive_factory_direct_v1",
+      "prediction": {
+        "applicability": "no_compatible_evidence",
+        "correction_factor": 1.0,
+        "nearest_distance": null,
+        "neighbor_case_ids": [],
+        "predicted_delta_temperature_c": -132.60341725927418,
+        "relative_error_to_replayed_truth": 0.3708924579538437,
+        "reused_case_count": 0,
+        "source": "analytical_fallback"
+      },
+      "truth_correction_factor": 1.5895533484585567
+    },
+    {
+      "analytical_relative_error": 0.32190333226409906,
+      "case_hash": "b75820842977f376b9adc4ad9525a32155464467b6ecbcbfe3a06d048cdedeab",
+      "case_id": "TRM-DDOE-D-M8x1_25__steel_member-12",
+      "execution_generation_id": "legacy_diversified_w01_unversioned_execution",
+      "prediction": {
+        "applicability": "insufficient_neighbors",
+        "correction_factor": 1.0,
+        "nearest_distance": 0.23929485963786096,
+        "neighbor_case_ids": [],
+        "predicted_delta_temperature_c": -146.167084113052,
+        "relative_error_to_replayed_truth": 0.32190333226409906,
+        "reused_case_count": 0,
+        "source": "analytical_fallback"
+      },
+      "truth_correction_factor": 1.4747159919527448
+    }
+  ],
+  "governance": {
+    "analytical_fallback_available": true,
+    "correction_factor_disagreement_gate": true,
+    "execution_generation_boundary_preserved": true,
+    "fem_executed": false,
+    "geometry_generation_boundary_preserved": true,
+    "holdouts_accessed": false,
+    "minimum_neighbor_gate": true,
+    "rom_dataset_admission": false,
+    "target_preload_bracketing_gate": true
+  },
+  "knowledge_store": {
+    "case_count": 8,
+    "observation_count": 16,
+    "path": "docs/phase3_calibration_knowledge/observations_v1.json",
+    "sha256": "bd55e1715f2e0ae958c30a1b6dd1715519e48286420fad6bce0d76431d2168d9"
+  },
+  "predictor_policy": {
+    "path": "config/fem_calibration_trial1_predictor.toml",
+    "policy_id": "phase3_calibration_observation_trial1_predictor_v1",
+    "sha256": "33c465065eda24adaa088ff88ec02c13e26040e29aa333f05a865747aa94a7ac"
+  },
+  "record_status": "FINAL",
+  "results": {
+    "analytical_fallback_count": 7,
+    "evaluated_case_count": 8,
+    "mean_analytical_relative_error_on_same_subset": 0.4446603334367628,
+    "mean_predictor_relative_error_on_applicable_subset": 0.0038189440469587497,
+    "observation_neighbor_prediction_count": 1,
+    "predictor_improves_over_analytical_on_applicable_subset": true
+  },
+  "schema": "threadrom.phase3_calibration_trial1_predictor_validation.v1",
+  "validation_method": "LEAVE_ONE_CASE_OUT_OVER_W01_W02_OBSERVATION_STORE"
+}

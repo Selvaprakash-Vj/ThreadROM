@@ -25,7 +25,7 @@ def _inputs():
         .read_text(encoding="utf-8-sig")
     )
     atlas = (
-        ROOT / "docs/phase3_fem_atlas/atlas.json"
+        ROOT / "docs/phase3_fem_atlas/historical_baselines/diversified_doe_baseline_801be26733a087c8b8635406f5bde724144feb2b.json"
     ).read_bytes()
     anchors = select_m10_historical_anchors(policy, atlas)
     return policy, atlas, anchors

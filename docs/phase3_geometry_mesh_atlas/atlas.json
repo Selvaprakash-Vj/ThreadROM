@@ -1,0 +1,865 @@
+{
+  "case_bindings": {
+    "TRM-DDOE-D-M10x1_5__member_aluminium_en_aw_6082_t6-02": {
+      "case_hash": "8da375401526a253cde3056662d358166dc3373f9200325c39ddf9514f6cb5f1",
+      "classification_id": "joint-classification-f98f265b5544be03",
+      "classification_sha256": "f98f265b5544be031d9545977268160a84414d037d5e37a194ea35c24222e118",
+      "geometry_artifact_sha256": "7cba01c2cbdafb4bffa670c362303671638b9b789d9293d8ef7947dbbd8f5faf",
+      "geometry_canonical_artifact": "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W02/prepared_cases/trm_fem_d924d7c036b7/geometry/complete_joint_assembly.step",
+      "geometry_id": "joint-geometry-48edc2009b9661d5",
+      "geometry_identity_sha256": "48edc2009b9661d5e187c498dfbcbc238e19cb1189e943f46850270fb1f32b27",
+      "geometry_mode": "GENERATED_FOR_W02",
+      "mesh_artifact_sha256": "778438333dabcc22995cfdb13a2d207501a387bbf3de470232edebbf5fdc2ba6",
+      "mesh_canonical_artifact": "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W02/prepared_cases/trm_fem_d924d7c036b7/mesh/complete_joint_grouped_medium_first_order.msh",
+      "mesh_id": "mesh-de5d6b68c349e182",
+      "mesh_identity_sha256": "de5d6b68c349e1821dbf68f76cf814e4c3a86c7b6e274679e99114be9f1b58b0",
+      "mesh_mode": "GENERATED_FOR_W02",
+      "preparation_record": "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W02/solver_preparation/trm_fem_d924d7c036b7/trm_fem_d924d7c036b7_cal_01/diversified_doe_trial1_preparation_record.json",
+      "wave_id": "TRM-DDOE-001-W02"
+    },
+    "TRM-DDOE-D-M10x1_5__member_aluminium_en_aw_6082_t6-03": {
+      "case_hash": "eac55af4d11fd8b23203f51c738cac5190cf203b637fb9f5be16169fdcbdfd12",
+      "classification_id": "joint-classification-526ca5cdc6792fd1",
+      "classification_sha256": "526ca5cdc6792fd154a05f432db3f286d0a2ab52b6abeafeffbe52ebb9f2fb45",
+      "geometry_artifact_sha256": "c2c5baf0034bc8e2c1695f5b5826592a8905eb032d996107bec7fd9ae1233d17",
+      "geometry_canonical_artifact": "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W03/prepared_cases/trm_fem_a57f61f13b9d/geometry/complete_joint_assembly.step",
+      "geometry_id": "joint-geometry-ed222732785b39db",
+      "geometry_identity_sha256": "ed222732785b39db952afa6eb7d9ed9626f8d66250530a8b3aea359460c3a370",
+      "geometry_mode": "GENERATED_FOR_W03",
+      "mesh_artifact_sha256": "b3c98973d17b1819b1f001e5c9a33a6da7f74ea9c54e95f63d65dac85fce8348",
+      "mesh_canonical_artifact": "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W03/prepared_cases/trm_fem_a57f61f13b9d/mesh/complete_joint_grouped_medium_first_order.msh",
+      "mesh_id": "mesh-6883b620c8756d0c",
+      "mesh_identity_sha256": "6883b620c8756d0cce44b354edd0f6975addee527965912d5c2004d81803e909",
+      "mesh_mode": "GENERATED_FOR_W03",
+      "preparation_record": "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W03/solver_preparation/trm_fem_a57f61f13b9d/trm_fem_a57f61f13b9d_cal_01/diversified_doe_trial1_preparation_record.json",
+      "wave_id": "TRM-DDOE-001-W03"
+    },
+    "TRM-DDOE-D-M10x1_5__member_aluminium_en_aw_6082_t6-04": {
+      "case_hash": "a833df6408f7587d3f6d28d467390b624748b71c6c4d0a2b558f9410624f7706",
+      "classification_id": "joint-classification-6db8a221cc712f9d",
+      "classification_sha256": "6db8a221cc712f9d692ed8acd394a828c8cec82a24652027c626b3f2966d72ce",
+      "geometry_artifact_sha256": "15bda2735181602c8b5859244dbca8ec697a01c1ba7efa5550806cd778ba7271",
+      "geometry_canonical_artifact": "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W04/prepared_cases/trm_fem_c0b2237d5800/geometry/complete_joint_assembly.step",
+      "geometry_id": "joint-geometry-bad9f47fac5e4eb0",
+      "geometry_identity_sha256": "bad9f47fac5e4eb09fa8b926ffa8bae1bea58e32ddb04e24cfb009c0f9a43128",
+      "geometry_mode": "GENERATED_FOR_W04",
+      "mesh_artifact_sha256": "39b5b11b4b5ee87b0677d3616781a0bc2bcdf2f49d9820caeb4659a75b018f0d",
+      "mesh_canonical_artifact": "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W04/prepared_cases/trm_fem_c0b2237d5800/mesh/complete_joint_grouped_medium_first_order.msh",
+      "mesh_id": "mesh-2ee9b5c4e572b984",
+      "mesh_identity_sha256": "2ee9b5c4e572b984d2a2097b98d8564a28fbd57e70c0d746c897fd6ce50a0173",
+      "mesh_mode": "GENERATED_FOR_W04",
+      "preparation_record": "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W04/solver_preparation/trm_fem_c0b2237d5800/trm_fem_c0b2237d5800_cal_01/diversified_doe_trial1_preparation_record.json",
+      "wave_id": "TRM-DDOE-001-W04"
+    },
+    "TRM-DDOE-D-M10x1_5__member_aluminium_en_aw_6082_t6-05": {
+      "case_hash": "dfb44775d3ad128f7d14d4410a65ddc062f2d22e8b2f79c846cae4d8d41247a2",
+      "classification_id": "joint-classification-7286bd4ca507b9c8",
+      "classification_sha256": "7286bd4ca507b9c858db3a157d516e5b62d884a95a4c07d9e45f2a4ade848050",
+      "geometry_artifact_sha256": "a3a313fa5d138b5a9f1509a3264f30d7322c6c0d62eadd991408f5f057589205",
+      "geometry_canonical_artifact": "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W05/prepared_cases/trm_fem_4ccebbc35697/geometry/complete_joint_assembly.step",
+      "geometry_id": "joint-geometry-d9fe6fabd46c48df",
+      "geometry_identity_sha256": "d9fe6fabd46c48df6259976ccecd695e37d53d49ed3bc27c24515a3b704410fa",
+      "geometry_mode": "GENERATED_FOR_W05",
+      "mesh_artifact_sha256": "1c06729d8897048be057c198e14d8ace9606857271cdb5dd4fc8c1da6dccc474",
+      "mesh_canonical_artifact": "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W05/prepared_cases/trm_fem_4ccebbc35697/mesh/complete_joint_grouped_medium_first_order.msh",
+      "mesh_id": "mesh-4cb41ee1e7286707",
+      "mesh_identity_sha256": "4cb41ee1e7286707edba351c058151cb9ac6ef8150ad1de07ac9fd37d5f8b6a1",
+      "mesh_mode": "GENERATED_FOR_W05",
+      "preparation_record": "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W05/solver_preparation/trm_fem_4ccebbc35697/trm_fem_4ccebbc35697_cal_01/diversified_doe_trial1_preparation_record.json",
+      "wave_id": "TRM-DDOE-001-W05"
+    },
+    "TRM-DDOE-D-M12x1_75__member_aluminium_en_aw_6082_t6-01": {
+      "case_hash": "2a318b956374e51119ea1979af799444f565547bc590dafad15d30422b2f46e2",
+      "classification_id": "joint-classification-ec3b62000479e76f",
+      "classification_sha256": "ec3b62000479e76f13b1e967088664777534d48330822dc4f94e898ca3da7778",
+      "geometry_artifact_sha256": "f4a1b0e0ca956a79b84c964b6c3fe355692a00dfae07eb7db493c3955477ed01",
+      "geometry_canonical_artifact": "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W01/prepared_cases/trm_fem_5b22a5376136/geometry/complete_joint_assembly.step",
+      "geometry_id": "joint-geometry-3ef28054a6d2f58f",
+      "geometry_identity_sha256": "3ef28054a6d2f58f93e9f1f66e8174947c9f0e3ab8d078dcb795a81958413269",
+      "geometry_mode": "GENERATED_FOR_W01",
+      "mesh_artifact_sha256": "177519871e51e56c3049ea561e1d1f03f07a3c37c56bb5c53f687282965c874a",
+      "mesh_canonical_artifact": "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W01/prepared_cases/trm_fem_5b22a5376136/mesh/complete_joint_grouped_medium_first_order.msh",
+      "mesh_id": "mesh-f2306ce3764d241d",
+      "mesh_identity_sha256": "f2306ce3764d241dc3958c2770c91949098e799fe2fac23e66f8522ceb1a5bb9",
+      "mesh_mode": "GENERATED_FOR_W01",
+      "preparation_record": "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W01/solver_preparation/trm_fem_5b22a5376136/trm_fem_5b22a5376136_cal_01/diversified_doe_trial1_preparation_record.json",
+      "wave_id": "TRM-DDOE-001-W01"
+    },
+    "TRM-DDOE-D-M12x1_75__member_aluminium_en_aw_6082_t6-02": {
+      "case_hash": "91e86a0b0eef6ac09ea2a27379c74e94dcaebaa3579178226d9ca0fff6da7d3c",
+      "classification_id": "joint-classification-90a7d2f2b5898d37",
+      "classification_sha256": "90a7d2f2b5898d37b06c28afe38fb815a39fd672a3ee55dafac42ffd06f5834b",
+      "geometry_artifact_sha256": "8a9d600418a9cbff36e611fb34db4fa525939b0a71bacda9450e006995bc5859",
+      "geometry_canonical_artifact": "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W02/prepared_cases/trm_fem_bfb674d30aad/geometry/complete_joint_assembly.step",
+      "geometry_id": "joint-geometry-35b5ba5b63abc5b2",
+      "geometry_identity_sha256": "35b5ba5b63abc5b2af5f381dd78d2bccdd1778467ac710f1199223c432f3ee8e",
+      "geometry_mode": "GENERATED_FOR_W02",
+      "mesh_artifact_sha256": "67f9b521faa5da380078b6e241c757cf2311f9ac84146c62eefa107773a0ace2",
+      "mesh_canonical_artifact": "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W02/prepared_cases/trm_fem_bfb674d30aad/mesh/complete_joint_grouped_medium_first_order.msh",
+      "mesh_id": "mesh-69e466fba363ea58",
+      "mesh_identity_sha256": "69e466fba363ea58f4afc4b0fe72215d96a5761106a4c64fbd89137ce68d9f89",
+      "mesh_mode": "GENERATED_FOR_W02",
+      "preparation_record": "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W02/solver_preparation/trm_fem_bfb674d30aad/trm_fem_bfb674d30aad_cal_01/diversified_doe_trial1_preparation_record.json",
+      "wave_id": "TRM-DDOE-001-W02"
+    },
+    "TRM-DDOE-D-M12x1_75__member_aluminium_en_aw_6082_t6-03": {
+      "case_hash": "602fde21267d63e3d3cb6c88b6b5757ef511506876f8c7c3a6b41ee199e81dad",
+      "classification_id": "joint-classification-9caade20397279cb",
+      "classification_sha256": "9caade20397279cb421a2aed329084c890017c8f0d49d0222496cd79b97ee95d",
+      "geometry_artifact_sha256": "f33a0ba8906742c53bd2e88af84c37c72970ece2ae2b4ae4f0e1a9ef81099669",
+      "geometry_canonical_artifact": "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W03/prepared_cases/trm_fem_22c109e1e52b/geometry/complete_joint_assembly.step",
+      "geometry_id": "joint-geometry-675de5fb9b6c4543",
+      "geometry_identity_sha256": "675de5fb9b6c45438e2b9428d3b0d9045d7f65f7a15bab46a6344c14b243f0ae",
+      "geometry_mode": "GENERATED_FOR_W03",
+      "mesh_artifact_sha256": "3b8d841f679ca1b4264cc7ffd750e5543654a2d19a3f01a93b3b8c51b74c9827",
+      "mesh_canonical_artifact": "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W03/prepared_cases/trm_fem_22c109e1e52b/mesh/complete_joint_grouped_medium_first_order.msh",
+      "mesh_id": "mesh-63c2c15338f35a3a",
+      "mesh_identity_sha256": "63c2c15338f35a3a3bf02ac727bb9dd0bbd34a8734e4a0a414826d8619412bb2",
+      "mesh_mode": "GENERATED_FOR_W03",
+      "preparation_record": "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W03/solver_preparation/trm_fem_22c109e1e52b/trm_fem_22c109e1e52b_cal_01/diversified_doe_trial1_preparation_record.json",
+      "wave_id": "TRM-DDOE-001-W03"
+    },
+    "TRM-DDOE-D-M12x1_75__member_aluminium_en_aw_6082_t6-04": {
+      "case_hash": "33136e856536ffeeaf27ce77012828a0247234bfcac104f739d6503caab9e562",
+      "classification_id": "joint-classification-21248580cce75f55",
+      "classification_sha256": "21248580cce75f556311d9149ecc3cf16197c2e25e0115bf7bed8c7f7eb113e7",
+      "geometry_artifact_sha256": "aea5fa2a8002c3b806b39887c90da8f5e870e29f653ae2463c74f1a71e2b6994",
+      "geometry_canonical_artifact": "simulations/staging/phase3_cp11_m12_two_pitch_nut022_proof/prepared_cases/trm_fem_4606556202c1/geometry/complete_joint_assembly.step",
+      "geometry_id": "joint-geometry-2d1ec262b5db6298",
+      "geometry_identity_sha256": "2d1ec262b5db6298bcb55e0f1d582472092d033770d06601cb3d1b9347a1350a",
+      "geometry_mode": "REUSED_ACCEPTED_EXACT_GEOMETRY",
+      "mesh_artifact_sha256": "5634f677caa20e564b92462fca2713b50de1a4e98d952c47052305d6e5c4ffc9",
+      "mesh_canonical_artifact": "simulations/staging/phase3_cp11_m12_two_pitch_nut022_proof/prepared_cases/trm_fem_4606556202c1/mesh/complete_joint_grouped_medium_first_order.msh",
+      "mesh_id": "mesh-68524466e34d36c1",
+      "mesh_identity_sha256": "68524466e34d36c10ed4346bc760da6df6d122cd5d7feb9bd55161bb57ded711",
+      "mesh_mode": "REUSED_ACCEPTED_EXACT_MESH",
+      "preparation_record": "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W04/solver_preparation/trm_fem_dfae66d11e9d/trm_fem_dfae66d11e9d_cal_01/diversified_doe_trial1_preparation_record.json",
+      "wave_id": "TRM-DDOE-001-W04"
+    },
+    "TRM-DDOE-D-M12x1_75__member_aluminium_en_aw_6082_t6-05": {
+      "case_hash": "3b214bccddd6f64d2931b14082fcd9deadced612f3c5e3091ee3dfe4890e1675",
+      "classification_id": "joint-classification-c4999fadadb5a196",
+      "classification_sha256": "c4999fadadb5a1962e951cc45ebfe20991f99001f8dc5e05e2746c0adfd4f46c",
+      "geometry_artifact_sha256": "da7fa89e393913d9774ca9de20ca86af5c98bd44da83985c110c8e15663f48bc",
+      "geometry_canonical_artifact": "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W05/prepared_cases/trm_fem_ccb001371777/geometry/complete_joint_assembly.step",
+      "geometry_id": "joint-geometry-9d7a2df7c09d02d7",
+      "geometry_identity_sha256": "9d7a2df7c09d02d7a47caff1ed3ded773990dccc9c4522ea0dc227c17b760989",
+      "geometry_mode": "GENERATED_FOR_W05",
+      "mesh_artifact_sha256": "3bec2287a0c35cc6da5bcca75ee7cdcd2518c4b07e1b5a595d762eec18ae4e77",
+      "mesh_canonical_artifact": "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W05/prepared_cases/trm_fem_ccb001371777/mesh/complete_joint_grouped_medium_first_order.msh",
+      "mesh_id": "mesh-2cf86e650164d242",
+      "mesh_identity_sha256": "2cf86e650164d2429b3eb29e96bec32b54283e158587f946981d5340a3224c5f",
+      "mesh_mode": "GENERATED_FOR_W05",
+      "preparation_record": "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W05/solver_preparation/trm_fem_ccb001371777/trm_fem_ccb001371777_cal_01/diversified_doe_trial1_preparation_record.json",
+      "wave_id": "TRM-DDOE-001-W05"
+    },
+    "TRM-DDOE-D-M12x1_75__steel_member-02": {
+      "case_hash": "b4fcf74bc0e1faf2f04eab3a8f1af538723d783cd639ea41dadc6b331a98ba58",
+      "classification_id": "joint-classification-235a3a23f56c3b9d",
+      "classification_sha256": "235a3a23f56c3b9dccedc322f84cb04b89f69eeb77311b0e3fa338b5bae66f9a",
+      "geometry_artifact_sha256": "32e3e48d4a9c7c3a4af6dedc40bafc9e7860e5de3839559fd762f110e9c87280",
+      "geometry_canonical_artifact": "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W02/prepared_cases/trm_fem_ef97f5aa38de/geometry/complete_joint_assembly.step",
+      "geometry_id": "joint-geometry-a89f8084074a6a76",
+      "geometry_identity_sha256": "a89f8084074a6a764fb6a8e656c134c094694689de187a4e5ea83eb88f1aa32f",
+      "geometry_mode": "GENERATED_FOR_W02",
+      "mesh_artifact_sha256": "923d9589bb1d23f6336e8d689b4878a1eee3df52ed5128bf039f29920f036367",
+      "mesh_canonical_artifact": "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W02/prepared_cases/trm_fem_ef97f5aa38de/mesh/complete_joint_grouped_medium_first_order.msh",
+      "mesh_id": "mesh-512ce98eca050e06",
+      "mesh_identity_sha256": "512ce98eca050e06a69ce14fe8c27121559e7c49abe852200f5217e31bc2579d",
+      "mesh_mode": "GENERATED_FOR_W02",
+      "preparation_record": "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W02/solver_preparation/trm_fem_ef97f5aa38de/trm_fem_ef97f5aa38de_cal_01/diversified_doe_trial1_preparation_record.json",
+      "wave_id": "TRM-DDOE-001-W02"
+    },
+    "TRM-DDOE-D-M12x1_75__steel_member-03": {
+      "case_hash": "e86a17501ebe95d56da60e49d195c75d21a8fd29199cfbcf48eb5f97b2bbcab6",
+      "classification_id": "joint-classification-6f3982cbb943f071",
+      "classification_sha256": "6f3982cbb943f071d6c5e4cee53c19a71301435689940933c611e787d03def31",
+      "geometry_artifact_sha256": "bc3a4cf97ee3fda593e4c81af4b3c1a7777a169a16a1291ab1287577aeef30fa",
+      "geometry_canonical_artifact": "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W03/prepared_cases/trm_fem_323293011028/geometry/complete_joint_assembly.step",
+      "geometry_id": "joint-geometry-db64c0a35516ea0f",
+      "geometry_identity_sha256": "db64c0a35516ea0f0c226d9c28c9dfa68a14c08d75f73cb22eb52a9ea3ce45df",
+      "geometry_mode": "GENERATED_FOR_W03",
+      "mesh_artifact_sha256": "a5b1f58032520a889bbd74f87f36accc2faafbb26a5b6375898e99dd1b938c8d",
+      "mesh_canonical_artifact": "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W03/prepared_cases/trm_fem_323293011028/mesh/complete_joint_grouped_medium_first_order.msh",
+      "mesh_id": "mesh-24ac1455a336411c",
+      "mesh_identity_sha256": "24ac1455a336411cc723dd550c9f41287455ebf277b69c94582046915633aeaf",
+      "mesh_mode": "GENERATED_FOR_W03",
+      "preparation_record": "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W03/solver_preparation/trm_fem_323293011028/trm_fem_323293011028_cal_01/diversified_doe_trial1_preparation_record.json",
+      "wave_id": "TRM-DDOE-001-W03"
+    },
+    "TRM-DDOE-D-M12x1_75__steel_member-04": {
+      "case_hash": "5d18f718ece649c3a9288bbd600fdc7bacf5be218f25ffba37429216a55b6f2e",
+      "classification_id": "joint-classification-90a7d2f2b5898d37",
+      "classification_sha256": "90a7d2f2b5898d37b06c28afe38fb815a39fd672a3ee55dafac42ffd06f5834b",
+      "geometry_artifact_sha256": "8a9d600418a9cbff36e611fb34db4fa525939b0a71bacda9450e006995bc5859",
+      "geometry_canonical_artifact": "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W02/prepared_cases/trm_fem_bfb674d30aad/geometry/complete_joint_assembly.step",
+      "geometry_id": "joint-geometry-35b5ba5b63abc5b2",
+      "geometry_identity_sha256": "35b5ba5b63abc5b2af5f381dd78d2bccdd1778467ac710f1199223c432f3ee8e",
+      "geometry_mode": "REUSED_ACCEPTED_EXACT_GEOMETRY",
+      "mesh_artifact_sha256": "67f9b521faa5da380078b6e241c757cf2311f9ac84146c62eefa107773a0ace2",
+      "mesh_canonical_artifact": "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W02/prepared_cases/trm_fem_bfb674d30aad/mesh/complete_joint_grouped_medium_first_order.msh",
+      "mesh_id": "mesh-69e466fba363ea58",
+      "mesh_identity_sha256": "69e466fba363ea58f4afc4b0fe72215d96a5761106a4c64fbd89137ce68d9f89",
+      "mesh_mode": "REUSED_ACCEPTED_EXACT_MESH",
+      "preparation_record": "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W04/solver_preparation/trm_fem_2ce5c34997d5/trm_fem_2ce5c34997d5_cal_01/diversified_doe_trial1_preparation_record.json",
+      "wave_id": "TRM-DDOE-001-W04"
+    },
+    "TRM-DDOE-D-M12x1_75__steel_member-05": {
+      "case_hash": "a684e642f0017811e2f557faccc02af596d7e65a768c3e321fb1e21122cc20e5",
+      "classification_id": "joint-classification-c4999fadadb5a196",
+      "classification_sha256": "c4999fadadb5a1962e951cc45ebfe20991f99001f8dc5e05e2746c0adfd4f46c",
+      "geometry_artifact_sha256": "da7fa89e393913d9774ca9de20ca86af5c98bd44da83985c110c8e15663f48bc",
+      "geometry_canonical_artifact": "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W05/prepared_cases/trm_fem_ccb001371777/geometry/complete_joint_assembly.step",
+      "geometry_id": "joint-geometry-9d7a2df7c09d02d7",
+      "geometry_identity_sha256": "9d7a2df7c09d02d7a47caff1ed3ded773990dccc9c4522ea0dc227c17b760989",
+      "geometry_mode": "GENERATED_FOR_W05",
+      "mesh_artifact_sha256": "3bec2287a0c35cc6da5bcca75ee7cdcd2518c4b07e1b5a595d762eec18ae4e77",
+      "mesh_canonical_artifact": "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W05/prepared_cases/trm_fem_2282e77536c7/mesh/complete_joint_grouped_medium_first_order.msh",
+      "mesh_id": "mesh-2cf86e650164d242",
+      "mesh_identity_sha256": "2cf86e650164d2429b3eb29e96bec32b54283e158587f946981d5340a3224c5f",
+      "mesh_mode": "GENERATED_FOR_W05",
+      "preparation_record": "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W05/solver_preparation/trm_fem_2282e77536c7/trm_fem_2282e77536c7_cal_01/diversified_doe_trial1_preparation_record.json",
+      "wave_id": "TRM-DDOE-001-W05"
+    },
+    "TRM-DDOE-D-M12x1_75__steel_member-12": {
+      "case_hash": "3170c5437c9679e35180f3a720cb8e1cf436c12f3cdff86470e9bd2942a0f9e1",
+      "classification_id": "joint-classification-21248580cce75f55",
+      "classification_sha256": "21248580cce75f556311d9149ecc3cf16197c2e25e0115bf7bed8c7f7eb113e7",
+      "geometry_artifact_sha256": "aea5fa2a8002c3b806b39887c90da8f5e870e29f653ae2463c74f1a71e2b6994",
+      "geometry_canonical_artifact": "simulations/staging/phase3_cp11_m12_two_pitch_nut022_proof/prepared_cases/trm_fem_4606556202c1/geometry/complete_joint_assembly.step",
+      "geometry_id": "joint-geometry-2d1ec262b5db6298",
+      "geometry_identity_sha256": "2d1ec262b5db6298bcb55e0f1d582472092d033770d06601cb3d1b9347a1350a",
+      "geometry_mode": "REUSED_ACCEPTED_EXACT_GEOMETRY",
+      "mesh_artifact_sha256": "5634f677caa20e564b92462fca2713b50de1a4e98d952c47052305d6e5c4ffc9",
+      "mesh_canonical_artifact": "simulations/staging/phase3_cp11_m12_two_pitch_nut022_proof/prepared_cases/trm_fem_4606556202c1/mesh/complete_joint_grouped_medium_first_order.msh",
+      "mesh_id": "mesh-68524466e34d36c1",
+      "mesh_identity_sha256": "68524466e34d36c10ed4346bc760da6df6d122cd5d7feb9bd55161bb57ded711",
+      "mesh_mode": "REUSED_ACCEPTED_EXACT_MESH",
+      "preparation_record": "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W01/solver_preparation/trm_fem_a756711642a5/trm_fem_a756711642a5_cal_01/diversified_doe_trial1_preparation_record.json",
+      "wave_id": "TRM-DDOE-001-W01"
+    },
+    "TRM-DDOE-D-M8x1_25__member_aluminium_en_aw_6082_t6-01": {
+      "case_hash": "02bb37591d1a9b386abba4b01092f89d842faa7f3288bd29de579107ee98e0ee",
+      "classification_id": "joint-classification-236a43da0b3fc229",
+      "classification_sha256": "236a43da0b3fc2292b9d9fa0a7a44dc758c7c12a7c0d489432d107d90a2fd0e0",
+      "geometry_artifact_sha256": "f836127cdaab33e3ee9ff1d40c3f58fdfcd1cfd4ac126ec5f647f9d356932d8c",
+      "geometry_canonical_artifact": "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W01/prepared_cases/trm_fem_c58fd67718cd/geometry/complete_joint_assembly.step",
+      "geometry_id": "joint-geometry-47c437ae679c8490",
+      "geometry_identity_sha256": "47c437ae679c84904c10c8d7d472e37193d6f3e6a48eb3ec4bff0c89df5ac844",
+      "geometry_mode": "GENERATED_FOR_W01",
+      "mesh_artifact_sha256": "60985f028797e3f489c3a50a6a0da3f0685e0cf24c8fcd95f89ceb9df800f169",
+      "mesh_canonical_artifact": "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W01/prepared_cases/trm_fem_c58fd67718cd/mesh/complete_joint_grouped_medium_first_order.msh",
+      "mesh_id": "mesh-5daba2d8c1be04c2",
+      "mesh_identity_sha256": "5daba2d8c1be04c20de5e1f4c65e4f60c34518cbcc2b389a5d54b06ddab89aaa",
+      "mesh_mode": "GENERATED_FOR_W01",
+      "preparation_record": "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W01/solver_preparation/trm_fem_c58fd67718cd/trm_fem_c58fd67718cd_cal_01/diversified_doe_trial1_preparation_record.json",
+      "wave_id": "TRM-DDOE-001-W01"
+    },
+    "TRM-DDOE-D-M8x1_25__member_aluminium_en_aw_6082_t6-02": {
+      "case_hash": "2c2893c0baa941d67ea6540f5071e1a90ca0d2f3e60c98f0dfdaf1eaf5c7df8f",
+      "classification_id": "joint-classification-69ebe7c2b17dc6ca",
+      "classification_sha256": "69ebe7c2b17dc6caea4a65f13b3ff2014add48c904d6e53238cf5604cae2a873",
+      "geometry_artifact_sha256": "9c623214f258ac062b1b36d00db75548d9fcff0297c105ca842ab6fe135c153c",
+      "geometry_canonical_artifact": "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W02/prepared_cases/trm_fem_6edeb234225b/geometry/complete_joint_assembly.step",
+      "geometry_id": "joint-geometry-b30d998a691b6593",
+      "geometry_identity_sha256": "b30d998a691b65938573b6d66beeb630842a45db59a74819e60b4fb0a3a56f26",
+      "geometry_mode": "GENERATED_FOR_W02",
+      "mesh_artifact_sha256": "da38fd048e511e5e1110ed008395208839b5fa1d760762b5838fae5d8feec68d",
+      "mesh_canonical_artifact": "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W02/prepared_cases/trm_fem_6edeb234225b/mesh/complete_joint_grouped_medium_first_order.msh",
+      "mesh_id": "mesh-40f891e1b2816d8d",
+      "mesh_identity_sha256": "40f891e1b2816d8d3615c5c7d5a34a94b98d360d0bcfb5157aa90acfc9349154",
+      "mesh_mode": "GENERATED_FOR_W02",
+      "preparation_record": "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W02/solver_preparation/trm_fem_6edeb234225b/trm_fem_6edeb234225b_cal_01/diversified_doe_trial1_preparation_record.json",
+      "wave_id": "TRM-DDOE-001-W02"
+    },
+    "TRM-DDOE-D-M8x1_25__member_aluminium_en_aw_6082_t6-03": {
+      "case_hash": "c3a38bcc699ebe5a031942a9d8a4a7c24f2151c0c7824de777623878793b89ed",
+      "classification_id": "joint-classification-851d21f8f7cd4967",
+      "classification_sha256": "851d21f8f7cd4967f8c9f2c0351fc65d8d9ef6b4a93b12d9190611d76f00ef90",
+      "geometry_artifact_sha256": "5a10e57aa28edf24118befb68dab4646ffee7e9bec91924f88da1fccd5ec295e",
+      "geometry_canonical_artifact": "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W03/prepared_cases/trm_fem_c802d7334f6c/geometry/complete_joint_assembly.step",
+      "geometry_id": "joint-geometry-cd1d2d26bacbacd8",
+      "geometry_identity_sha256": "cd1d2d26bacbacd841742b4b875afe45f6a4223e38b55d667d85d69859f80183",
+      "geometry_mode": "GENERATED_FOR_W03",
+      "mesh_artifact_sha256": "062682a446b9c44a7d947d64f61c9a871aaa74667ac5076f2047af0a666b88b9",
+      "mesh_canonical_artifact": "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W03/prepared_cases/trm_fem_c802d7334f6c/mesh/complete_joint_grouped_medium_first_order.msh",
+      "mesh_id": "mesh-8820a12df0b98d5f",
+      "mesh_identity_sha256": "8820a12df0b98d5ffdaaf8d5b7d88c9ada549ff9d6362f3decf8da7256b0c612",
+      "mesh_mode": "GENERATED_FOR_W03",
+      "preparation_record": "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W03/solver_preparation/trm_fem_c802d7334f6c/trm_fem_c802d7334f6c_cal_01/diversified_doe_trial1_preparation_record.json",
+      "wave_id": "TRM-DDOE-001-W03"
+    },
+    "TRM-DDOE-D-M8x1_25__member_aluminium_en_aw_6082_t6-04": {
+      "case_hash": "77b0399abf1ca260bc822e78e0761e8f66c706a4899eb0e1b93b03c747a9c405",
+      "classification_id": "joint-classification-8fc541e76ed89c90",
+      "classification_sha256": "8fc541e76ed89c9042f2b904e0b239b079c10db1bd5cab37e46d6ff10541fefd",
+      "geometry_artifact_sha256": "8c8e2b948a2b7e75bb6196dbfaf25b7d85817dcc9a56a0f49e158d8a17670760",
+      "geometry_canonical_artifact": "simulations/staging/phase3_cp11_m8_two_pitch_nut022_final/prepared_cases/trm_fem_771a201b2752/geometry/complete_joint_assembly.step",
+      "geometry_id": "joint-geometry-3d9cc1490f293a9a",
+      "geometry_identity_sha256": "3d9cc1490f293a9ae4ed89137465d0da00e7fef3899d08b2dfaaa82097a22ed2",
+      "geometry_mode": "REUSED_ACCEPTED_EXACT_GEOMETRY",
+      "mesh_artifact_sha256": "c66795aa39da7303779ed98eece27c7f49e25bf9640cfc5887b39b7466558760",
+      "mesh_canonical_artifact": "simulations/staging/phase3_cp11_m8_two_pitch_nut022_final/prepared_cases/trm_fem_771a201b2752/mesh/complete_joint_grouped_medium_first_order.msh",
+      "mesh_id": "mesh-3aa636027867c87d",
+      "mesh_identity_sha256": "3aa636027867c87d35b408273cb8d63e1a41398a3e8309f37630b5c49ae54438",
+      "mesh_mode": "REUSED_ACCEPTED_EXACT_MESH",
+      "preparation_record": "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W04/solver_preparation/trm_fem_a0fb41c4ca5c/trm_fem_a0fb41c4ca5c_cal_01/diversified_doe_trial1_preparation_record.json",
+      "wave_id": "TRM-DDOE-001-W04"
+    },
+    "TRM-DDOE-D-M8x1_25__member_aluminium_en_aw_6082_t6-05": {
+      "case_hash": "906bb02103aaed5833e961ee65cea1aa0b99a01145296969b623e9b44e50c879",
+      "classification_id": "joint-classification-23597504b844dd42",
+      "classification_sha256": "23597504b844dd42aa8ccccfc035254c6f020375cf6853cb104a079febc12b7f",
+      "geometry_artifact_sha256": "31cd5eaab291a358b11553bdbbe0a487a89254bbb8dc07c70f682ed4cf55b0d8",
+      "geometry_canonical_artifact": "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W05/prepared_cases/trm_fem_ffea5b511e8d/geometry/complete_joint_assembly.step",
+      "geometry_id": "joint-geometry-73464533874cc5aa",
+      "geometry_identity_sha256": "73464533874cc5aa656a4ed3abbc05102a781641dd770467495cc607fa882992",
+      "geometry_mode": "GENERATED_FOR_W05",
+      "mesh_artifact_sha256": "7e07d70b50d9fd610fd32cfebcbbb013d3fdda2e92f228df074bf405397569ca",
+      "mesh_canonical_artifact": "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W05/prepared_cases/trm_fem_ffea5b511e8d/mesh/complete_joint_grouped_medium_first_order.msh",
+      "mesh_id": "mesh-48c9453c8772cf50",
+      "mesh_identity_sha256": "48c9453c8772cf50108d8677be8d575070913b22a781065b975a85c5b49365b1",
+      "mesh_mode": "GENERATED_FOR_W05",
+      "preparation_record": "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W05/solver_preparation/trm_fem_ffea5b511e8d/trm_fem_ffea5b511e8d_cal_01/diversified_doe_trial1_preparation_record.json",
+      "wave_id": "TRM-DDOE-001-W05"
+    },
+    "TRM-DDOE-D-M8x1_25__steel_member-12": {
+      "case_hash": "b75820842977f376b9adc4ad9525a32155464467b6ecbcbfe3a06d048cdedeab",
+      "classification_id": "joint-classification-8fc541e76ed89c90",
+      "classification_sha256": "8fc541e76ed89c9042f2b904e0b239b079c10db1bd5cab37e46d6ff10541fefd",
+      "geometry_artifact_sha256": "8c8e2b948a2b7e75bb6196dbfaf25b7d85817dcc9a56a0f49e158d8a17670760",
+      "geometry_canonical_artifact": "simulations/staging/phase3_cp11_m8_two_pitch_nut022_final/prepared_cases/trm_fem_771a201b2752/geometry/complete_joint_assembly.step",
+      "geometry_id": "joint-geometry-3d9cc1490f293a9a",
+      "geometry_identity_sha256": "3d9cc1490f293a9ae4ed89137465d0da00e7fef3899d08b2dfaaa82097a22ed2",
+      "geometry_mode": "REUSED_ACCEPTED_EXACT_GEOMETRY",
+      "mesh_artifact_sha256": "c66795aa39da7303779ed98eece27c7f49e25bf9640cfc5887b39b7466558760",
+      "mesh_canonical_artifact": "simulations/staging/phase3_cp11_m8_two_pitch_nut022_final/prepared_cases/trm_fem_771a201b2752/mesh/complete_joint_grouped_medium_first_order.msh",
+      "mesh_id": "mesh-3aa636027867c87d",
+      "mesh_identity_sha256": "3aa636027867c87d35b408273cb8d63e1a41398a3e8309f37630b5c49ae54438",
+      "mesh_mode": "REUSED_ACCEPTED_EXACT_MESH",
+      "preparation_record": "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W01/solver_preparation/trm_fem_b8f3cce4a230/trm_fem_b8f3cce4a230_cal_01/diversified_doe_trial1_preparation_record.json",
+      "wave_id": "TRM-DDOE-001-W01"
+    }
+  },
+  "geometries": {
+    "joint-geometry-2d1ec262b5db6298": {
+      "artifact_paths": [
+        "simulations/staging/phase3_cp11_m12_two_pitch_nut022_proof/prepared_cases/trm_fem_4606556202c1/geometry/complete_joint_assembly.step"
+      ],
+      "artifact_sha256": "aea5fa2a8002c3b806b39887c90da8f5e870e29f653ae2463c74f1a71e2b6994",
+      "canonical_artifact_path": "simulations/staging/phase3_cp11_m12_two_pitch_nut022_proof/prepared_cases/trm_fem_4606556202c1/geometry/complete_joint_assembly.step",
+      "generation_id": "threadrom_parametric_complete_joint_v1",
+      "geometry_id": "joint-geometry-2d1ec262b5db6298",
+      "identity_sha256": "2d1ec262b5db6298bcb55e0f1d582472092d033770d06601cb3d1b9347a1350a",
+      "source_case_ids": [
+        "TRM-DDOE-D-M12x1_75__member_aluminium_en_aw_6082_t6-04",
+        "TRM-DDOE-D-M12x1_75__steel_member-12",
+        "TRM-XFEM-M12-001"
+      ]
+    },
+    "joint-geometry-35b5ba5b63abc5b2": {
+      "artifact_paths": [
+        "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W02/prepared_cases/trm_fem_bfb674d30aad/geometry/complete_joint_assembly.step"
+      ],
+      "artifact_sha256": "8a9d600418a9cbff36e611fb34db4fa525939b0a71bacda9450e006995bc5859",
+      "canonical_artifact_path": "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W02/prepared_cases/trm_fem_bfb674d30aad/geometry/complete_joint_assembly.step",
+      "generation_id": "threadrom_parametric_complete_joint_v1",
+      "geometry_id": "joint-geometry-35b5ba5b63abc5b2",
+      "identity_sha256": "35b5ba5b63abc5b2af5f381dd78d2bccdd1778467ac710f1199223c432f3ee8e",
+      "source_case_ids": [
+        "TRM-DDOE-D-M12x1_75__member_aluminium_en_aw_6082_t6-02",
+        "TRM-DDOE-D-M12x1_75__steel_member-04"
+      ]
+    },
+    "joint-geometry-3d9cc1490f293a9a": {
+      "artifact_paths": [
+        "simulations/staging/phase3_cp11_m8_two_pitch_nut022_final/prepared_cases/trm_fem_771a201b2752/geometry/complete_joint_assembly.step"
+      ],
+      "artifact_sha256": "8c8e2b948a2b7e75bb6196dbfaf25b7d85817dcc9a56a0f49e158d8a17670760",
+      "canonical_artifact_path": "simulations/staging/phase3_cp11_m8_two_pitch_nut022_final/prepared_cases/trm_fem_771a201b2752/geometry/complete_joint_assembly.step",
+      "generation_id": "threadrom_parametric_complete_joint_v1",
+      "geometry_id": "joint-geometry-3d9cc1490f293a9a",
+      "identity_sha256": "3d9cc1490f293a9ae4ed89137465d0da00e7fef3899d08b2dfaaa82097a22ed2",
+      "source_case_ids": [
+        "TRM-DDOE-D-M8x1_25__member_aluminium_en_aw_6082_t6-04",
+        "TRM-DDOE-D-M8x1_25__steel_member-12",
+        "TRM-XFEM-M8-001"
+      ]
+    },
+    "joint-geometry-3ef28054a6d2f58f": {
+      "artifact_paths": [
+        "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W01/prepared_cases/trm_fem_5b22a5376136/geometry/complete_joint_assembly.step"
+      ],
+      "artifact_sha256": "f4a1b0e0ca956a79b84c964b6c3fe355692a00dfae07eb7db493c3955477ed01",
+      "canonical_artifact_path": "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W01/prepared_cases/trm_fem_5b22a5376136/geometry/complete_joint_assembly.step",
+      "generation_id": "threadrom_parametric_complete_joint_v1",
+      "geometry_id": "joint-geometry-3ef28054a6d2f58f",
+      "identity_sha256": "3ef28054a6d2f58f93e9f1f66e8174947c9f0e3ab8d078dcb795a81958413269",
+      "source_case_ids": [
+        "TRM-DDOE-D-M12x1_75__member_aluminium_en_aw_6082_t6-01"
+      ]
+    },
+    "joint-geometry-47c437ae679c8490": {
+      "artifact_paths": [
+        "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W01/prepared_cases/trm_fem_c58fd67718cd/geometry/complete_joint_assembly.step"
+      ],
+      "artifact_sha256": "f836127cdaab33e3ee9ff1d40c3f58fdfcd1cfd4ac126ec5f647f9d356932d8c",
+      "canonical_artifact_path": "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W01/prepared_cases/trm_fem_c58fd67718cd/geometry/complete_joint_assembly.step",
+      "generation_id": "threadrom_parametric_complete_joint_v1",
+      "geometry_id": "joint-geometry-47c437ae679c8490",
+      "identity_sha256": "47c437ae679c84904c10c8d7d472e37193d6f3e6a48eb3ec4bff0c89df5ac844",
+      "source_case_ids": [
+        "TRM-DDOE-D-M8x1_25__member_aluminium_en_aw_6082_t6-01"
+      ]
+    },
+    "joint-geometry-48edc2009b9661d5": {
+      "artifact_paths": [
+        "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W02/prepared_cases/trm_fem_d924d7c036b7/geometry/complete_joint_assembly.step"
+      ],
+      "artifact_sha256": "7cba01c2cbdafb4bffa670c362303671638b9b789d9293d8ef7947dbbd8f5faf",
+      "canonical_artifact_path": "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W02/prepared_cases/trm_fem_d924d7c036b7/geometry/complete_joint_assembly.step",
+      "generation_id": "threadrom_parametric_complete_joint_v1",
+      "geometry_id": "joint-geometry-48edc2009b9661d5",
+      "identity_sha256": "48edc2009b9661d5e187c498dfbcbc238e19cb1189e943f46850270fb1f32b27",
+      "source_case_ids": [
+        "TRM-DDOE-D-M10x1_5__member_aluminium_en_aw_6082_t6-02"
+      ]
+    },
+    "joint-geometry-675de5fb9b6c4543": {
+      "artifact_paths": [
+        "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W03/prepared_cases/trm_fem_22c109e1e52b/geometry/complete_joint_assembly.step"
+      ],
+      "artifact_sha256": "f33a0ba8906742c53bd2e88af84c37c72970ece2ae2b4ae4f0e1a9ef81099669",
+      "canonical_artifact_path": "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W03/prepared_cases/trm_fem_22c109e1e52b/geometry/complete_joint_assembly.step",
+      "generation_id": "threadrom_parametric_complete_joint_v1",
+      "geometry_id": "joint-geometry-675de5fb9b6c4543",
+      "identity_sha256": "675de5fb9b6c45438e2b9428d3b0d9045d7f65f7a15bab46a6344c14b243f0ae",
+      "source_case_ids": [
+        "TRM-DDOE-D-M12x1_75__member_aluminium_en_aw_6082_t6-03"
+      ]
+    },
+    "joint-geometry-73464533874cc5aa": {
+      "artifact_paths": [
+        "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W05/prepared_cases/trm_fem_ffea5b511e8d/geometry/complete_joint_assembly.step"
+      ],
+      "artifact_sha256": "31cd5eaab291a358b11553bdbbe0a487a89254bbb8dc07c70f682ed4cf55b0d8",
+      "canonical_artifact_path": "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W05/prepared_cases/trm_fem_ffea5b511e8d/geometry/complete_joint_assembly.step",
+      "generation_id": "threadrom_parametric_complete_joint_v1",
+      "geometry_id": "joint-geometry-73464533874cc5aa",
+      "identity_sha256": "73464533874cc5aa656a4ed3abbc05102a781641dd770467495cc607fa882992",
+      "source_case_ids": [
+        "TRM-DDOE-D-M8x1_25__member_aluminium_en_aw_6082_t6-05"
+      ]
+    },
+    "joint-geometry-9d7a2df7c09d02d7": {
+      "artifact_paths": [
+        "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W05/prepared_cases/trm_fem_ccb001371777/geometry/complete_joint_assembly.step"
+      ],
+      "artifact_sha256": "da7fa89e393913d9774ca9de20ca86af5c98bd44da83985c110c8e15663f48bc",
+      "canonical_artifact_path": "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W05/prepared_cases/trm_fem_ccb001371777/geometry/complete_joint_assembly.step",
+      "generation_id": "threadrom_parametric_complete_joint_v1",
+      "geometry_id": "joint-geometry-9d7a2df7c09d02d7",
+      "identity_sha256": "9d7a2df7c09d02d7a47caff1ed3ded773990dccc9c4522ea0dc227c17b760989",
+      "source_case_ids": [
+        "TRM-DDOE-D-M12x1_75__member_aluminium_en_aw_6082_t6-05",
+        "TRM-DDOE-D-M12x1_75__steel_member-05"
+      ]
+    },
+    "joint-geometry-a89f8084074a6a76": {
+      "artifact_paths": [
+        "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W02/prepared_cases/trm_fem_ef97f5aa38de/geometry/complete_joint_assembly.step"
+      ],
+      "artifact_sha256": "32e3e48d4a9c7c3a4af6dedc40bafc9e7860e5de3839559fd762f110e9c87280",
+      "canonical_artifact_path": "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W02/prepared_cases/trm_fem_ef97f5aa38de/geometry/complete_joint_assembly.step",
+      "generation_id": "threadrom_parametric_complete_joint_v1",
+      "geometry_id": "joint-geometry-a89f8084074a6a76",
+      "identity_sha256": "a89f8084074a6a764fb6a8e656c134c094694689de187a4e5ea83eb88f1aa32f",
+      "source_case_ids": [
+        "TRM-DDOE-D-M12x1_75__steel_member-02"
+      ]
+    },
+    "joint-geometry-b30d998a691b6593": {
+      "artifact_paths": [
+        "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W02/prepared_cases/trm_fem_6edeb234225b/geometry/complete_joint_assembly.step"
+      ],
+      "artifact_sha256": "9c623214f258ac062b1b36d00db75548d9fcff0297c105ca842ab6fe135c153c",
+      "canonical_artifact_path": "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W02/prepared_cases/trm_fem_6edeb234225b/geometry/complete_joint_assembly.step",
+      "generation_id": "threadrom_parametric_complete_joint_v1",
+      "geometry_id": "joint-geometry-b30d998a691b6593",
+      "identity_sha256": "b30d998a691b65938573b6d66beeb630842a45db59a74819e60b4fb0a3a56f26",
+      "source_case_ids": [
+        "TRM-DDOE-D-M8x1_25__member_aluminium_en_aw_6082_t6-02"
+      ]
+    },
+    "joint-geometry-bad9f47fac5e4eb0": {
+      "artifact_paths": [
+        "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W04/prepared_cases/trm_fem_c0b2237d5800/geometry/complete_joint_assembly.step"
+      ],
+      "artifact_sha256": "15bda2735181602c8b5859244dbca8ec697a01c1ba7efa5550806cd778ba7271",
+      "canonical_artifact_path": "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W04/prepared_cases/trm_fem_c0b2237d5800/geometry/complete_joint_assembly.step",
+      "generation_id": "threadrom_parametric_complete_joint_v1",
+      "geometry_id": "joint-geometry-bad9f47fac5e4eb0",
+      "identity_sha256": "bad9f47fac5e4eb09fa8b926ffa8bae1bea58e32ddb04e24cfb009c0f9a43128",
+      "source_case_ids": [
+        "TRM-DDOE-D-M10x1_5__member_aluminium_en_aw_6082_t6-04"
+      ]
+    },
+    "joint-geometry-cd1d2d26bacbacd8": {
+      "artifact_paths": [
+        "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W03/prepared_cases/trm_fem_c802d7334f6c/geometry/complete_joint_assembly.step"
+      ],
+      "artifact_sha256": "5a10e57aa28edf24118befb68dab4646ffee7e9bec91924f88da1fccd5ec295e",
+      "canonical_artifact_path": "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W03/prepared_cases/trm_fem_c802d7334f6c/geometry/complete_joint_assembly.step",
+      "generation_id": "threadrom_parametric_complete_joint_v1",
+      "geometry_id": "joint-geometry-cd1d2d26bacbacd8",
+      "identity_sha256": "cd1d2d26bacbacd841742b4b875afe45f6a4223e38b55d667d85d69859f80183",
+      "source_case_ids": [
+        "TRM-DDOE-D-M8x1_25__member_aluminium_en_aw_6082_t6-03"
+      ]
+    },
+    "joint-geometry-d9fe6fabd46c48df": {
+      "artifact_paths": [
+        "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W05/prepared_cases/trm_fem_4ccebbc35697/geometry/complete_joint_assembly.step"
+      ],
+      "artifact_sha256": "a3a313fa5d138b5a9f1509a3264f30d7322c6c0d62eadd991408f5f057589205",
+      "canonical_artifact_path": "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W05/prepared_cases/trm_fem_4ccebbc35697/geometry/complete_joint_assembly.step",
+      "generation_id": "threadrom_parametric_complete_joint_v1",
+      "geometry_id": "joint-geometry-d9fe6fabd46c48df",
+      "identity_sha256": "d9fe6fabd46c48df6259976ccecd695e37d53d49ed3bc27c24515a3b704410fa",
+      "source_case_ids": [
+        "TRM-DDOE-D-M10x1_5__member_aluminium_en_aw_6082_t6-05"
+      ]
+    },
+    "joint-geometry-db64c0a35516ea0f": {
+      "artifact_paths": [
+        "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W03/prepared_cases/trm_fem_323293011028/geometry/complete_joint_assembly.step"
+      ],
+      "artifact_sha256": "bc3a4cf97ee3fda593e4c81af4b3c1a7777a169a16a1291ab1287577aeef30fa",
+      "canonical_artifact_path": "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W03/prepared_cases/trm_fem_323293011028/geometry/complete_joint_assembly.step",
+      "generation_id": "threadrom_parametric_complete_joint_v1",
+      "geometry_id": "joint-geometry-db64c0a35516ea0f",
+      "identity_sha256": "db64c0a35516ea0f0c226d9c28c9dfa68a14c08d75f73cb22eb52a9ea3ce45df",
+      "source_case_ids": [
+        "TRM-DDOE-D-M12x1_75__steel_member-03"
+      ]
+    },
+    "joint-geometry-ed222732785b39db": {
+      "artifact_paths": [
+        "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W03/prepared_cases/trm_fem_a57f61f13b9d/geometry/complete_joint_assembly.step"
+      ],
+      "artifact_sha256": "c2c5baf0034bc8e2c1695f5b5826592a8905eb032d996107bec7fd9ae1233d17",
+      "canonical_artifact_path": "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W03/prepared_cases/trm_fem_a57f61f13b9d/geometry/complete_joint_assembly.step",
+      "generation_id": "threadrom_parametric_complete_joint_v1",
+      "geometry_id": "joint-geometry-ed222732785b39db",
+      "identity_sha256": "ed222732785b39db952afa6eb7d9ed9626f8d66250530a8b3aea359460c3a370",
+      "source_case_ids": [
+        "TRM-DDOE-D-M10x1_5__member_aluminium_en_aw_6082_t6-03"
+      ]
+    }
+  },
+  "identity_contract": {
+    "geometry_generation_id": "threadrom_parametric_complete_joint_v1",
+    "geometry_identity_basis": "joint_geometry_bundle_sha256",
+    "material_and_load_excluded_from_geometry_identity": true,
+    "mesh_generation_id": "threadrom_grouped_gmsh_complete_joint_v1",
+    "mesh_identity_basis": "mesh_generation_sha256",
+    "run_and_case_labels_excluded_from_mesh_identity": true
+  },
+  "meaning": "Reusable generated CAD and mesh artifact registry. This is not a FEM acceptance registry, ROM dataset, or dataset-admission certificate.",
+  "meshes": {
+    "mesh-24ac1455a336411c": {
+      "artifact_paths": [
+        "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W03/prepared_cases/trm_fem_323293011028/mesh/complete_joint_grouped_medium_first_order.msh"
+      ],
+      "artifact_sha256": "a5b1f58032520a889bbd74f87f36accc2faafbb26a5b6375898e99dd1b938c8d",
+      "canonical_artifact_path": "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W03/prepared_cases/trm_fem_323293011028/mesh/complete_joint_grouped_medium_first_order.msh",
+      "generation_id": "threadrom_grouped_gmsh_complete_joint_v1",
+      "geometry_id": "joint-geometry-db64c0a35516ea0f",
+      "identity_sha256": "24ac1455a336411cc723dd550c9f41287455ebf277b69c94582046915633aeaf",
+      "mesh_id": "mesh-24ac1455a336411c",
+      "quality_evidence_paths": [],
+      "source_case_ids": [
+        "TRM-DDOE-D-M12x1_75__steel_member-03"
+      ]
+    },
+    "mesh-2cf86e650164d242": {
+      "artifact_paths": [
+        "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W05/prepared_cases/trm_fem_2282e77536c7/mesh/complete_joint_grouped_medium_first_order.msh",
+        "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W05/prepared_cases/trm_fem_ccb001371777/mesh/complete_joint_grouped_medium_first_order.msh"
+      ],
+      "artifact_sha256": "3bec2287a0c35cc6da5bcca75ee7cdcd2518c4b07e1b5a595d762eec18ae4e77",
+      "canonical_artifact_path": "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W05/prepared_cases/trm_fem_2282e77536c7/mesh/complete_joint_grouped_medium_first_order.msh",
+      "generation_id": "threadrom_grouped_gmsh_complete_joint_v1",
+      "geometry_id": "joint-geometry-9d7a2df7c09d02d7",
+      "identity_sha256": "2cf86e650164d2429b3eb29e96bec32b54283e158587f946981d5340a3224c5f",
+      "mesh_id": "mesh-2cf86e650164d242",
+      "quality_evidence_paths": [],
+      "source_case_ids": [
+        "TRM-DDOE-D-M12x1_75__member_aluminium_en_aw_6082_t6-05",
+        "TRM-DDOE-D-M12x1_75__steel_member-05"
+      ]
+    },
+    "mesh-2ee9b5c4e572b984": {
+      "artifact_paths": [
+        "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W04/prepared_cases/trm_fem_c0b2237d5800/mesh/complete_joint_grouped_medium_first_order.msh"
+      ],
+      "artifact_sha256": "39b5b11b4b5ee87b0677d3616781a0bc2bcdf2f49d9820caeb4659a75b018f0d",
+      "canonical_artifact_path": "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W04/prepared_cases/trm_fem_c0b2237d5800/mesh/complete_joint_grouped_medium_first_order.msh",
+      "generation_id": "threadrom_grouped_gmsh_complete_joint_v1",
+      "geometry_id": "joint-geometry-bad9f47fac5e4eb0",
+      "identity_sha256": "2ee9b5c4e572b984d2a2097b98d8564a28fbd57e70c0d746c897fd6ce50a0173",
+      "mesh_id": "mesh-2ee9b5c4e572b984",
+      "quality_evidence_paths": [],
+      "source_case_ids": [
+        "TRM-DDOE-D-M10x1_5__member_aluminium_en_aw_6082_t6-04"
+      ]
+    },
+    "mesh-3aa636027867c87d": {
+      "artifact_paths": [
+        "simulations/staging/phase3_cp11_m8_two_pitch_nut022_final/prepared_cases/trm_fem_771a201b2752/mesh/complete_joint_grouped_medium_first_order.msh"
+      ],
+      "artifact_sha256": "c66795aa39da7303779ed98eece27c7f49e25bf9640cfc5887b39b7466558760",
+      "canonical_artifact_path": "simulations/staging/phase3_cp11_m8_two_pitch_nut022_final/prepared_cases/trm_fem_771a201b2752/mesh/complete_joint_grouped_medium_first_order.msh",
+      "generation_id": "threadrom_grouped_gmsh_complete_joint_v1",
+      "geometry_id": "joint-geometry-3d9cc1490f293a9a",
+      "identity_sha256": "3aa636027867c87d35b408273cb8d63e1a41398a3e8309f37630b5c49ae54438",
+      "mesh_id": "mesh-3aa636027867c87d",
+      "quality_evidence_paths": [],
+      "source_case_ids": [
+        "TRM-DDOE-D-M8x1_25__member_aluminium_en_aw_6082_t6-04",
+        "TRM-DDOE-D-M8x1_25__steel_member-12",
+        "TRM-XFEM-M8-001"
+      ]
+    },
+    "mesh-40f891e1b2816d8d": {
+      "artifact_paths": [
+        "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W02/prepared_cases/trm_fem_6edeb234225b/mesh/complete_joint_grouped_medium_first_order.msh"
+      ],
+      "artifact_sha256": "da38fd048e511e5e1110ed008395208839b5fa1d760762b5838fae5d8feec68d",
+      "canonical_artifact_path": "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W02/prepared_cases/trm_fem_6edeb234225b/mesh/complete_joint_grouped_medium_first_order.msh",
+      "generation_id": "threadrom_grouped_gmsh_complete_joint_v1",
+      "geometry_id": "joint-geometry-b30d998a691b6593",
+      "identity_sha256": "40f891e1b2816d8d3615c5c7d5a34a94b98d360d0bcfb5157aa90acfc9349154",
+      "mesh_id": "mesh-40f891e1b2816d8d",
+      "quality_evidence_paths": [],
+      "source_case_ids": [
+        "TRM-DDOE-D-M8x1_25__member_aluminium_en_aw_6082_t6-02"
+      ]
+    },
+    "mesh-48c9453c8772cf50": {
+      "artifact_paths": [
+        "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W05/prepared_cases/trm_fem_ffea5b511e8d/mesh/complete_joint_grouped_medium_first_order.msh"
+      ],
+      "artifact_sha256": "7e07d70b50d9fd610fd32cfebcbbb013d3fdda2e92f228df074bf405397569ca",
+      "canonical_artifact_path": "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W05/prepared_cases/trm_fem_ffea5b511e8d/mesh/complete_joint_grouped_medium_first_order.msh",
+      "generation_id": "threadrom_grouped_gmsh_complete_joint_v1",
+      "geometry_id": "joint-geometry-73464533874cc5aa",
+      "identity_sha256": "48c9453c8772cf50108d8677be8d575070913b22a781065b975a85c5b49365b1",
+      "mesh_id": "mesh-48c9453c8772cf50",
+      "quality_evidence_paths": [],
+      "source_case_ids": [
+        "TRM-DDOE-D-M8x1_25__member_aluminium_en_aw_6082_t6-05"
+      ]
+    },
+    "mesh-4cb41ee1e7286707": {
+      "artifact_paths": [
+        "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W05/prepared_cases/trm_fem_4ccebbc35697/mesh/complete_joint_grouped_medium_first_order.msh"
+      ],
+      "artifact_sha256": "1c06729d8897048be057c198e14d8ace9606857271cdb5dd4fc8c1da6dccc474",
+      "canonical_artifact_path": "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W05/prepared_cases/trm_fem_4ccebbc35697/mesh/complete_joint_grouped_medium_first_order.msh",
+      "generation_id": "threadrom_grouped_gmsh_complete_joint_v1",
+      "geometry_id": "joint-geometry-d9fe6fabd46c48df",
+      "identity_sha256": "4cb41ee1e7286707edba351c058151cb9ac6ef8150ad1de07ac9fd37d5f8b6a1",
+      "mesh_id": "mesh-4cb41ee1e7286707",
+      "quality_evidence_paths": [],
+      "source_case_ids": [
+        "TRM-DDOE-D-M10x1_5__member_aluminium_en_aw_6082_t6-05"
+      ]
+    },
+    "mesh-512ce98eca050e06": {
+      "artifact_paths": [
+        "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W02/prepared_cases/trm_fem_ef97f5aa38de/mesh/complete_joint_grouped_medium_first_order.msh"
+      ],
+      "artifact_sha256": "923d9589bb1d23f6336e8d689b4878a1eee3df52ed5128bf039f29920f036367",
+      "canonical_artifact_path": "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W02/prepared_cases/trm_fem_ef97f5aa38de/mesh/complete_joint_grouped_medium_first_order.msh",
+      "generation_id": "threadrom_grouped_gmsh_complete_joint_v1",
+      "geometry_id": "joint-geometry-a89f8084074a6a76",
+      "identity_sha256": "512ce98eca050e06a69ce14fe8c27121559e7c49abe852200f5217e31bc2579d",
+      "mesh_id": "mesh-512ce98eca050e06",
+      "quality_evidence_paths": [],
+      "source_case_ids": [
+        "TRM-DDOE-D-M12x1_75__steel_member-02"
+      ]
+    },
+    "mesh-5daba2d8c1be04c2": {
+      "artifact_paths": [
+        "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W01/prepared_cases/trm_fem_c58fd67718cd/mesh/complete_joint_grouped_medium_first_order.msh"
+      ],
+      "artifact_sha256": "60985f028797e3f489c3a50a6a0da3f0685e0cf24c8fcd95f89ceb9df800f169",
+      "canonical_artifact_path": "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W01/prepared_cases/trm_fem_c58fd67718cd/mesh/complete_joint_grouped_medium_first_order.msh",
+      "generation_id": "threadrom_grouped_gmsh_complete_joint_v1",
+      "geometry_id": "joint-geometry-47c437ae679c8490",
+      "identity_sha256": "5daba2d8c1be04c20de5e1f4c65e4f60c34518cbcc2b389a5d54b06ddab89aaa",
+      "mesh_id": "mesh-5daba2d8c1be04c2",
+      "quality_evidence_paths": [],
+      "source_case_ids": [
+        "TRM-DDOE-D-M8x1_25__member_aluminium_en_aw_6082_t6-01"
+      ]
+    },
+    "mesh-63c2c15338f35a3a": {
+      "artifact_paths": [
+        "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W03/prepared_cases/trm_fem_22c109e1e52b/mesh/complete_joint_grouped_medium_first_order.msh"
+      ],
+      "artifact_sha256": "3b8d841f679ca1b4264cc7ffd750e5543654a2d19a3f01a93b3b8c51b74c9827",
+      "canonical_artifact_path": "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W03/prepared_cases/trm_fem_22c109e1e52b/mesh/complete_joint_grouped_medium_first_order.msh",
+      "generation_id": "threadrom_grouped_gmsh_complete_joint_v1",
+      "geometry_id": "joint-geometry-675de5fb9b6c4543",
+      "identity_sha256": "63c2c15338f35a3a3bf02ac727bb9dd0bbd34a8734e4a0a414826d8619412bb2",
+      "mesh_id": "mesh-63c2c15338f35a3a",
+      "quality_evidence_paths": [],
+      "source_case_ids": [
+        "TRM-DDOE-D-M12x1_75__member_aluminium_en_aw_6082_t6-03"
+      ]
+    },
+    "mesh-68524466e34d36c1": {
+      "artifact_paths": [
+        "simulations/staging/phase3_cp11_m12_two_pitch_nut022_proof/prepared_cases/trm_fem_4606556202c1/mesh/complete_joint_grouped_medium_first_order.msh"
+      ],
+      "artifact_sha256": "5634f677caa20e564b92462fca2713b50de1a4e98d952c47052305d6e5c4ffc9",
+      "canonical_artifact_path": "simulations/staging/phase3_cp11_m12_two_pitch_nut022_proof/prepared_cases/trm_fem_4606556202c1/mesh/complete_joint_grouped_medium_first_order.msh",
+      "generation_id": "threadrom_grouped_gmsh_complete_joint_v1",
+      "geometry_id": "joint-geometry-2d1ec262b5db6298",
+      "identity_sha256": "68524466e34d36c10ed4346bc760da6df6d122cd5d7feb9bd55161bb57ded711",
+      "mesh_id": "mesh-68524466e34d36c1",
+      "quality_evidence_paths": [],
+      "source_case_ids": [
+        "TRM-DDOE-D-M12x1_75__member_aluminium_en_aw_6082_t6-04",
+        "TRM-DDOE-D-M12x1_75__steel_member-12",
+        "TRM-XFEM-M12-001"
+      ]
+    },
+    "mesh-6883b620c8756d0c": {
+      "artifact_paths": [
+        "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W03/prepared_cases/trm_fem_a57f61f13b9d/mesh/complete_joint_grouped_medium_first_order.msh"
+      ],
+      "artifact_sha256": "b3c98973d17b1819b1f001e5c9a33a6da7f74ea9c54e95f63d65dac85fce8348",
+      "canonical_artifact_path": "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W03/prepared_cases/trm_fem_a57f61f13b9d/mesh/complete_joint_grouped_medium_first_order.msh",
+      "generation_id": "threadrom_grouped_gmsh_complete_joint_v1",
+      "geometry_id": "joint-geometry-ed222732785b39db",
+      "identity_sha256": "6883b620c8756d0cce44b354edd0f6975addee527965912d5c2004d81803e909",
+      "mesh_id": "mesh-6883b620c8756d0c",
+      "quality_evidence_paths": [],
+      "source_case_ids": [
+        "TRM-DDOE-D-M10x1_5__member_aluminium_en_aw_6082_t6-03"
+      ]
+    },
+    "mesh-69e466fba363ea58": {
+      "artifact_paths": [
+        "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W02/prepared_cases/trm_fem_bfb674d30aad/mesh/complete_joint_grouped_medium_first_order.msh"
+      ],
+      "artifact_sha256": "67f9b521faa5da380078b6e241c757cf2311f9ac84146c62eefa107773a0ace2",
+      "canonical_artifact_path": "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W02/prepared_cases/trm_fem_bfb674d30aad/mesh/complete_joint_grouped_medium_first_order.msh",
+      "generation_id": "threadrom_grouped_gmsh_complete_joint_v1",
+      "geometry_id": "joint-geometry-35b5ba5b63abc5b2",
+      "identity_sha256": "69e466fba363ea58f4afc4b0fe72215d96a5761106a4c64fbd89137ce68d9f89",
+      "mesh_id": "mesh-69e466fba363ea58",
+      "quality_evidence_paths": [],
+      "source_case_ids": [
+        "TRM-DDOE-D-M12x1_75__member_aluminium_en_aw_6082_t6-02",
+        "TRM-DDOE-D-M12x1_75__steel_member-04"
+      ]
+    },
+    "mesh-8820a12df0b98d5f": {
+      "artifact_paths": [
+        "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W03/prepared_cases/trm_fem_c802d7334f6c/mesh/complete_joint_grouped_medium_first_order.msh"
+      ],
+      "artifact_sha256": "062682a446b9c44a7d947d64f61c9a871aaa74667ac5076f2047af0a666b88b9",
+      "canonical_artifact_path": "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W03/prepared_cases/trm_fem_c802d7334f6c/mesh/complete_joint_grouped_medium_first_order.msh",
+      "generation_id": "threadrom_grouped_gmsh_complete_joint_v1",
+      "geometry_id": "joint-geometry-cd1d2d26bacbacd8",
+      "identity_sha256": "8820a12df0b98d5ffdaaf8d5b7d88c9ada549ff9d6362f3decf8da7256b0c612",
+      "mesh_id": "mesh-8820a12df0b98d5f",
+      "quality_evidence_paths": [],
+      "source_case_ids": [
+        "TRM-DDOE-D-M8x1_25__member_aluminium_en_aw_6082_t6-03"
+      ]
+    },
+    "mesh-de5d6b68c349e182": {
+      "artifact_paths": [
+        "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W02/prepared_cases/trm_fem_d924d7c036b7/mesh/complete_joint_grouped_medium_first_order.msh"
+      ],
+      "artifact_sha256": "778438333dabcc22995cfdb13a2d207501a387bbf3de470232edebbf5fdc2ba6",
+      "canonical_artifact_path": "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W02/prepared_cases/trm_fem_d924d7c036b7/mesh/complete_joint_grouped_medium_first_order.msh",
+      "generation_id": "threadrom_grouped_gmsh_complete_joint_v1",
+      "geometry_id": "joint-geometry-48edc2009b9661d5",
+      "identity_sha256": "de5d6b68c349e1821dbf68f76cf814e4c3a86c7b6e274679e99114be9f1b58b0",
+      "mesh_id": "mesh-de5d6b68c349e182",
+      "quality_evidence_paths": [],
+      "source_case_ids": [
+        "TRM-DDOE-D-M10x1_5__member_aluminium_en_aw_6082_t6-02"
+      ]
+    },
+    "mesh-f2306ce3764d241d": {
+      "artifact_paths": [
+        "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W01/prepared_cases/trm_fem_5b22a5376136/mesh/complete_joint_grouped_medium_first_order.msh"
+      ],
+      "artifact_sha256": "177519871e51e56c3049ea561e1d1f03f07a3c37c56bb5c53f687282965c874a",
+      "canonical_artifact_path": "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W01/prepared_cases/trm_fem_5b22a5376136/mesh/complete_joint_grouped_medium_first_order.msh",
+      "generation_id": "threadrom_grouped_gmsh_complete_joint_v1",
+      "geometry_id": "joint-geometry-3ef28054a6d2f58f",
+      "identity_sha256": "f2306ce3764d241dc3958c2770c91949098e799fe2fac23e66f8522ceb1a5bb9",
+      "mesh_id": "mesh-f2306ce3764d241d",
+      "quality_evidence_paths": [],
+      "source_case_ids": [
+        "TRM-DDOE-D-M12x1_75__member_aluminium_en_aw_6082_t6-01"
+      ]
+    }
+  },
+  "schema": "threadrom.geometry_mesh_reuse_atlas.v1",
+  "schema_version": 1,
+  "scope": "ThreadROM Phase-3 governed geometry/mesh reuse foundation for prospective W03+ execution.",
+  "source_evidence": {
+    "TRM-DDOE-001-W01": {
+      "nut_mesh_policy_path": "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W01/w01_targeted_nut_mesh_levels.toml",
+      "nut_mesh_policy_sha256": "d62a3753af24db2f92b9d4f130329292be315c6ac30c0f79afb0bbd535e2b6df",
+      "preparation_index_path": "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W01/w01_trial1_preparation.json",
+      "preparation_index_sha256": "7e6114c2f78957f01f7ad568a0f90fa6372ef03e88545ad759b0407b83791b75"
+    },
+    "TRM-DDOE-001-W02": {
+      "nut_mesh_policy_path": "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W02/w02_targeted_nut_mesh_levels.toml",
+      "nut_mesh_policy_sha256": "d62a3753af24db2f92b9d4f130329292be315c6ac30c0f79afb0bbd535e2b6df",
+      "preparation_index_path": "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W02/w02_trial1_preparation.json",
+      "preparation_index_sha256": "80f14936394ac4cc713f6628f10630e4805a0531b3624de4cb6f60cc293b8ff2"
+    },
+    "TRM-DDOE-001-W03": {
+      "preparation_index_path": "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W03/w03_trial1_preparation.json",
+      "preparation_index_sha256": "813b602392dd66cf0b30e2089b3695c8e8ae0859946da775bfc1736efd404393",
+      "wave_closure_path": "docs/phase3_governed_wave_closure/TRM-DDOE-001-W03.wave_closure.json",
+      "wave_closure_sha256": "1e5fb74cae994a32f3eead9ae33ebae56517e29f0e6e3e2379990e54240caa36"
+    },
+    "TRM-DDOE-001-W04": {
+      "preparation_index_path": "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W04/w04_trial1_preparation.json",
+      "preparation_index_sha256": "9fcef44182a552a3fc26bf8ef36a5a242a8ef4a1e84045077e096a3ac0a99b9f",
+      "wave_closure_path": "docs/phase3_governed_wave_closure/TRM-DDOE-001-W04.wave_closure.json",
+      "wave_closure_sha256": "f9afb0c958f3f8750a577d8a9ebb677bbe347ef187d76cec4d77fe43bb57a852"
+    },
+    "TRM-DDOE-001-W05": {
+      "preparation_index_path": "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W05/w05_trial1_preparation.json",
+      "preparation_index_sha256": "3748eacc6e885811cfbb28c5b3cd8d9abda58f0dbc672e82947aef9d66f2ee7d",
+      "wave_closure_path": "docs/phase3_governed_wave_closure/TRM-DDOE-001-W05.wave_closure.json",
+      "wave_closure_sha256": "8bdd311b4f94f66a49955d668595ecd5a8c479162f2c31ea5f32b2eae58b3e66"
+    },
+    "accepted_fem_atlas_guard": {
+      "path": "docs/phase3_fem_atlas/atlas.json",
+      "sha256": "eed5e52f4e9baaad5e2eb89634de48bbdf53c14c584921d8afb0df00631ffc60"
+    },
+    "design_policy": {
+      "path": "config/phase3_diversified_doe.toml",
+      "sha256": "6d0e45c109b1ba0a279ec0f06467ea91392760171b9a91bf0467d763896108d9"
+    },
+    "design_proposal": {
+      "path": "docs/phase3_diversified_doe/design_proposal.json",
+      "sha256": "a386da9648af88b5577386efdc16643b0b099fe2614c2bcc18c0e8973d141e1e"
+    }
+  }
+}

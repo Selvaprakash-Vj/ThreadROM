@@ -1,0 +1,297 @@
+{
+  "constraints": {
+    "categorical": {
+      "bolt_material_id": [
+        "fastener_steel"
+      ],
+      "head_member_material_id": [
+        "member_aluminium_en_aw_6082_t6",
+        "steel_member"
+      ],
+      "nut_material_id": [
+        "fastener_steel"
+      ],
+      "nut_member_material_id": [
+        "member_aluminium_en_aw_6082_t6",
+        "steel_member"
+      ],
+      "thread_designation": [
+        "M8x1.25",
+        "M10x1.5",
+        "M12x1.75"
+      ]
+    },
+    "conditional_profiles": {
+      "profiles": {
+        "M10x1.5": {
+          "affine_constraints": [
+            {
+              "absolute_tolerance": 1e-08,
+              "dependent": "member_clearance_hole_diameter_mm",
+              "intercept": 6.0,
+              "slope": 0.16666666666666666,
+              "source": "member_outer_diameter_mm"
+            }
+          ],
+          "nominal_diameter_mm": 10.0,
+          "numeric_ranges": {
+            "head_member_thickness_mm": {
+              "maximum": 10.0,
+              "minimum": 8.0
+            },
+            "member_clearance_hole_diameter_mm": {
+              "maximum": 12.0,
+              "minimum": 11.0
+            },
+            "member_outer_diameter_mm": {
+              "maximum": 36.0,
+              "minimum": 30.0
+            },
+            "nut_member_thickness_mm": {
+              "maximum": 12.0,
+              "minimum": 10.0
+            },
+            "target_preload_n": {
+              "maximum": 20000.0,
+              "minimum": 15000.0
+            }
+          },
+          "sum_constraints": [
+            {
+              "absolute_tolerance": 1e-08,
+              "equals": 20.0,
+              "fields": [
+                "head_member_thickness_mm",
+                "nut_member_thickness_mm"
+              ]
+            }
+          ],
+          "total_grip_mm": 20.0
+        },
+        "M12x1.75": {
+          "affine_constraints": [
+            {
+              "absolute_tolerance": 1e-08,
+              "dependent": "member_clearance_hole_diameter_mm",
+              "intercept": 7.199999999999999,
+              "slope": 0.16666666666666666,
+              "source": "member_outer_diameter_mm"
+            }
+          ],
+          "nominal_diameter_mm": 12.0,
+          "numeric_ranges": {
+            "head_member_thickness_mm": {
+              "maximum": 12.0,
+              "minimum": 9.600000000000001
+            },
+            "member_clearance_hole_diameter_mm": {
+              "maximum": 14.399999999999999,
+              "minimum": 13.200000000000001
+            },
+            "member_outer_diameter_mm": {
+              "maximum": 43.2,
+              "minimum": 36.0
+            },
+            "nut_member_thickness_mm": {
+              "maximum": 14.399999999999999,
+              "minimum": 12.0
+            },
+            "target_preload_n": {
+              "maximum": 29062.641765845587,
+              "minimum": 21796.98132438419
+            }
+          },
+          "sum_constraints": [
+            {
+              "absolute_tolerance": 1e-08,
+              "equals": 24.0,
+              "fields": [
+                "head_member_thickness_mm",
+                "nut_member_thickness_mm"
+              ]
+            }
+          ],
+          "total_grip_mm": 24.0
+        },
+        "M8x1.25": {
+          "affine_constraints": [
+            {
+              "absolute_tolerance": 1e-08,
+              "dependent": "member_clearance_hole_diameter_mm",
+              "intercept": 4.8,
+              "slope": 0.16666666666666666,
+              "source": "member_outer_diameter_mm"
+            }
+          ],
+          "nominal_diameter_mm": 8.0,
+          "numeric_ranges": {
+            "head_member_thickness_mm": {
+              "maximum": 8.0,
+              "minimum": 6.4
+            },
+            "member_clearance_hole_diameter_mm": {
+              "maximum": 9.6,
+              "minimum": 8.8
+            },
+            "member_outer_diameter_mm": {
+              "maximum": 28.8,
+              "minimum": 24.0
+            },
+            "nut_member_thickness_mm": {
+              "maximum": 9.6,
+              "minimum": 8.0
+            },
+            "target_preload_n": {
+              "maximum": 12625.898949268729,
+              "minimum": 9469.424211951547
+            }
+          },
+          "sum_constraints": [
+            {
+              "absolute_tolerance": 1e-08,
+              "equals": 16.0,
+              "fields": [
+                "head_member_thickness_mm",
+                "nut_member_thickness_mm"
+              ]
+            }
+          ],
+          "total_grip_mm": 16.0
+        }
+      },
+      "selector_field": "thread_designation"
+    },
+    "equalities": [
+      [
+        "bolt_material_id",
+        "nut_material_id"
+      ],
+      [
+        "head_member_material_id",
+        "nut_member_material_id"
+      ]
+    ],
+    "numeric_ranges": {
+      "external_axial_load_n": {
+        "maximum": 0.0,
+        "minimum": 0.0
+      },
+      "head_bearing_friction_coefficient": {
+        "maximum": 0.15,
+        "minimum": 0.15
+      },
+      "member_interface_friction_coefficient": {
+        "maximum": 0.15,
+        "minimum": 0.15
+      },
+      "nut_bearing_friction_coefficient": {
+        "maximum": 0.15,
+        "minimum": 0.15
+      },
+      "thread_friction_coefficient": {
+        "maximum": 0.15,
+        "minimum": 0.15
+      }
+    },
+    "vector_ranges": {
+      "normalized_coordinates": {
+        "components": [
+          {
+            "maximum": 1.0,
+            "minimum": 0.0
+          },
+          {
+            "maximum": 1.0,
+            "minimum": 0.0
+          },
+          {
+            "maximum": 1.0,
+            "minimum": 0.0
+          }
+        ],
+        "derived_absolute_tolerance": 1e-08,
+        "derived_components": [
+          {
+            "profile_numeric_range_field": "target_preload_n",
+            "source_field": "target_preload_n",
+            "transform": "linear"
+          },
+          {
+            "profile_numeric_range_field": "head_member_thickness_mm",
+            "source_field": "head_member_thickness_mm",
+            "transform": "linear"
+          },
+          {
+            "profile_numeric_range_field": "member_outer_diameter_mm",
+            "source_field": "member_outer_diameter_mm",
+            "transform": "linear"
+          }
+        ]
+      }
+    }
+  },
+  "domain_id": "TRM-ROM-DOMAIN-MEMBER-SHORTENING-V1",
+  "governance": {
+    "case_level_evaluation_required": true,
+    "dataset_partition_assignment_authorized": false,
+    "domain_expansion_by_admission_forbidden": true,
+    "full_physics_acceptance_still_required_separately": true,
+    "holdout_protection_still_required_separately": true,
+    "numerical_certification_still_required_separately": true,
+    "rom_training_authorized": false
+  },
+  "meaning": "Governed Phase-3 applicability envelope for admission of member_shortening ROM samples. This record does not expand ThreadROM beyond the frozen diversified engineering domain.",
+  "normalized_coordinate_semantics": {
+    "derivation_policy": "If normalized_coordinates are absent, derive them deterministically from target_preload_n, head_member_thickness_mm, and member_outer_diameter_mm using the selected thread profile's frozen linear numeric ranges. If coordinates are present, they must agree with that physical derivation.",
+    "maximum": 1.0,
+    "minimum": 0.0,
+    "order": [
+      "target_preload",
+      "head_member_thickness",
+      "radial_geometry_fraction"
+    ]
+  },
+  "provenance": {
+    "admission_contract": {
+      "path": "docs/phase3_rom_dataset_admission/member_shortening_v1.admission_contract.json",
+      "sha256": "5d7b127345b89327624db560cf03c49fa40346a01491188540ffc797b44f5c11"
+    },
+    "diversified_design_proposal": {
+      "path": "docs/phase3_diversified_doe/design_proposal.json",
+      "sha256": "a386da9648af88b5577386efdc16643b0b099fe2614c2bcc18c0e8973d141e1e"
+    },
+    "diversified_doe_policy": {
+      "path": "config/phase3_diversified_doe.toml",
+      "sha256": "6d0e45c109b1ba0a279ec0f06467ea91392760171b9a91bf0467d763896108d9"
+    },
+    "resolver": {
+      "path": "src/threadrom/factory/rom_dataset_applicability.py",
+      "sha256": "7ae9aaafe2efa8ebcca4cd7ec3dafe19fef7f7e1224a82593f87334e8d401d82"
+    },
+    "target_contract": {
+      "path": "docs/phase3_rom_targets/member_shortening_v1.target_contract.json",
+      "sha256": "b8fcf7519e1fe805f5093b9f3a0d01f53b64ba705b118e4d271677895e47a2bf"
+    }
+  },
+  "record_status": "FINAL",
+  "required_engineering_fields": [
+    "thread_designation",
+    "bolt_material_id",
+    "nut_material_id",
+    "head_member_material_id",
+    "nut_member_material_id",
+    "target_preload_n",
+    "head_member_thickness_mm",
+    "nut_member_thickness_mm",
+    "member_outer_diameter_mm",
+    "member_clearance_hole_diameter_mm",
+    "thread_friction_coefficient",
+    "head_bearing_friction_coefficient",
+    "nut_bearing_friction_coefficient",
+    "member_interface_friction_coefficient",
+    "external_axial_load_n",
+    "normalized_coordinates"
+  ],
+  "schema": "threadrom.rom_supported_domain.v1",
+  "target_id": "TRM-ROM-TARGET-MEMBER-SHORTENING-V1"
+}

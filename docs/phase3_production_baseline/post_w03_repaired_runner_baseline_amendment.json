@@ -1,0 +1,193 @@
+{
+  "created_utc": "2026-10-08T19:36:09.116170Z",
+  "disposition": "POST_W03_REPAIRED_GENERIC_RUNNER_PRODUCTION_BASELINE_CERTIFIED",
+  "generic_runner_repair": {
+    "correct_lifecycle": "PREPARED_CAL_01 -> execute -> evaluate -> CAL_02_PLUS_IF_REQUIRED -> full_physics -> closure",
+    "defect": "The generic governed-wave runner assumed CAL_01 had already executed before adaptive lifecycle entry.",
+    "defect_exposed_by": "TRM-DDOE-001-W03",
+    "duplicate_calibration_execution_protection": "PRESERVED",
+    "repair_scope": "GENERIC_ARCHITECTURE_NOT_W03_SPECIFIC",
+    "runner": {
+      "path": "src/threadrom/factory/governed_wave_runner.py",
+      "sha256": "b944340afe9c94d1b2f0e503913745c11d79d285883147520bed99479bf13128"
+    },
+    "runner_sha256": "b944340afe9c94d1b2f0e503913745c11d79d285883147520bed99479bf13128",
+    "targeted_regression_after_repair": {
+      "failed": 0,
+      "passed": 23
+    }
+  },
+  "governance": {
+    "additional_fem_authorized": false,
+    "dataset_partition_assignment_performed": false,
+    "holdout_access_authorized": false,
+    "holdouts_accessed": false,
+    "production_evidence_mutation_authorized": false,
+    "rom_dataset_admission_authorized": false,
+    "rom_dataset_admission_performed": false,
+    "rom_training_authorized": false,
+    "solver_launched_during_amendment": false
+  },
+  "historical_baseline": {
+    "original_pre_w03_closure_sha256": "66a57419bbf42a1726bb4fb8519eee10c4889ebb63852d534c6c9992638826ee",
+    "original_pre_w03_readiness_sha256": "bc3ae1d724d05571db29320ccf69852213bcb3270be57a4c6917987e83e86445",
+    "preserved": true,
+    "rewritten": false
+  },
+  "historical_live_atlas_separation": {
+    "historical_atlas": {
+      "acceptance_records": 22,
+      "distinct_cases": 22,
+      "path": "docs/phase3_fem_atlas/historical_baselines/diversified_doe_baseline_801be26733a087c8b8635406f5bde724144feb2b.json",
+      "purpose": "IMMUTABLE_POLICY_PINNED_HISTORICAL_DOE_DESIGN_AND_REUSE_INPUT",
+      "sha256": "eed5e52f4e9baaad5e2eb89634de48bbdf53c14c584921d8afb0df00631ffc60"
+    },
+    "live_atlas": {
+      "acceptance_records": 26,
+      "distinct_cases": 26,
+      "path": "docs/phase3_fem_atlas/atlas.json",
+      "purpose": "APPEND_ONLY_CURRENT_ACCEPTANCE_EVIDENCE_REGISTRY",
+      "sha256": "c14e0c6dc087ea56c45c8e05517633ae6b1ac33910a8aae12d2425f8a5ab86b4"
+    },
+    "policy": {
+      "path": "config/phase3_diversified_doe.toml",
+      "sha256": "6d0e45c109b1ba0a279ec0f06467ea91392760171b9a91bf0467d763896108d9"
+    },
+    "policy_baseline_commit": "801be26733a087c8b8635406f5bde724144feb2b",
+    "policy_sha_contract_preserved": true
+  },
+  "post_w03_admission_machinery": {
+    "accepted_fem_adapter": {
+      "path": "scripts/admit_phase3_governed_wave_fem_evidence_v1.py",
+      "sha256": "28e169334f4de88ee4726ed0ebbdf42144a04c5b45915df894bf842e6dea8c23"
+    },
+    "calibration_adapter": {
+      "path": "scripts/admit_phase3_governed_wave_calibration_knowledge_v1.py",
+      "sha256": "0ee75a3340e5f3aa5e38a38921c80fe84a953278b48196e9972ce1fea4313f03"
+    },
+    "geometry_mesh_adapter": {
+      "path": "scripts/admit_phase3_governed_wave_geometry_mesh_v1.py",
+      "sha256": "eba7ad3269d7a93e0dc8c795b112671521348ffa58e11dd2d147a17a8eb38390"
+    }
+  },
+  "post_wave_learning": {
+    "accepted_fem_evidence": {
+      "acceptance_source_records": 26,
+      "dataset_partition": null,
+      "distinct_case_identities": 26,
+      "path": "docs/phase3_fem_atlas/atlas.json",
+      "rom_admission_status": "NOT_EVALUATED",
+      "sha256": "c14e0c6dc087ea56c45c8e05517633ae6b1ac33910a8aae12d2425f8a5ab86b4",
+      "w03_new_cases": 4,
+      "w03_new_evidence": 4,
+      "w03_replay_new_cases": 0,
+      "w03_replay_new_evidence": 0
+    },
+    "calibration_knowledge": {
+      "accept": 12,
+      "cases": 12,
+      "continue": 10,
+      "observations": 22,
+      "path": "docs/phase3_calibration_knowledge/observations_v1.json",
+      "sha256": "fa14aaf89f3e59a4ce8ec888c1d78defe8ec4114fea078c9a36ecc716996bfd0",
+      "w03_observations": 6,
+      "w03_replay_new": 0,
+      "w03_replay_reused": 6
+    },
+    "geometry_mesh_atlas": {
+      "case_bindings": 12,
+      "geometries": 12,
+      "meshes": 12,
+      "path": "docs/phase3_geometry_mesh_atlas/atlas.json",
+      "sha256": "6d026016affecc9151989b7a6b142dc0dccafa00f79580d9057c15f32787fb4f",
+      "w03_idempotence_proven": true
+    }
+  },
+  "production_baseline": {
+    "generic_runner_status": "CURRENT_CERTIFIED_PRODUCTION_BASELINE",
+    "next_state": "W04_AUTHORIZATION_READY",
+    "post_wave_integrations_status": "COMPLETE",
+    "regression_status": "1354_OF_1354_PASS",
+    "state": "POST_W03_PRODUCTION_BASELINE_CLOSED",
+    "w03_status": "GOVERNED_WAVE_FULL_PHYSICS_CLOSED",
+    "w04_authorized_by_this_record": false
+  },
+  "record_status": "FINAL",
+  "regression": {
+    "append_only_contract_tests": {
+      "failed": 0,
+      "passed": 2
+    },
+    "focused_governed_production_regression": {
+      "failed": 0,
+      "passed": 94
+    },
+    "full_repository_regression": {
+      "command_semantics": "python -m pytest -q --basetemp .pytest_short_full",
+      "duration_seconds": 577.51,
+      "failed": 0,
+      "passed": 1354
+    },
+    "historical_doe_regression": {
+      "failed": 0,
+      "passed": 33
+    },
+    "regression_contract_tests": [
+      {
+        "path": "tests/test_phase3_calibration_observation_store_v1.py",
+        "sha256": "cc0256f9ebec2305960d83ae1ec10c764cf33e6d07be284661d095ca05ccb061"
+      },
+      {
+        "path": "tests/test_phase3_geometry_mesh_atlas_v1.py",
+        "sha256": "078a10f5bf14cf43118218aa4746b27539cf72b45edf0ea0ce170383f833e159"
+      },
+      {
+        "path": "tests/test_phase3_diversified_doe_anchor_selection.py",
+        "sha256": "5a7a9c93c1cdec909f588080107075310e88c21328c26185ce1e753349e14375"
+      },
+      {
+        "path": "tests/test_phase3_diversified_doe_design.py",
+        "sha256": "8aa5b4767fef74063f207d56f8255a07b6814fef7af35ac5eddc4627c77bfd9b"
+      },
+      {
+        "path": "tests/test_phase3_diversified_doe_planning.py",
+        "sha256": "ae3e249564d8750692aa0746338bd266049b88984690b52d9fe4bfa7d279babe"
+      },
+      {
+        "path": "tests/test_phase3_diversified_doe_reuse.py",
+        "sha256": "411e9706d3d7d5618fbd112f1faf6102b8b33230545362f7df152a74523bd2c4"
+      }
+    ],
+    "synthetic_lifecycle_regression": {
+      "failed": 0,
+      "passed": 12,
+      "windows_short_basetemp_required": true
+    }
+  },
+  "repository": {
+    "git_head_at_record_creation": "e3ee57db3567f32d1c91b78d3e2439ca052ee2a7"
+  },
+  "schema": "threadrom.phase3_production_baseline_amendment.v1",
+  "scope": {
+    "campaign_id": "TRM-DDOE-001",
+    "completed_wave": "TRM-DDOE-001-W03",
+    "meaning": "Amends the pre-W03 production baseline without rewriting or invalidating the original six-slice pre-W03 closure.",
+    "next_wave": "TRM-DDOE-001-W04",
+    "phase": "PHASE_3"
+  },
+  "w03_real_wave_proof": {
+    "accepted_cases": 4,
+    "accepted_increments_per_case": 20,
+    "authorized_cases": 4,
+    "closure": {
+      "path": "docs/phase3_governed_wave_closure/TRM-DDOE-001-W03.wave_closure.json",
+      "sha256": "1e5fb74cae994a32f3eead9ae33ebae56517e29f0e6e3e2379990e54240caa36"
+    },
+    "duplicate_cal_01_reruns": 0,
+    "final_registry_sha256": "8687c62cb73c343ff6892fb0f6910a061f602346592a1b31c305054199c2cd63",
+    "hard_gates_per_case": 13,
+    "holdouts_accessed": false,
+    "realized_calibration_jobs": 6,
+    "rom_dataset_admission_performed": false
+  }
+}

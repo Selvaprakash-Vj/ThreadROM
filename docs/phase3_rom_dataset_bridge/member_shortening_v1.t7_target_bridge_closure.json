@@ -1,0 +1,102 @@
+{
+  "authorities": {
+    "admission_contract": {
+      "path": "docs/phase3_rom_dataset_admission/member_shortening_v1.admission_contract.json",
+      "sha256": "5d7b127345b89327624db560cf03c49fa40346a01491188540ffc797b44f5c11"
+    },
+    "engineering_input_resolver": {
+      "path": "src/threadrom/factory/rom_dataset_input_resolution.py",
+      "sha256": "988b076f408800336c43bb3009b40db8bd4a76709c84d299da401fc3c0597284"
+    },
+    "fem_atlas": {
+      "path": "docs/phase3_fem_atlas/atlas.json",
+      "sha256": "2f491e19c248c13986c195a0161d00ab69c787f34998cb57c2e1b2d172d19515"
+    },
+    "fem_result_extractor": {
+      "path": "src/threadrom/factory/fem_result_extraction.py",
+      "sha256": "657debfbb41a9fdee75d72f03250ca01f4c6f9fdf73224c79d1e58a0f3158b37"
+    },
+    "historical_pilot_runner": {
+      "path": "scripts/run_phase3_diversified_pilot_adaptive_factory.py",
+      "sha256": "9f2973e33f61ce210251878df731de2813a2b1167c6b08a4b480c84cde6ee929"
+    },
+    "holdout_protection_oracle": {
+      "path": "src/threadrom/factory/rom_dataset_holdout_protection.py",
+      "sha256": "7bf599c5e248a9ec722b29c027bf61afdfd304c36a86c4929fb8a382776ce7c2"
+    },
+    "production_doe_c01_physics": {
+      "path": "src/threadrom/factory/production_doe_c01_physics.py",
+      "sha256": "5814b2392aae161726ac6c092cb1e3111d974a0e67b269590db2781b0c9093c2"
+    },
+    "production_doe_policy": {
+      "path": "config/phase3_production_doe.toml",
+      "sha256": "43032557cb2abead0118362bcfc6a9b2e5246a7d363ca83eef5fcf35054befc1"
+    },
+    "target_contract": {
+      "path": "docs/phase3_rom_targets/member_shortening_v1.target_contract.json",
+      "sha256": "b8fcf7519e1fe805f5093b9f3a0d01f53b64ba705b118e4d271677895e47a2bf"
+    }
+  },
+  "baseline": {
+    "accepted_fem_atlas_cases": 43,
+    "dataset_partitions_assigned": 0,
+    "rom_admission_status": "NOT_EVALUATED"
+  },
+  "bridge_proof": {
+    "bridge_persisted_as_dataset": false,
+    "canonical_bridge_sha256": "ef8d3341379b9ca542277040cc76590b941f63d8acefabec330c0437436f2a4f",
+    "complete_target_population": 43,
+    "da11_source_clearances": 43,
+    "finite_targets": 43,
+    "nonzero_targets": 43
+  },
+  "closure_id": "TRM-P3-ROM-BRIDGE-MEMBER-SHORTENING-V1-T7",
+  "deterministic_reextraction_breakdown": {
+    "gate0_independent": 5,
+    "historical_calibration_accepted": 15,
+    "historical_diversified_pilot": 1,
+    "historical_geometry_mesh_reuse": 1,
+    "historical_normal_preparations": 14
+  },
+  "disposition": "T7_MEMBER_SHORTENING_TARGET_BRIDGE_CLOSED",
+  "record_status": "FINAL",
+  "safety": {
+    "accepted_fem_rerun": false,
+    "calculix_launched_by_closure": false,
+    "dataset_created": false,
+    "dataset_partitions_assigned": false,
+    "holdout_coordinates_disclosed": false,
+    "holdout_identities_disclosed": false,
+    "rom_admission_performed": false,
+    "rom_training_started": false
+  },
+  "schema_version": 1,
+  "scope": {
+    "claims": [
+      "The complete current 43-case accepted FEM population has a deterministic member_shortening target source.",
+      "All 43 target values were proven finite and nonzero.",
+      "The deterministic target bridge canonical SHA-256 is ef8d3341379b9ca542277040cc76590b941f63d8acefabec330c0437436f2a4f."
+    ],
+    "explicitly_not_claimed": [
+      "ROM dataset admission",
+      "dataset partition assignment",
+      "numerical-certification DA08 closure",
+      "applicability DA10 closure",
+      "ROM training",
+      "blind-holdout validation",
+      "Phase 4 start"
+    ]
+  },
+  "stage": "T-7",
+  "target": {
+    "dataset_field": "member_shortening_mm",
+    "source_field": "physics_result_evidence.deformation_state.member_shortening_mm",
+    "target_id": "member_shortening_v1",
+    "unit": "mm"
+  },
+  "target_source_strategy": {
+    "cached_governed_target_sources": 22,
+    "deterministic_reextractions": 21,
+    "total": 43
+  }
+}

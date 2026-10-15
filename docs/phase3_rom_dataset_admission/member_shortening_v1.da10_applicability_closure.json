@@ -1,0 +1,68 @@
+{
+  "artifacts": {
+    "admission_adapter": {
+      "path": "scripts/evaluate_phase3_governed_wave_rom_admission_v1.py",
+      "sha256": "53c570bcddacba3a6176fa89eae2fc2ad1e9a40bd710289cb0cab1a03525fbb3"
+    },
+    "admission_contract": {
+      "path": "docs/phase3_rom_dataset_admission/member_shortening_v1.admission_contract.json",
+      "sha256": "5d7b127345b89327624db560cf03c49fa40346a01491188540ffc797b44f5c11"
+    },
+    "admission_engine": {
+      "path": "src/threadrom/factory/rom_dataset_admission.py",
+      "sha256": "3e5ae43faeb676d399e5cb99233aa71582ff2cbf67ff81eb37c3ed124ec82d13"
+    },
+    "applicability_resolver": {
+      "path": "src/threadrom/factory/rom_dataset_applicability.py",
+      "sha256": "7ae9aaafe2efa8ebcca4cd7ec3dafe19fef7f7e1224a82593f87334e8d401d82"
+    },
+    "fem_atlas": {
+      "path": "docs/phase3_fem_atlas/atlas.json",
+      "sha256": "2f491e19c248c13986c195a0161d00ab69c787f34998cb57c2e1b2d172d19515"
+    },
+    "supported_domain": {
+      "path": "docs/phase3_rom_dataset_admission/member_shortening_v1.supported_domain.json",
+      "sha256": "8e299508ddff12f92fce4fcae59a2bf034eb91dbffcf0b46db3646a6e0ccfbd6"
+    },
+    "target_contract": {
+      "path": "docs/phase3_rom_targets/member_shortening_v1.target_contract.json",
+      "sha256": "b8fcf7519e1fe805f5093b9f3a0d01f53b64ba705b118e4d271677895e47a2bf"
+    }
+  },
+  "closure_basis": "Every public accepted FEM-Atlas state received a governed case-level applicability decision. States inside the frozen member_shortening supported domain PASS. States outside that target-specific domain are explicitly REJECTED without invalidating their FEM physics evidence.",
+  "disposition": "CLOSED",
+  "gate_id": "DA10_APPLICABILITY",
+  "generated_utc": "2026-10-14T13:04:37.379726+00:00",
+  "governance": {
+    "dataset_mutated": false,
+    "domain_expansion_by_admission_forbidden": true,
+    "fem_execution_performed": false,
+    "fem_rejection_implies_invalid_fem": false,
+    "holdouts_accessed": false,
+    "partition_assigned": false,
+    "rom_training_authorized": false,
+    "w06_touched": false
+  },
+  "population": {
+    "da04_native_inputs": 22,
+    "da04_resolver_completed_inputs": 21,
+    "da10_deferred": 0,
+    "da10_pass": 35,
+    "da10_rejected": 8,
+    "derived_normalized_coordinates": 23,
+    "fem_atlas_cases_evaluated": 43,
+    "native_normalized_coordinates": 20
+  },
+  "record_status": "FINAL",
+  "rejection_certification": {
+    "aggregate_physical_violation_counts": {
+      "member_clearance_hole_diameter_mm:BELOW_MIN": 1,
+      "target_preload_n:ABOVE_MAX": 3,
+      "target_preload_n:BELOW_MIN": 4
+    },
+    "rejected_with_independent_physical_domain_violation": 8,
+    "rejected_without_physical_domain_violation": 0
+  },
+  "schema": "threadrom.rom_da10_applicability_closure.v1",
+  "target": "member_shortening"
+}

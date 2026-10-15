@@ -1,0 +1,101 @@
+{
+  "authorized_trials": [
+    {
+      "case_hash": "a833df6408f7587d3f6d28d467390b624748b71c6c4d0a2b558f9410624f7706",
+      "case_id": "TRM-DDOE-D-M10x1_5__member_aluminium_en_aw_6082_t6-04",
+      "case_run_id": "trm_fem_c0b2237d5800",
+      "deck_path": "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W04/solver_preparation/trm_fem_c0b2237d5800/trm_fem_c0b2237d5800_cal_01/trm_fem_c0b2237d5800_cal_01.inp",
+      "deck_sha256": "977d83cd0a4303de9e4e1f3230d59cfd919363fcfe907a4015e8174d2593a588",
+      "manifest_path": "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W04/solver_preparation/trm_fem_c0b2237d5800/trm_fem_c0b2237d5800_cal_01/fem_run_manifest.json",
+      "preparation_record": "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W04/solver_preparation/trm_fem_c0b2237d5800/trm_fem_c0b2237d5800_cal_01/diversified_doe_trial1_preparation_record.json",
+      "preparation_record_sha256": "859ff2f67737c0b968df8aa17ffa65520388a218a562864c4ddc153cd7571eca",
+      "trial_index": 1,
+      "trial_run_id": "trm_fem_c0b2237d5800_cal_01",
+      "wave_order": 1
+    },
+    {
+      "case_hash": "33136e856536ffeeaf27ce77012828a0247234bfcac104f739d6503caab9e562",
+      "case_id": "TRM-DDOE-D-M12x1_75__member_aluminium_en_aw_6082_t6-04",
+      "case_run_id": "trm_fem_dfae66d11e9d",
+      "deck_path": "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W04/solver_preparation/trm_fem_dfae66d11e9d/trm_fem_dfae66d11e9d_cal_01/trm_fem_dfae66d11e9d_cal_01.inp",
+      "deck_sha256": "d5f020d53284290b460a6854ee6c8863f1aceb98ef9c3b89d7b60746994636a9",
+      "manifest_path": "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W04/solver_preparation/trm_fem_dfae66d11e9d/trm_fem_dfae66d11e9d_cal_01/fem_run_manifest.json",
+      "preparation_record": "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W04/solver_preparation/trm_fem_dfae66d11e9d/trm_fem_dfae66d11e9d_cal_01/diversified_doe_trial1_preparation_record.json",
+      "preparation_record_sha256": "3fb76163a2153d2228802df6283d88b5c49cdb7dba77f0eec1265241c879134e",
+      "trial_index": 1,
+      "trial_run_id": "trm_fem_dfae66d11e9d_cal_01",
+      "wave_order": 2
+    },
+    {
+      "case_hash": "77b0399abf1ca260bc822e78e0761e8f66c706a4899eb0e1b93b03c747a9c405",
+      "case_id": "TRM-DDOE-D-M8x1_25__member_aluminium_en_aw_6082_t6-04",
+      "case_run_id": "trm_fem_a0fb41c4ca5c",
+      "deck_path": "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W04/solver_preparation/trm_fem_a0fb41c4ca5c/trm_fem_a0fb41c4ca5c_cal_01/trm_fem_a0fb41c4ca5c_cal_01.inp",
+      "deck_sha256": "fbcabf92be459d8508e12b67d370716555fbd7750504c1d49193bd1aca51fa65",
+      "manifest_path": "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W04/solver_preparation/trm_fem_a0fb41c4ca5c/trm_fem_a0fb41c4ca5c_cal_01/fem_run_manifest.json",
+      "preparation_record": "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W04/solver_preparation/trm_fem_a0fb41c4ca5c/trm_fem_a0fb41c4ca5c_cal_01/diversified_doe_trial1_preparation_record.json",
+      "preparation_record_sha256": "4cc36aa013c8ccde1a382b8bfe434ff1d97c58c36b0f8562d44d51d8bc4233f1",
+      "trial_index": 1,
+      "trial_run_id": "trm_fem_a0fb41c4ca5c_cal_01",
+      "wave_order": 3
+    },
+    {
+      "case_hash": "5d18f718ece649c3a9288bbd600fdc7bacf5be218f25ffba37429216a55b6f2e",
+      "case_id": "TRM-DDOE-D-M12x1_75__steel_member-04",
+      "case_run_id": "trm_fem_2ce5c34997d5",
+      "deck_path": "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W04/solver_preparation/trm_fem_2ce5c34997d5/trm_fem_2ce5c34997d5_cal_01/trm_fem_2ce5c34997d5_cal_01.inp",
+      "deck_sha256": "8540730e00825dbca15a0409fdec50db0f3ee336724421536b846b8086f962c8",
+      "manifest_path": "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W04/solver_preparation/trm_fem_2ce5c34997d5/trm_fem_2ce5c34997d5_cal_01/fem_run_manifest.json",
+      "preparation_record": "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W04/solver_preparation/trm_fem_2ce5c34997d5/trm_fem_2ce5c34997d5_cal_01/diversified_doe_trial1_preparation_record.json",
+      "preparation_record_sha256": "7f8024053986a04062344f21ab78c06f91177030bd264d63f1d8d50680d6e656",
+      "trial_index": 1,
+      "trial_run_id": "trm_fem_2ce5c34997d5_cal_01",
+      "wave_order": 4
+    }
+  ],
+  "backend": {
+    "backend_policy_id": "phase2_complete_joint_c3d4_v1",
+    "executable_relative_path": "tools\\calculix\\2.23.0\\CalculiX-2.23.0-win-x64\\bin\\ccx.exe",
+    "solver_name": "calculix",
+    "solver_version": "2.23.0"
+  },
+  "bound_artifacts": {
+    "factory_registry_sha256": "349188479558ca7f0e0cd26daffbbcc877178bbf2a8e29320cea4d1f73e0ecd0",
+    "trial1_execution_authorization_sha256": "6318522e3f64d69cfe423dd3ba522bddfe5459a62c58496bbcc20db7ec818ebf",
+    "trial1_preparation_sha256": "9fcef44182a552a3fc26bf8ef36a5a242a8ef4a1e84045077e096a3ac0a99b9f",
+    "wave_plan_sha256": "392ef4ec1eca5384bd4424556c7a10b7217c15d919d7bba8bda7070c50ffb49c"
+  },
+  "campaign_id": "TRM-DDOE-001",
+  "duplicate_execution_evidence": {
+    "existing_cvg": 0,
+    "existing_dat": 0,
+    "existing_frd": 0,
+    "existing_manifests": 0,
+    "existing_rout": 0,
+    "existing_sta": 0
+  },
+  "execution_scope": {
+    "adaptive_cal_02_plus_authorized": false,
+    "authorized_case_count": 4,
+    "authorized_trial_index": 1,
+    "maximum_concurrent_calculix": 4
+  },
+  "overall_disposition": "W04_CAL_01_EXECUTION_PREFLIGHT_PASS_LAUNCH_NOT_PERFORMED",
+  "record_status": "FINAL",
+  "registry_state": {
+    "jobs": 4,
+    "lease_generation_zero": true,
+    "prepared": 4,
+    "registry_mutated": false,
+    "running": 0
+  },
+  "safety": {
+    "adaptive_continuation": false,
+    "calculix_launched": false,
+    "dataset_admission": false,
+    "holdouts_accessed": false,
+    "jobs_claimed": false
+  },
+  "schema": "threadrom.phase3_governed_wave_trial1_execution_preflight.v1",
+  "wave_id": "TRM-DDOE-001-W04"
+}

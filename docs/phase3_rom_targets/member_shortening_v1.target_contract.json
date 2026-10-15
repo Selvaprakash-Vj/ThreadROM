@@ -1,0 +1,148 @@
+{
+  "applicability": {
+    "domain_expansion_authorized": false,
+    "meaning": "This target contract does not expand ThreadROM's validated engineering domain. Candidate samples must independently satisfy the applicable governed Phase-3 case, physics, provenance, and future dataset-admission contracts."
+  },
+  "contract_id": "TRM-ROM-TARGET-MEMBER-SHORTENING-V1",
+  "dataset_requirements": {
+    "dataset_admission_defined_here": false,
+    "every_holdout_row_requires_valid_fem_physics": true,
+    "every_training_row_requires_valid_fem_physics": true,
+    "existing_certified_rows_may_count": true,
+    "partition_assignment_defined_here": false,
+    "required_blind_holdout_rows": 6,
+    "required_training_rows": 24
+  },
+  "extraction": {
+    "accepted_increment_required": true,
+    "all_hard_gates_required": true,
+    "direct_raw_staging_access_by_rom_forbidden": true,
+    "final_state_required": true,
+    "full_physics_acceptance_required": true,
+    "implementation": {
+      "path": "src/threadrom/factory/fem_result_extraction.py",
+      "sha256": "657debfbb41a9fdee75d72f03250ca01f4c6f9fdf73224c79d1e58a0f3158b37"
+    },
+    "policy_semantics": "Use the governed FEM result extractor and the same semantic head-bearing and nut-bearing node regions used by certified physics extraction."
+  },
+  "governance": {
+    "accuracy_defined_before_model_training": true,
+    "dataset_mutation_performed": false,
+    "physics_acceptance_is_not_dataset_admission": true,
+    "rom_training_performed": false,
+    "sealed_holdouts_accessed": false,
+    "solver_launched": false,
+    "target_contract_is_not_dataset_admission": true,
+    "target_defined_before_model_training": true
+  },
+  "phase_boundary": {
+    "dataset_admission_authorized": false,
+    "defined_during": "PHASE_3",
+    "holdout_access_authorized": false,
+    "intended_first_use": "PHASE_4_FIRST_ROM",
+    "rom_training_authorized": false,
+    "w04_execution_authorized": false
+  },
+  "predeclared_accuracy": {
+    "blind_holdout": {
+      "evaluation_stage": "LATER_EXPLICIT_GOVERNED_UNSEAL_ONLY",
+      "max_absolute_relative_error": 0.02,
+      "relative_error_definition": "prediction_minus_fem_over_fem",
+      "rrmse_max": 0.015,
+      "zero_reference_response_forbidden": true
+    },
+    "cross_validation": {
+      "blind_holdouts_forbidden": true,
+      "max_absolute_relative_error": 0.02,
+      "method": "leave_one_out",
+      "population": "TRAINING_ROWS_ONLY",
+      "relative_error_definition": "prediction_minus_fem_over_fem",
+      "rrmse_max": 0.01,
+      "zero_reference_response_forbidden": true
+    },
+    "numerical_certification": {
+      "relative_limit": 0.02
+    },
+    "source": {
+      "path": "config/phase3_dataset_sufficiency.toml",
+      "sha256": "cc3f228cf1ae5e44441d6744eaaf628169d40ba2efeea0c56cc86588458a8812"
+    }
+  },
+  "production_baseline": {
+    "path": "docs/phase3_production_baseline/post_w03_repaired_runner_baseline_amendment.json",
+    "sha256": "719f7a943cef3fe27aee6ebe2af352656e7d7950494a6a57633936877dd418a2"
+  },
+  "record_status": "FINAL",
+  "reference_proof": {
+    "purpose": "Extraction-contract proof only; these records do not declare dataset membership or partition assignment.",
+    "realizations": [
+      {
+        "assessment": {
+          "path": "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W03/solver_preparation/trm_fem_a57f61f13b9d/trm_fem_a57f61f13b9d_cal_01/w03_governed_full_physics_assessment_v2.json",
+          "sha256": "7688780f48bbffb6c34502867afbd2374488b5b0f81feac7f585a0a39420246c"
+        },
+        "case_hash": "eac55af4d11fd8b23203f51c738cac5190cf203b637fb9f5be16169fdcbdfd12",
+        "case_id": "TRM-DDOE-D-M10x1_5__member_aluminium_en_aw_6082_t6-03",
+        "case_run_id": "trm_fem_a57f61f13b9d",
+        "member_shortening_mm": 0.004649544218202228,
+        "run_id": "trm_fem_a57f61f13b9d_cal_01",
+        "trial_index": 1
+      },
+      {
+        "assessment": {
+          "path": "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W03/solver_preparation/trm_fem_22c109e1e52b/trm_fem_22c109e1e52b_cal_01/w03_governed_full_physics_assessment_v2.json",
+          "sha256": "5baeb80ec4bf2935386f8a607c16b013855e59262b2cedd67146c04ba7162f43"
+        },
+        "case_hash": "602fde21267d63e3d3cb6c88b6b5757ef511506876f8c7c3a6b41ee199e81dad",
+        "case_id": "TRM-DDOE-D-M12x1_75__member_aluminium_en_aw_6082_t6-03",
+        "case_run_id": "trm_fem_22c109e1e52b",
+        "member_shortening_mm": 0.005616650982854456,
+        "run_id": "trm_fem_22c109e1e52b_cal_01",
+        "trial_index": 1
+      },
+      {
+        "assessment": {
+          "path": "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W03/solver_preparation/trm_fem_323293011028/trm_fem_323293011028_cal_02/w03_governed_full_physics_assessment_v2.json",
+          "sha256": "ee030d2913c79672f7e588f955636510bec400b95d09223ec1dc657f578dd8cb"
+        },
+        "case_hash": "e86a17501ebe95d56da60e49d195c75d21a8fd29199cfbcf48eb5f97b2bbcab6",
+        "case_id": "TRM-DDOE-D-M12x1_75__steel_member-03",
+        "case_run_id": "trm_fem_323293011028",
+        "member_shortening_mm": 0.0029737039317310277,
+        "run_id": "trm_fem_323293011028_cal_02",
+        "trial_index": 2
+      },
+      {
+        "assessment": {
+          "path": "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W03/solver_preparation/trm_fem_c802d7334f6c/trm_fem_c802d7334f6c_cal_02/w03_governed_full_physics_assessment_v2.json",
+          "sha256": "2c3ce1f36b9b8589c4bea987cdb689ae2c8e4f3ba8faa2307139e3a20ca336a5"
+        },
+        "case_hash": "c3a38bcc699ebe5a031942a9d8a4a7c24f2151c0c7824de777623878793b89ed",
+        "case_id": "TRM-DDOE-D-M8x1_25__member_aluminium_en_aw_6082_t6-03",
+        "case_run_id": "trm_fem_c802d7334f6c",
+        "member_shortening_mm": 0.003690969811971809,
+        "run_id": "trm_fem_c802d7334f6c_cal_02",
+        "trial_index": 2
+      }
+    ],
+    "w03_closure": {
+      "path": "docs/phase3_governed_wave_closure/TRM-DDOE-001-W03.wave_closure.json",
+      "sha256": "1e5fb74cae994a32f3eead9ae33ebae56517e29f0e6e3e2379990e54240caa36"
+    }
+  },
+  "schema": "threadrom.rom_target_contract.v1",
+  "target": {
+    "dataset_field": "member_shortening_mm",
+    "formula": "mean_uz(head_bearing_nodes) - mean_uz(nut_bearing_nodes)",
+    "mesh_node_numbering_invariant": true,
+    "missing_or_invalid": "Non-finite, absent, unsynchronized, or non-certified values are ineligible for dataset admission.",
+    "physical_quantity": "axial shortening of the clamped-member stack",
+    "response_id": "member_shortening",
+    "scalar": true,
+    "sign_convention": "Positive exactly when mean_uz(head_bearing_nodes) is greater than mean_uz(nut_bearing_nodes), following the governed extractor's global-UZ convention.",
+    "source_field": "physics_result_evidence.deformation_state.member_shortening_mm",
+    "state": "final accepted nonlinear FEM state",
+    "unit": "mm"
+  },
+  "target_status": "FROZEN_PRE_TRAINING"
+}

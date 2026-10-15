@@ -1,0 +1,33 @@
+{
+  "governance": {
+    "all_valid_solved_calibration_observations_retained": true,
+    "analytical_fallback_preserved": true,
+    "execution_generation_boundary_preserved": true,
+    "fem_executed": false,
+    "holdout_access_authorized": false,
+    "interrupted_zero_byte_attempts_excluded": true,
+    "rom_dataset_admission_authorized": false,
+    "w03_execution_authorized": false
+  },
+  "knowledge_store": {
+    "accepted_calibration_count": 8,
+    "calibration_miss_count": 8,
+    "case_count": 8,
+    "observation_count": 16,
+    "path": "docs/phase3_calibration_knowledge/observations_v1.json",
+    "sha256": "bd55e1715f2e0ae958c30a1b6dd1715519e48286420fad6bce0d76431d2168d9"
+  },
+  "overall_disposition": "SLICE_2_CALIBRATION_KNOWLEDGE_AND_TRIAL1_PREDICTOR_V1_CLOSED",
+  "predictor": {
+    "applicable_leave_one_out_predictions": 1,
+    "policy_path": "config/fem_calibration_trial1_predictor.toml",
+    "policy_sha256": "33c465065eda24adaa088ff88ec02c13e26040e29aa333f05a865747aa94a7ac",
+    "safe_fallbacks": 7,
+    "validation_path": "docs/phase3_calibration_knowledge/trial1_predictor_v1_validation.json",
+    "validation_sha256": "0c23b5fdb7d14d89e3b8cc151e9dbae3f04cf5afdad0a4b31e36d5b38b60db66"
+  },
+  "record_status": "FINAL",
+  "schema": "threadrom.pre_w03_calibration_knowledge_slice2_closure.v1",
+  "scope": "PRE_W03_HARDENING_SLICE_2",
+  "scope_boundary": "Slice 2 creates a persistent calibration-learning store and a conservative Trial-1 predictor. Predictor output does not itself authorize W03, FEM execution, ROM dataset admission, or holdout access."
+}

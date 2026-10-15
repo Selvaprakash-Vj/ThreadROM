@@ -1,0 +1,42 @@
+{
+  "approval_status": "OWNER_APPROVED",
+  "approved_at_utc": "2026-09-29T11:20:15.848675+00:00",
+  "approved_by": "Selva - ThreadROM project owner",
+  "authorization_type": "OWNER_BOUNDED_ADAPTIVE_WAVE_CAMPAIGN_AUTHORIZATION",
+  "bound_artifacts": {
+    "geometry_mesh_owner_authorization_sha256": "a1596d6c65c34f08782f6ab78ba2141590670e72ac008cb7d9dbdcfe0c0136ac",
+    "trial1_owner_authorization_sha256": "d0de4342f65a95525bfd2042cc650853bf5a4afd7203c54c9f61201740d3dfe4",
+    "w01_trial1_preparation_sha256": "7e6114c2f78957f01f7ad568a0f90fa6372ef03e88545ad759b0407b83791b75",
+    "wave_plan_sha256": "7896622edb754e5ce970b1cc6b5ccf157b591ae826e78c0abb9f8e373382a79d"
+  },
+  "campaign_id": "TRM-DDOE-001",
+  "engineering_intent": "One owner launch authorizes autonomous governed calibration continuation and full-physics assessment for the four frozen W01 cases until each case reaches governed full-physics acceptance or a defined terminal condition. No manual approval is required between CAL_n trials inside this bounded scope.",
+  "execution_contract": {
+    "automatic_governed_adaptation": true,
+    "continue_until_physics_acceptance": true,
+    "duplicate_solver_execution_forbidden": true,
+    "full_physics_certification": true,
+    "maximum_concurrent_calculix": 4,
+    "maximum_trial_index_per_case": 6,
+    "preload_calibration_continuation": true,
+    "preserve_all_valid_realized_trials": true,
+    "reuse_existing_valid_trials": true,
+    "stop_on_governed_terminal_condition": true,
+    "stop_on_non_monotonic_response": true,
+    "stop_on_provenance_or_identity_failure": true,
+    "stop_on_unrecoverable_solver_failure": true
+  },
+  "required_completion_state": "GOVERNED_FULL_PHYSICS_ACCEPTED",
+  "schema_version": 1,
+  "scope": {
+    "additional_doe_cases_authorized": false,
+    "additional_waves_authorized": false,
+    "artifact_retirement_authorized": false,
+    "authorized_case_count": 4,
+    "dataset_admission_authorized": false,
+    "holdout_access_authorized": false,
+    "independent_human_review_claimed": false,
+    "surrogate_training_authorized": false
+  },
+  "wave_id": "TRM-DDOE-001-W01"
+}

@@ -1,0 +1,84 @@
+{
+  "approval_status": "OWNER_APPROVED",
+  "approved_by": "Selva",
+  "authorization_type": "OWNER_TRIAL1_PREPARATION_ONLY_AUTHORIZATION",
+  "authorized_case_count": 4,
+  "authorized_cases": [
+    {
+      "case_hash": "a833df6408f7587d3f6d28d467390b624748b71c6c4d0a2b558f9410624f7706",
+      "case_id": "TRM-DDOE-D-M10x1_5__member_aluminium_en_aw_6082_t6-04",
+      "case_run_id": "trm_fem_c0b2237d5800",
+      "trial_1_run_id": "trm_fem_c0b2237d5800_cal_01",
+      "wave_order": 1
+    },
+    {
+      "case_hash": "33136e856536ffeeaf27ce77012828a0247234bfcac104f739d6503caab9e562",
+      "case_id": "TRM-DDOE-D-M12x1_75__member_aluminium_en_aw_6082_t6-04",
+      "case_run_id": "trm_fem_dfae66d11e9d",
+      "trial_1_run_id": "trm_fem_dfae66d11e9d_cal_01",
+      "wave_order": 2
+    },
+    {
+      "case_hash": "77b0399abf1ca260bc822e78e0761e8f66c706a4899eb0e1b93b03c747a9c405",
+      "case_id": "TRM-DDOE-D-M8x1_25__member_aluminium_en_aw_6082_t6-04",
+      "case_run_id": "trm_fem_a0fb41c4ca5c",
+      "trial_1_run_id": "trm_fem_a0fb41c4ca5c_cal_01",
+      "wave_order": 3
+    },
+    {
+      "case_hash": "5d18f718ece649c3a9288bbd600fdc7bacf5be218f25ffba37429216a55b6f2e",
+      "case_id": "TRM-DDOE-D-M12x1_75__steel_member-04",
+      "case_run_id": "trm_fem_2ce5c34997d5",
+      "trial_1_run_id": "trm_fem_2ce5c34997d5_cal_01",
+      "wave_order": 4
+    }
+  ],
+  "bound_dependencies": {
+    "calibration_observation_store": {
+      "path": "docs/phase3_calibration_knowledge/observations_v1.json",
+      "sha256": "fa14aaf89f3e59a4ce8ec888c1d78defe8ec4114fea078c9a36ecc716996bfd0"
+    },
+    "geometry_mesh_atlas": {
+      "path": "docs/phase3_geometry_mesh_atlas/atlas.json",
+      "sha256": "6d026016affecc9151989b7a6b142dc0dccafa00f79580d9057c15f32787fb4f"
+    },
+    "pre_w03_hardening_closure": {
+      "path": "docs/phase3_pre_w03_hardening/slice6_closure.json",
+      "sha256": "66a57419bbf42a1726bb4fb8519eee10c4889ebb63852d534c6c9992638826ee"
+    },
+    "trial_1_predictor_policy": {
+      "path": "config/fem_calibration_trial1_predictor.toml",
+      "sha256": "33c465065eda24adaa088ff88ec02c13e26040e29aa333f05a865747aa94a7ac"
+    },
+    "wave_plan": {
+      "path": "docs/phase3_diversified_doe/waves/TRM-DDOE-001-W04/wave_plan.json",
+      "sha256": "392ef4ec1eca5384bd4424556c7a10b7217c15d919d7bba8bda7070c50ffb49c"
+    }
+  },
+  "campaign_id": "TRM-DDOE-001",
+  "permissions": {
+    "adaptive_continuation": false,
+    "additional_trials": false,
+    "artifact_retirement": false,
+    "dataset_admission": false,
+    "execute_trial_1": false,
+    "full_physics_certification": false,
+    "holdout_access": false,
+    "prepare_trial_1": true,
+    "surrogate_training": false
+  },
+  "record_status": "FINAL",
+  "schema": "threadrom.phase3_governed_trial1_preparation_owner_authorization.v1",
+  "scope_boundary": "This authorization permits deterministic preparation of CAL_01 artifacts for exactly the four frozen wave cases. It does not authorize CalculiX execution, CAL_02+, adaptive continuation, physics certification, ROM admission, holdout access, artifact retirement, or surrogate training.",
+  "trial_1_policy": {
+    "analytical_fallback_allowed": true,
+    "duplicate_solver_execution_forbidden": true,
+    "governed_fem_neighbor_reuse_allowed": true,
+    "knowledge_store_required": true,
+    "predictor_policy_required": true,
+    "solver_launch_by_preparation": false,
+    "trial_index": 1
+  },
+  "wave_id": "TRM-DDOE-001-W04",
+  "wave_plan_sha256": "392ef4ec1eca5384bd4424556c7a10b7217c15d919d7bba8bda7070c50ffb49c"
+}

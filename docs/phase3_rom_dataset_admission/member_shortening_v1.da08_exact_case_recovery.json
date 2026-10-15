@@ -1,0 +1,448 @@
+{
+  "authorities": {
+    "cp7_pilot_builder": {
+      "function": "build_phase3_cp7_pilot_doe",
+      "relative_path": "src/threadrom/factory/pilot_doe.py",
+      "sha256": "2a22f20f453ef4f05d8ea573c24c35daaf5865c21b1d25e771ec4ca04a372375"
+    },
+    "diversified_design_proposal": {
+      "relative_path": "docs/phase3_diversified_doe/design_proposal.json",
+      "sha256": "a386da9648af88b5577386efdc16643b0b099fe2614c2bcc18c0e8973d141e1e"
+    },
+    "diversified_policy": {
+      "relative_path": "config/phase3_diversified_doe.toml",
+      "sha256": "6d0e45c109b1ba0a279ec0f06467ea91392760171b9a91bf0467d763896108d9"
+    },
+    "governed_next_wave_builder": {
+      "function": "governed_case_identity",
+      "relative_path": "scripts/build_phase3_next_governed_wave_v1.py",
+      "sha256": "92aa732de3ea7ed1dacbc10c7adedc198538738b0bde3cf359002bf1b432a609"
+    },
+    "production_doe_builder": {
+      "anchor_semantics": "Reusable Production DOE anchors are verified by the builder against exact CP7 pilot physical case hashes.",
+      "function": "build_phase3_production_doe",
+      "relative_path": "src/threadrom/factory/production_doe.py",
+      "sha256": "25094c5d808d29e56d61a4936f505a1023bba2d91f514be6e1127fa88032b5bf"
+    },
+    "production_doe_policy": {
+      "relative_path": "config/phase3_production_doe.toml",
+      "sha256": "43032557cb2abead0118362bcfc6a9b2e5246a7d363ca83eef5fcf35054befc1"
+    }
+  },
+  "campaign": {
+    "relative_path": "docs/phase3_rom_dataset_admission/member_shortening_v1.da08_fine_reference_campaign.json",
+    "sha256": "c5cf32cf65129d190fc7a468d104c54965b3991d8b7df409a7b7c0388e0a0b3b"
+  },
+  "cases": [
+    {
+      "authority": "DIVERSIFIED_DESIGN_PROPOSAL",
+      "authority_agreement": "SINGLE_EXACT_AUTHORITY",
+      "canonical_case_hash": "PASS",
+      "case_hash": "db4f5abb0986d0527a06fd72849bfc948041448f6a8a320a4aad0a0858028d53",
+      "case_id": "TRM-DDOE-D-M10x1_5__member_aluminium_en_aw_6082_t6-01",
+      "case_run_id": "trm_fem_0f92f7fbf611",
+      "fem_atlas_identity": "PASS",
+      "member_material_id": "member_aluminium_en_aw_6082_t6",
+      "normalized_coordinates": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "ordinal": 1,
+      "resolution_hash": "0f92f7fbf61199be69ee1ef1df5c3cbf3bfbd79705f163396319dc365e948562",
+      "resolved_case_hash": "PASS",
+      "source_case_id": null,
+      "thread_designation": "M10x1.5"
+    },
+    {
+      "authority": "DIVERSIFIED_DESIGN_PROPOSAL",
+      "authority_agreement": "SINGLE_EXACT_AUTHORITY",
+      "canonical_case_hash": "PASS",
+      "case_hash": "a833df6408f7587d3f6d28d467390b624748b71c6c4d0a2b558f9410624f7706",
+      "case_id": "TRM-DDOE-D-M10x1_5__member_aluminium_en_aw_6082_t6-04",
+      "case_run_id": "trm_fem_c0b2237d5800",
+      "fem_atlas_identity": "PASS",
+      "member_material_id": "member_aluminium_en_aw_6082_t6",
+      "normalized_coordinates": [
+        0.5,
+        1.0,
+        0.0
+      ],
+      "ordinal": 2,
+      "resolution_hash": "c0b2237d580043772251b0ac4fa7f703bfa30c8e7b38f21f414f4571f036624f",
+      "resolved_case_hash": "PASS",
+      "source_case_id": null,
+      "thread_designation": "M10x1.5"
+    },
+    {
+      "authority": "DIVERSIFIED_DESIGN_PROPOSAL",
+      "authority_agreement": "SINGLE_EXACT_AUTHORITY",
+      "canonical_case_hash": "PASS",
+      "case_hash": "eac55af4d11fd8b23203f51c738cac5190cf203b637fb9f5be16169fdcbdfd12",
+      "case_id": "TRM-DDOE-D-M10x1_5__member_aluminium_en_aw_6082_t6-03",
+      "case_run_id": "trm_fem_a57f61f13b9d",
+      "fem_atlas_identity": "PASS",
+      "member_material_id": "member_aluminium_en_aw_6082_t6",
+      "normalized_coordinates": [
+        0.0,
+        0.5,
+        1.0
+      ],
+      "ordinal": 3,
+      "resolution_hash": "a57f61f13b9df55fd12d3a4d128bf499b094de0d3a06a9258b100d961fc148f5",
+      "resolved_case_hash": "PASS",
+      "source_case_id": null,
+      "thread_designation": "M10x1.5"
+    },
+    {
+      "authority": "DIVERSIFIED_DESIGN_PROPOSAL",
+      "authority_agreement": "SINGLE_EXACT_AUTHORITY",
+      "canonical_case_hash": "PASS",
+      "case_hash": "dfb44775d3ad128f7d14d4410a65ddc062f2d22e8b2f79c846cae4d8d41247a2",
+      "case_id": "TRM-DDOE-D-M10x1_5__member_aluminium_en_aw_6082_t6-05",
+      "case_run_id": "trm_fem_4ccebbc35697",
+      "fem_atlas_identity": "PASS",
+      "member_material_id": "member_aluminium_en_aw_6082_t6",
+      "normalized_coordinates": [
+        1.0,
+        0.0,
+        0.5
+      ],
+      "ordinal": 4,
+      "resolution_hash": "4ccebbc3569762fd08894d34c9bbee3aba36662e092cb4ad73a68c305f41d3af",
+      "resolved_case_hash": "PASS",
+      "source_case_id": null,
+      "thread_designation": "M10x1.5"
+    },
+    {
+      "authority": "DIVERSIFIED_DESIGN_PROPOSAL",
+      "authority_agreement": "SINGLE_EXACT_AUTHORITY",
+      "canonical_case_hash": "PASS",
+      "case_hash": "8da375401526a253cde3056662d358166dc3373f9200325c39ddf9514f6cb5f1",
+      "case_id": "TRM-DDOE-D-M10x1_5__member_aluminium_en_aw_6082_t6-02",
+      "case_run_id": "trm_fem_d924d7c036b7",
+      "fem_atlas_identity": "PASS",
+      "member_material_id": "member_aluminium_en_aw_6082_t6",
+      "normalized_coordinates": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "ordinal": 5,
+      "resolution_hash": "d924d7c036b7f0f9798382e00ea29d2f73c0450b0b77c46aa49e942c03e1bb2e",
+      "resolved_case_hash": "PASS",
+      "source_case_id": null,
+      "thread_designation": "M10x1.5"
+    },
+    {
+      "authority": "PRODUCTION_DOE_DESIGN_CASE",
+      "authority_agreement": "SINGLE_EXACT_AUTHORITY",
+      "canonical_case_hash": "PASS",
+      "case_hash": "a5e86e9150fbed8b3b17cd9617c9b78d919124baaa373310fa997f7c9bc72799",
+      "case_id": "D-BND-001",
+      "case_run_id": "trm_fem_c563fb7d1ffc",
+      "fem_atlas_identity": "PASS",
+      "member_material_id": "steel_member",
+      "normalized_coordinates": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "ordinal": 6,
+      "resolution_hash": "c563fb7d1ffca4edff18f9dadd400cee528c65ead7981fc1ae00b4c1ca5fdb14",
+      "resolved_case_hash": "PASS",
+      "source_case_id": null,
+      "thread_designation": "M10x1.5"
+    },
+    {
+      "authority": "PRODUCTION_DOE_DESIGN_CASE",
+      "authority_agreement": "SINGLE_EXACT_AUTHORITY",
+      "canonical_case_hash": "PASS",
+      "case_hash": "132f5f2b979503889a4f5a463a705b1f19699adcf55b5ec6cf0df9db48628b3b",
+      "case_id": "D-BND-003",
+      "case_run_id": "trm_fem_98074dd151f9",
+      "fem_atlas_identity": "PASS",
+      "member_material_id": "steel_member",
+      "normalized_coordinates": [
+        0.0,
+        1.0,
+        1.0
+      ],
+      "ordinal": 7,
+      "resolution_hash": "98074dd151f949a7ecfda5260560a0a306bdccd9506f4aaf6c20dcc9b09bdb39",
+      "resolved_case_hash": "PASS",
+      "source_case_id": null,
+      "thread_designation": "M10x1.5"
+    },
+    {
+      "authority": "PRODUCTION_DOE_DESIGN_CASE",
+      "authority_agreement": "SINGLE_EXACT_AUTHORITY",
+      "canonical_case_hash": "PASS",
+      "case_hash": "06046fe91597028e6aa098c1e3d22f8f94e1b50d16b573f89399b8b7a046d396",
+      "case_id": "D-INT-011",
+      "case_run_id": "trm_fem_ad490a6674c4",
+      "fem_atlas_identity": "PASS",
+      "member_material_id": "steel_member",
+      "normalized_coordinates": [
+        0.7809134146524126,
+        0.2978357230025728,
+        0.012364625694906699
+      ],
+      "ordinal": 8,
+      "resolution_hash": "ad490a6674c4b5a91b542d7ae1ebf5df339bf024f37a931ca1830e5b683e2109",
+      "resolved_case_hash": "PASS",
+      "source_case_id": null,
+      "thread_designation": "M10x1.5"
+    },
+    {
+      "authority": "PRODUCTION_DOE_DESIGN_CASE",
+      "authority_agreement": "SINGLE_EXACT_AUTHORITY",
+      "canonical_case_hash": "PASS",
+      "case_hash": "9d11902c8c53632a573986b9a62c63be9299500a32b43698f353fd55a05f5fdc",
+      "case_id": "D-BND-004",
+      "case_run_id": "trm_fem_08ca9b1a460e",
+      "fem_atlas_identity": "PASS",
+      "member_material_id": "steel_member",
+      "normalized_coordinates": [
+        1.0,
+        0.0,
+        1.0
+      ],
+      "ordinal": 9,
+      "resolution_hash": "08ca9b1a460ea9c6e1c642badfdd60d33c0e7134053e54de828d056f44d1855a",
+      "resolved_case_hash": "PASS",
+      "source_case_id": null,
+      "thread_designation": "M10x1.5"
+    },
+    {
+      "authority": "DIVERSIFIED_DESIGN_PROPOSAL",
+      "authority_agreement": "SINGLE_EXACT_AUTHORITY",
+      "canonical_case_hash": "PASS",
+      "case_hash": "33136e856536ffeeaf27ce77012828a0247234bfcac104f739d6503caab9e562",
+      "case_id": "TRM-DDOE-D-M12x1_75__member_aluminium_en_aw_6082_t6-04",
+      "case_run_id": "trm_fem_dfae66d11e9d",
+      "fem_atlas_identity": "PASS",
+      "member_material_id": "member_aluminium_en_aw_6082_t6",
+      "normalized_coordinates": [
+        0.5,
+        1.0,
+        0.0
+      ],
+      "ordinal": 10,
+      "resolution_hash": "dfae66d11e9de01dc91f4dbd75bea9fb2cc4cd5dee10d0fe81c363090aa254a9",
+      "resolved_case_hash": "PASS",
+      "source_case_id": null,
+      "thread_designation": "M12x1.75"
+    },
+    {
+      "authority": "DIVERSIFIED_DESIGN_PROPOSAL",
+      "authority_agreement": "SINGLE_EXACT_AUTHORITY",
+      "canonical_case_hash": "PASS",
+      "case_hash": "3b214bccddd6f64d2931b14082fcd9deadced612f3c5e3091ee3dfe4890e1675",
+      "case_id": "TRM-DDOE-D-M12x1_75__member_aluminium_en_aw_6082_t6-05",
+      "case_run_id": "trm_fem_ccb001371777",
+      "fem_atlas_identity": "PASS",
+      "member_material_id": "member_aluminium_en_aw_6082_t6",
+      "normalized_coordinates": [
+        1.0,
+        0.0,
+        0.5
+      ],
+      "ordinal": 11,
+      "resolution_hash": "ccb0013717778729649a4271e100601d47c25afd121c3d4f82c9c20508d35df6",
+      "resolved_case_hash": "PASS",
+      "source_case_id": null,
+      "thread_designation": "M12x1.75"
+    },
+    {
+      "authority": "DIVERSIFIED_DESIGN_PROPOSAL",
+      "authority_agreement": "SINGLE_EXACT_AUTHORITY",
+      "canonical_case_hash": "PASS",
+      "case_hash": "91e86a0b0eef6ac09ea2a27379c74e94dcaebaa3579178226d9ca0fff6da7d3c",
+      "case_id": "TRM-DDOE-D-M12x1_75__member_aluminium_en_aw_6082_t6-02",
+      "case_run_id": "trm_fem_bfb674d30aad",
+      "fem_atlas_identity": "PASS",
+      "member_material_id": "member_aluminium_en_aw_6082_t6",
+      "normalized_coordinates": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "ordinal": 12,
+      "resolution_hash": "bfb674d30aad3d188c85582cc0439650d26e285bcf17b0b729acf0ee85dbdc59",
+      "resolved_case_hash": "PASS",
+      "source_case_id": null,
+      "thread_designation": "M12x1.75"
+    },
+    {
+      "authority": "DIVERSIFIED_DESIGN_PROPOSAL",
+      "authority_agreement": "SINGLE_EXACT_AUTHORITY",
+      "canonical_case_hash": "PASS",
+      "case_hash": "3170c5437c9679e35180f3a720cb8e1cf436c12f3cdff86470e9bd2942a0f9e1",
+      "case_id": "TRM-DDOE-D-M12x1_75__steel_member-12",
+      "case_run_id": "trm_fem_a756711642a5",
+      "fem_atlas_identity": "PASS",
+      "member_material_id": "steel_member",
+      "normalized_coordinates": [
+        0.25,
+        1.0,
+        0.0
+      ],
+      "ordinal": 13,
+      "resolution_hash": "a756711642a524c11cdb05bbaf7b09f3de754a8f3a7944f515dc7d2958447bb6",
+      "resolved_case_hash": "PASS",
+      "source_case_id": null,
+      "thread_designation": "M12x1.75"
+    },
+    {
+      "authority": "DIVERSIFIED_DESIGN_PROPOSAL",
+      "authority_agreement": "SINGLE_EXACT_AUTHORITY",
+      "canonical_case_hash": "PASS",
+      "case_hash": "5d18f718ece649c3a9288bbd600fdc7bacf5be218f25ffba37429216a55b6f2e",
+      "case_id": "TRM-DDOE-D-M12x1_75__steel_member-04",
+      "case_run_id": "trm_fem_2ce5c34997d5",
+      "fem_atlas_identity": "PASS",
+      "member_material_id": "steel_member",
+      "normalized_coordinates": [
+        0.5,
+        1.0,
+        1.0
+      ],
+      "ordinal": 14,
+      "resolution_hash": "2ce5c34997d57013d8f96e31f1248ac19d02eecc9e822db33d2bb82bd45f6997",
+      "resolved_case_hash": "PASS",
+      "source_case_id": null,
+      "thread_designation": "M12x1.75"
+    },
+    {
+      "authority": "DIVERSIFIED_DESIGN_PROPOSAL",
+      "authority_agreement": "SINGLE_EXACT_AUTHORITY",
+      "canonical_case_hash": "PASS",
+      "case_hash": "a684e642f0017811e2f557faccc02af596d7e65a768c3e321fb1e21122cc20e5",
+      "case_id": "TRM-DDOE-D-M12x1_75__steel_member-05",
+      "case_run_id": "trm_fem_2282e77536c7",
+      "fem_atlas_identity": "PASS",
+      "member_material_id": "steel_member",
+      "normalized_coordinates": [
+        1.0,
+        0.0,
+        0.5
+      ],
+      "ordinal": 15,
+      "resolution_hash": "2282e77536c79f502d801bea755a8b68e0ab5a3a4707f6e1583e787565330de1",
+      "resolved_case_hash": "PASS",
+      "source_case_id": null,
+      "thread_designation": "M12x1.75"
+    },
+    {
+      "authority": "DIVERSIFIED_DESIGN_PROPOSAL",
+      "authority_agreement": "SINGLE_EXACT_AUTHORITY",
+      "canonical_case_hash": "PASS",
+      "case_hash": "02bb37591d1a9b386abba4b01092f89d842faa7f3288bd29de579107ee98e0ee",
+      "case_id": "TRM-DDOE-D-M8x1_25__member_aluminium_en_aw_6082_t6-01",
+      "case_run_id": "trm_fem_c58fd67718cd",
+      "fem_atlas_identity": "PASS",
+      "member_material_id": "member_aluminium_en_aw_6082_t6",
+      "normalized_coordinates": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "ordinal": 16,
+      "resolution_hash": "c58fd67718cd7d35b7b53135c03556c4452af0ebcb2016c1406278dcb00862e7",
+      "resolved_case_hash": "PASS",
+      "source_case_id": null,
+      "thread_designation": "M8x1.25"
+    },
+    {
+      "authority": "DIVERSIFIED_DESIGN_PROPOSAL",
+      "authority_agreement": "SINGLE_EXACT_AUTHORITY",
+      "canonical_case_hash": "PASS",
+      "case_hash": "77b0399abf1ca260bc822e78e0761e8f66c706a4899eb0e1b93b03c747a9c405",
+      "case_id": "TRM-DDOE-D-M8x1_25__member_aluminium_en_aw_6082_t6-04",
+      "case_run_id": "trm_fem_a0fb41c4ca5c",
+      "fem_atlas_identity": "PASS",
+      "member_material_id": "member_aluminium_en_aw_6082_t6",
+      "normalized_coordinates": [
+        0.5,
+        1.0,
+        0.0
+      ],
+      "ordinal": 17,
+      "resolution_hash": "a0fb41c4ca5cce156690772fb120a9e5339f131a6bd19414069cde16c6018201",
+      "resolved_case_hash": "PASS",
+      "source_case_id": null,
+      "thread_designation": "M8x1.25"
+    },
+    {
+      "authority": "DIVERSIFIED_DESIGN_PROPOSAL",
+      "authority_agreement": "SINGLE_EXACT_AUTHORITY",
+      "canonical_case_hash": "PASS",
+      "case_hash": "c3a38bcc699ebe5a031942a9d8a4a7c24f2151c0c7824de777623878793b89ed",
+      "case_id": "TRM-DDOE-D-M8x1_25__member_aluminium_en_aw_6082_t6-03",
+      "case_run_id": "trm_fem_c802d7334f6c",
+      "fem_atlas_identity": "PASS",
+      "member_material_id": "member_aluminium_en_aw_6082_t6",
+      "normalized_coordinates": [
+        0.0,
+        0.5,
+        1.0
+      ],
+      "ordinal": 18,
+      "resolution_hash": "c802d7334f6c79a4a0c93210d471d64e8a55c26bd37ce9ec0eb3ecfd19226840",
+      "resolved_case_hash": "PASS",
+      "source_case_id": null,
+      "thread_designation": "M8x1.25"
+    },
+    {
+      "authority": "DIVERSIFIED_DESIGN_PROPOSAL",
+      "authority_agreement": "SINGLE_EXACT_AUTHORITY",
+      "canonical_case_hash": "PASS",
+      "case_hash": "b75820842977f376b9adc4ad9525a32155464467b6ecbcbfe3a06d048cdedeab",
+      "case_id": "TRM-DDOE-D-M8x1_25__steel_member-12",
+      "case_run_id": "trm_fem_b8f3cce4a230",
+      "fem_atlas_identity": "PASS",
+      "member_material_id": "steel_member",
+      "normalized_coordinates": [
+        0.25,
+        1.0,
+        0.0
+      ],
+      "ordinal": 19,
+      "resolution_hash": "b8f3cce4a2303b910592738b5e0209271e2b2d84c63c216d238b6d3a1e24c2f3",
+      "resolved_case_hash": "PASS",
+      "source_case_id": null,
+      "thread_designation": "M8x1.25"
+    }
+  ],
+  "disposition": "DA08_EXACT_THREADROMCASE_RECOVERY_COMPLETE",
+  "fem_atlas": {
+    "relative_path": "docs/phase3_fem_atlas/atlas.json",
+    "sha256": "2f491e19c248c13986c195a0161d00ab69c787f34998cb57c2e1b2d172d19515"
+  },
+  "governance": {
+    "calculix_invoked": false,
+    "dataset_mutated": false,
+    "fem_executed": false,
+    "historical_evidence_mutated": false,
+    "holdout_rows_selected": false,
+    "holdout_values_disclosed": false,
+    "mesh_generated": false,
+    "rom_training": false,
+    "w06_mutated": false
+  },
+  "proof": {
+    "authority_counts": {
+      "DIVERSIFIED_DESIGN_PROPOSAL": 15,
+      "PRODUCTION_DOE_DESIGN_CASE": 4
+    },
+    "canonical_case_hash": 19,
+    "expected_cases": 19,
+    "fem_atlas_exact_identity": 19,
+    "recovered_cases": 19,
+    "resolved_case_hash": 19
+  },
+  "record_status": "FINAL",
+  "schema": "threadrom.da08_exact_case_recovery.v2",
+  "target_id": "member_shortening_v1"
+}

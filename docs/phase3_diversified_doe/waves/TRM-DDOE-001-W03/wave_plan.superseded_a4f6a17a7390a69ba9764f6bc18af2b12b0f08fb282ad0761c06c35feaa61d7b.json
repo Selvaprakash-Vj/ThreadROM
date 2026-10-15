@@ -1,0 +1,94 @@
+{
+  "adaptive_continuation_authorized": false,
+  "artifact_retirement_authorized": false,
+  "campaign_id": "TRM-DDOE-001",
+  "dataset_admission_authorized": false,
+  "design_freeze_certificate_sha256": "cc94749e1a396fed22879b8a98f729dca15522674f8ba597e0553f7968419872",
+  "design_proposal_sha256": "a386da9648af88b5577386efdc16643b0b099fe2614c2bcc18c0e8973d141e1e",
+  "fem_execution_authorized": false,
+  "full_physics_certification_authorized": false,
+  "holdout_access_authorized": false,
+  "holdout_configurations_generated": false,
+  "initial_trial_index": 1,
+  "maximum_concurrent_solver_slots": 4,
+  "meaning": "Immutable four-case Wave-3 selection from the frozen Phase-3 diversified DOE after completion of the six-slice pre-W03 hardening gate. The cohort is the deterministic next unused governed new-evidence state in each W02 lane. This record grants no preparation, solver execution, adaptive continuation, dataset admission, physics certification, artifact retirement, surrogate training, or holdout access.",
+  "policy_sha256": "6d0e45c109b1ba0a279ec0f06467ea91392760171b9a91bf0467d763896108d9",
+  "preparation_authorized": false,
+  "previous_wave_plan_sha256": "7896622edb754e5ce970b1cc6b5ccf157b591ae826e78c0abb9f8e373382a79d",
+  "record_status": "FINAL",
+  "schema": "threadrom.phase3_diversified_doe_wave_plan.v1",
+  "selected_cases": [
+    {
+      "case_hash": "eac55af4d11fd8b23203f51c738cac5190cf203b637fb9f5be16169fdcbdfd12",
+      "member_material_id": "member_aluminium_en_aw_6082_t6",
+      "normalized_coordinates": [
+        0.0,
+        0.5,
+        1.0
+      ],
+      "preparation_run_id": "trm_fem_a57f61f13b9d",
+      "proposal_id": "TRM-DDOE-D-M10x1_5__member_aluminium_en_aw_6082_t6-03",
+      "selection_reason": "Deterministic post-hardening W02-lane continuation to next unused governed new-evidence state; predecessor=TRM-DDOE-D-M10x1_5__member_aluminium_en_aw_6082_t6-02",
+      "thread_designation": "M10x1.5",
+      "trial_1_run_id": "trm_fem_a57f61f13b9d_cal_01",
+      "wave_order": 1
+    },
+    {
+      "case_hash": "602fde21267d63e3d3cb6c88b6b5757ef511506876f8c7c3a6b41ee199e81dad",
+      "member_material_id": "member_aluminium_en_aw_6082_t6",
+      "normalized_coordinates": [
+        0.0,
+        0.5,
+        1.0
+      ],
+      "preparation_run_id": "trm_fem_22c109e1e52b",
+      "proposal_id": "TRM-DDOE-D-M12x1_75__member_aluminium_en_aw_6082_t6-03",
+      "selection_reason": "Deterministic post-hardening W02-lane continuation to next unused governed new-evidence state; predecessor=TRM-DDOE-D-M12x1_75__member_aluminium_en_aw_6082_t6-02",
+      "thread_designation": "M12x1.75",
+      "trial_1_run_id": "trm_fem_22c109e1e52b_cal_01",
+      "wave_order": 2
+    },
+    {
+      "case_hash": "c3a38bcc699ebe5a031942a9d8a4a7c24f2151c0c7824de777623878793b89ed",
+      "member_material_id": "member_aluminium_en_aw_6082_t6",
+      "normalized_coordinates": [
+        0.0,
+        0.5,
+        1.0
+      ],
+      "preparation_run_id": "trm_fem_c802d7334f6c",
+      "proposal_id": "TRM-DDOE-D-M8x1_25__member_aluminium_en_aw_6082_t6-03",
+      "selection_reason": "Deterministic post-hardening W02-lane continuation to next unused governed new-evidence state; predecessor=TRM-DDOE-D-M8x1_25__member_aluminium_en_aw_6082_t6-02",
+      "thread_designation": "M8x1.25",
+      "trial_1_run_id": "trm_fem_c802d7334f6c_cal_01",
+      "wave_order": 3
+    },
+    {
+      "case_hash": "e86a17501ebe95d56da60e49d195c75d21a8fd29199cfbcf48eb5f97b2bbcab6",
+      "member_material_id": "steel_member",
+      "normalized_coordinates": [
+        0.0,
+        0.5,
+        0.0
+      ],
+      "preparation_run_id": "trm_fem_323293011028",
+      "proposal_id": "TRM-DDOE-D-M12x1_75__steel_member-03",
+      "selection_reason": "Deterministic post-hardening W02-lane continuation to next unused governed new-evidence state; predecessor=TRM-DDOE-D-M12x1_75__steel_member-02",
+      "thread_designation": "M12x1.75",
+      "trial_1_run_id": "trm_fem_323293011028_cal_01",
+      "wave_order": 4
+    }
+  ],
+  "selection_basis": {
+    "anchor_inventory_count": 19,
+    "anchor_inventory_meaning": "14 exact historical reuse states + 1 accepted diversified pilot + 4 W01 governed full-physics accepted states",
+    "selected_group_count": 4,
+    "selection_rule": "Prefer sparse thread/material families; within each family select the development candidate farthest from current same-group accepted/reusable evidence.",
+    "validation_reservation": "18 reserved; configurations not generated"
+  },
+  "selection_status": "FROZEN_SELECTION",
+  "trial_1_predictor_requirement": "Use governed calibration knowledge from valid existing FEM evidence where trustworthy; fall back to analytical seed only when governed history cannot support a better warm start.",
+  "wave_id": "TRM-DDOE-001-W03",
+  "wave_purpose": "POST_HARDENING_W03_NEXT_UNUSED_NEW_EVIDENCE_LANE_CONTINUATION",
+  "wave_size": 4
+}

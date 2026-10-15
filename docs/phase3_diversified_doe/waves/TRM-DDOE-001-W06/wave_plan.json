@@ -1,0 +1,94 @@
+{
+  "adaptive_continuation_authorized": false,
+  "artifact_retirement_authorized": false,
+  "campaign_id": "TRM-DDOE-001",
+  "dataset_admission_authorized": false,
+  "design_freeze_certificate_sha256": "cc94749e1a396fed22879b8a98f729dca15522674f8ba597e0553f7968419872",
+  "design_proposal_sha256": "a386da9648af88b5577386efdc16643b0b099fe2614c2bcc18c0e8973d141e1e",
+  "fem_execution_authorized": false,
+  "full_physics_certification_authorized": false,
+  "holdout_access_authorized": false,
+  "holdout_configurations_generated": false,
+  "initial_trial_index": 1,
+  "maximum_concurrent_solver_slots": 4,
+  "meaning": "Immutable four-case W06 selection from the frozen Phase-3 diversified DOE. The cohort is the deterministic next unused governed new-evidence state in each W05 thread/material lane. This record grants no preparation, solver execution, adaptive continuation, dataset admission, physics certification, artifact retirement, surrogate training, or holdout access.",
+  "policy_sha256": "6d0e45c109b1ba0a279ec0f06467ea91392760171b9a91bf0467d763896108d9",
+  "preparation_authorized": false,
+  "previous_wave_plan_sha256": "f0e7087940c193e4e5f9a258cd1a6c4524a479f9b7e1556f604f8e6f58d1f29a",
+  "record_status": "FINAL",
+  "schema": "threadrom.phase3_diversified_doe_wave_plan.v1",
+  "selected_cases": [
+    {
+      "case_hash": "bcd9030cbcf1314fd948829b91aae865d1c50840c1f67e1a51228299c0334d1f",
+      "member_material_id": "member_aluminium_en_aw_6082_t6",
+      "normalized_coordinates": [
+        0.0,
+        1.0,
+        0.5
+      ],
+      "preparation_run_id": "trm_fem_b750f908561d",
+      "proposal_id": "TRM-DDOE-D-M10x1_5__member_aluminium_en_aw_6082_t6-06",
+      "selection_reason": "Deterministic W05-lane continuation to next unused governed new-evidence state; predecessor=TRM-DDOE-D-M10x1_5__member_aluminium_en_aw_6082_t6-05",
+      "thread_designation": "M10x1.5",
+      "trial_1_run_id": "trm_fem_b750f908561d_cal_01",
+      "wave_order": 1
+    },
+    {
+      "case_hash": "722a83f7122d79ad0cb32cddcd919b0597788c7e5a54016f886ab9a3f1e575d4",
+      "member_material_id": "member_aluminium_en_aw_6082_t6",
+      "normalized_coordinates": [
+        0.0,
+        1.0,
+        0.5
+      ],
+      "preparation_run_id": "trm_fem_b4cbff618f6e",
+      "proposal_id": "TRM-DDOE-D-M12x1_75__member_aluminium_en_aw_6082_t6-06",
+      "selection_reason": "Deterministic W05-lane continuation to next unused governed new-evidence state; predecessor=TRM-DDOE-D-M12x1_75__member_aluminium_en_aw_6082_t6-05",
+      "thread_designation": "M12x1.75",
+      "trial_1_run_id": "trm_fem_b4cbff618f6e_cal_01",
+      "wave_order": 2
+    },
+    {
+      "case_hash": "3d0ac7f48a2ceb342c24785316a71b5ad48d960a0e06dc9999d5f43732cd0f1a",
+      "member_material_id": "member_aluminium_en_aw_6082_t6",
+      "normalized_coordinates": [
+        0.0,
+        1.0,
+        0.5
+      ],
+      "preparation_run_id": "trm_fem_aca6a42cf281",
+      "proposal_id": "TRM-DDOE-D-M8x1_25__member_aluminium_en_aw_6082_t6-06",
+      "selection_reason": "Deterministic W05-lane continuation to next unused governed new-evidence state; predecessor=TRM-DDOE-D-M8x1_25__member_aluminium_en_aw_6082_t6-05",
+      "thread_designation": "M8x1.25",
+      "trial_1_run_id": "trm_fem_aca6a42cf281_cal_01",
+      "wave_order": 3
+    },
+    {
+      "case_hash": "04b4c5391962896926f4e09de1a62a5fec78f10cef52c73c8fce465d42aa518e",
+      "member_material_id": "steel_member",
+      "normalized_coordinates": [
+        0.0,
+        1.0,
+        0.5
+      ],
+      "preparation_run_id": "trm_fem_2bc32fecabbc",
+      "proposal_id": "TRM-DDOE-D-M12x1_75__steel_member-06",
+      "selection_reason": "Deterministic W05-lane continuation to next unused governed new-evidence state; predecessor=TRM-DDOE-D-M12x1_75__steel_member-05",
+      "thread_designation": "M12x1.75",
+      "trial_1_run_id": "trm_fem_2bc32fecabbc_cal_01",
+      "wave_order": 4
+    }
+  ],
+  "selection_basis": {
+    "anchor_inventory_count": 35,
+    "anchor_inventory_meaning": "14 exact historical reuse states + 1 accepted diversified pilot + 4 W01 governed full-physics accepted states + 4 W02 governed full-physics accepted states + 4 W03 governed full-physics accepted states + 4 W04 governed full-physics accepted states + 4 W05 governed full-physics accepted states",
+    "selected_group_count": 4,
+    "selection_rule": "Continue each W05 thread/material lane to its deterministic next unused governed new-evidence state.",
+    "validation_reservation": "18 reserved; configurations not generated"
+  },
+  "selection_status": "FROZEN_SELECTION",
+  "trial_1_predictor_requirement": "Use governed calibration knowledge from valid existing FEM evidence where trustworthy; fall back to analytical seed only when governed history cannot support a better warm start.",
+  "wave_id": "TRM-DDOE-001-W06",
+  "wave_purpose": "PRODUCTION_W06_NEXT_UNUSED_NEW_EVIDENCE_LANE_CONTINUATION",
+  "wave_size": 4
+}

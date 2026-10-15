@@ -1,0 +1,30 @@
+{
+  "authorities": {
+    "post_fem_hook_sha256": "6a717bcde381e405017b90dcd93ed88a77f3aed4e3f0268c418e37faeab82fb2",
+    "post_fem_hook_test_sha256": "b41fae7e31fe6273974e724b3eddcc5ba75df21ec882dd5262a718081afa4789",
+    "rom_candidate_adapter_sha256": "fb7a7c27346e32dbfc5e93f18fd214bbcbc165fe53fc78c01a418a442dda6254",
+    "t6_closure_sha256": "c45d446fc068aa866cf846248e067982263ac2cf25b4ece0d61a640ebfe5dd4f"
+  },
+  "closure_id": "TRM-P3-ROM-BRIDGE-MEMBER-SHORTENING-V1-T5",
+  "disposition": "T5_GENERIC_POST_FEM_ROM_HOOK_CLOSED",
+  "proof": {
+    "case_specific_logic": false,
+    "hook_parameterized_by_wave": true,
+    "reference_wave": "W05",
+    "reference_wave_cases": 4,
+    "rom_candidate_adapter_invoked": true,
+    "wave_specific_logic": false
+  },
+  "purpose": "Certify a generic post-FEM ROM-candidate hook for governed waves W06 and later.",
+  "record_status": "FINAL",
+  "safety": {
+    "accepted_fem_rerun": false,
+    "calculix_launched": false,
+    "dataset_created": false,
+    "fem_atlas_mutated": false,
+    "partitions_assigned": false,
+    "rom_training_started": false
+  },
+  "schema_version": 1,
+  "stage": "T-5"
+}

@@ -1,0 +1,210 @@
+{
+  "authorities": {
+    "deck_preparation_certificate": {
+      "relative_path": "simulations/staging/phase3_da08_fine_reference/da08_fine_reference_deck_preparation_certificate.json",
+      "sha256": "0db68e52e84dd74cf40b5c6e47db772aa670b7618f50dc45299c65739345e576"
+    },
+    "w06_governed_wave_closure": {
+      "accepted_case_count": 4,
+      "relative_path": "docs/phase3_governed_wave_closure/TRM-DDOE-001-W06.wave_closure.json",
+      "sha256": "1b4ea393fdd3c22646199e1a691e395c16952989d0e98eccfaac2d62c6983a57"
+    }
+  },
+  "cases": [
+    {
+      "case_hash": "db4f5abb0986d0527a06fd72849bfc948041448f6a8a320a4aad0a0858028d53",
+      "case_id": "TRM-DDOE-D-M10x1_5__member_aluminium_en_aw_6082_t6-01",
+      "case_run_id": "trm_fem_0f92f7fbf611",
+      "deck_relative_path": "simulations/staging/phase3_da08_fine_reference/trm_fem_0f92f7fbf611/solver/trm_fem_0f92f7fbf611_da08_fine_ref_01/trm_fem_0f92f7fbf611_da08_fine_ref_01.inp",
+      "deck_sha256": "ddfe7c4cf8256e1b262278845aa4bf548674c5bb822226c06fdafa47c4d44a4b",
+      "fine_reference_run_id": "trm_fem_0f92f7fbf611_da08_fine_ref_01",
+      "ordinal": 1
+    },
+    {
+      "case_hash": "a833df6408f7587d3f6d28d467390b624748b71c6c4d0a2b558f9410624f7706",
+      "case_id": "TRM-DDOE-D-M10x1_5__member_aluminium_en_aw_6082_t6-04",
+      "case_run_id": "trm_fem_c0b2237d5800",
+      "deck_relative_path": "simulations/staging/phase3_da08_fine_reference/trm_fem_c0b2237d5800/solver/trm_fem_c0b2237d5800_da08_fine_ref_01/trm_fem_c0b2237d5800_da08_fine_ref_01.inp",
+      "deck_sha256": "d369e99c11a67b1058115f59af89990b158db329b1844070d7ce01b0fe3b431d",
+      "fine_reference_run_id": "trm_fem_c0b2237d5800_da08_fine_ref_01",
+      "ordinal": 2
+    },
+    {
+      "case_hash": "eac55af4d11fd8b23203f51c738cac5190cf203b637fb9f5be16169fdcbdfd12",
+      "case_id": "TRM-DDOE-D-M10x1_5__member_aluminium_en_aw_6082_t6-03",
+      "case_run_id": "trm_fem_a57f61f13b9d",
+      "deck_relative_path": "simulations/staging/phase3_da08_fine_reference/trm_fem_a57f61f13b9d/solver/trm_fem_a57f61f13b9d_da08_fine_ref_01/trm_fem_a57f61f13b9d_da08_fine_ref_01.inp",
+      "deck_sha256": "14d53e1395301d2e4cd52989904904d9906c37b09bf768d37ccab71c36aeef3c",
+      "fine_reference_run_id": "trm_fem_a57f61f13b9d_da08_fine_ref_01",
+      "ordinal": 3
+    },
+    {
+      "case_hash": "dfb44775d3ad128f7d14d4410a65ddc062f2d22e8b2f79c846cae4d8d41247a2",
+      "case_id": "TRM-DDOE-D-M10x1_5__member_aluminium_en_aw_6082_t6-05",
+      "case_run_id": "trm_fem_4ccebbc35697",
+      "deck_relative_path": "simulations/staging/phase3_da08_fine_reference/trm_fem_4ccebbc35697/solver/trm_fem_4ccebbc35697_da08_fine_ref_01/trm_fem_4ccebbc35697_da08_fine_ref_01.inp",
+      "deck_sha256": "c94629e976b2eaa70271f48d2159aa14e60a37cc808b9394f87ef9bbb865f790",
+      "fine_reference_run_id": "trm_fem_4ccebbc35697_da08_fine_ref_01",
+      "ordinal": 4
+    },
+    {
+      "case_hash": "8da375401526a253cde3056662d358166dc3373f9200325c39ddf9514f6cb5f1",
+      "case_id": "TRM-DDOE-D-M10x1_5__member_aluminium_en_aw_6082_t6-02",
+      "case_run_id": "trm_fem_d924d7c036b7",
+      "deck_relative_path": "simulations/staging/phase3_da08_fine_reference/trm_fem_d924d7c036b7/solver/trm_fem_d924d7c036b7_da08_fine_ref_01/trm_fem_d924d7c036b7_da08_fine_ref_01.inp",
+      "deck_sha256": "5f0a20a1d4c1aed2465833d644ba0685d6a7908898ebdcda09ec4dc03ea66242",
+      "fine_reference_run_id": "trm_fem_d924d7c036b7_da08_fine_ref_01",
+      "ordinal": 5
+    },
+    {
+      "case_hash": "a5e86e9150fbed8b3b17cd9617c9b78d919124baaa373310fa997f7c9bc72799",
+      "case_id": "D-BND-001",
+      "case_run_id": "trm_fem_c563fb7d1ffc",
+      "deck_relative_path": "simulations/staging/phase3_da08_fine_reference/trm_fem_c563fb7d1ffc/solver/trm_fem_c563fb7d1ffc_da08_fine_ref_01/trm_fem_c563fb7d1ffc_da08_fine_ref_01.inp",
+      "deck_sha256": "2623bacef13bdae5aee6693149a09b881610a766120c6fe70a942aba59252dce",
+      "fine_reference_run_id": "trm_fem_c563fb7d1ffc_da08_fine_ref_01",
+      "ordinal": 6
+    },
+    {
+      "case_hash": "132f5f2b979503889a4f5a463a705b1f19699adcf55b5ec6cf0df9db48628b3b",
+      "case_id": "D-BND-003",
+      "case_run_id": "trm_fem_98074dd151f9",
+      "deck_relative_path": "simulations/staging/phase3_da08_fine_reference/trm_fem_98074dd151f9/solver/trm_fem_98074dd151f9_da08_fine_ref_01/trm_fem_98074dd151f9_da08_fine_ref_01.inp",
+      "deck_sha256": "1bdd302ad8f7a8f63695ed9764a2bd69cfc077da52d9344899ad224235e2dd74",
+      "fine_reference_run_id": "trm_fem_98074dd151f9_da08_fine_ref_01",
+      "ordinal": 7
+    },
+    {
+      "case_hash": "06046fe91597028e6aa098c1e3d22f8f94e1b50d16b573f89399b8b7a046d396",
+      "case_id": "D-INT-011",
+      "case_run_id": "trm_fem_ad490a6674c4",
+      "deck_relative_path": "simulations/staging/phase3_da08_fine_reference/trm_fem_ad490a6674c4/solver/trm_fem_ad490a6674c4_da08_fine_ref_01/trm_fem_ad490a6674c4_da08_fine_ref_01.inp",
+      "deck_sha256": "354fca93627d4547a6dc9e371dee7bb8d4b866b3f0d26c2e054b06d695043e99",
+      "fine_reference_run_id": "trm_fem_ad490a6674c4_da08_fine_ref_01",
+      "ordinal": 8
+    },
+    {
+      "case_hash": "9d11902c8c53632a573986b9a62c63be9299500a32b43698f353fd55a05f5fdc",
+      "case_id": "D-BND-004",
+      "case_run_id": "trm_fem_08ca9b1a460e",
+      "deck_relative_path": "simulations/staging/phase3_da08_fine_reference/trm_fem_08ca9b1a460e/solver/trm_fem_08ca9b1a460e_da08_fine_ref_01/trm_fem_08ca9b1a460e_da08_fine_ref_01.inp",
+      "deck_sha256": "a630841987e9f89e192d47e62c79a4cdc59fc21f65beda57092af205867041a6",
+      "fine_reference_run_id": "trm_fem_08ca9b1a460e_da08_fine_ref_01",
+      "ordinal": 9
+    },
+    {
+      "case_hash": "33136e856536ffeeaf27ce77012828a0247234bfcac104f739d6503caab9e562",
+      "case_id": "TRM-DDOE-D-M12x1_75__member_aluminium_en_aw_6082_t6-04",
+      "case_run_id": "trm_fem_dfae66d11e9d",
+      "deck_relative_path": "simulations/staging/phase3_da08_fine_reference/trm_fem_dfae66d11e9d/solver/trm_fem_dfae66d11e9d_da08_fine_ref_01/trm_fem_dfae66d11e9d_da08_fine_ref_01.inp",
+      "deck_sha256": "d1d10a4f17a42ea132a0e6732e842643e62f3270d41a5d83718a197b0ac28108",
+      "fine_reference_run_id": "trm_fem_dfae66d11e9d_da08_fine_ref_01",
+      "ordinal": 10
+    },
+    {
+      "case_hash": "3b214bccddd6f64d2931b14082fcd9deadced612f3c5e3091ee3dfe4890e1675",
+      "case_id": "TRM-DDOE-D-M12x1_75__member_aluminium_en_aw_6082_t6-05",
+      "case_run_id": "trm_fem_ccb001371777",
+      "deck_relative_path": "simulations/staging/phase3_da08_fine_reference/trm_fem_ccb001371777/solver/trm_fem_ccb001371777_da08_fine_ref_01/trm_fem_ccb001371777_da08_fine_ref_01.inp",
+      "deck_sha256": "68dce1d6640624eef8809b3db7510e69879011e4b4311c3c14169b6cae223d4e",
+      "fine_reference_run_id": "trm_fem_ccb001371777_da08_fine_ref_01",
+      "ordinal": 11
+    },
+    {
+      "case_hash": "91e86a0b0eef6ac09ea2a27379c74e94dcaebaa3579178226d9ca0fff6da7d3c",
+      "case_id": "TRM-DDOE-D-M12x1_75__member_aluminium_en_aw_6082_t6-02",
+      "case_run_id": "trm_fem_bfb674d30aad",
+      "deck_relative_path": "simulations/staging/phase3_da08_fine_reference/trm_fem_bfb674d30aad/solver/trm_fem_bfb674d30aad_da08_fine_ref_01/trm_fem_bfb674d30aad_da08_fine_ref_01.inp",
+      "deck_sha256": "f2b0cd07664dc4e4b128a94023a4c5e2d3100837cd83913a61fe59c285e2bca5",
+      "fine_reference_run_id": "trm_fem_bfb674d30aad_da08_fine_ref_01",
+      "ordinal": 12
+    },
+    {
+      "case_hash": "3170c5437c9679e35180f3a720cb8e1cf436c12f3cdff86470e9bd2942a0f9e1",
+      "case_id": "TRM-DDOE-D-M12x1_75__steel_member-12",
+      "case_run_id": "trm_fem_a756711642a5",
+      "deck_relative_path": "simulations/staging/phase3_da08_fine_reference/trm_fem_a756711642a5/solver/trm_fem_a756711642a5_da08_fine_ref_01/trm_fem_a756711642a5_da08_fine_ref_01.inp",
+      "deck_sha256": "a88b734825beb8af4766ab784f3aaa23ceddacd9c1e0d95f97d944f946b68ce1",
+      "fine_reference_run_id": "trm_fem_a756711642a5_da08_fine_ref_01",
+      "ordinal": 13
+    },
+    {
+      "case_hash": "5d18f718ece649c3a9288bbd600fdc7bacf5be218f25ffba37429216a55b6f2e",
+      "case_id": "TRM-DDOE-D-M12x1_75__steel_member-04",
+      "case_run_id": "trm_fem_2ce5c34997d5",
+      "deck_relative_path": "simulations/staging/phase3_da08_fine_reference/trm_fem_2ce5c34997d5/solver/trm_fem_2ce5c34997d5_da08_fine_ref_01/trm_fem_2ce5c34997d5_da08_fine_ref_01.inp",
+      "deck_sha256": "a18f53b662dfd92d2397542c01ba3aafd83a36fe26f34b23a5b925770e9c2033",
+      "fine_reference_run_id": "trm_fem_2ce5c34997d5_da08_fine_ref_01",
+      "ordinal": 14
+    },
+    {
+      "case_hash": "a684e642f0017811e2f557faccc02af596d7e65a768c3e321fb1e21122cc20e5",
+      "case_id": "TRM-DDOE-D-M12x1_75__steel_member-05",
+      "case_run_id": "trm_fem_2282e77536c7",
+      "deck_relative_path": "simulations/staging/phase3_da08_fine_reference/trm_fem_2282e77536c7/solver/trm_fem_2282e77536c7_da08_fine_ref_01/trm_fem_2282e77536c7_da08_fine_ref_01.inp",
+      "deck_sha256": "3a43fe0d065c44e0539a42fa65600ab1fa50f69dc561d98f2e4b11f956e54368",
+      "fine_reference_run_id": "trm_fem_2282e77536c7_da08_fine_ref_01",
+      "ordinal": 15
+    },
+    {
+      "case_hash": "02bb37591d1a9b386abba4b01092f89d842faa7f3288bd29de579107ee98e0ee",
+      "case_id": "TRM-DDOE-D-M8x1_25__member_aluminium_en_aw_6082_t6-01",
+      "case_run_id": "trm_fem_c58fd67718cd",
+      "deck_relative_path": "simulations/staging/phase3_da08_fine_reference/trm_fem_c58fd67718cd/solver/trm_fem_c58fd67718cd_da08_fine_ref_01/trm_fem_c58fd67718cd_da08_fine_ref_01.inp",
+      "deck_sha256": "f11e43e0d344c0b79d04539ddc79fcc7ca8ad9d9d106f575ca6fdcc70f644868",
+      "fine_reference_run_id": "trm_fem_c58fd67718cd_da08_fine_ref_01",
+      "ordinal": 16
+    },
+    {
+      "case_hash": "77b0399abf1ca260bc822e78e0761e8f66c706a4899eb0e1b93b03c747a9c405",
+      "case_id": "TRM-DDOE-D-M8x1_25__member_aluminium_en_aw_6082_t6-04",
+      "case_run_id": "trm_fem_a0fb41c4ca5c",
+      "deck_relative_path": "simulations/staging/phase3_da08_fine_reference/trm_fem_a0fb41c4ca5c/solver/trm_fem_a0fb41c4ca5c_da08_fine_ref_01/trm_fem_a0fb41c4ca5c_da08_fine_ref_01.inp",
+      "deck_sha256": "7466f9b3738022a78a3f91df7b992c5ef9188fe0a09bfc6053b5ea42ff4da697",
+      "fine_reference_run_id": "trm_fem_a0fb41c4ca5c_da08_fine_ref_01",
+      "ordinal": 17
+    },
+    {
+      "case_hash": "c3a38bcc699ebe5a031942a9d8a4a7c24f2151c0c7824de777623878793b89ed",
+      "case_id": "TRM-DDOE-D-M8x1_25__member_aluminium_en_aw_6082_t6-03",
+      "case_run_id": "trm_fem_c802d7334f6c",
+      "deck_relative_path": "simulations/staging/phase3_da08_fine_reference/trm_fem_c802d7334f6c/solver/trm_fem_c802d7334f6c_da08_fine_ref_01/trm_fem_c802d7334f6c_da08_fine_ref_01.inp",
+      "deck_sha256": "f66f08913a9ddda19e3c45ddd8fc075f5ab335741f9ebd07ec5a51f7b009bdd7",
+      "fine_reference_run_id": "trm_fem_c802d7334f6c_da08_fine_ref_01",
+      "ordinal": 18
+    },
+    {
+      "case_hash": "b75820842977f376b9adc4ad9525a32155464467b6ecbcbfe3a06d048cdedeab",
+      "case_id": "TRM-DDOE-D-M8x1_25__steel_member-12",
+      "case_run_id": "trm_fem_b8f3cce4a230",
+      "deck_relative_path": "simulations/staging/phase3_da08_fine_reference/trm_fem_b8f3cce4a230/solver/trm_fem_b8f3cce4a230_da08_fine_ref_01/trm_fem_b8f3cce4a230_da08_fine_ref_01.inp",
+      "deck_sha256": "9143448821fd3f17bd43db0e64527b5288539dfbd63e862bc8d1318bc182311d",
+      "fine_reference_run_id": "trm_fem_b8f3cce4a230_da08_fine_ref_01",
+      "ordinal": 19
+    }
+  ],
+  "disposition": "DA08_FINE_REFERENCE_SOLVER_LAUNCH_AUTHORIZED",
+  "execution_scope": {
+    "accepted_calibration_state_reuse": true,
+    "automatic_case_progression": true,
+    "case_count": 19,
+    "initial_global_ccx_count": 0,
+    "launch_mode": "GOVERNED_SERIAL_FINE_REFERENCE",
+    "maximum_concurrent_da08_fine_runs": 1,
+    "maximum_global_concurrent_ccx": 4,
+    "new_preload_calibration": false
+  },
+  "purpose": "Authorize governed serial execution of the already-prepared 19-case true-global-fine DA08 numerical reference campaign.",
+  "record_status": "FINAL",
+  "safety": {
+    "calculix_launched_by_this_record": false,
+    "dataset_mutation": false,
+    "global_launch_fence_required_per_run": true,
+    "holdout_access": false,
+    "rom_training": false,
+    "w06_mutation": false,
+    "w06_post_wave_learning_sink_admission": false
+  },
+  "schema": "threadrom.da08_fine_reference_solver_launch_authorization.v2",
+  "target_id": "member_shortening_v1"
+}

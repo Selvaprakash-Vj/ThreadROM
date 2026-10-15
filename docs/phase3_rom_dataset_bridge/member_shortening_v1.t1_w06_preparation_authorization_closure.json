@@ -1,0 +1,52 @@
+{
+  "authorities": {
+    "adaptive_campaign_owner_authorization_sha256": "4b0ade420647ea5db88757fefa731d91a46c35ac1483ff2788a1738413019958",
+    "factory_registry_sha256": "bbb9a9c73a4c66ba9e586ac4a1e27be2f8e2e6ac840530859aae3870fd6525e7",
+    "geometry_mesh_preparation_authorization_sha256": "42e03cf2a87c2cd5c031a7f88f1e743ab10a9e5cc7e3eef6747a14aea232d9a9",
+    "governed_execution_preflight_sha256": "1f75b35ace05d0470debb4960953098ac8b934804c26e4ef9171a050f70db8b1",
+    "t2_closure_sha256": "25a441fca32516367aad80ceae38c11dc7ce60ec60b0411cb709b1a2645d2278",
+    "trial1_preparation_authorization_sha256": "f43077367a6f233b2584e1b7cb23f7a20d49e3ea5ba609d5a168848f2b27630f",
+    "trial1_preparation_sha256": "1e0f7ef463aab532bd9fbeb3225e14ed525c32e78493a70d8a634784c4bb1385",
+    "wave_plan_sha256": "ec0049b1bb98f2a0f950ae0fdc68cda6f91985c27102221e5ef6011fcc9427a7"
+  },
+  "closure_id": "TRM-P3-ROM-BRIDGE-MEMBER-SHORTENING-V1-T1",
+  "disposition": "T1_W06_PREPARATION_AND_AUTHORIZATION_CLOSED",
+  "execution_contract": {
+    "automatic_governed_adaptation": true,
+    "continue_until_physics_acceptance": true,
+    "duplicate_solver_execution_forbidden": true,
+    "full_physics_certification": true,
+    "maximum_concurrent_calculix": 4,
+    "maximum_trial_index_per_case": 6,
+    "preserve_all_valid_realized_trials": true,
+    "reuse_existing_valid_trials": true
+  },
+  "governance": {
+    "dataset_admission": "BLOCKED",
+    "holdouts": "SEALED",
+    "rom_training": "NOT_STARTED",
+    "solver_execution_before_launch": false,
+    "surrogate_training": "NOT_AUTHORIZED"
+  },
+  "next_stage": "T-0_W06_LAUNCH_READY_CERTIFICATION",
+  "prepared_state": {
+    "authorized_case_count": 4,
+    "calculix_launched_before_t1_closure": false,
+    "factory_ready": true,
+    "factory_registry_job_count": 4,
+    "preparation_solver_launch": false,
+    "prepared_case_count": 4,
+    "registry_initial_state": "PREPARED"
+  },
+  "purpose": "Certify the frozen W06 deterministic preparation, generic factory initialization, bounded adaptive execution authorization, and zero-execution runtime preflight.",
+  "record_status": "FINAL",
+  "schema_version": 1,
+  "stage": "T-1",
+  "threadrom_generic_path": {
+    "generic_bounded_adaptive_authorization": true,
+    "generic_factory_initialization": true,
+    "generic_runtime_preflight": true,
+    "parametric_case_to_cad_mesh_preparation": true
+  },
+  "wave_id": "TRM-DDOE-001-W06"
+}

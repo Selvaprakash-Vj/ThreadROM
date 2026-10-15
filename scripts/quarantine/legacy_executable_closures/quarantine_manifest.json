@@ -1,0 +1,30 @@
+{
+  "disposition": "LEGACY_EXECUTABLE_CLOSURE_ENTRY_POINTS_QUARANTINED_FAIL_CLOSED",
+  "entries": [
+    {
+      "former_active_path": "scripts/close_phase3_generic_governed_wave_runner_v1.py",
+      "preserved_original_path": "scripts/quarantine/legacy_executable_closures/originals/close_phase3_generic_governed_wave_runner_v1.py.source",
+      "preserved_original_sha256": "5b4d209e0e2dee8bbafff53e072fc1147031a5691bb660cf5c0aacdcb919f184",
+      "replacement": "INERT_FAIL_CLOSED_STUB"
+    },
+    {
+      "former_active_path": "scripts/close_phase3_governed_wave_closure_v1.py",
+      "preserved_original_path": "scripts/quarantine/legacy_executable_closures/originals/close_phase3_governed_wave_closure_v1.py.source",
+      "preserved_original_sha256": "fb47f530288b052515ae47be35d146d1378278e3a0c0012e5a4c4d1431d6270b",
+      "replacement": "INERT_FAIL_CLOSED_STUB"
+    }
+  ],
+  "governance": {
+    "active_factory_authority_changed": false,
+    "direct_execution_of_legacy_entry_points": "FAIL_CLOSED",
+    "historical_evidence_rewritten": false,
+    "historical_original_bytes_preserved": true,
+    "holdout_access_authorized": false,
+    "import_of_legacy_entry_points": "INERT",
+    "rom_dataset_admission_authorized": false,
+    "solver_execution_authorized": false
+  },
+  "reason": "Historical closure scripts performed consequential repository work at module top level and had no __main__ execution guard.",
+  "record_status": "FINAL",
+  "schema": "threadrom.legacy_executable_closure_quarantine.v1"
+}

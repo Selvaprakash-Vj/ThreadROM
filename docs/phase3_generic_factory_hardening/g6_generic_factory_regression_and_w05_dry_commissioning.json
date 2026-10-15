@@ -1,0 +1,113 @@
+{
+  "certified_artifacts": {
+    "calibration_predictor_regression": {
+      "path": "tests/unit/test_fem_calibration_trial1_predictor.py",
+      "sha256": "370d48add7c5f3b10b20c975fe6d07b6aac8e0e7277afa18b7317e84fe0261ce"
+    },
+    "factory_initializer": {
+      "path": "scripts/initialize_phase3_governed_wave_factory_v1.py",
+      "sha256": "730cef111f9723a7e8a067697535bf67c378f6e400a82867833115d57f0d8646"
+    },
+    "legacy_closure_stub": {
+      "path": "scripts/close_phase3_governed_wave_closure_v1.py",
+      "sha256": "ba7af12ccd22d48be9f425ac1b1e071800064a18c94f95aabfc671dfb0b19a6c"
+    },
+    "legacy_runner_stub": {
+      "path": "scripts/close_phase3_generic_governed_wave_runner_v1.py",
+      "sha256": "55a9424fc4c8837d034855214d40fa58a2b5c80c0572c24b432d070b466df47d"
+    },
+    "owner_authorization_regression": {
+      "path": "tests/unit/test_governed_wave_owner_authorization.py",
+      "sha256": "756a26dee269c5e78171136367038e806079036ef574d03d1277f545712d8921"
+    },
+    "owner_authorization_verifier": {
+      "path": "src/threadrom/factory/governed_wave_owner_authorization.py",
+      "sha256": "61d074650f865ca17e144c27f938a00541ce24cd16d9b4762934f53586441a6d"
+    },
+    "quarantine_manifest": {
+      "path": "scripts/quarantine/legacy_executable_closures/quarantine_manifest.json",
+      "sha256": "4a3b73c9429900639041169c8bc54dd78a007de28155e85aa77a4f69d41a9a69"
+    },
+    "rom_admission_contract_regression": {
+      "path": "tests/test_phase3_rom_dataset_admission_contract_v1.py",
+      "sha256": "c638f122336b4d65caacc64e738ad2f06af99ec58f0475dafcda1f7456c488a3"
+    },
+    "trial1_authorize_preflight": {
+      "path": "scripts/authorize_and_preflight_phase3_governed_trial1_execution_v1.py",
+      "sha256": "508fd4665a89be232f3c9dacc25095c57b2e124fa88e2f4dd524e5d098d8d6b1"
+    },
+    "wave_authorize_preflight": {
+      "path": "scripts/authorize_and_preflight_phase3_governed_wave_v1.py",
+      "sha256": "39309b9fce494fc40f2d1dcc76799899c17daaf05dfef07035cfa530377e4631"
+    }
+  },
+  "full_repository_regression": {
+    "errors": 0,
+    "failures": 0,
+    "report_path": "docs/phase3_generic_factory_hardening/g6_full_repository_regression.xml",
+    "report_sha256": "34c1492b17d95c56d5d248bb52499185473bad511eb365b4c28e8c6c685cc9c6",
+    "skipped": 0,
+    "status": "PASS",
+    "tests": 1371
+  },
+  "g6_regression_repairs": {
+    "calibration_predictor_tests": {
+      "controlled_evidence_cohorts": true,
+      "execution_generation_guard_preserved": true,
+      "geometry_generation_guard_preserved": true,
+      "production_predictor_changed": false
+    },
+    "rom_admission_live_atlas_test": {
+      "admission_non_mutation_still_required": true,
+      "live_atlas_row_count_not_frozen": true,
+      "partition_non_mutation_still_required": true,
+      "production_code_changed": false
+    }
+  },
+  "generic_factory_certification": {
+    "dangerous_legacy_closure_entry_points_quarantined": true,
+    "explicit_named_preparation_sha_binding": true,
+    "g1": "CLOSED",
+    "g2": "CLOSED",
+    "g3": "CLOSED",
+    "g4": "CLOSED",
+    "g5": "CLOSED",
+    "g6": "CLOSED",
+    "new_wave_specific_production_literal_required": false,
+    "projected_contracts": {
+      "W05": {
+        "owner_authorization_path": "docs/phase3_diversified_doe/waves/TRM-DDOE-001-W05/adaptive_campaign_owner_authorization.json",
+        "preparation_index_path": "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W05/w05_trial1_preparation.json",
+        "wave_id": "TRM-DDOE-001-W05"
+      },
+      "W06": {
+        "owner_authorization_path": "docs/phase3_diversified_doe/waves/TRM-DDOE-001-W06/adaptive_campaign_owner_authorization.json",
+        "preparation_index_path": "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W06/w06_trial1_preparation.json",
+        "wave_id": "TRM-DDOE-001-W06"
+      }
+    }
+  },
+  "git_head": "e3ee57db3567f32d1c91b78d3e2439ca052ee2a7",
+  "governance": {
+    "existing_accepted_fem_evidence_mutated": false,
+    "holdout_access": false,
+    "holdouts": "SEALED",
+    "rom_dataset": "UNTOUCHED",
+    "rom_training": "NOT_STARTED",
+    "w05_execution_authorized": false,
+    "w05_launched": false
+  },
+  "overall_disposition": "GENERIC_ADAPTIVE_FACTORY_HARDENING_COMPLETE_W05_DRY_COMMISSIONED",
+  "record_status": "FINAL",
+  "schema": "threadrom.phase3_generic_factory_hardening_g6.v1",
+  "title": "Generic Adaptive Factory Hardening G6 Closure",
+  "w05_dry_commissioning": {
+    "factory_registry_created": false,
+    "owner_authorization_created": false,
+    "physics_evidence_created": false,
+    "preparation_created": false,
+    "solver_execution_authorized": false,
+    "solver_launched": false,
+    "wave_plan_created": false
+  }
+}

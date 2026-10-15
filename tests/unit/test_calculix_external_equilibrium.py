@@ -200,3 +200,170 @@ def test_multistep_external_equilibrium_uses_total_time() -> None:
     assert payload["passed_count"] == 3
     assert payload["failed_count"] == 0
     assert payload["pending_count"] == 0
+
+
+
+def _translational_progress():
+    return {
+        "accepted_increments": [
+            {
+                "step": 1,
+                "increment": 1,
+                "total_time": 1.0,
+            },
+        ],
+    }
+
+
+def _translational_record(
+    set_name,
+    components,
+):
+    return {
+        "step": None,
+        "increment": 1,
+        "set_name": set_name,
+        "time": 1.0,
+        "force_components_n": list(
+            components
+        ),
+    }
+
+
+def test_translational_constraint_equilibrium_sums_explicit_sets():
+    from threadrom.postprocessing.calculix_external_equilibrium import (
+        validate_translational_constraint_equilibrium,
+    )
+
+    payload = (
+        validate_translational_constraint_equilibrium(
+            _translational_progress(),
+            {
+                "records": [
+                    _translational_record(
+                        "SUPPORT",
+                        (100.0, 25.0, 0.0),
+                    ),
+                    _translational_record(
+                        "GUIDANCE",
+                        (-100.0, -25.0, 0.0),
+                    ),
+                    _translational_record(
+                        "ROTATION_REFERENCE",
+                        (5000.0, 0.0, 0.0),
+                    ),
+                ],
+            },
+            force_set_names=(
+                "SUPPORT",
+                "GUIDANCE",
+            ),
+        )
+    )
+
+    assert payload["overall_status"] == "pass"
+    assert payload["passed_count"] == 1
+    assert payload["failed_count"] == 0
+    assert payload["pending_count"] == 0
+
+    validation = payload["validations"][0]
+
+    assert validation["resultant_force_n"] == 0.0
+    assert validation[
+        "summed_force_components_n"
+    ] == [0.0, 0.0, 0.0]
+
+    assert (
+        payload["requested_force_record_count"]
+        == 2
+    )
+
+
+def test_translational_constraint_equilibrium_pending_when_set_missing():
+    from threadrom.postprocessing.calculix_external_equilibrium import (
+        validate_translational_constraint_equilibrium,
+    )
+
+    payload = (
+        validate_translational_constraint_equilibrium(
+            _translational_progress(),
+            {
+                "records": [
+                    _translational_record(
+                        "SUPPORT",
+                        (10.0, 0.0, 0.0),
+                    ),
+                ],
+            },
+            force_set_names=(
+                "SUPPORT",
+                "GUIDANCE",
+            ),
+        )
+    )
+
+    assert payload["overall_status"] == "pending"
+    assert payload["pending_count"] == 1
+    assert payload["validations"][0][
+        "missing_force_set_names"
+    ] == ["GUIDANCE"]
+
+
+def test_translational_constraint_equilibrium_fails_nonzero_sum():
+    from threadrom.postprocessing.calculix_external_equilibrium import (
+        validate_translational_constraint_equilibrium,
+    )
+
+    payload = (
+        validate_translational_constraint_equilibrium(
+            _translational_progress(),
+            {
+                "records": [
+                    _translational_record(
+                        "SUPPORT",
+                        (1.0, 0.0, 0.0),
+                    ),
+                    _translational_record(
+                        "GUIDANCE",
+                        (-0.5, 0.0, 0.0),
+                    ),
+                ],
+            },
+            force_set_names=(
+                "SUPPORT",
+                "GUIDANCE",
+            ),
+            force_absolute_tolerance_n=0.1,
+        )
+    )
+
+    assert payload["overall_status"] == "fail"
+    assert payload["failed_count"] == 1
+
+    validation = payload["validations"][0]
+
+    assert (
+        validation["resultant_force_n"]
+        == 0.5
+    )
+
+
+def test_translational_constraint_equilibrium_rejects_duplicate_sets():
+    import pytest
+
+    from threadrom.postprocessing.calculix_external_equilibrium import (
+        validate_translational_constraint_equilibrium,
+    )
+
+    with pytest.raises(
+        ValueError,
+        match="must be unique",
+    ):
+        validate_translational_constraint_equilibrium(
+            _translational_progress(),
+            {"records": []},
+            force_set_names=(
+                "SUPPORT",
+                "support",
+            ),
+        )

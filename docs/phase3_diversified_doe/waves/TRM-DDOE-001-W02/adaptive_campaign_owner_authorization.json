@@ -1,0 +1,96 @@
+{
+  "approval_status": "OWNER_APPROVED",
+  "approved_at_utc": "2026-09-30T19:25:50.068916+00:00",
+  "approved_by": "Selva - ThreadROM project owner",
+  "authorization_type": "OWNER_BOUNDED_ADAPTIVE_WAVE_CAMPAIGN_AUTHORIZATION",
+  "authorized_cases": [
+    {
+      "case_hash": "8da375401526a253cde3056662d358166dc3373f9200325c39ddf9514f6cb5f1",
+      "case_id": "TRM-DDOE-D-M10x1_5__member_aluminium_en_aw_6082_t6-02",
+      "case_run_id": "trm_fem_d924d7c036b7",
+      "existing_trial_1_deck_sha256": "e9cbcfeb839c62daa4f84467f409657715a9362f10904b65476c31c5c8cda04a",
+      "existing_trial_1_preparation_sha256": "6bd246a83604463f1af3101602d5b23a2e29ad139cefcaea9d4640b099e6df23",
+      "existing_trial_1_run_id": "trm_fem_d924d7c036b7_cal_01",
+      "mesh_sha256": "778438333dabcc22995cfdb13a2d207501a387bbf3de470232edebbf5fdc2ba6",
+      "wave_order": 1
+    },
+    {
+      "case_hash": "91e86a0b0eef6ac09ea2a27379c74e94dcaebaa3579178226d9ca0fff6da7d3c",
+      "case_id": "TRM-DDOE-D-M12x1_75__member_aluminium_en_aw_6082_t6-02",
+      "case_run_id": "trm_fem_bfb674d30aad",
+      "existing_trial_1_deck_sha256": "c5ad266c13c68806e08d1f8da3417bb9ff93303e92415396853e22f53cb82af3",
+      "existing_trial_1_preparation_sha256": "7957ee12882443b1b9c6b75e4b911786af3e8831a5fbf1326d5437285449d0c9",
+      "existing_trial_1_run_id": "trm_fem_bfb674d30aad_cal_01",
+      "mesh_sha256": "67f9b521faa5da380078b6e241c757cf2311f9ac84146c62eefa107773a0ace2",
+      "wave_order": 2
+    },
+    {
+      "case_hash": "2c2893c0baa941d67ea6540f5071e1a90ca0d2f3e60c98f0dfdaf1eaf5c7df8f",
+      "case_id": "TRM-DDOE-D-M8x1_25__member_aluminium_en_aw_6082_t6-02",
+      "case_run_id": "trm_fem_6edeb234225b",
+      "existing_trial_1_deck_sha256": "987c70e11ca1b8bb41b8eb39236c58dd0d09f02a0a7794b16e89b8115562e6ee",
+      "existing_trial_1_preparation_sha256": "96b0e31f96e33013546f5cf6d7b8697742f117f08f4b84e2b02e361297349213",
+      "existing_trial_1_run_id": "trm_fem_6edeb234225b_cal_01",
+      "mesh_sha256": "da38fd048e511e5e1110ed008395208839b5fa1d760762b5838fae5d8feec68d",
+      "wave_order": 3
+    },
+    {
+      "case_hash": "b4fcf74bc0e1faf2f04eab3a8f1af538723d783cd639ea41dadc6b331a98ba58",
+      "case_id": "TRM-DDOE-D-M12x1_75__steel_member-02",
+      "case_run_id": "trm_fem_ef97f5aa38de",
+      "existing_trial_1_deck_sha256": "8245a8efcbf10487d9fbcbc506e2174f7c352cbfca3157171b2107f0e928d502",
+      "existing_trial_1_preparation_sha256": "5c4a9435bb62128c72e3eaa13335718f53b4eba2e162395efd0a46272d4589b0",
+      "existing_trial_1_run_id": "trm_fem_ef97f5aa38de_cal_01",
+      "mesh_sha256": "923d9589bb1d23f6336e8d689b4878a1eee3df52ed5128bf039f29920f036367",
+      "wave_order": 4
+    }
+  ],
+  "bound_artifacts": {
+    "geometry_mesh_owner_authorization_sha256": "1f4972087d147a0bd0c8d55b9843527df422c16238baea8e6a4244664eafa6bb",
+    "trial1_owner_authorization_sha256": "7625542f4a8c6a66f326175bd3ebe6657041239e17cfaf2a93fc5759a81ab578",
+    "w02_trial1_preparation_sha256": "80f14936394ac4cc713f6628f10630e4805a0531b3624de4cb6f60cc293b8ff2",
+    "wave_plan_sha256": "02f37a7515604b5c76e54aa69ed56991289eedd6100bc6448fd1c660e5bf5c67"
+  },
+  "calibration_learning_boundary": {
+    "preserve_w02_valid_solved_trials_for_future_governed_learning": true,
+    "w01_cross_wave_fem_neighbor_reuse_claimed": false,
+    "w02_execution_generation_explicit": true,
+    "w02_trial_1_source": "ANALYTICAL_V2_SEED"
+  },
+  "campaign_id": "TRM-DDOE-001",
+  "engineering_intent": "One owner launch authorizes autonomous governed preload calibration continuation and full-physics assessment for exactly the four frozen TRM-DDOE-001-W02 development cases. Existing valid CAL_01 preparation is reused. The campaign continues CAL_n trials automatically when required and stops only at governed full-physics acceptance or a defined terminal condition. Holdouts remain sealed and dataset admission remains blocked.",
+  "execution_contract": {
+    "automatic_governed_adaptation": true,
+    "continue_until_physics_acceptance": true,
+    "duplicate_trial_1_execution_forbidden_if_valid_result_exists": true,
+    "expired_running_lease_alone_authorizes_relaunch": false,
+    "full_physics_certification": true,
+    "maximum_concurrent_calculix": 4,
+    "maximum_trial_index_per_case": 6,
+    "preload_calibration_continuation": true,
+    "preserve_all_valid_realized_trials": true,
+    "reuse_existing_valid_trial_1": true,
+    "reuse_existing_valid_trials": true,
+    "stop_on_governed_terminal_condition": true,
+    "stop_on_non_monotonic_response": true,
+    "stop_on_provenance_or_identity_failure": true,
+    "stop_on_unrecoverable_solver_failure": true
+  },
+  "execution_generation_id": "phase3_diversified_adaptive_factory_direct_v1",
+  "record_status": "FINAL",
+  "required_completion_state": "GOVERNED_FULL_PHYSICS_ACCEPTED",
+  "schema": "threadrom.phase3_diversified_doe_adaptive_campaign_owner_authorization.v2",
+  "schema_version": 2,
+  "scope": {
+    "additional_doe_cases_authorized": false,
+    "additional_waves_authorized": false,
+    "artifact_retirement_authorized": false,
+    "authorized_case_count": 4,
+    "authorized_wave_count": 1,
+    "dataset_admission_authorized": false,
+    "holdout_access_authorized": false,
+    "independent_human_review_claimed": false,
+    "surrogate_training_authorized": false
+  },
+  "wave_id": "TRM-DDOE-001-W02"
+}

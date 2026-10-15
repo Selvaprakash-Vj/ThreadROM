@@ -21,7 +21,7 @@ def _inputs():
         .read_text(encoding="utf-8-sig")
     )
     atlas = json.loads(
-        (ROOT / "docs/phase3_fem_atlas/atlas.json")
+        (ROOT / "docs/phase3_fem_atlas/historical_baselines/diversified_doe_baseline_801be26733a087c8b8635406f5bde724144feb2b.json")
         .read_text(encoding="utf-8-sig")
     )
     return policy, atlas

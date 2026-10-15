@@ -1,0 +1,721 @@
+from __future__ import annotations
+
+import hashlib
+import json
+
+from pathlib import Path
+
+
+ROOT = Path(r"D:\ThreadROM").resolve()
+
+DOC_ROOT = (
+    ROOT
+    / "docs"
+    / "phase3_governed_wave_runner"
+)
+
+STATUS_PATH = (
+    DOC_ROOT
+    / "status_snapshot_v1.json"
+)
+
+CLOSURE_PATH = (
+    DOC_ROOT
+    / "slice3_closure.json"
+)
+
+
+EXPECTED = {
+    "slice1_closure": (
+        "332f70f12ff73fbac72bfbff724dc97"
+        "f659768aaea9287a022401e5c345abb3c"
+    ),
+    "slice2_closure": (
+        "c2913f68bce824157eb33f0e625dbe8"
+        "57e61d6a005040d564163ac59aa63e895"
+    ),
+    "generic_runner": (
+        "c7e7c6ab3c15e9a2047b2a0fe767cd"
+        "1412d34bbddf735362d66934d5d4e837df"
+    ),
+    "w01_runner": (
+        "79026c0f1270035c8dd1f984f2891de"
+        "fe47ff7f1a88c89747ed68623e2b66129"
+    ),
+    "w02_runner": (
+        "f0fbe35a4c0e4ffc6368d49ab3b42a86"
+        "2be58ad077e3e490b538e4e4be53197d"
+    ),
+    "w01_registry": (
+        "00f6cdff8617689b1d29103acfa1a177"
+        "4b6dab7348bd2cac4ccffa533a4c2e34"
+    ),
+    "w02_registry": (
+        "892fe09fdd3d463cbb1888f0184086a9"
+        "79b3f52d064f53c7ea4b2f59466fabd1"
+    ),
+}
+
+
+PATHS = {
+    "slice1_closure": (
+        ROOT
+        / "docs"
+        / "phase3_geometry_mesh_atlas"
+        / "slice1_closure.json"
+    ),
+    "slice2_closure": (
+        ROOT
+        / "docs"
+        / "phase3_calibration_knowledge"
+        / "slice2_closure.json"
+    ),
+    "generic_runner": (
+        ROOT
+        / "src"
+        / "threadrom"
+        / "factory"
+        / "governed_wave_runner.py"
+    ),
+    "wave_contract": (
+        ROOT
+        / "src"
+        / "threadrom"
+        / "factory"
+        / "governed_wave_contract.py"
+    ),
+    "owner_authorization": (
+        ROOT
+        / "src"
+        / "threadrom"
+        / "factory"
+        / "governed_wave_owner_authorization.py"
+    ),
+    "builder": (
+        ROOT
+        / "scripts"
+        / "build_phase3_generic_governed_wave_runner_v1.py"
+    ),
+    "runner_test": (
+        ROOT
+        / "tests"
+        / "test_phase3_generic_governed_wave_runner.py"
+    ),
+    "contract_test": (
+        ROOT
+        / "tests"
+        / "unit"
+        / "test_governed_wave_contract.py"
+    ),
+    "authorization_test": (
+        ROOT
+        / "tests"
+        / "unit"
+        / "test_governed_wave_owner_authorization.py"
+    ),
+    "w01_runner": (
+        ROOT
+        / "scripts"
+        / "run_phase3_diversified_w01_adaptive_factory.py"
+    ),
+    "w02_runner": (
+        ROOT
+        / "scripts"
+        / "run_phase3_diversified_w02_adaptive_factory.py"
+    ),
+    "w01_registry": (
+        ROOT
+        / "simulations"
+        / "staging"
+        / "phase3_diversified_doe"
+        / "TRM-DDOE-001"
+        / "W01"
+        / "factory"
+        / "w01_trial1_factory.sqlite3"
+    ),
+    "w02_registry": (
+        ROOT
+        / "simulations"
+        / "staging"
+        / "phase3_diversified_doe"
+        / "TRM-DDOE-001"
+        / "W02"
+        / "factory"
+        / "w02_trial1_factory.sqlite3"
+    ),
+}
+
+
+def require(
+    condition: bool,
+    message: str,
+) -> None:
+    if not condition:
+        raise RuntimeError(
+            message
+        )
+
+
+def sha256_file(
+    path: Path,
+) -> str:
+    require(
+        path.is_file(),
+        f"Missing required artifact: {path}",
+    )
+
+    digest = hashlib.sha256()
+
+    with path.open(
+        "rb"
+    ) as stream:
+        for chunk in iter(
+            lambda: stream.read(
+                8 * 1024 * 1024
+            ),
+            b"",
+        ):
+            digest.update(
+                chunk
+            )
+
+    return digest.hexdigest()
+
+
+def canonical_bytes(
+    payload: dict,
+) -> bytes:
+    return (
+        json.dumps(
+            payload,
+            sort_keys=True,
+            separators=(
+                ",",
+                ":",
+            ),
+            ensure_ascii=True,
+            allow_nan=False,
+        )
+        + "\n"
+    ).encode(
+        "utf-8"
+    )
+
+
+def write_immutable_json(
+    path: Path,
+    payload: dict,
+) -> str:
+    encoded = canonical_bytes(
+        payload
+    )
+
+    digest = hashlib.sha256(
+        encoded
+    ).hexdigest()
+
+    path.parent.mkdir(
+        parents=True,
+        exist_ok=True,
+    )
+
+    if path.exists():
+        existing = path.read_bytes()
+
+        require(
+            existing == encoded,
+            (
+                "Immutable closure artifact drift: "
+                f"{path}"
+            ),
+        )
+
+        return digest
+
+    path.write_bytes(
+        encoded
+    )
+
+    return digest
+
+
+def contract_sha(
+    contract,
+) -> str:
+    value = getattr(
+        contract,
+        "contract_sha256",
+    )
+
+    if callable(
+        value
+    ):
+        value = value()
+
+    return str(
+        value
+    )
+
+
+for key, expected_sha in EXPECTED.items():
+    actual_sha = sha256_file(
+        PATHS[
+            key
+        ]
+    )
+
+    require(
+        actual_sha
+        == expected_sha,
+        (
+            f"{key} SHA drift: "
+            f"expected {expected_sha}, "
+            f"found {actual_sha}."
+        ),
+    )
+
+
+from threadrom.factory.governed_wave_contract import (
+    build_governed_wave_execution_contract,
+)
+
+from threadrom.factory.governed_wave_runner import (
+    build_governed_wave_runner,
+)
+
+
+W01_AUTH = (
+    "7c825c4fc91745ef5c52f36c699ecf9"
+    "ac580cd4fb9f62692c387c7ede560217f"
+)
+
+W01_PREP = (
+    "7e6114c2f78957f01f7ad568a0f90fa"
+    "6372ef03e88545ad759b0407b83791b75"
+)
+
+W02_AUTH = (
+    "19f5fa4bcd31eb8a1bff992f17d2c60"
+    "a5ff70fdcf741521cc834401c99e6890a"
+)
+
+W02_PREP = (
+    "80f14936394ac4cc713f6628f10630e4"
+    "805a0531b3624de4cb6f60cc293b8ff2"
+)
+
+
+def historical_contract(
+    wave: str,
+    auth_sha: str,
+    prep_sha: str,
+):
+    return build_governed_wave_execution_contract(
+        campaign_id="TRM-DDOE-001",
+        wave_token=wave,
+        expected_owner_authorization_sha256=auth_sha,
+        expected_preparation_index_sha256=prep_sha,
+        authorized_case_count=4,
+        maximum_concurrent_solver_slots=4,
+        maximum_trial_index=6,
+    )
+
+
+w01_contract = historical_contract(
+    "W01",
+    W01_AUTH,
+    W01_PREP,
+)
+
+w02_contract = historical_contract(
+    "W02",
+    W02_AUTH,
+    W02_PREP,
+)
+
+w01_runner = build_governed_wave_runner(
+    repository_root=ROOT,
+    contract=w01_contract,
+)
+
+w02_runner = build_governed_wave_runner(
+    repository_root=ROOT,
+    contract=w02_contract,
+)
+
+require(
+    len(
+        w01_runner.available_functions
+    )
+    == 30,
+    "W01 generic engine function-count drift.",
+)
+
+require(
+    len(
+        w02_runner.available_functions
+    )
+    == 30,
+    "W02 generic engine function-count drift.",
+)
+
+require(
+    w01_runner.available_functions
+    == w02_runner.available_functions,
+    "Historical waves expose different generic execution surfaces.",
+)
+
+
+# Synthetic future-wave representability proof only.
+# These SHA values intentionally bind no real execution authority.
+w03_contract = (
+    build_governed_wave_execution_contract(
+        campaign_id="TRM-DDOE-001",
+        wave_token="W03",
+        expected_owner_authorization_sha256=(
+            "0" * 64
+        ),
+        expected_preparation_index_sha256=(
+            "1" * 64
+        ),
+        authorized_case_count=4,
+        maximum_concurrent_solver_slots=4,
+        maximum_trial_index=6,
+    )
+)
+
+require(
+    w03_contract.wave_id
+    == "TRM-DDOE-001-W03",
+    "Synthetic W03 wave identity derivation failed.",
+)
+
+w03_campaign_root = str(
+    w03_contract.campaign_root
+).replace(
+    "\\",
+    "/",
+)
+
+w03_auth_path = str(
+    w03_contract.owner_authorization_path
+).replace(
+    "\\",
+    "/",
+)
+
+w03_prep_path = str(
+    w03_contract.preparation_index_path
+).replace(
+    "\\",
+    "/",
+)
+
+require(
+    w03_campaign_root.endswith(
+        "TRM-DDOE-001/W03"
+    ),
+    "Synthetic W03 campaign-root derivation failed.",
+)
+
+require(
+    "TRM-DDOE-001-W03"
+    in w03_auth_path,
+    "Synthetic W03 authorization-path derivation failed.",
+)
+
+require(
+    "/W03/"
+    in w03_prep_path,
+    "Synthetic W03 preparation-path derivation failed.",
+)
+
+
+production_source = PATHS[
+    "generic_runner"
+].read_text(
+    encoding="utf-8-sig"
+)
+
+for token in (
+    "W01",
+    "w01",
+    "W02",
+    "w02",
+):
+    require(
+        token not in production_source,
+        (
+            "Historical wave binding leaked into "
+            f"generic production source: {token}"
+        ),
+    )
+
+
+source_hashes = {
+    key: sha256_file(
+        PATHS[
+            key
+        ]
+    )
+    for key in (
+        "generic_runner",
+        "wave_contract",
+        "owner_authorization",
+        "builder",
+        "runner_test",
+        "contract_test",
+        "authorization_test",
+    )
+}
+
+
+status = {
+    "schema": (
+        "threadrom.phase3_generic_governed_"
+        "wave_runner_status.v1"
+    ),
+    "campaign_id": "TRM-DDOE-001",
+    "slice": 3,
+    "component": (
+        "GENERIC_GOVERNED_WAVE_RUNNER_V1"
+    ),
+    "generic_execution_surface": {
+        "function_count": 30,
+        "w01_w02_surface_equal": True,
+        "runner_sha256": (
+            EXPECTED[
+                "generic_runner"
+            ]
+        ),
+        "deterministic_rebuild": True,
+        "contract_driven": True,
+        "historical_wave_literals_present": False,
+    },
+    "historical_parity": {
+        "w01": {
+            "preflight_replay": "PASS",
+            "recovery_replay": "PASS",
+            "registry_sha256": (
+                EXPECTED[
+                    "w01_registry"
+                ]
+            ),
+            "registry_mutated": False,
+            "runner_sha256": (
+                EXPECTED[
+                    "w01_runner"
+                ]
+            ),
+        },
+        "w02": {
+            "preflight_replay": "PASS",
+            "recovery_replay": "PASS",
+            "registry_sha256": (
+                EXPECTED[
+                    "w02_registry"
+                ]
+            ),
+            "registry_mutated": False,
+            "runner_sha256": (
+                EXPECTED[
+                    "w02_runner"
+                ]
+            ),
+        },
+        "historical_parity_tests_passed": 29,
+        "core_factory_regression_tests_passed": 48,
+    },
+    "future_wave_representability": {
+        "wave_id": (
+            w03_contract.wave_id
+        ),
+        "contract_sha256": (
+            contract_sha(
+                w03_contract
+            )
+        ),
+        "campaign_root": (
+            w03_campaign_root
+        ),
+        "owner_authorization_path": (
+            w03_auth_path
+        ),
+        "preparation_index_path": (
+            w03_prep_path
+        ),
+        "execution_authorized": False,
+        "synthetic_only": True,
+    },
+    "governance": {
+        "w03_launched": False,
+        "calculix_launched_by_closure": False,
+        "registry_transitions_by_closure": False,
+        "holdout_access": False,
+        "dataset_admission": False,
+        "surrogate_training": False,
+        "historical_runner_modification": False,
+    },
+    "dependencies": {
+        "slice1_closure_sha256": (
+            EXPECTED[
+                "slice1_closure"
+            ]
+        ),
+        "slice2_closure_sha256": (
+            EXPECTED[
+                "slice2_closure"
+            ]
+        ),
+    },
+    "source_hashes": source_hashes,
+}
+
+status_sha = write_immutable_json(
+    STATUS_PATH,
+    status,
+)
+
+
+closure = {
+    "schema": (
+        "threadrom.phase3_pre_w03_hardening_"
+        "slice3_closure.v1"
+    ),
+    "slice": 3,
+    "title": (
+        "Generic Governed Wave Runner"
+    ),
+    "disposition": (
+        "SLICE_3_GENERIC_GOVERNED_"
+        "WAVE_RUNNER_V1_CLOSED"
+    ),
+    "status_snapshot": {
+        "path": str(
+            STATUS_PATH.relative_to(
+                ROOT
+            )
+        ).replace(
+            "\\",
+            "/",
+        ),
+        "sha256": status_sha,
+    },
+    "certified_claims": {
+        "generic_runner_generated": True,
+        "generic_runner_compile_pass": True,
+        "deterministic_rebuild_pass": True,
+        "w01_generic_replay_pass": True,
+        "w02_generic_replay_pass": True,
+        "historical_registry_mutation": False,
+        "historical_runners_untouched": True,
+        "future_wave_contract_derivation": True,
+        "w03_execution_authorized": False,
+        "w03_launched": False,
+        "holdouts_sealed": True,
+        "rom_dataset_untouched": True,
+        "calculix_launched_by_closure": False,
+    },
+    "runner_sha256": (
+        EXPECTED[
+            "generic_runner"
+        ]
+    ),
+    "historical_evidence": {
+        "w01_registry_sha256": (
+            EXPECTED[
+                "w01_registry"
+            ]
+        ),
+        "w02_registry_sha256": (
+            EXPECTED[
+                "w02_registry"
+            ]
+        ),
+        "w01_runner_sha256": (
+            EXPECTED[
+                "w01_runner"
+            ]
+        ),
+        "w02_runner_sha256": (
+            EXPECTED[
+                "w02_runner"
+            ]
+        ),
+    },
+    "test_evidence": {
+        "historical_parity_gate": (
+            "29 PASSED"
+        ),
+        "core_factory_regression_gate": (
+            "48 PASSED"
+        ),
+    },
+}
+
+closure_sha = write_immutable_json(
+    CLOSURE_PATH,
+    closure,
+)
+
+
+print()
+print("=" * 108)
+print("THREADROM - PRE-W03 HARDENING - SLICE 3 CLOSURE")
+print("=" * 108)
+print(
+    "Generic runner SHA :",
+    EXPECTED[
+        "generic_runner"
+    ],
+)
+print(
+    "Status SHA         :",
+    status_sha,
+)
+print(
+    "Closure SHA        :",
+    closure_sha,
+)
+print(
+    "W01 DB SHA         :",
+    EXPECTED[
+        "w01_registry"
+    ],
+)
+print(
+    "W02 DB SHA         :",
+    EXPECTED[
+        "w02_registry"
+    ],
+)
+print(
+    "Functions          :",
+    len(
+        w01_runner.available_functions
+    ),
+)
+print(
+    "W03 contract       :",
+    contract_sha(
+        w03_contract
+    ),
+)
+print(
+    "W03 execution      : NOT AUTHORIZED"
+)
+print(
+    "CalculiX           : NOT LAUNCHED"
+)
+print(
+    "Holdouts           : SEALED"
+)
+print(
+    "ROM dataset        : UNTOUCHED"
+)
+print()
+print(
+    "DISPOSITION        : "
+    "SLICE_3_GENERIC_GOVERNED_WAVE_RUNNER_V1_CLOSED"
+)
+print("=" * 108)

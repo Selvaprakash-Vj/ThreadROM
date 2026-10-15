@@ -1,0 +1,38 @@
+{
+  "authorities": {
+    "governed_wave_runner_sha256": "b944340afe9c94d1b2f0e503913745c11d79d285883147520bed99479bf13128",
+    "governed_wave_runtime_sha256": "7c147da95c002e1f11f7c4df0bcd047cf4225e0113d23cec4f8230d265746d15",
+    "governed_wave_starter_sha256": "de613558113d5f8b49bfbadbe0ba8e2b25d48ddedb1b423ae9b904f5a4351718",
+    "next_wave_builder_sha256": "92aa732de3ea7ed1dacbc10c7adedc198538738b0bde3cf359002bf1b432a609",
+    "t4_closure_sha256": "95bf718a9271e06697338d5d14fe489f375702734d3c1a9d4c6d3ed1e2791718",
+    "w05_wave_closure_sha256": "8bdd311b4f94f66a49955d668595ecd5a8c479162f2c31ea5f32b2eae58b3e66"
+  },
+  "closure_id": "TRM-P3-ROM-BRIDGE-MEMBER-SHORTENING-V1-T3",
+  "disposition": "T3_W06_GENERIC_READINESS_CLOSED",
+  "governance": {
+    "accepted_fem_rerun": false,
+    "calculix_launched": false,
+    "dataset_created": false,
+    "holdouts": "SEALED",
+    "partitions_assigned": false,
+    "rom_training_started": false
+  },
+  "next_stage": "T-2_PERSIST_W06_WAVE_CONTRACT",
+  "purpose": "Certify W06 generic next-wave selection and execution-stack readiness without materializing or launching W06.",
+  "readiness": {
+    "case_specific_new_architecture_required": false,
+    "generic_factory_stack_compile": "PASS",
+    "previous_wave_closure_present": true,
+    "w06_dry_selection": "PASS",
+    "w06_execution_authorized": false,
+    "w06_factory_registry_created": false,
+    "w06_plan_persisted": false,
+    "w06_preparation_created": false,
+    "w06_solver_launched": false,
+    "wave_specific_new_architecture_required": false
+  },
+  "record_status": "FINAL",
+  "schema_version": 1,
+  "stage": "T-3",
+  "wave_id": "TRM-DDOE-001-W06"
+}

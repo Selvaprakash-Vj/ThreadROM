@@ -1,0 +1,1885 @@
+"""Admit CLOSED governed-wave full-physics certificates into the Phase-3 FEM evidence Atlas.
+
+This is an evidence-registry adapter, NOT ROM dataset admission.
+
+The adapter reuses the existing ``build_phase3_fem_atlas.py`` machinery but
+adds an explicit reviewed mapping for:
+
+    diversified_governed_physics_certificate.json
+    threadrom.diversified_governed_physics_certificate.v1
+
+Default mode is DRY RUN.  No FEM, CAD, mesh, holdout, or ROM training work
+is authorized by this adapter.
+"""
+
+from __future__ import annotations
+
+import argparse
+import hashlib
+import importlib.util
+import json
+import re
+import sys
+
+from pathlib import Path
+from typing import Any
+
+
+ROOT = Path(r"D:\ThreadROM").resolve()
+
+BASE_BUILDER_PATH = (
+    ROOT
+    / "scripts"
+    / "build_phase3_fem_atlas.py"
+)
+
+EXPECTED_CERTIFICATE_FILENAME = (
+    "diversified_governed_physics_certificate.json"
+)
+
+EXPECTED_CERTIFICATE_SCHEMA = (
+    "threadrom.diversified_governed_physics_certificate.v1"
+)
+
+EXPECTED_CERTIFICATE_DISPOSITION = (
+    "GOVERNED_FULL_PHYSICS_ACCEPTED"
+)
+
+ADAPTER_KIND = (
+    "DIVERSIFIED_FULL_PHYSICS_ACCEPTED"
+)
+
+EXPECTED_CLOSURE_SCHEMA = (
+    "threadrom.governed_wave_closure.v1"
+)
+
+EXPECTED_CLOSURE_DISPOSITION = (
+    "GOVERNED_WAVE_FULL_PHYSICS_CLOSED"
+)
+
+
+def require(
+    condition: bool,
+    message: str,
+) -> None:
+    if not condition:
+        raise RuntimeError(message)
+
+
+def sha256(
+    path: Path,
+) -> str:
+    require(
+        path.is_file(),
+        f"Required file missing: {path}",
+    )
+
+    digest = hashlib.sha256()
+
+    with path.open("rb") as stream:
+        for chunk in iter(
+            lambda: stream.read(
+                8 * 1024 * 1024
+            ),
+            b"",
+        ):
+            digest.update(chunk)
+
+    return digest.hexdigest()
+
+
+def load_json(
+    path: Path,
+) -> dict[str, Any]:
+    require(
+        path.is_file(),
+        f"Required JSON missing: {path}",
+    )
+
+    payload = json.loads(
+        path.read_text(
+            encoding="utf-8-sig"
+        )
+    )
+
+    require(
+        isinstance(payload, dict),
+        f"JSON root is not an object: {path}",
+    )
+
+    return payload
+
+
+def relative(
+    path: Path,
+) -> str:
+    resolved = path.resolve()
+
+    require(
+        resolved.is_relative_to(ROOT),
+        f"Path escapes repository root: {resolved}",
+    )
+
+    return (
+        resolved
+        .relative_to(ROOT)
+        .as_posix()
+    )
+
+
+def load_base_builder():
+    require(
+        BASE_BUILDER_PATH.is_file(),
+        "Existing Phase-3 FEM Atlas builder is missing.",
+    )
+
+    specification = (
+        importlib.util.spec_from_file_location(
+            "threadrom_phase3_fem_atlas_base",
+            BASE_BUILDER_PATH,
+        )
+    )
+
+    require(
+        specification is not None
+        and specification.loader is not None,
+        "Could not construct FEM Atlas builder import spec.",
+    )
+
+    module = (
+        importlib.util.module_from_spec(
+            specification
+        )
+    )
+
+    sys.modules[
+        specification.name
+    ] = module
+
+    specification.loader.exec_module(
+        module
+    )
+
+    return module
+
+
+def validate_closure(
+    *,
+    closure: dict[str, Any],
+    expected_wave_id: str,
+    expected_case_count: int,
+) -> dict[
+    str,
+    dict[str, Any],
+]:
+    require(
+        closure.get("schema")
+        == EXPECTED_CLOSURE_SCHEMA,
+        "Unexpected governed-wave closure schema.",
+    )
+
+    require(
+        closure.get("record_status")
+        == "FINAL",
+        "Governed-wave closure is not FINAL.",
+    )
+
+    require(
+        closure.get("disposition")
+        == EXPECTED_CLOSURE_DISPOSITION,
+        "Governed-wave closure is not full-physics CLOSED.",
+    )
+
+    require(
+        closure.get("wave_id")
+        == expected_wave_id,
+        "Governed-wave closure identity drift.",
+    )
+
+    require(
+        closure.get("authorized_case_count")
+        == expected_case_count,
+        "Governed-wave authorized case-count drift.",
+    )
+
+    require(
+        closure.get("accepted_case_count")
+        == expected_case_count,
+        "Governed-wave accepted case-count drift.",
+    )
+
+    cases = closure.get(
+        "cases"
+    )
+
+    require(
+        isinstance(cases, list)
+        and len(cases)
+        == expected_case_count,
+        "Governed-wave closure case cohort drift.",
+    )
+
+    by_id: dict[
+        str,
+        dict[str, Any],
+    ] = {}
+
+    for item in cases:
+
+        require(
+            isinstance(item, dict),
+            "Malformed governed closure case.",
+        )
+
+        case_id = item.get(
+            "case_id"
+        )
+
+        case_hash = item.get(
+            "case_hash"
+        )
+
+        case_run_id = item.get(
+            "case_run_id"
+        )
+
+        run_id = item.get(
+            "run_id"
+        )
+
+        trial_index = item.get(
+            "trial_index"
+        )
+
+        certificate_sha = item.get(
+            "certificate_sha256"
+        )
+
+        require(
+            isinstance(case_id, str)
+            and case_id,
+            "Closure case_id missing.",
+        )
+
+        require(
+            case_id not in by_id,
+            f"Duplicate closure case ID: {case_id}",
+        )
+
+        require(
+            isinstance(case_hash, str)
+            and re.fullmatch(
+                r"[0-9a-f]{64}",
+                case_hash,
+            )
+            is not None,
+            f"{case_id}: invalid closure case hash.",
+        )
+
+        require(
+            isinstance(case_run_id, str)
+            and re.fullmatch(
+                r"trm_fem_[0-9a-f]{12}",
+                case_run_id,
+            )
+            is not None,
+            f"{case_id}: invalid case_run_id.",
+        )
+
+        # case_hash and case_run_id are distinct governed identities.
+        # Their binding is proven by exact closure/certificate parity,
+        # not by a string-prefix convention.
+
+        require(
+            isinstance(trial_index, int)
+            and trial_index >= 1,
+            f"{case_id}: invalid closure trial index.",
+        )
+
+        require(
+            run_id
+            == (
+                f"{case_run_id}_cal_"
+                f"{trial_index:02d}"
+            ),
+            f"{case_id}: accepted run identity drift.",
+        )
+
+        require(
+            isinstance(certificate_sha, str)
+            and re.fullmatch(
+                r"[0-9a-f]{64}",
+                certificate_sha,
+            )
+            is not None,
+            f"{case_id}: invalid certificate SHA.",
+        )
+
+        require(
+            item.get(
+                "hard_gate_count"
+            )
+            == 13,
+            f"{case_id}: closure does not prove 13 hard gates.",
+        )
+
+        require(
+            item.get(
+                "accepted_increment_count"
+            )
+            == 20,
+            f"{case_id}: closure does not prove 20 accepted increments.",
+        )
+
+        by_id[
+            case_id
+        ] = item
+
+    return by_id
+
+
+def certificate_path(
+    *,
+    solver_root: Path,
+    closure_case: dict[str, Any],
+) -> Path:
+    return (
+        solver_root
+        / closure_case[
+            "case_run_id"
+        ]
+        / closure_case[
+            "run_id"
+        ]
+        / EXPECTED_CERTIFICATE_FILENAME
+    ).resolve()
+
+
+def build_governed_wave_evidence_entry(
+    *,
+    base,
+    source_path: str,
+    closure_cases: dict[
+        str,
+        dict[str, Any],
+    ],
+) -> dict[str, Any]:
+    path = (
+        ROOT
+        / Path(
+            source_path
+        )
+    ).resolve()
+
+    require(
+        path.is_file(),
+        f"Acceptance certificate missing: {path}",
+    )
+
+    require(
+        path.is_relative_to(
+            ROOT
+            / "simulations"
+            / "staging"
+        )
+        or path.is_relative_to(
+            ROOT
+            / "simulations"
+            / "archive"
+        ),
+        (
+            "Acceptance evidence must live under "
+            "simulations/staging or simulations/archive."
+        ),
+    )
+
+    record = load_json(
+        path
+    )
+
+    digest = sha256(
+        path
+    )
+
+    require(
+        record.get("schema")
+        == EXPECTED_CERTIFICATE_SCHEMA,
+        (
+            "Unsupported diversified governed "
+            f"certificate schema: {record.get('schema')!r}"
+        ),
+    )
+
+    require(
+        record.get("record_status")
+        == "FINAL",
+        f"Physics certificate is not FINAL: {source_path}",
+    )
+
+    require(
+        record.get("disposition")
+        == EXPECTED_CERTIFICATE_DISPOSITION,
+        (
+            "Physics certificate is not "
+            f"full-physics accepted: {source_path}"
+        ),
+    )
+
+    case_id = record.get(
+        "case_id"
+    )
+
+    case_hash = record.get(
+        "case_hash"
+    )
+
+    case_run_id = record.get(
+        "case_run_id"
+    )
+
+    accepted_run_id = record.get(
+        "run_id"
+    )
+
+    trial_index = record.get(
+        "trial_index"
+    )
+
+    require(
+        isinstance(case_id, str)
+        and case_id in closure_cases,
+        (
+            "Diversified certificate does not belong "
+            "to the CLOSED governed-wave cohort."
+        ),
+    )
+
+    closed = closure_cases[
+        case_id
+    ]
+
+    require(
+        case_hash
+        == closed[
+            "case_hash"
+        ],
+        f"{case_id}: certificate/closure case-hash drift.",
+    )
+
+    require(
+        case_run_id
+        == closed[
+            "case_run_id"
+        ],
+        f"{case_id}: certificate/closure case-run drift.",
+    )
+
+    require(
+        accepted_run_id
+        == closed[
+            "run_id"
+        ],
+        f"{case_id}: certificate/closure accepted-run drift.",
+    )
+
+    require(
+        trial_index
+        == closed[
+            "trial_index"
+        ],
+        f"{case_id}: certificate/closure trial-index drift.",
+    )
+
+    require(
+        digest
+        == closed[
+            "certificate_sha256"
+        ],
+        (
+            f"{case_id}: certificate SHA does not "
+            "match immutable wave closure."
+        ),
+    )
+
+    require(
+        isinstance(case_hash, str)
+        and re.fullmatch(
+            r"[0-9a-f]{64}",
+            case_hash,
+        )
+        is not None,
+        f"{case_id}: invalid case hash.",
+    )
+
+    require(
+        isinstance(case_run_id, str)
+        and re.fullmatch(
+            r"trm_fem_[0-9a-f]{12}",
+            case_run_id,
+        )
+        is not None,
+        f"{case_id}: invalid case_run_id.",
+    )
+
+    # case_hash and case_run_id are distinct governed identities.
+    # Exact equality against the immutable wave closure is the governing
+    # identity contract; no prefix relationship is required.
+
+    require(
+        isinstance(accepted_run_id, str)
+        and accepted_run_id
+        == (
+            f"{case_run_id}_cal_"
+            f"{int(trial_index):02d}"
+        ),
+        f"{case_id}: invalid accepted run identity.",
+    )
+
+    require(
+        record.get(
+            "holdout_access_authorized"
+        )
+        is False,
+        f"{case_id}: certificate unexpectedly authorizes holdout access.",
+    )
+
+    scope = record.get(
+        "scope_limitation"
+    )
+
+    if not isinstance(
+        scope,
+        str,
+    ) or not scope.strip():
+        scope = (
+            "Governed diversified DOE full-physics acceptance "
+            "under the recorded physics policy; ROM target "
+            "extraction and dataset admission are separate decisions."
+        )
+
+    run_directory = (
+        path.parent
+    )
+
+    require(
+        run_directory.is_dir(),
+        f"{case_id}: accepted run directory is missing.",
+    )
+
+    manifest_path = (
+        run_directory
+        / "fem_run_manifest.json"
+    )
+
+    require(
+        manifest_path.is_file(),
+        f"{case_id}: accepted run manifest is missing.",
+    )
+
+    manifest = load_json(
+        manifest_path
+    )
+
+    require(
+        manifest.get(
+            "run_id"
+        )
+        == accepted_run_id,
+        f"{case_id}: solver-manifest run identity drift.",
+    )
+
+    require(
+        manifest.get(
+            "case_hash"
+        )
+        == case_hash,
+        f"{case_id}: solver-manifest case-hash drift.",
+    )
+
+    require(
+        manifest.get(
+            "disposition"
+        )
+        == "succeeded",
+        f"{case_id}: solver manifest is not succeeded.",
+    )
+
+    require(
+        manifest.get(
+            "return_code"
+        )
+        == 0,
+        f"{case_id}: solver manifest return code is not zero.",
+    )
+
+    require(
+        manifest.get(
+            "job_finished"
+        )
+        is True,
+        f"{case_id}: solver manifest lacks Job finished evidence.",
+    )
+
+    path_string = relative(
+        path
+    )
+
+    entry = {
+        "kind": ADAPTER_KIND,
+        "path": path_string,
+        "sha256": digest,
+        "accepted_run_id": (
+            accepted_run_id
+        ),
+        "disposition": (
+            record[
+                "disposition"
+            ]
+        ),
+        "certification_scope": (
+            scope
+        ),
+        "run_directory": (
+            relative(
+                run_directory
+            )
+        ),
+        "run_directory_status": (
+            "LOCATED"
+        ),
+    }
+
+    return {
+        "case_id": case_id,
+        "case_hash": case_hash,
+        "case_run_id": case_run_id,
+        "entry": entry,
+        "record": record,
+    }
+
+
+def build_planned_atlas(
+    *,
+    base,
+    previous: dict[str, Any],
+    closure_cases: dict[
+        str,
+        dict[str, Any],
+    ],
+    solver_root: Path,
+):
+    previous_sources = sorted(
+        {
+            entry[
+                "path"
+            ]
+            for case in previous[
+                "cases"
+            ]
+            for entry in case[
+                "evidence"
+            ]
+        }
+    )
+
+    governed_sources: list[str] = []
+
+    for case_id in sorted(
+        closure_cases
+    ):
+        path = certificate_path(
+            solver_root=solver_root,
+            closure_case=(
+                closure_cases[
+                    case_id
+                ]
+            ),
+        )
+
+        require(
+            path.is_file(),
+            (
+                f"{case_id}: expected governed physics "
+                "certificate is missing."
+            ),
+        )
+
+        require(
+            sha256(path)
+            == closure_cases[
+                case_id
+            ][
+                "certificate_sha256"
+            ],
+            (
+                f"{case_id}: certificate SHA drift "
+                "before Atlas planning."
+            ),
+        )
+
+        governed_sources.append(
+            relative(
+                path
+            )
+        )
+
+    sources = sorted(
+        set(
+            previous_sources
+            + governed_sources
+        )
+    )
+
+    original_evidence_entry = (
+        base.evidence_entry
+    )
+
+    current_wave_sources = set(
+        governed_sources
+    )
+
+    historical_closure_cache = {}
+
+    def closure_for_governed_source(
+        source_path,
+        candidate,
+    ):
+        # Current-wave evidence is already bound to the CLI-pinned
+        # immutable closure supplied to this admission operation.
+        if source_path in current_wave_sources:
+            return closure_cases
+
+        # Historical governed certificates remain governed evidence.
+        # Resolve their OWN wave from the canonical solver path and
+        # validate them against that wave's immutable closure.
+        parts = list(candidate.parts)
+
+        marker = "phase3_diversified_doe"
+
+        require(
+            marker in parts,
+            (
+                "Cannot resolve governed-wave identity from "
+                f"historical certificate path: {source_path}"
+            ),
+        )
+
+        index = parts.index(marker)
+
+        # The diversified pilot predates the TRM-DDOE-001/Wxx
+        # governed-wave directory/closure convention.
+        #
+        # It is nevertheless already admitted governed full-physics
+        # evidence. Preserve that historical authority through an
+        # exact immutable compatibility contract rather than inventing
+        # a synthetic W00 closure or weakening normal wave validation.
+        if (
+            len(parts) > index + 1
+            and parts[index + 1]
+            == "pilot_calibration_preflight"
+        ):
+            pilot_cache_key = (
+                "LEGACY_PILOT_CALIBRATION_PREFLIGHT_V1"
+            )
+
+            cached = historical_closure_cache.get(
+                pilot_cache_key
+            )
+
+            if cached is not None:
+                return cached
+
+            expected_relative_path = (
+                "simulations/staging/"
+                "phase3_diversified_doe/"
+                "pilot_calibration_preflight/"
+                "trm_fem_0f92f7fbf611/"
+                "trm_fem_0f92f7fbf611_cal_02/"
+                "diversified_governed_physics_certificate.json"
+            )
+
+            actual_relative_path = (
+                candidate.relative_to(ROOT).as_posix()
+            )
+
+            require(
+                actual_relative_path
+                == expected_relative_path,
+                (
+                    "Unexpected historical pilot governed "
+                    f"certificate path: {source_path}"
+                ),
+            )
+
+            pilot_record = load_json(
+                candidate
+            )
+
+            pilot_digest = sha256(
+                candidate
+            )
+
+            expected_case_id = (
+                "TRM-DDOE-D-M10x1_5__"
+                "member_aluminium_en_aw_6082_t6-01"
+            )
+
+            expected_case_hash = (
+                "db4f5abb0986d0527a06fd72849bfc94"
+                "8041448f6a8a320a4aad0a0858028d53"
+            )
+
+            expected_case_run_id = (
+                "trm_fem_0f92f7fbf611"
+            )
+
+            expected_run_id = (
+                "trm_fem_0f92f7fbf611_cal_02"
+            )
+
+            expected_certificate_sha = (
+                "cc97d842aa914cc5ec0ad5c13bf7fc9b"
+                "f1fa6dc9a2635acfbc94a7f1cc614397"
+            )
+
+            require(
+                pilot_digest
+                == expected_certificate_sha,
+                (
+                    "Historical pilot physics-certificate "
+                    "SHA drift."
+                ),
+            )
+
+            require(
+                pilot_record.get("schema")
+                == EXPECTED_CERTIFICATE_SCHEMA,
+                "Historical pilot certificate schema drift.",
+            )
+
+            require(
+                pilot_record.get("record_status")
+                == "FINAL",
+                "Historical pilot certificate is not FINAL.",
+            )
+
+            require(
+                pilot_record.get("disposition")
+                == EXPECTED_CERTIFICATE_DISPOSITION,
+                (
+                    "Historical pilot certificate is not "
+                    "full-physics accepted."
+                ),
+            )
+
+            require(
+                pilot_record.get("case_id")
+                == expected_case_id,
+                "Historical pilot case identity drift.",
+            )
+
+            require(
+                pilot_record.get("case_hash")
+                == expected_case_hash,
+                "Historical pilot case hash drift.",
+            )
+
+            require(
+                pilot_record.get("case_run_id")
+                == expected_case_run_id,
+                "Historical pilot case-run identity drift.",
+            )
+
+            require(
+                pilot_record.get("run_id")
+                == expected_run_id,
+                "Historical pilot accepted-run identity drift.",
+            )
+
+            require(
+                pilot_record.get("trial_index") == 2,
+                "Historical pilot accepted-trial identity drift.",
+            )
+
+            require(
+                pilot_record.get(
+                    "holdout_access_authorized"
+                )
+                is False,
+                (
+                    "Historical pilot certificate unexpectedly "
+                    "authorizes holdout access."
+                ),
+            )
+
+            pilot_manifest = (
+                candidate.parent
+                / "fem_run_manifest.json"
+            )
+
+            pilot_adaptive_preflight = (
+                candidate.parent
+                / "pilot_adaptive_factory_preflight.json"
+            )
+
+            pilot_cal01_preflight = (
+                candidate.parent.parent
+                / (
+                    expected_case_run_id
+                    + "_cal_01"
+                )
+                / "pilot_calibration_deck_preflight.json"
+            )
+
+            authority_files = {
+                pilot_manifest: (
+                    "b7240a132f2db3796aa34f5f4942b083"
+                    "08e9cee2db1c474f8e06230bc9add4a5"
+                ),
+                pilot_adaptive_preflight: (
+                    "416a3b5c46a2bf4b4cef85a641f56be0"
+                    "9f9cefc61384749d758e118e68e80a77"
+                ),
+                pilot_cal01_preflight: (
+                    "eae412365533fe8a166f9e068738b3059"
+                    "e99d84784789623295311f86df06aed"
+                ),
+            }
+
+            for authority_path, expected_sha in (
+                authority_files.items()
+            ):
+                require(
+                    authority_path.is_file(),
+                    (
+                        "Historical pilot authority file "
+                        f"missing: {authority_path}"
+                    ),
+                )
+
+                require(
+                    sha256(authority_path)
+                    == expected_sha,
+                    (
+                        "Historical pilot authority SHA "
+                        f"drift: {authority_path}"
+                    ),
+                )
+
+            mapped = {
+                expected_case_id: {
+                    "case_id": expected_case_id,
+                    "case_hash": expected_case_hash,
+                    "case_run_id": expected_case_run_id,
+                    "run_id": expected_run_id,
+                    "trial_index": 2,
+                    "certificate_sha256": (
+                        expected_certificate_sha
+                    ),
+                }
+            }
+
+            historical_closure_cache[
+                pilot_cache_key
+            ] = mapped
+
+            return mapped
+
+        require(
+            len(parts) > index + 2,
+            (
+                "Historical governed certificate path does not "
+                f"contain campaign/wave identity: {source_path}"
+            ),
+        )
+
+        campaign_id = parts[index + 1]
+        wave_token = parts[index + 2]
+
+        require(
+            campaign_id == "TRM-DDOE-001",
+            (
+                "Unexpected governed campaign identity in "
+                f"historical certificate path: {campaign_id}"
+            ),
+        )
+
+        require(
+            wave_token.startswith("W")
+            and wave_token[1:].isdigit(),
+            (
+                "Invalid governed wave token in historical "
+                f"certificate path: {wave_token}"
+            ),
+        )
+
+        wave_id = f"{campaign_id}-{wave_token}"
+
+        cached = historical_closure_cache.get(
+            wave_id
+        )
+
+        if cached is not None:
+            return cached
+
+        closure_root = (
+            ROOT
+            / "docs"
+            / "phase3_governed_wave_closure"
+        )
+
+        closure_candidates = [
+            closure_root
+            / f"{wave_id}.wave_closure.json",
+            closure_root
+            / "historical_replay"
+            / f"{wave_id}.wave_closure.json",
+        ]
+
+        existing_closures = [
+            path
+            for path in closure_candidates
+            if path.is_file()
+        ]
+
+        require(
+            existing_closures,
+            (
+                "Historical governed-wave closure missing for "
+                f"{wave_id}. Checked: "
+                + ", ".join(str(path) for path in closure_candidates)
+            ),
+        )
+
+        if len(existing_closures) > 1:
+
+            closure_payloads = {
+                path.read_bytes()
+                for path in existing_closures
+            }
+
+            require(
+                len(closure_payloads) == 1,
+                (
+                    "Ambiguous governed-wave closure copies differ "
+                    f"for {wave_id}: {existing_closures}"
+                ),
+            )
+
+        closure_path = existing_closures[0]
+
+        import json
+
+        record = json.loads(
+            closure_path.read_text(
+                encoding="utf-8-sig"
+            )
+        )
+
+        require(
+            record.get("schema")
+            == "threadrom.governed_wave_closure.v1",
+            f"{wave_id}: historical closure schema drift.",
+        )
+
+        require(
+            record.get("record_status") == "FINAL",
+            f"{wave_id}: historical closure is not FINAL.",
+        )
+
+        require(
+            record.get("disposition")
+            == "GOVERNED_WAVE_FULL_PHYSICS_CLOSED",
+            f"{wave_id}: historical closure disposition drift.",
+        )
+
+        require(
+            record.get("wave_id") == wave_id,
+            f"{wave_id}: historical closure wave identity drift.",
+        )
+
+        raw_cases = record.get("cases")
+
+        require(
+            isinstance(raw_cases, list)
+            and raw_cases,
+            f"{wave_id}: historical closure cases invalid.",
+        )
+
+        mapped = {}
+
+        for item in raw_cases:
+
+            require(
+                isinstance(item, dict),
+                f"{wave_id}: invalid historical closure case.",
+            )
+
+            case_id = item.get("case_id")
+
+            require(
+                isinstance(case_id, str)
+                and case_id,
+                f"{wave_id}: historical closure case ID invalid.",
+            )
+
+            require(
+                case_id not in mapped,
+                f"{wave_id}: duplicate historical closure case.",
+            )
+
+            mapped[case_id] = item
+
+        historical_closure_cache[wave_id] = mapped
+
+        return mapped
+
+    def adapted_evidence_entry(
+        source_path,
+    ):
+        candidate = (
+            ROOT
+            / Path(
+                source_path
+            )
+        ).resolve()
+
+        # Non-governed historical evidence retains the original
+        # FEM-Atlas evidence parser.
+        if (
+            candidate.name
+            != EXPECTED_CERTIFICATE_FILENAME
+        ):
+            return original_evidence_entry(
+                source_path
+            )
+
+        source_closure_cases = (
+            closure_for_governed_source(
+                source_path,
+                candidate,
+            )
+        )
+
+        return build_governed_wave_evidence_entry(
+            base=base,
+            source_path=source_path,
+            closure_cases=source_closure_cases,
+        )
+
+    base.evidence_entry = (
+        adapted_evidence_entry
+    )
+
+    policy, policy_sha, boundaries = (
+        base.read_policy()
+    )
+
+    cases = base.assemble_cases(
+        sources,
+        policy,
+        policy_sha,
+        boundaries,
+    )
+
+    (
+        added_cases,
+        added_evidence,
+    ) = base.check_prior_atlas(
+        cases,
+        previous,
+    )
+
+    atlas = {
+        "schema_version": 1,
+        "atlas_name": (
+            "threadrom_phase3_accepted_fem_evidence"
+        ),
+        "governing_c01_policy_path": (
+            "config/phase3_production_doe.toml"
+        ),
+        "governing_c01_policy_sha256": (
+            policy_sha
+        ),
+        "meaning": (
+            "Persistent acceptance-evidence registry; not a "
+            "ROM dataset-admission or dataset-freeze certificate."
+        ),
+        "distinct_case_count": len(
+            cases
+        ),
+        "acceptance_source_count": sum(
+            len(
+                case[
+                    "evidence"
+                ]
+            )
+            for case in cases
+        ),
+        "cases": cases,
+    }
+
+    rendered = {
+        base.ATLAS_JSON: (
+            json.dumps(
+                atlas,
+                indent=2,
+                ensure_ascii=False,
+                sort_keys=True,
+            )
+            + "\n"
+        ),
+        base.ATLAS_CSV: (
+            base.csv_content(
+                cases
+            )
+        ),
+        base.ATLAS_INDEX: (
+            base.markdown_content(
+                cases,
+                policy_sha,
+            )
+        ),
+    }
+
+    return (
+        atlas,
+        cases,
+        tuple(
+            added_cases
+        ),
+        tuple(
+            added_evidence
+        ),
+        tuple(
+            governed_sources
+        ),
+        rendered,
+    )
+
+
+def validate_governed_wave_projection(
+    *,
+    cases: list[dict[str, Any]],
+    closure_cases: dict[
+        str,
+        dict[str, Any],
+    ],
+    governed_sources: tuple[str, ...],
+) -> None:
+    by_id = {
+        case[
+            "case_id"
+        ]: case
+        for case in cases
+    }
+
+    require(
+        len(by_id)
+        == len(cases),
+        "Planned FEM Atlas contains duplicate case IDs.",
+    )
+
+    require(
+        set(
+            closure_cases
+        )
+        <= set(
+            by_id
+        ),
+        "Not all governed-wave CLOSED cases appear in planned FEM Atlas.",
+    )
+
+    source_set = set(
+        governed_sources
+    )
+
+    for case_id in sorted(
+        closure_cases
+    ):
+        case = by_id[
+            case_id
+        ]
+
+        closed = closure_cases[
+            case_id
+        ]
+
+        require(
+            case[
+                "case_hash"
+            ]
+            == closed[
+                "case_hash"
+            ],
+            f"{case_id}: planned Atlas case-hash drift.",
+        )
+
+        require(
+            case[
+                "case_run_id"
+            ]
+            == closed[
+                "case_run_id"
+            ],
+            f"{case_id}: planned Atlas case-run drift.",
+        )
+
+        require(
+            case.get(
+                "rom_admission_status"
+            )
+            == "NOT_EVALUATED",
+            (
+                f"{case_id}: evidence registration "
+                "must not perform ROM admission."
+            ),
+        )
+
+        require(
+            case.get(
+                "dataset_partition"
+            )
+            is None,
+            (
+                f"{case_id}: evidence registration "
+                "must not assign a dataset partition."
+            ),
+        )
+
+        inputs = case.get(
+            "engineering_inputs"
+        )
+
+        require(
+            isinstance(inputs, dict),
+            f"{case_id}: engineering-input envelope missing.",
+        )
+
+        require(
+            inputs.get(
+                "configuration_status"
+            )
+            == "NEW_CAMPAIGN_INPUT_ADAPTER_REQUIRED",
+            (
+                f"{case_id}: diversified DOE inputs were "
+                "unexpectedly promoted without a reviewed resolver."
+            ),
+        )
+
+        evidence = [
+            item
+            for item in case[
+                "evidence"
+            ]
+            if item[
+                "path"
+            ]
+            in source_set
+        ]
+
+        require(
+            len(evidence) == 1,
+            (
+                f"{case_id}: expected exactly one governed-wave "
+                "full-physics evidence record."
+            ),
+        )
+
+        entry = evidence[0]
+
+        require(
+            entry.get(
+                "kind"
+            )
+            == ADAPTER_KIND,
+            f"{case_id}: governed-wave evidence-class drift.",
+        )
+
+        require(
+            entry.get(
+                "accepted_run_id"
+            )
+            == closed[
+                "run_id"
+            ],
+            f"{case_id}: accepted run ID drift.",
+        )
+
+        require(
+            entry.get(
+                "sha256"
+            )
+            == closed[
+                "certificate_sha256"
+            ],
+            f"{case_id}: certificate SHA drift in planned Atlas.",
+        )
+
+        require(
+            entry.get(
+                "run_directory_status"
+            )
+            == "LOCATED",
+            f"{case_id}: accepted run directory was not located.",
+        )
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(
+        description=__doc__
+    )
+
+    parser.add_argument(
+        "--wave-id",
+        required=True,
+    )
+
+    parser.add_argument(
+        "--closure",
+        required=True,
+    )
+
+    parser.add_argument(
+        "--expected-closure-sha",
+        required=True,
+    )
+
+    parser.add_argument(
+        "--solver-root",
+        required=True,
+    )
+
+    parser.add_argument(
+        "--expected-atlas-sha",
+        required=True,
+    )
+
+    parser.add_argument(
+        "--expected-case-count",
+        type=int,
+        default=4,
+    )
+
+    parser.add_argument(
+        "--expected-new-cases",
+        type=int,
+        default=None,
+    )
+
+    parser.add_argument(
+        "--expected-new-evidence",
+        type=int,
+        default=None,
+    )
+
+    parser.add_argument(
+        "--apply",
+        action="store_true",
+    )
+
+    args = parser.parse_args()
+
+    closure_path = (
+        ROOT
+        / Path(
+            args.closure
+        )
+    ).resolve()
+
+    solver_root = (
+        ROOT
+        / Path(
+            args.solver_root
+        )
+    ).resolve()
+
+    require(
+        solver_root.is_dir(),
+        "Governed wave solver root is missing.",
+    )
+
+    require(
+        sha256(
+            closure_path
+        )
+        == args.expected_closure_sha.lower(),
+        "Governed-wave closure SHA drift.",
+    )
+
+    base = load_base_builder()
+
+    require(
+        sha256(
+            base.ATLAS_JSON
+        )
+        == args.expected_atlas_sha.lower(),
+        (
+            "Accepted-FEM Atlas JSON does not match "
+            "the expected pre-planning state."
+        ),
+    )
+
+    previous, _ = base.read_json(
+        base.ATLAS_JSON
+    )
+
+    closure = load_json(
+        closure_path
+    )
+
+    closed = validate_closure(
+        closure=closure,
+        expected_wave_id=(
+            args.wave_id
+        ),
+        expected_case_count=(
+            args.expected_case_count
+        ),
+    )
+
+    before_case_count = int(
+        previous.get(
+            "distinct_case_count",
+            len(
+                previous.get(
+                    "cases",
+                    [],
+                )
+            ),
+        )
+    )
+
+    before_source_count = int(
+        previous.get(
+            "acceptance_source_count",
+            sum(
+                len(
+                    case.get(
+                        "evidence",
+                        [],
+                    )
+                )
+                for case in previous.get(
+                    "cases",
+                    []
+                )
+            ),
+        )
+    )
+
+    hashes_before = {
+        path: (
+            sha256(path)
+            if path.is_file()
+            else None
+        )
+        for path in (
+            base.ATLAS_JSON,
+            base.ATLAS_CSV,
+            base.ATLAS_INDEX,
+        )
+    }
+
+    (
+        atlas,
+        cases,
+        added_cases,
+        added_evidence,
+        governed_sources,
+        rendered,
+    ) = build_planned_atlas(
+        base=base,
+        previous=previous,
+        closure_cases=closed,
+        solver_root=solver_root,
+    )
+
+    validate_governed_wave_projection(
+        cases=cases,
+        closure_cases=closed,
+        governed_sources=governed_sources,
+    )
+
+    if (
+        args.expected_new_cases
+        is not None
+    ):
+        require(
+            len(
+                added_cases
+            )
+            == args.expected_new_cases,
+            (
+                "Unexpected number of new FEM Atlas "
+                f"case identities. expected={args.expected_new_cases} "
+                f"actual={len(added_cases)}"
+            ),
+        )
+
+    if (
+        args.expected_new_evidence
+        is not None
+    ):
+        require(
+            len(
+                added_evidence
+            )
+            == args.expected_new_evidence,
+            (
+                "Unexpected number of new FEM Atlas "
+                f"evidence records. expected={args.expected_new_evidence} "
+                f"actual={len(added_evidence)}"
+            ),
+        )
+
+    print()
+    print("=" * 108)
+    print(
+        "THREADROM - GOVERNED WAVE "
+        "ACCEPTED-FEM EVIDENCE ADMISSION V1"
+    )
+    print("=" * 108)
+
+    print(
+        "Mode                       :",
+        (
+            "APPLY"
+            if args.apply
+            else "DRY_RUN"
+        ),
+    )
+
+    print(
+        "Wave                       :",
+        args.wave_id,
+    )
+
+    print(
+        "Closure SHA                :",
+        sha256(
+            closure_path
+        ),
+    )
+
+    print(
+        "Base FEM-Atlas builder SHA :",
+        sha256(
+            BASE_BUILDER_PATH
+        ),
+    )
+
+    print()
+    print(
+        "Distinct cases before      :",
+        before_case_count,
+    )
+
+    print(
+        "Distinct cases planned     :",
+        atlas[
+            "distinct_case_count"
+        ],
+    )
+
+    print(
+        "Evidence records before    :",
+        before_source_count,
+    )
+
+    print(
+        "Evidence records planned   :",
+        atlas[
+            "acceptance_source_count"
+        ],
+    )
+
+    print(
+        "New case identities        :",
+        len(
+            added_cases
+        ),
+    )
+
+    print(
+        "New acceptance evidence    :",
+        len(
+            added_evidence
+        ),
+    )
+
+    print()
+    print("Governed-wave evidence:")
+
+    for case_id in sorted(
+        closed
+    ):
+        planned_case = next(
+            case
+            for case in cases
+            if case[
+                "case_id"
+            ]
+            == case_id
+        )
+
+        entry = next(
+            item
+            for item in planned_case[
+                "evidence"
+            ]
+            if item[
+                "kind"
+            ]
+            == ADAPTER_KIND
+        )
+
+        print(
+            " ",
+            case_id,
+        )
+
+        print(
+            "    run      :",
+            entry[
+                "accepted_run_id"
+            ],
+        )
+
+        print(
+            "    evidence :",
+            entry[
+                "kind"
+            ],
+        )
+
+        print(
+            "    config   :",
+            planned_case[
+                "engineering_inputs"
+            ][
+                "configuration_status"
+            ],
+        )
+
+        print(
+            "    ROM      :",
+            planned_case[
+                "rom_admission_status"
+            ],
+        )
+
+        print(
+            "    partition:",
+            planned_case[
+                "dataset_partition"
+            ],
+        )
+
+    if not args.apply:
+
+        hashes_after = {
+            path: (
+                sha256(path)
+                if path.is_file()
+                else None
+            )
+            for path in (
+                base.ATLAS_JSON,
+                base.ATLAS_CSV,
+                base.ATLAS_INDEX,
+            )
+        }
+
+        require(
+            hashes_after
+            == hashes_before,
+            "DRY RUN mutated Phase-3 FEM Atlas outputs.",
+        )
+
+        print()
+        print(
+            "FEM Atlas persisted        : NO"
+        )
+
+        print(
+            "ROM dataset admission      : NO"
+        )
+
+        print(
+            "Dataset partition assigned : NO"
+        )
+
+        print(
+            "Solver launched            : NO"
+        )
+
+        print(
+            "Holdouts accessed          : NO"
+        )
+
+        print(
+            "Disposition                : "
+            "VALIDATED_ACCEPTED_FEM_EVIDENCE_PLAN_ONLY"
+        )
+
+        print("=" * 108)
+
+        return 0
+
+    for path, content in (
+        rendered.items()
+    ):
+        status = (
+            base.write_if_changed(
+                path,
+                content,
+            )
+        )
+
+        print(
+            status + ":",
+            relative(
+                path
+            ),
+        )
+
+    recovered, _ = base.read_json(
+        base.ATLAS_JSON
+    )
+
+    require(
+        recovered == atlas,
+        "Persisted accepted-FEM Atlas differs from planned Atlas.",
+    )
+
+    print()
+    print(
+        "FEM Atlas JSON SHA         :",
+        sha256(
+            base.ATLAS_JSON
+        ),
+    )
+
+    print(
+        "FEM Atlas persisted        : YES"
+    )
+
+    print(
+        "ROM dataset admission      : NO"
+    )
+
+    print(
+        "Disposition                : "
+        "GOVERNED_WAVE_ACCEPTED_FEM_EVIDENCE_ADMITTED"
+    )
+
+    print("=" * 108)
+
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(
+        main()
+    )

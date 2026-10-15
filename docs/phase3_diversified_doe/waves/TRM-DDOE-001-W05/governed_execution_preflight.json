@@ -1,0 +1,46 @@
+{
+  "bound_artifacts": {
+    "adaptive_campaign_owner_authorization_sha256": "352a5ab5c032134072757d5d7044a6a0a04bae15d925e79f15ed1880e8eb0a21",
+    "factory_registry_sha256": "710e436f240a93cf27b38fa5f7b86c623dedb5cbc6ff391bc645e81cdaad7d82",
+    "geometry_mesh_owner_authorization_sha256": "c40ab076aa429cc9e9c89f1c3ee853e5c4c3c7b5e5a848a75ccfb76210bdca81",
+    "trial1_owner_authorization_sha256": "9029a9f6c3d32164558c6b0834f696197a65bd0960b5a4b89a59df0962487d36",
+    "trial1_preparation_sha256": "3748eacc6e885811cfbb28c5b3cd8d9abda58f0dbc672e82947aef9d66f2ee7d",
+    "wave_plan_sha256": "f0e7087940c193e4e5f9a258cd1a6c4524a479f9b7e1556f604f8e6f58d1f29a"
+  },
+  "campaign_id": "TRM-DDOE-001",
+  "execution_contract": {
+    "authorized_case_count": 4,
+    "expected_owner_authorization_sha256": "352a5ab5c032134072757d5d7044a6a0a04bae15d925e79f15ed1880e8eb0a21",
+    "expected_preparation_index_sha256": "3748eacc6e885811cfbb28c5b3cd8d9abda58f0dbc672e82947aef9d66f2ee7d",
+    "maximum_concurrent_solver_slots": 4,
+    "maximum_trial_index": 6
+  },
+  "overall_disposition": "W05_GOVERNED_EXECUTION_PREFLIGHT_PASS_LAUNCH_NOT_PERFORMED",
+  "record_status": "FINAL",
+  "registry_state": {
+    "accepted": 0,
+    "all_lease_generation_zero": true,
+    "job_count": 4,
+    "prepared": 4,
+    "running": 0,
+    "solved": 0
+  },
+  "runtime": {
+    "admission_lock_created": false,
+    "entrypoint": "run_governed_wave_entrypoint",
+    "execute": false,
+    "registry_mutated": false,
+    "solver_evidence_created": false,
+    "status": 0
+  },
+  "safety": {
+    "artifact_retirement_authorized": false,
+    "calculix_launched": false,
+    "dataset_admission_authorized": false,
+    "holdouts_accessed": false,
+    "surrogate_training_authorized": false
+  },
+  "schema": "threadrom.phase3_governed_wave_execution_preflight.v1",
+  "wave_id": "TRM-DDOE-001-W05",
+  "wave_token": "W05"
+}

@@ -1,0 +1,86 @@
+{
+  "approval_status": "OWNER_APPROVED",
+  "approved_by": "Selva - ThreadROM project owner",
+  "authorization_type": "OWNER_GEOMETRY_MESH_PREPARATION_ONLY_AUTHORIZATION",
+  "authorized_case_count": 4,
+  "authorized_cases": [
+    {
+      "case_hash": "eac55af4d11fd8b23203f51c738cac5190cf203b637fb9f5be16169fdcbdfd12",
+      "case_id": "TRM-DDOE-D-M10x1_5__member_aluminium_en_aw_6082_t6-03",
+      "case_run_id": "trm_fem_a57f61f13b9d",
+      "trial_1_run_id": "trm_fem_a57f61f13b9d_cal_01",
+      "wave_order": 1
+    },
+    {
+      "case_hash": "602fde21267d63e3d3cb6c88b6b5757ef511506876f8c7c3a6b41ee199e81dad",
+      "case_id": "TRM-DDOE-D-M12x1_75__member_aluminium_en_aw_6082_t6-03",
+      "case_run_id": "trm_fem_22c109e1e52b",
+      "trial_1_run_id": "trm_fem_22c109e1e52b_cal_01",
+      "wave_order": 2
+    },
+    {
+      "case_hash": "c3a38bcc699ebe5a031942a9d8a4a7c24f2151c0c7824de777623878793b89ed",
+      "case_id": "TRM-DDOE-D-M8x1_25__member_aluminium_en_aw_6082_t6-03",
+      "case_run_id": "trm_fem_c802d7334f6c",
+      "trial_1_run_id": "trm_fem_c802d7334f6c_cal_01",
+      "wave_order": 3
+    },
+    {
+      "case_hash": "e86a17501ebe95d56da60e49d195c75d21a8fd29199cfbcf48eb5f97b2bbcab6",
+      "case_id": "TRM-DDOE-D-M12x1_75__steel_member-03",
+      "case_run_id": "trm_fem_323293011028",
+      "trial_1_run_id": "trm_fem_323293011028_cal_01",
+      "wave_order": 4
+    }
+  ],
+  "bound_dependencies": {
+    "calibration_observation_store": {
+      "path": "docs/phase3_calibration_knowledge/observations_v1.json",
+      "sha256": "bd55e1715f2e0ae958c30a1b6dd1715519e48286420fad6bce0d76431d2168d9"
+    },
+    "geometry_mesh_atlas": {
+      "path": "docs/phase3_geometry_mesh_atlas/atlas.json",
+      "sha256": "29b39b7da47bf96410fd4d6af3b6780ecb25f06047d333aef9076f54c2c84ff4"
+    },
+    "pre_w03_hardening_closure": {
+      "path": "docs/phase3_pre_w03_hardening/slice6_closure.json",
+      "sha256": "66a57419bbf42a1726bb4fb8519eee10c4889ebb63852d534c6c9992638826ee"
+    },
+    "trial_1_predictor_policy": {
+      "path": "config/fem_calibration_trial1_predictor.toml",
+      "sha256": "33c465065eda24adaa088ff88ec02c13e26040e29aa333f05a865747aa94a7ac"
+    },
+    "wave_plan": {
+      "path": "docs/phase3_diversified_doe/waves/TRM-DDOE-001-W03/wave_plan.json",
+      "sha256": "3714441cb14386e2fcc3adf7b90300a1dcec6ebd2d4404212f2a1adbacb3b225"
+    }
+  },
+  "campaign_id": "TRM-DDOE-001",
+  "classification_contract": {
+    "artifact_sha_mismatch_action": "FAIL_CLOSED",
+    "atlas_miss_action": "FRESH_GENERATION_AUTHORIZED",
+    "exact_atlas_hit_action": "MANDATORY_REUSE_VERIFIED_ARTIFACT",
+    "mode": "RUNTIME_EXACT_ATLAS_REUSE_OR_FRESH_GENERATION_ON_MISS",
+    "partial_identity_match_action": "FAIL_CLOSED"
+  },
+  "permissions": {
+    "delete_historical_artifacts": false,
+    "generate_geometry_for_fresh_cases": true,
+    "generate_geometry_on_atlas_miss": true,
+    "generate_mesh_for_fresh_cases": true,
+    "generate_mesh_on_atlas_miss": true,
+    "holdout_access": false,
+    "mutate_frozen_atlas_v1": false,
+    "overwrite_historical_geometry": false,
+    "overwrite_historical_mesh": false,
+    "regenerate_geometry_for_reuse_cases": false,
+    "regenerate_mesh_for_reuse_cases": false,
+    "resolve_exact_atlas_reuse": true,
+    "solver_execution": false
+  },
+  "record_status": "FINAL",
+  "schema": "threadrom.phase3_governed_geometry_mesh_preparation_owner_authorization.v1",
+  "scope_boundary": "This authorization permits exact Atlas lookup and, only when no exact governed reusable geometry/mesh artifact exists, fresh geometry/mesh generation for the four frozen wave cases. Exact reusable assets must be reused and SHA verified. Frozen Atlas V1 and historical artifacts must not be mutated. No solver execution or holdout access is authorized.",
+  "wave_id": "TRM-DDOE-001-W03",
+  "wave_plan_sha256": "3714441cb14386e2fcc3adf7b90300a1dcec6ebd2d4404212f2a1adbacb3b225"
+}

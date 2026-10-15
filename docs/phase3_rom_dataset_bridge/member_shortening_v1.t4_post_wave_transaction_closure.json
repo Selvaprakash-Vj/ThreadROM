@@ -1,0 +1,55 @@
+{
+  "architecture": {
+    "blind_combined_apply_assumed_safe": false,
+    "case_specific_logic": false,
+    "stage_specific_arguments_required": true,
+    "stage_specific_authority_sha_required": true,
+    "transaction_plan_required": true,
+    "wave_specific_logic": false
+  },
+  "authorities": {
+    "calibration_adapter_sha256": "270b9ecdecb0ff120eb5ca541972c9287fc0b80bc02a64cece127e5cb0f66b74",
+    "coordinator_sha256": "8a0b69e9db6804fb7772ee3320b22c8e758eaece75f2fd70c07def6cee6292f0",
+    "coordinator_test_sha256": "8867ae8074644cbc62210c11437d8d42a5d60af9e0a57e13903b95fef9951c1b",
+    "fem_evidence_adapter_sha256": "0eea68a90c3f09b59ec0dc523015fc018c98cc85ae55ff3a391a2b119b71b15d",
+    "geometry_mesh_adapter_sha256": "3d9de33fadf7610860854260a4326801193cea38f171120c8ebd238073936cd3",
+    "rom_candidate_hook_sha256": "6a717bcde381e405017b90dcd93ed88a77f3aed4e3f0268c418e37faeab82fb2",
+    "t5_closure_sha256": "182653e544d6b5ee97a841e3c086b44a7b2ad4bc73fdc37282f89074cc3a6523"
+  },
+  "closure_id": "TRM-P3-ROM-BRIDGE-MEMBER-SHORTENING-V1-T4",
+  "disposition": "T4_GENERIC_POST_WAVE_TRANSACTION_CLOSED",
+  "explicitly_not_claimed": [
+    "W06 post-wave execution",
+    "ROM dataset admission",
+    "dataset partition assignment",
+    "DA08 closure",
+    "DA10 closure",
+    "ROM training",
+    "Phase 4 start"
+  ],
+  "proof": {
+    "compile": "PASS",
+    "generic_component_count": 4,
+    "ordered_transaction_contract": "PASS",
+    "script_sha_verification": "PASS",
+    "targeted_tests": "PASS"
+  },
+  "purpose": "Certify one generic governed-wave post-wave transaction interface for W06 and later.",
+  "record_status": "FINAL",
+  "safety": {
+    "dataset_created": false,
+    "fem_atlas_mutated": false,
+    "knowledge_store_mutated": false,
+    "partitions_assigned": false,
+    "rom_training_started": false,
+    "solver_launched": false
+  },
+  "schema_version": 1,
+  "stage": "T-4",
+  "transaction_order": [
+    "geometry_mesh",
+    "calibration_knowledge",
+    "fem_evidence",
+    "rom_candidate"
+  ]
+}

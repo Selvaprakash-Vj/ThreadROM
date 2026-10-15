@@ -1,0 +1,426 @@
+{
+  "authorization": {
+    "calculix_launch": false,
+    "dataset_admission": false,
+    "fine_deck_preparation": true,
+    "fine_mesh_preparation": true,
+    "holdout_access": false,
+    "rom_training": false
+  },
+  "bound_authorities": {
+    "fem_atlas_sha256": "2f491e19c248c13986c195a0161d00ab69c787f34998cb57c2e1b2d172d19515",
+    "holdout_clearance_sha256": "04e719c61f842ecfc50fcc33330eb11d4562aa977802dcb03d24a8084e84f308",
+    "mesh_provenance_disposition_sha256": "d8db133f45f7fdcbdc98a022ddb4bd4a239e1be0364f87f7f86bad5066f53290",
+    "sentinel_protocol_sha256": "540e4ec8087bb11a622322ef9733e03a65cbcfc8ea4b62d228eaba5524b12d54",
+    "vv06_s1_config_sha256": "8db299eec9cf653fdbc15454b34d885f9b97382443d176b024ae11bb9307e671"
+  },
+  "cases": [
+    {
+      "allow_extrapolation": false,
+      "case_hash": "db4f5abb0986d0527a06fd72849bfc948041448f6a8a320a4aad0a0858028d53",
+      "case_id": "TRM-DDOE-D-M10x1_5__member_aluminium_en_aw_6082_t6-01",
+      "cohort": {
+        "member_material_id": "member_aluminium_en_aw_6082_t6",
+        "radial_regime": "BASELINE_RADIAL_ENDPOINT",
+        "thread_designation": "M10x1.5"
+      },
+      "comparison_axis": "realized_clamp_force_n",
+      "execution_state": "PLANNED_NOT_PREPARED",
+      "initial_thermal_preload_strategy": "REUSE_ACCEPTED_PRODUCTION_CASE_PRELOAD_STATE_AS_FIRST_SHOT",
+      "maximum_relative_difference": 0.02,
+      "ordinal": 1,
+      "reference_mesh": "fine",
+      "reference_requirement": "NEW_EXACT_CASE_FINE_REFERENCE",
+      "solver_execution_authorized": false,
+      "target_response": "member_shortening_mm"
+    },
+    {
+      "allow_extrapolation": false,
+      "case_hash": "a833df6408f7587d3f6d28d467390b624748b71c6c4d0a2b558f9410624f7706",
+      "case_id": "TRM-DDOE-D-M10x1_5__member_aluminium_en_aw_6082_t6-04",
+      "cohort": {
+        "member_material_id": "member_aluminium_en_aw_6082_t6",
+        "radial_regime": "BASELINE_RADIAL_ENDPOINT",
+        "thread_designation": "M10x1.5"
+      },
+      "comparison_axis": "realized_clamp_force_n",
+      "execution_state": "PLANNED_NOT_PREPARED",
+      "initial_thermal_preload_strategy": "REUSE_ACCEPTED_PRODUCTION_CASE_PRELOAD_STATE_AS_FIRST_SHOT",
+      "maximum_relative_difference": 0.02,
+      "ordinal": 2,
+      "reference_mesh": "fine",
+      "reference_requirement": "NEW_EXACT_CASE_FINE_REFERENCE",
+      "solver_execution_authorized": false,
+      "target_response": "member_shortening_mm"
+    },
+    {
+      "allow_extrapolation": false,
+      "case_hash": "eac55af4d11fd8b23203f51c738cac5190cf203b637fb9f5be16169fdcbdfd12",
+      "case_id": "TRM-DDOE-D-M10x1_5__member_aluminium_en_aw_6082_t6-03",
+      "cohort": {
+        "member_material_id": "member_aluminium_en_aw_6082_t6",
+        "radial_regime": "RADIAL_VARIATION",
+        "thread_designation": "M10x1.5"
+      },
+      "comparison_axis": "realized_clamp_force_n",
+      "execution_state": "PLANNED_NOT_PREPARED",
+      "initial_thermal_preload_strategy": "REUSE_ACCEPTED_PRODUCTION_CASE_PRELOAD_STATE_AS_FIRST_SHOT",
+      "maximum_relative_difference": 0.02,
+      "ordinal": 3,
+      "reference_mesh": "fine",
+      "reference_requirement": "NEW_EXACT_CASE_FINE_REFERENCE",
+      "solver_execution_authorized": false,
+      "target_response": "member_shortening_mm"
+    },
+    {
+      "allow_extrapolation": false,
+      "case_hash": "dfb44775d3ad128f7d14d4410a65ddc062f2d22e8b2f79c846cae4d8d41247a2",
+      "case_id": "TRM-DDOE-D-M10x1_5__member_aluminium_en_aw_6082_t6-05",
+      "cohort": {
+        "member_material_id": "member_aluminium_en_aw_6082_t6",
+        "radial_regime": "RADIAL_VARIATION",
+        "thread_designation": "M10x1.5"
+      },
+      "comparison_axis": "realized_clamp_force_n",
+      "execution_state": "PLANNED_NOT_PREPARED",
+      "initial_thermal_preload_strategy": "REUSE_ACCEPTED_PRODUCTION_CASE_PRELOAD_STATE_AS_FIRST_SHOT",
+      "maximum_relative_difference": 0.02,
+      "ordinal": 4,
+      "reference_mesh": "fine",
+      "reference_requirement": "NEW_EXACT_CASE_FINE_REFERENCE",
+      "solver_execution_authorized": false,
+      "target_response": "member_shortening_mm"
+    },
+    {
+      "allow_extrapolation": false,
+      "case_hash": "8da375401526a253cde3056662d358166dc3373f9200325c39ddf9514f6cb5f1",
+      "case_id": "TRM-DDOE-D-M10x1_5__member_aluminium_en_aw_6082_t6-02",
+      "cohort": {
+        "member_material_id": "member_aluminium_en_aw_6082_t6",
+        "radial_regime": "RADIAL_VARIATION",
+        "thread_designation": "M10x1.5"
+      },
+      "comparison_axis": "realized_clamp_force_n",
+      "execution_state": "PLANNED_NOT_PREPARED",
+      "initial_thermal_preload_strategy": "REUSE_ACCEPTED_PRODUCTION_CASE_PRELOAD_STATE_AS_FIRST_SHOT",
+      "maximum_relative_difference": 0.02,
+      "ordinal": 5,
+      "reference_mesh": "fine",
+      "reference_requirement": "NEW_EXACT_CASE_FINE_REFERENCE",
+      "solver_execution_authorized": false,
+      "target_response": "member_shortening_mm"
+    },
+    {
+      "allow_extrapolation": false,
+      "case_hash": "a5e86e9150fbed8b3b17cd9617c9b78d919124baaa373310fa997f7c9bc72799",
+      "case_id": "D-BND-001",
+      "cohort": {
+        "member_material_id": "steel_member",
+        "radial_regime": "BASELINE_RADIAL_ENDPOINT",
+        "thread_designation": "M10x1.5"
+      },
+      "comparison_axis": "realized_clamp_force_n",
+      "execution_state": "PLANNED_NOT_PREPARED",
+      "initial_thermal_preload_strategy": "REUSE_ACCEPTED_PRODUCTION_CASE_PRELOAD_STATE_AS_FIRST_SHOT",
+      "maximum_relative_difference": 0.02,
+      "ordinal": 6,
+      "reference_mesh": "fine",
+      "reference_requirement": "NEW_EXACT_CASE_FINE_REFERENCE",
+      "solver_execution_authorized": false,
+      "target_response": "member_shortening_mm"
+    },
+    {
+      "allow_extrapolation": false,
+      "case_hash": "132f5f2b979503889a4f5a463a705b1f19699adcf55b5ec6cf0df9db48628b3b",
+      "case_id": "D-BND-003",
+      "cohort": {
+        "member_material_id": "steel_member",
+        "radial_regime": "RADIAL_VARIATION",
+        "thread_designation": "M10x1.5"
+      },
+      "comparison_axis": "realized_clamp_force_n",
+      "execution_state": "PLANNED_NOT_PREPARED",
+      "initial_thermal_preload_strategy": "REUSE_ACCEPTED_PRODUCTION_CASE_PRELOAD_STATE_AS_FIRST_SHOT",
+      "maximum_relative_difference": 0.02,
+      "ordinal": 7,
+      "reference_mesh": "fine",
+      "reference_requirement": "NEW_EXACT_CASE_FINE_REFERENCE",
+      "solver_execution_authorized": false,
+      "target_response": "member_shortening_mm"
+    },
+    {
+      "allow_extrapolation": false,
+      "case_hash": "06046fe91597028e6aa098c1e3d22f8f94e1b50d16b573f89399b8b7a046d396",
+      "case_id": "D-INT-011",
+      "cohort": {
+        "member_material_id": "steel_member",
+        "radial_regime": "RADIAL_VARIATION",
+        "thread_designation": "M10x1.5"
+      },
+      "comparison_axis": "realized_clamp_force_n",
+      "execution_state": "PLANNED_NOT_PREPARED",
+      "initial_thermal_preload_strategy": "REUSE_ACCEPTED_PRODUCTION_CASE_PRELOAD_STATE_AS_FIRST_SHOT",
+      "maximum_relative_difference": 0.02,
+      "ordinal": 8,
+      "reference_mesh": "fine",
+      "reference_requirement": "NEW_EXACT_CASE_FINE_REFERENCE",
+      "solver_execution_authorized": false,
+      "target_response": "member_shortening_mm"
+    },
+    {
+      "allow_extrapolation": false,
+      "case_hash": "9d11902c8c53632a573986b9a62c63be9299500a32b43698f353fd55a05f5fdc",
+      "case_id": "D-BND-004",
+      "cohort": {
+        "member_material_id": "steel_member",
+        "radial_regime": "RADIAL_VARIATION",
+        "thread_designation": "M10x1.5"
+      },
+      "comparison_axis": "realized_clamp_force_n",
+      "execution_state": "PLANNED_NOT_PREPARED",
+      "initial_thermal_preload_strategy": "REUSE_ACCEPTED_PRODUCTION_CASE_PRELOAD_STATE_AS_FIRST_SHOT",
+      "maximum_relative_difference": 0.02,
+      "ordinal": 9,
+      "reference_mesh": "fine",
+      "reference_requirement": "NEW_EXACT_CASE_FINE_REFERENCE",
+      "solver_execution_authorized": false,
+      "target_response": "member_shortening_mm"
+    },
+    {
+      "allow_extrapolation": false,
+      "case_hash": "33136e856536ffeeaf27ce77012828a0247234bfcac104f739d6503caab9e562",
+      "case_id": "TRM-DDOE-D-M12x1_75__member_aluminium_en_aw_6082_t6-04",
+      "cohort": {
+        "member_material_id": "member_aluminium_en_aw_6082_t6",
+        "radial_regime": "BASELINE_RADIAL_ENDPOINT",
+        "thread_designation": "M12x1.75"
+      },
+      "comparison_axis": "realized_clamp_force_n",
+      "execution_state": "PLANNED_NOT_PREPARED",
+      "initial_thermal_preload_strategy": "REUSE_ACCEPTED_PRODUCTION_CASE_PRELOAD_STATE_AS_FIRST_SHOT",
+      "maximum_relative_difference": 0.02,
+      "ordinal": 10,
+      "reference_mesh": "fine",
+      "reference_requirement": "NEW_EXACT_CASE_FINE_REFERENCE",
+      "solver_execution_authorized": false,
+      "target_response": "member_shortening_mm"
+    },
+    {
+      "allow_extrapolation": false,
+      "case_hash": "3b214bccddd6f64d2931b14082fcd9deadced612f3c5e3091ee3dfe4890e1675",
+      "case_id": "TRM-DDOE-D-M12x1_75__member_aluminium_en_aw_6082_t6-05",
+      "cohort": {
+        "member_material_id": "member_aluminium_en_aw_6082_t6",
+        "radial_regime": "RADIAL_VARIATION",
+        "thread_designation": "M12x1.75"
+      },
+      "comparison_axis": "realized_clamp_force_n",
+      "execution_state": "PLANNED_NOT_PREPARED",
+      "initial_thermal_preload_strategy": "REUSE_ACCEPTED_PRODUCTION_CASE_PRELOAD_STATE_AS_FIRST_SHOT",
+      "maximum_relative_difference": 0.02,
+      "ordinal": 11,
+      "reference_mesh": "fine",
+      "reference_requirement": "NEW_EXACT_CASE_FINE_REFERENCE",
+      "solver_execution_authorized": false,
+      "target_response": "member_shortening_mm"
+    },
+    {
+      "allow_extrapolation": false,
+      "case_hash": "91e86a0b0eef6ac09ea2a27379c74e94dcaebaa3579178226d9ca0fff6da7d3c",
+      "case_id": "TRM-DDOE-D-M12x1_75__member_aluminium_en_aw_6082_t6-02",
+      "cohort": {
+        "member_material_id": "member_aluminium_en_aw_6082_t6",
+        "radial_regime": "RADIAL_VARIATION",
+        "thread_designation": "M12x1.75"
+      },
+      "comparison_axis": "realized_clamp_force_n",
+      "execution_state": "PLANNED_NOT_PREPARED",
+      "initial_thermal_preload_strategy": "REUSE_ACCEPTED_PRODUCTION_CASE_PRELOAD_STATE_AS_FIRST_SHOT",
+      "maximum_relative_difference": 0.02,
+      "ordinal": 12,
+      "reference_mesh": "fine",
+      "reference_requirement": "NEW_EXACT_CASE_FINE_REFERENCE",
+      "solver_execution_authorized": false,
+      "target_response": "member_shortening_mm"
+    },
+    {
+      "allow_extrapolation": false,
+      "case_hash": "3170c5437c9679e35180f3a720cb8e1cf436c12f3cdff86470e9bd2942a0f9e1",
+      "case_id": "TRM-DDOE-D-M12x1_75__steel_member-12",
+      "cohort": {
+        "member_material_id": "steel_member",
+        "radial_regime": "BASELINE_RADIAL_ENDPOINT",
+        "thread_designation": "M12x1.75"
+      },
+      "comparison_axis": "realized_clamp_force_n",
+      "execution_state": "PLANNED_NOT_PREPARED",
+      "initial_thermal_preload_strategy": "REUSE_ACCEPTED_PRODUCTION_CASE_PRELOAD_STATE_AS_FIRST_SHOT",
+      "maximum_relative_difference": 0.02,
+      "ordinal": 13,
+      "reference_mesh": "fine",
+      "reference_requirement": "NEW_EXACT_CASE_FINE_REFERENCE",
+      "solver_execution_authorized": false,
+      "target_response": "member_shortening_mm"
+    },
+    {
+      "allow_extrapolation": false,
+      "case_hash": "5d18f718ece649c3a9288bbd600fdc7bacf5be218f25ffba37429216a55b6f2e",
+      "case_id": "TRM-DDOE-D-M12x1_75__steel_member-04",
+      "cohort": {
+        "member_material_id": "steel_member",
+        "radial_regime": "RADIAL_VARIATION",
+        "thread_designation": "M12x1.75"
+      },
+      "comparison_axis": "realized_clamp_force_n",
+      "execution_state": "PLANNED_NOT_PREPARED",
+      "initial_thermal_preload_strategy": "REUSE_ACCEPTED_PRODUCTION_CASE_PRELOAD_STATE_AS_FIRST_SHOT",
+      "maximum_relative_difference": 0.02,
+      "ordinal": 14,
+      "reference_mesh": "fine",
+      "reference_requirement": "NEW_EXACT_CASE_FINE_REFERENCE",
+      "solver_execution_authorized": false,
+      "target_response": "member_shortening_mm"
+    },
+    {
+      "allow_extrapolation": false,
+      "case_hash": "a684e642f0017811e2f557faccc02af596d7e65a768c3e321fb1e21122cc20e5",
+      "case_id": "TRM-DDOE-D-M12x1_75__steel_member-05",
+      "cohort": {
+        "member_material_id": "steel_member",
+        "radial_regime": "RADIAL_VARIATION",
+        "thread_designation": "M12x1.75"
+      },
+      "comparison_axis": "realized_clamp_force_n",
+      "execution_state": "PLANNED_NOT_PREPARED",
+      "initial_thermal_preload_strategy": "REUSE_ACCEPTED_PRODUCTION_CASE_PRELOAD_STATE_AS_FIRST_SHOT",
+      "maximum_relative_difference": 0.02,
+      "ordinal": 15,
+      "reference_mesh": "fine",
+      "reference_requirement": "NEW_EXACT_CASE_FINE_REFERENCE",
+      "solver_execution_authorized": false,
+      "target_response": "member_shortening_mm"
+    },
+    {
+      "allow_extrapolation": false,
+      "case_hash": "02bb37591d1a9b386abba4b01092f89d842faa7f3288bd29de579107ee98e0ee",
+      "case_id": "TRM-DDOE-D-M8x1_25__member_aluminium_en_aw_6082_t6-01",
+      "cohort": {
+        "member_material_id": "member_aluminium_en_aw_6082_t6",
+        "radial_regime": "BASELINE_RADIAL_ENDPOINT",
+        "thread_designation": "M8x1.25"
+      },
+      "comparison_axis": "realized_clamp_force_n",
+      "execution_state": "PLANNED_NOT_PREPARED",
+      "initial_thermal_preload_strategy": "REUSE_ACCEPTED_PRODUCTION_CASE_PRELOAD_STATE_AS_FIRST_SHOT",
+      "maximum_relative_difference": 0.02,
+      "ordinal": 16,
+      "reference_mesh": "fine",
+      "reference_requirement": "NEW_EXACT_CASE_FINE_REFERENCE",
+      "solver_execution_authorized": false,
+      "target_response": "member_shortening_mm"
+    },
+    {
+      "allow_extrapolation": false,
+      "case_hash": "77b0399abf1ca260bc822e78e0761e8f66c706a4899eb0e1b93b03c747a9c405",
+      "case_id": "TRM-DDOE-D-M8x1_25__member_aluminium_en_aw_6082_t6-04",
+      "cohort": {
+        "member_material_id": "member_aluminium_en_aw_6082_t6",
+        "radial_regime": "BASELINE_RADIAL_ENDPOINT",
+        "thread_designation": "M8x1.25"
+      },
+      "comparison_axis": "realized_clamp_force_n",
+      "execution_state": "PLANNED_NOT_PREPARED",
+      "initial_thermal_preload_strategy": "REUSE_ACCEPTED_PRODUCTION_CASE_PRELOAD_STATE_AS_FIRST_SHOT",
+      "maximum_relative_difference": 0.02,
+      "ordinal": 17,
+      "reference_mesh": "fine",
+      "reference_requirement": "NEW_EXACT_CASE_FINE_REFERENCE",
+      "solver_execution_authorized": false,
+      "target_response": "member_shortening_mm"
+    },
+    {
+      "allow_extrapolation": false,
+      "case_hash": "c3a38bcc699ebe5a031942a9d8a4a7c24f2151c0c7824de777623878793b89ed",
+      "case_id": "TRM-DDOE-D-M8x1_25__member_aluminium_en_aw_6082_t6-03",
+      "cohort": {
+        "member_material_id": "member_aluminium_en_aw_6082_t6",
+        "radial_regime": "RADIAL_VARIATION",
+        "thread_designation": "M8x1.25"
+      },
+      "comparison_axis": "realized_clamp_force_n",
+      "execution_state": "PLANNED_NOT_PREPARED",
+      "initial_thermal_preload_strategy": "REUSE_ACCEPTED_PRODUCTION_CASE_PRELOAD_STATE_AS_FIRST_SHOT",
+      "maximum_relative_difference": 0.02,
+      "ordinal": 18,
+      "reference_mesh": "fine",
+      "reference_requirement": "NEW_EXACT_CASE_FINE_REFERENCE",
+      "solver_execution_authorized": false,
+      "target_response": "member_shortening_mm"
+    },
+    {
+      "allow_extrapolation": false,
+      "case_hash": "b75820842977f376b9adc4ad9525a32155464467b6ecbcbfe3a06d048cdedeab",
+      "case_id": "TRM-DDOE-D-M8x1_25__steel_member-12",
+      "cohort": {
+        "member_material_id": "steel_member",
+        "radial_regime": "BASELINE_RADIAL_ENDPOINT",
+        "thread_designation": "M8x1.25"
+      },
+      "comparison_axis": "realized_clamp_force_n",
+      "execution_state": "PLANNED_NOT_PREPARED",
+      "initial_thermal_preload_strategy": "REUSE_ACCEPTED_PRODUCTION_CASE_PRELOAD_STATE_AS_FIRST_SHOT",
+      "maximum_relative_difference": 0.02,
+      "ordinal": 19,
+      "reference_mesh": "fine",
+      "reference_requirement": "NEW_EXACT_CASE_FINE_REFERENCE",
+      "solver_execution_authorized": false,
+      "target_response": "member_shortening_mm"
+    }
+  ],
+  "disposition": "DA08_FINE_REFERENCE_CAMPAIGN_FROZEN_PRE_EXECUTION",
+  "execution_contract": {
+    "additional_reference_cases_authorized": false,
+    "calculix_execution_authorized": false,
+    "da08_launch_while_w06_active": false,
+    "duplicate_reference_execution_forbidden": true,
+    "execution_requires_separate_launch_authorization": true,
+    "first_shot_reference_runs": 19,
+    "maximum_global_calculix_processes": 4,
+    "preparation_before_w06_completion": true,
+    "reference_case_count": 19,
+    "w06_priority": "W06_MUST_NOT_BE_INTERRUPTED_OR_MUTATED"
+  },
+  "governed_execution_seam": {
+    "geometry_mesh_resolution": "threadrom.factory.geometry_mesh_reuse",
+    "global_launch_fence": "threadrom.factory.production_doe_launch_fence",
+    "numerical_comparison": "threadrom.factory.fem_vv06_s1",
+    "physical_preparation": "threadrom.factory.governed_fem_physical_preparation",
+    "result_extraction": "threadrom.factory.fem_result_extraction",
+    "solver_job": "threadrom.solver.calculix_job",
+    "solver_orchestration": "threadrom.factory.fem_solver_orchestrator"
+  },
+  "numerical_method": {
+    "allow_extrapolation": false,
+    "comparison_methodology": "VV06_S1_MATCHED_REALIZED_CLAMP_FORCE",
+    "fine_mesh_policy_resolution": "Use existing governed per-case mesh-level policies; do not hard-code a single nut policy across thread families.",
+    "fine_reference_mesh": "GLOBAL_FINE",
+    "historical_fem_mutation_allowed": false,
+    "interpolation_axis": "realized_clamp_force_n",
+    "maximum_relative_difference": 0.02,
+    "production_evidence_mutation_allowed": false,
+    "response": "member_shortening_mm"
+  },
+  "purpose": "Provide exact-case global-fine numerical references for DA08 certification.",
+  "record_status": "FROZEN_PRE_EXECUTION",
+  "reuse_audit": {
+    "disposition": "DA08_EXISTING_EXACT_FINE_REFERENCE_REUSE_AUDITED",
+    "fine_metadata_only": 0,
+    "fine_run_reuse_candidates": 0,
+    "frozen_sentinels": 19,
+    "no_exact_fine_reference": 19,
+    "reuse_credit": 0,
+    "target_certification_reuse_candidates": 0
+  },
+  "schema": "threadrom.da08_fine_reference_campaign.v1",
+  "target_id": "member_shortening_v1"
+}

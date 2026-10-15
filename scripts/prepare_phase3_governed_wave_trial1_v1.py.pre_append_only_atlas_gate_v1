@@ -1,0 +1,2968 @@
+from __future__ import annotations
+
+import argparse
+import dataclasses
+import enum
+import hashlib
+import json
+import math
+import os
+import tomllib
+
+from pathlib import Path
+from typing import Any
+
+
+from threadrom.case.resolver import (
+    resolve_case,
+)
+
+from threadrom.factory.diversified_doe_design import (
+    _build_case,
+)
+
+from threadrom.factory.fem_calibration_knowledge import (
+    FemGeometryRealizationIdentity,
+    build_fem_calibration_feature_vector,
+)
+
+from threadrom.factory.fem_calibration_observation_store import (
+    calibration_observations,
+    load_calibration_observation_store,
+)
+
+from threadrom.factory.fem_calibration_trial1_predictor import (
+    load_trial1_observation_predictor_policy,
+    predict_trial1_from_observations,
+)
+
+from threadrom.factory.fem_case_definition_bundle import (
+    build_generic_fem_definition_bundle,
+)
+
+from threadrom.factory.fem_case_geometry import (
+    build_fem_case_geometry,
+)
+
+from threadrom.factory.fem_case_mesh import (
+    generate_fem_case_grouped_mesh,
+    validate_fem_case_grouped_mesh_quality,
+)
+
+from threadrom.factory.fem_preload_calibration_deck import (
+    write_fem_preload_calibration_trial_deck,
+)
+
+from threadrom.factory.geometry_adapter import (
+    build_geometry_definitions,
+)
+
+from threadrom.factory.geometry_identity import (
+    joint_geometry_bundle_sha256,
+)
+
+from threadrom.factory.geometry_mesh_atlas import (
+    load_geometry_mesh_atlas,
+)
+
+from threadrom.factory.geometry_mesh_reuse import (
+    GEOMETRY_GENERATION_ID,
+    derive_geometry_mesh_reuse_identity,
+    resolve_geometry_mesh_reuse,
+)
+
+from threadrom.factory.preload_calibration_campaign import (
+    derive_fem_warm_start_preload_calibration_trial,
+    derive_initial_preload_calibration_trial,
+)
+
+from threadrom.factory.preload_calibration_seed import (
+    derive_analytical_thermal_preload_seed_v2,
+)
+
+from threadrom.geometry.complete_joint_assembly import (
+    load_assembly_geometry_validation_policy,
+)
+
+from threadrom.materials.diversified_candidate_catalog import (
+    DIVERSIFIED_CANDIDATE_MATERIAL_CATALOG,
+)
+
+from threadrom.meshing.complete_joint_mesh_definition import (
+    load_complete_joint_mesh_definition,
+)
+
+from threadrom.meshing.complete_joint_surface_classification import (
+    load_complete_joint_surface_definition,
+)
+
+from threadrom.meshing.mesh_levels import (
+    load_mesh_level_policy,
+)
+
+from threadrom.meshing.nut_surface_classification import (
+    load_nut_surface_classification_definition,
+)
+
+from threadrom.meshing.surface_classification import (
+    load_surface_classification_definition,
+)
+
+from threadrom.meshing.tetrahedral_quality import (
+    load_mesh_quality_definition,
+)
+
+from threadrom.solver.complete_joint_boundary_regions import (
+    load_complete_joint_boundary_region_definition,
+)
+
+from threadrom.solver.complete_joint_calculix_transfer import (
+    load_complete_joint_calculix_transfer_definition,
+    read_grouped_complete_joint_mesh,
+)
+
+from threadrom.solver.complete_joint_contact import (
+    load_complete_joint_contact_definition,
+)
+
+
+ROOT = Path(
+    r"D:\ThreadROM"
+).resolve()
+
+CONFIG = (
+    ROOT
+    / "config"
+)
+
+DOE_ROOT = (
+    ROOT
+    / "docs"
+    / "phase3_diversified_doe"
+)
+
+PROPOSAL_PATH = (
+    DOE_ROOT
+    / "design_proposal.json"
+)
+
+POLICY_PATH = (
+    CONFIG
+    / "phase3_diversified_doe.toml"
+)
+
+
+def require(
+    condition: bool,
+    message: str,
+) -> None:
+    if not condition:
+        raise RuntimeError(
+            message
+        )
+
+
+def sha256(
+    path: Path,
+) -> str:
+    require(
+        path.is_file(),
+        f"Required artifact missing: {path}",
+    )
+
+    digest = hashlib.sha256()
+
+    with path.open("rb") as stream:
+        for chunk in iter(
+            lambda: stream.read(
+                8 * 1024 * 1024
+            ),
+            b"",
+        ):
+            digest.update(
+                chunk
+            )
+
+    return digest.hexdigest()
+
+
+def relative(
+    path: Path,
+) -> str:
+    return (
+        path.resolve()
+        .relative_to(ROOT)
+        .as_posix()
+    )
+
+
+def repository_path(
+    text: str,
+) -> Path:
+    path = (
+        ROOT
+        / text
+    ).resolve()
+
+    try:
+        path.relative_to(
+            ROOT
+        )
+    except ValueError as exc:
+        raise RuntimeError(
+            f"Path escapes repository: {text}"
+        ) from exc
+
+    return path
+
+
+def load_json(
+    path: Path,
+):
+    return json.loads(
+        path.read_text(
+            encoding="utf-8-sig"
+        )
+    )
+
+
+def jsonable(
+    value: Any,
+):
+    if dataclasses.is_dataclass(
+        value
+    ):
+        return {
+            field.name: jsonable(
+                getattr(
+                    value,
+                    field.name,
+                )
+            )
+            for field in dataclasses.fields(
+                value
+            )
+        }
+
+    if isinstance(
+        value,
+        enum.Enum,
+    ):
+        return value.value
+
+    if isinstance(
+        value,
+        Path,
+    ):
+        return str(
+            value
+        )
+
+    if isinstance(
+        value,
+        tuple,
+    ):
+        return [
+            jsonable(
+                item
+            )
+            for item in value
+        ]
+
+    if isinstance(
+        value,
+        list,
+    ):
+        return [
+            jsonable(
+                item
+            )
+            for item in value
+        ]
+
+    if isinstance(
+        value,
+        dict,
+    ):
+        return {
+            str(key): jsonable(
+                item
+            )
+            for key, item in value.items()
+        }
+
+    return value
+
+
+def enum_value(
+    value,
+):
+    return getattr(
+        value,
+        "value",
+        value,
+    )
+
+
+def canonical_json_bytes(
+    payload: dict,
+) -> bytes:
+    return (
+        json.dumps(
+            payload,
+            indent=2,
+            sort_keys=True,
+            ensure_ascii=True,
+            allow_nan=False,
+        )
+        + "\n"
+    ).encode(
+        "utf-8"
+    )
+
+
+def write_immutable_json(
+    path: Path,
+    payload: dict,
+) -> str:
+    encoded = canonical_json_bytes(
+        payload
+    )
+
+    digest = hashlib.sha256(
+        encoded
+    ).hexdigest()
+
+    path.parent.mkdir(
+        parents=True,
+        exist_ok=True,
+    )
+
+    if path.exists():
+        require(
+            path.read_bytes()
+            == encoded,
+            (
+                "Immutable JSON conflict: "
+                f"{path}"
+            ),
+        )
+
+        return digest
+
+    path.write_bytes(
+        encoded
+    )
+
+    return digest
+
+
+def reference_temperature_c() -> float:
+    data = tomllib.loads(
+        (
+            CONFIG
+            / "complete_joint_preload.toml"
+        ).read_text(
+            encoding="utf-8-sig"
+        )
+    )
+
+    matches = []
+
+    def walk(
+        value,
+    ):
+        if isinstance(
+            value,
+            dict,
+        ):
+            for key, child in value.items():
+                if (
+                    key
+                    == "reference_temperature_c"
+                ):
+                    matches.append(
+                        float(
+                            child
+                        )
+                    )
+                else:
+                    walk(
+                        child
+                    )
+
+        elif isinstance(
+            value,
+            list,
+        ):
+            for child in value:
+                walk(
+                    child
+                )
+
+    walk(
+        data
+    )
+
+    require(
+        len(
+            matches
+        )
+        == 1,
+        (
+            "Expected exactly one governed "
+            "reference_temperature_c."
+        ),
+    )
+
+    result = matches[
+        0
+    ]
+
+    require(
+        math.isfinite(
+            result
+        ),
+        "Reference temperature is not finite.",
+    )
+
+    return result
+
+
+def atlas_artifact_path(
+    record: dict,
+) -> Path:
+    value = (
+        record.get(
+            "canonical_artifact_path"
+        )
+        or record.get(
+            "artifact_path"
+        )
+    )
+
+    require(
+        isinstance(
+            value,
+            str,
+        )
+        and bool(
+            value.strip()
+        ),
+        "Atlas artifact path missing.",
+    )
+
+    return repository_path(
+        value
+    )
+
+
+def verify_atlas_artifact(
+    record: dict,
+) -> Path:
+    path = atlas_artifact_path(
+        record
+    )
+
+    require(
+        sha256(
+            path
+        )
+        == record.get(
+            "artifact_sha256"
+        ),
+        (
+            "Atlas reusable artifact SHA drift: "
+            f"{path}"
+        ),
+    )
+
+    return path
+
+
+def source_case_hash(
+    source_case_id: str | None,
+    proposal_by_id: dict,
+) -> str | None:
+    if not source_case_id:
+        return None
+
+    row = proposal_by_id.get(
+        source_case_id
+    )
+
+    if row is None:
+        return None
+
+    return row.get(
+        "case_hash"
+    )
+
+
+def parse_args():
+    parser = argparse.ArgumentParser()
+
+    parser.add_argument(
+        "--wave-id",
+        required=True,
+    )
+
+    parser.add_argument(
+        "--execution-generation-id",
+        required=True,
+    )
+
+    return parser.parse_args()
+
+
+def verify_existing_preparation(
+    *,
+    index_path: Path,
+    wave_id: str,
+    wave_sha: str,
+    trial_auth_sha: str,
+    artifact_auth_sha: str,
+) -> str:
+
+    index = load_json(
+        index_path
+    )
+
+    require(
+        index.get(
+            "schema"
+        )
+        == (
+            "threadrom.phase3_diversified_doe_"
+            "wave_preparation.v1"
+        ),
+        "Existing wave-preparation schema drift.",
+    )
+
+    require(
+        index.get(
+            "record_status"
+        )
+        == "FINAL",
+        "Existing wave preparation is not FINAL.",
+    )
+
+    require(
+        index.get(
+            "wave_id"
+        )
+        == wave_id,
+        "Existing preparation wave identity drift.",
+    )
+
+    require(
+        index.get(
+            "wave_plan_sha256"
+        )
+        == wave_sha,
+        "Existing preparation wave-plan binding drift.",
+    )
+
+    require(
+        index.get(
+            "trial1_owner_authorization_sha256"
+        )
+        == trial_auth_sha,
+        (
+            "Existing Trial-1 authorization "
+            "binding drift."
+        ),
+    )
+
+    require(
+        index.get(
+            "artifact_preparation_authorization_sha256"
+        )
+        == artifact_auth_sha,
+        (
+            "Existing artifact authorization "
+            "binding drift."
+        ),
+    )
+
+    require(
+        index.get(
+            "prepared_trial_count"
+        )
+        == 4,
+        "Existing preparation count drift.",
+    )
+
+    require(
+        index.get(
+            "factory_ready"
+        )
+        is True,
+        "Existing wave preparation not factory-ready.",
+    )
+
+    require(
+        index.get(
+            "solver_launched"
+        )
+        is False,
+        "Existing preparation claims solver launch.",
+    )
+
+    require(
+        index.get(
+            "adaptive_continuation_authorized"
+        )
+        is False,
+        (
+            "Existing preparation unexpectedly "
+            "authorizes adaptive continuation."
+        ),
+    )
+
+    require(
+        index.get(
+            "holdouts_accessed"
+        )
+        is False,
+        "Existing preparation claims holdout access.",
+    )
+
+
+    rows = index.get(
+        "prepared_trials"
+    )
+
+    require(
+        isinstance(
+            rows,
+            list,
+        )
+        and len(
+            rows
+        )
+        == 4,
+        "Existing preparation-row surface drift.",
+    )
+
+
+    expected_keys = {
+        "wave_order",
+        "case_id",
+        "case_hash",
+        "case_run_id",
+        "trial_run_id",
+        "geometry_mode",
+        "mesh_mode",
+        "mesh_sha256",
+        "deck_sha256",
+        "preparation_record",
+        "preparation_record_sha256",
+    }
+
+
+    for row in rows:
+
+        require(
+            set(
+                row
+            )
+            == expected_keys,
+            (
+                f"{row.get('case_id')}: "
+                "preparation-row key drift."
+            ),
+        )
+
+        record_path = repository_path(
+            row[
+                "preparation_record"
+            ]
+        )
+
+        require(
+            sha256(
+                record_path
+            )
+            == row[
+                "preparation_record_sha256"
+            ],
+            (
+                f"{row['case_id']}: preparation "
+                "record SHA drift."
+            ),
+        )
+
+        record = load_json(
+            record_path
+        )
+
+        require(
+            record[
+                "case"
+            ][
+                "case_id"
+            ]
+            == row[
+                "case_id"
+            ],
+            (
+                f"{row['case_id']}: preparation "
+                "record identity drift."
+            ),
+        )
+
+        require(
+            record[
+                "case"
+            ][
+                "case_hash"
+            ]
+            == row[
+                "case_hash"
+            ],
+            (
+                f"{row['case_id']}: preparation "
+                "record case SHA drift."
+            ),
+        )
+
+        geometry_path = repository_path(
+            record[
+                "geometry"
+            ][
+                "relative_path"
+            ]
+        )
+
+        mesh_path = repository_path(
+            record[
+                "mesh"
+            ][
+                "relative_path"
+            ]
+        )
+
+        deck_path = repository_path(
+            record[
+                "deck"
+            ][
+                "relative_path"
+            ]
+        )
+
+        require(
+            sha256(
+                geometry_path
+            )
+            == record[
+                "geometry"
+            ][
+                "sha256"
+            ],
+            (
+                f"{row['case_id']}: STEP SHA drift."
+            ),
+        )
+
+        require(
+            sha256(
+                mesh_path
+            )
+            == row[
+                "mesh_sha256"
+            ]
+            == record[
+                "mesh"
+            ][
+                "sha256"
+            ],
+            (
+                f"{row['case_id']}: mesh SHA drift."
+            ),
+        )
+
+        require(
+            sha256(
+                deck_path
+            )
+            == row[
+                "deck_sha256"
+            ]
+            == record[
+                "deck"
+            ][
+                "sha256"
+            ],
+            (
+                f"{row['case_id']}: deck SHA drift."
+            ),
+        )
+
+
+        # Solver evidence must still be absent.
+        run_dir = deck_path.parent
+        trial_run_id = row[
+            "trial_run_id"
+        ]
+
+        for suffix in (
+            ".dat",
+            ".frd",
+            ".sta",
+            ".cvg",
+            ".rout",
+        ):
+            require(
+                not (
+                    run_dir
+                    / f"{trial_run_id}{suffix}"
+                ).exists(),
+                (
+                    f"{row['case_id']}: solver evidence "
+                    "exists during preparation replay."
+                ),
+            )
+
+        require(
+            not (
+                run_dir
+                / "fem_run_manifest.json"
+            ).exists(),
+            (
+                f"{row['case_id']}: solver manifest "
+                "exists during preparation replay."
+            ),
+        )
+
+
+    digest = sha256(
+        index_path
+    )
+
+    print()
+    print(
+        "PASS: existing preparation verified "
+        "without regeneration."
+    )
+    print(
+        "Preparation SHA:",
+        digest,
+    )
+
+    return digest
+
+
+def main() -> None:
+
+    args = parse_args()
+
+    require(
+        bool(
+            args.execution_generation_id.strip()
+        ),
+        "Execution generation ID must not be blank.",
+    )
+
+    wave_id = args.wave_id
+
+    wave_token = wave_id.rsplit(
+        "-",
+        1,
+    )[
+        -1
+    ]
+
+    require(
+        wave_token.startswith(
+            "W"
+        ),
+        f"Malformed governed wave ID: {wave_id}",
+    )
+
+    wave_root = (
+        DOE_ROOT
+        / "waves"
+        / wave_id
+    )
+
+    wave_path = (
+        wave_root
+        / "wave_plan.json"
+    )
+
+    trial_auth_path = (
+        wave_root
+        / "trial1_owner_authorization.json"
+    )
+
+    artifact_auth_path = (
+        wave_root
+        / "geometry_mesh_owner_authorization.json"
+    )
+
+    campaign_root = (
+        ROOT
+        / "simulations"
+        / "staging"
+        / "phase3_diversified_doe"
+        / "TRM-DDOE-001"
+        / wave_token
+    )
+
+    prepared_root = (
+        campaign_root
+        / "prepared_cases"
+    )
+
+    solver_root = (
+        campaign_root
+        / "solver_preparation"
+    )
+
+    index_path = (
+        campaign_root
+        / (
+            wave_token.lower()
+            + "_trial1_preparation.json"
+        )
+    )
+
+
+    for path in (
+        wave_path,
+        trial_auth_path,
+        artifact_auth_path,
+        PROPOSAL_PATH,
+        POLICY_PATH,
+    ):
+        require(
+            path.is_file(),
+            f"Required governed input missing: {path}",
+        )
+
+
+    wave_sha = sha256(
+        wave_path
+    )
+
+    trial_auth_sha = sha256(
+        trial_auth_path
+    )
+
+    artifact_auth_sha = sha256(
+        artifact_auth_path
+    )
+
+
+    # ------------------------------------------------------------------
+    # Safe replay path:
+    # after first successful preparation, verify only.
+    # Never regenerate CAD or mesh on replay.
+    # ------------------------------------------------------------------
+
+    if index_path.exists():
+
+        verify_existing_preparation(
+            index_path=index_path,
+            wave_id=wave_id,
+            wave_sha=wave_sha,
+            trial_auth_sha=trial_auth_sha,
+            artifact_auth_sha=artifact_auth_sha,
+        )
+
+        return
+
+
+    # ------------------------------------------------------------------
+    # First creation requires pristine campaign state.
+    # ------------------------------------------------------------------
+
+    if campaign_root.exists():
+
+        existing = tuple(
+            path
+            for path in campaign_root.rglob("*")
+            if path.is_file()
+        )
+
+        require(
+            not existing,
+            (
+                "Partial downstream preparation state already "
+                "exists without a final wave preparation index. "
+                "Refusing blind continuation:\n"
+                + "\n".join(
+                    str(path)
+                    for path in existing
+                )
+            ),
+        )
+
+
+    wave = load_json(
+        wave_path
+    )
+
+    trial_auth = load_json(
+        trial_auth_path
+    )
+
+    artifact_auth = load_json(
+        artifact_auth_path
+    )
+
+
+    # ------------------------------------------------------------------
+    # Wave identity / frozen authority
+    # ------------------------------------------------------------------
+
+    require(
+        wave.get(
+            "schema"
+        )
+        == "threadrom.phase3_diversified_doe_wave_plan.v1",
+        "Wave-plan schema drift.",
+    )
+
+    require(
+        wave.get(
+            "record_status"
+        )
+        == "FINAL",
+        "Wave plan is not FINAL.",
+    )
+
+    require(
+        wave.get(
+            "selection_status"
+        )
+        == "FROZEN_SELECTION",
+        "Wave selection is not frozen.",
+    )
+
+    require(
+        wave.get(
+            "wave_id"
+        )
+        == wave_id,
+        "Wave identity drift.",
+    )
+
+    require(
+        wave.get(
+            "wave_size"
+        )
+        == 4,
+        "Current generic preparation contract requires four cases.",
+    )
+
+    require(
+        wave.get(
+            "initial_trial_index"
+        )
+        == 1,
+        "Current preparation contract requires Trial-1.",
+    )
+
+
+    for key in (
+        "preparation_authorized",
+        "fem_execution_authorized",
+        "adaptive_continuation_authorized",
+        "full_physics_certification_authorized",
+        "dataset_admission_authorized",
+        "holdout_access_authorized",
+        "artifact_retirement_authorized",
+    ):
+        require(
+            wave.get(
+                key
+            )
+            is False,
+            (
+                "Frozen wave plan unexpectedly grants "
+                f"authority: {key}"
+            ),
+        )
+
+
+    # ------------------------------------------------------------------
+    # Preparation owner authority
+    # ------------------------------------------------------------------
+
+    require(
+        trial_auth.get(
+            "wave_plan_sha256"
+        )
+        == wave_sha,
+        "Trial authorization / wave binding drift.",
+    )
+
+    require(
+        artifact_auth.get(
+            "wave_plan_sha256"
+        )
+        == wave_sha,
+        "Artifact authorization / wave binding drift.",
+    )
+
+    require(
+        trial_auth[
+            "permissions"
+        ][
+            "prepare_trial_1"
+        ]
+        is True,
+        "Trial-1 preparation authority absent.",
+    )
+
+    require(
+        trial_auth[
+            "permissions"
+        ][
+            "execute_trial_1"
+        ]
+        is False,
+        "Trial-1 execution unexpectedly authorized.",
+    )
+
+    require(
+        trial_auth[
+            "permissions"
+        ][
+            "additional_trials"
+        ]
+        is False,
+        "CAL_02+ unexpectedly authorized.",
+    )
+
+    require(
+        artifact_auth[
+            "permissions"
+        ][
+            "solver_execution"
+        ]
+        is False,
+        "Artifact authorization grants solver execution.",
+    )
+
+    require(
+        artifact_auth[
+            "permissions"
+        ][
+            "mutate_frozen_atlas_v1"
+        ]
+        is False,
+        "Frozen Atlas mutation authorized.",
+    )
+
+
+    # ------------------------------------------------------------------
+    # Authorization-bound knowledge inputs
+    # ------------------------------------------------------------------
+
+    trial_dependencies = trial_auth[
+        "bound_dependencies"
+    ]
+
+    artifact_dependencies = artifact_auth[
+        "bound_dependencies"
+    ]
+
+
+    for key in (
+        "geometry_mesh_atlas",
+        "calibration_observation_store",
+        "trial_1_predictor_policy",
+    ):
+        require(
+            trial_dependencies[
+                key
+            ]
+            == artifact_dependencies[
+                key
+            ],
+            (
+                "Preparation authorization dependency "
+                f"disagreement: {key}"
+            ),
+        )
+
+
+    atlas_path = repository_path(
+        trial_dependencies[
+            "geometry_mesh_atlas"
+        ][
+            "path"
+        ]
+    )
+
+    observation_path = repository_path(
+        trial_dependencies[
+            "calibration_observation_store"
+        ][
+            "path"
+        ]
+    )
+
+    predictor_path = repository_path(
+        trial_dependencies[
+            "trial_1_predictor_policy"
+        ][
+            "path"
+        ]
+    )
+
+
+    for key, path in (
+        (
+            "geometry_mesh_atlas",
+            atlas_path,
+        ),
+        (
+            "calibration_observation_store",
+            observation_path,
+        ),
+        (
+            "trial_1_predictor_policy",
+            predictor_path,
+        ),
+    ):
+        require(
+            sha256(
+                path
+            )
+            == trial_dependencies[
+                key
+            ][
+                "sha256"
+            ],
+            f"{key}: bound SHA drift.",
+        )
+
+
+    # ------------------------------------------------------------------
+    # Frozen design
+    # ------------------------------------------------------------------
+
+    proposal = load_json(
+        PROPOSAL_PATH
+    )
+
+    proposal_by_id = {
+        row[
+            "proposal_id"
+        ]: row
+        for row in proposal[
+            "cases"
+        ]
+    }
+
+    policy = tomllib.loads(
+        POLICY_PATH.read_text(
+            encoding="utf-8-sig"
+        )
+    )
+
+
+    # ------------------------------------------------------------------
+    # Governed geometry / mesh policies
+    # ------------------------------------------------------------------
+
+    validation_policy = (
+        load_assembly_geometry_validation_policy(
+            CONFIG
+            / "assembly_geometry_validation.toml"
+        )
+    )
+
+    mesh_template = (
+        load_complete_joint_mesh_definition(
+            CONFIG
+            / "complete_joint_mesh.toml"
+        )
+    )
+
+    joint_classification_template = (
+        load_complete_joint_surface_definition(
+            CONFIG
+            / "complete_joint_surface_classification.toml"
+        )
+    )
+
+    bolt_classification_template = (
+        load_surface_classification_definition(
+            CONFIG
+            / "surface_classification.toml"
+        )
+    )
+
+    nut_classification_template = (
+        load_nut_surface_classification_definition(
+            CONFIG
+            / "nut_surface_classification.toml"
+        )
+    )
+
+    bolt_mesh_level_policy = (
+        load_mesh_level_policy(
+            CONFIG
+            / mesh_template.bolt_mesh_level_policy
+        )
+    )
+
+
+    # Frozen Atlas V1 records the exact qualified nut-policy path.
+    atlas_closure_path = (
+        ROOT
+        / "docs"
+        / "phase3_geometry_mesh_atlas"
+        / "slice1_closure.json"
+    )
+
+    atlas_closure = load_json(
+        atlas_closure_path
+    )
+
+    require(
+        atlas_closure.get(
+            "overall_disposition"
+        )
+        == "SLICE_1_GEOMETRY_MESH_ATLAS_V1_CLOSED",
+        "Geometry/Mesh Atlas closure drift.",
+    )
+
+    require(
+        atlas_closure[
+            "atlas"
+        ][
+            "sha256"
+        ]
+        == sha256(
+            atlas_path
+        ),
+        "Atlas closure / Atlas SHA drift.",
+    )
+
+    w02_source = atlas_closure[
+        "source_evidence"
+    ][
+        "TRM-DDOE-001-W02"
+    ]
+
+    nut_policy_path = repository_path(
+        w02_source[
+            "nut_mesh_policy_path"
+        ]
+    )
+
+    require(
+        sha256(
+            nut_policy_path
+        )
+        == w02_source[
+            "nut_mesh_policy_sha256"
+        ],
+        "Qualified nut mesh policy SHA drift.",
+    )
+
+    nut_mesh_level_policy = (
+        load_mesh_level_policy(
+            nut_policy_path
+        )
+    )
+
+    mesh_quality = (
+        load_mesh_quality_definition(
+            CONFIG
+            / "complete_joint_mesh_quality.toml"
+        )
+    )
+
+
+    transfer_template = (
+        load_complete_joint_calculix_transfer_definition(
+            CONFIG
+            / "complete_joint_calculix_transfer.toml"
+        )
+    )
+
+    contact_template = (
+        load_complete_joint_contact_definition(
+            CONFIG
+            / "complete_joint_contact.toml"
+        )
+    )
+
+    boundary_template = (
+        load_complete_joint_boundary_region_definition(
+            CONFIG
+            / "complete_joint_boundary_regions.toml"
+        )
+    )
+
+    reference_temperature = (
+        reference_temperature_c()
+    )
+
+
+    # ------------------------------------------------------------------
+    # Atlas + calibration knowledge
+    # ------------------------------------------------------------------
+
+    atlas = load_geometry_mesh_atlas(
+        atlas_path
+    )
+
+    observation_store = (
+        load_calibration_observation_store(
+            observation_path
+        )
+    )
+
+    observations = calibration_observations(
+        observation_store
+    )
+
+    predictor_policy = (
+        load_trial1_observation_predictor_policy(
+            predictor_path
+        )
+    )
+
+
+    require(
+        len(
+            observations
+        )
+        >= predictor_policy.minimum_neighbors_for_reuse,
+        "Calibration observation store unexpectedly empty.",
+    )
+
+
+    require(
+        {
+            observation
+            .feature
+            .compatibility
+            .geometry_generation_id
+            for observation in observations
+        }
+        == {
+            GEOMETRY_GENERATION_ID
+        },
+        "Calibration geometry-generation provenance drift.",
+    )
+
+
+    # ------------------------------------------------------------------
+    # Authorized frozen cohort
+    # ------------------------------------------------------------------
+
+    selected_cases = sorted(
+        wave[
+            "selected_cases"
+        ],
+        key=lambda row: row[
+            "wave_order"
+        ],
+    )
+
+    require(
+        len(
+            selected_cases
+        )
+        == 4,
+        "Expected exactly four frozen cases.",
+    )
+
+
+    trial_auth_by_id = {
+        row[
+            "case_id"
+        ]: row
+        for row in trial_auth[
+            "authorized_cases"
+        ]
+    }
+
+    artifact_auth_by_id = {
+        row[
+            "case_id"
+        ]: row
+        for row in artifact_auth[
+            "authorized_cases"
+        ]
+    }
+
+
+    require(
+        {
+            row[
+                "proposal_id"
+            ]
+            for row in selected_cases
+        }
+        == set(
+            trial_auth_by_id
+        )
+        == set(
+            artifact_auth_by_id
+        ),
+        "Wave / authorization cohort drift.",
+    )
+
+
+    prepared_root.mkdir(
+        parents=True,
+        exist_ok=True,
+    )
+
+    solver_root.mkdir(
+        parents=True,
+        exist_ok=True,
+    )
+
+    prepared = []
+
+
+    print()
+    print("=" * 108)
+    print(
+        "THREADROM - GENERIC GOVERNED TRIAL-1 PREPARATION"
+    )
+    print("=" * 108)
+    print(
+        "Wave ID              :",
+        wave_id,
+    )
+    print(
+        "Execution generation :",
+        args.execution_generation_id,
+    )
+    print(
+        "Cases                :",
+        len(
+            selected_cases
+        ),
+    )
+    print(
+        "CalculiX authority   : NO"
+    )
+    print("=" * 108)
+
+
+    for selected in selected_cases:
+
+        case_id = selected[
+            "proposal_id"
+        ]
+
+        proposal_row = proposal_by_id.get(
+            case_id
+        )
+
+        require(
+            proposal_row is not None,
+            f"{case_id}: proposal row missing.",
+        )
+
+        trial_auth_row = trial_auth_by_id[
+            case_id
+        ]
+
+        artifact_auth_row = artifact_auth_by_id[
+            case_id
+        ]
+
+
+        case_hash = proposal_row[
+            "case_hash"
+        ]
+
+        case_run_id = proposal_row[
+            "preparation_run_id"
+        ]
+
+        trial_run_id = trial_auth_row[
+            "trial_1_run_id"
+        ]
+
+
+        require(
+            selected[
+                "case_hash"
+            ]
+            == trial_auth_row[
+                "case_hash"
+            ]
+            == artifact_auth_row[
+                "case_hash"
+            ]
+            == case_hash,
+            f"{case_id}: case SHA binding drift.",
+        )
+
+        require(
+            selected[
+                "preparation_run_id"
+            ]
+            == trial_auth_row[
+                "case_run_id"
+            ]
+            == artifact_auth_row[
+                "case_run_id"
+            ]
+            == case_run_id,
+            f"{case_id}: case-run binding drift.",
+        )
+
+        require(
+            selected[
+                "trial_1_run_id"
+            ]
+            == artifact_auth_row[
+                "trial_1_run_id"
+            ]
+            == trial_run_id
+            == f"{case_run_id}_cal_01",
+            f"{case_id}: Trial-1 identity drift.",
+        )
+
+
+        size = next(
+            item
+            for item in policy[
+                "size_candidates"
+            ]
+            if item[
+                "designation"
+            ]
+            == proposal_row[
+                "thread_designation"
+            ]
+        )
+
+        case, _ = _build_case(
+            policy,
+            size,
+            proposal_row[
+                "member_material_id"
+            ],
+            tuple(
+                proposal_row[
+                    "normalized_coordinates"
+                ]
+            ),
+        )
+
+        resolved = resolve_case(
+            case,
+            material_catalog=(
+                DIVERSIFIED_CANDIDATE_MATERIAL_CATALOG
+            ),
+        )
+
+        require(
+            resolved.case_hash
+            == case_hash,
+            f"{case_id}: resolved case SHA drift.",
+        )
+
+
+        # ==============================================================
+        # 1. Canonical Atlas decision
+        # ==============================================================
+
+        reuse_identity = (
+            derive_geometry_mesh_reuse_identity(
+                resolved,
+                mesh_template=mesh_template,
+                joint_classification_template=(
+                    joint_classification_template
+                ),
+                bolt_classification_template=(
+                    bolt_classification_template
+                ),
+                nut_classification_template=(
+                    nut_classification_template
+                ),
+                bolt_mesh_level_policy=(
+                    bolt_mesh_level_policy
+                ),
+                nut_mesh_level_policy=(
+                    nut_mesh_level_policy
+                ),
+                local_refinement_policy=None,
+            )
+        )
+
+        reuse = resolve_geometry_mesh_reuse(
+            atlas,
+            reuse_identity,
+        )
+
+        require(
+            reuse.disposition
+            in {
+                "GENERATE_GEOMETRY_AND_MESH",
+                "REUSE_GEOMETRY_GENERATE_MESH",
+                "REUSE_GEOMETRY_AND_MESH",
+            },
+            (
+                f"{case_id}: unsupported Atlas "
+                f"disposition {reuse.disposition!r}."
+            ),
+        )
+
+
+        # ==============================================================
+        # 2. Geometry / mesh realization
+        # ==============================================================
+
+        source_case_id = None
+        source_case_hash_value = None
+        quality = None
+
+
+        if (
+            reuse.disposition
+            == "GENERATE_GEOMETRY_AND_MESH"
+        ):
+
+            geometry_artifact = (
+                build_fem_case_geometry(
+                    resolved,
+                    artifact_root=prepared_root,
+                    validation_policy=(
+                        validation_policy
+                    ),
+                )
+            )
+
+            require(
+                geometry_artifact.case_hash
+                == case_hash,
+                f"{case_id}: geometry case SHA drift.",
+            )
+
+            require(
+                geometry_artifact.run_id
+                == case_run_id,
+                f"{case_id}: geometry run identity drift.",
+            )
+
+            step_path = (
+                geometry_artifact.step_path
+            )
+
+            require(
+                step_path.is_file()
+                and step_path.stat().st_size > 0,
+                f"{case_id}: STEP generation failed.",
+            )
+
+
+            actual_geometry_sha = (
+                joint_geometry_bundle_sha256(
+                    resolved,
+                    geometry_artifact.geometry,
+                )
+            )
+
+            require(
+                actual_geometry_sha
+                == reuse_identity.geometry_identity_sha256,
+                (
+                    f"{case_id}: generated geometry "
+                    "identity differs from Atlas decision."
+                ),
+            )
+
+
+            mesh_artifact = (
+                generate_fem_case_grouped_mesh(
+                    resolved,
+                    geometry_artifact.geometry,
+                    step_path=step_path,
+                    artifact_root=prepared_root,
+                    mesh_template=mesh_template,
+                    joint_classification_template=(
+                        joint_classification_template
+                    ),
+                    bolt_classification_template=(
+                        bolt_classification_template
+                    ),
+                    nut_classification_template=(
+                        nut_classification_template
+                    ),
+                    bolt_mesh_level_policy=(
+                        bolt_mesh_level_policy
+                    ),
+                    nut_mesh_level_policy=(
+                        nut_mesh_level_policy
+                    ),
+                    local_refinement_policy=None,
+                )
+            )
+
+            require(
+                mesh_artifact.case_hash
+                == case_hash,
+                f"{case_id}: mesh case SHA drift.",
+            )
+
+            require(
+                mesh_artifact.run_id
+                == case_run_id,
+                f"{case_id}: mesh run identity drift.",
+            )
+
+            require(
+                mesh_artifact
+                .definitions
+                .mesh_id
+                == reuse_identity.mesh_id,
+                (
+                    f"{case_id}: generated mesh identity "
+                    "differs from Atlas decision."
+                ),
+            )
+
+
+            quality = (
+                validate_fem_case_grouped_mesh_quality(
+                    mesh_artifact,
+                    mesh_quality,
+                )
+            )
+
+            mesh_path = (
+                mesh_artifact.msh_path
+            )
+
+            geometry_mode = (
+                f"GENERATED_FOR_{wave_token}"
+            )
+
+            mesh_mode = (
+                f"GENERATED_FOR_{wave_token}"
+            )
+
+
+        elif (
+            reuse.disposition
+            == "REUSE_GEOMETRY_GENERATE_MESH"
+        ):
+
+            require(
+                reuse.geometry_record
+                is not None,
+                f"{case_id}: reusable geometry missing.",
+            )
+
+            step_path = verify_atlas_artifact(
+                reuse.geometry_record
+            )
+
+            geometry = build_geometry_definitions(
+                resolved
+            )
+
+            actual_geometry_sha = (
+                joint_geometry_bundle_sha256(
+                    resolved,
+                    geometry,
+                )
+            )
+
+            require(
+                actual_geometry_sha
+                == reuse_identity.geometry_identity_sha256,
+                (
+                    f"{case_id}: reconstructed reusable "
+                    "geometry identity drift."
+                ),
+            )
+
+
+            mesh_artifact = (
+                generate_fem_case_grouped_mesh(
+                    resolved,
+                    geometry,
+                    step_path=step_path,
+                    artifact_root=prepared_root,
+                    mesh_template=mesh_template,
+                    joint_classification_template=(
+                        joint_classification_template
+                    ),
+                    bolt_classification_template=(
+                        bolt_classification_template
+                    ),
+                    nut_classification_template=(
+                        nut_classification_template
+                    ),
+                    bolt_mesh_level_policy=(
+                        bolt_mesh_level_policy
+                    ),
+                    nut_mesh_level_policy=(
+                        nut_mesh_level_policy
+                    ),
+                    local_refinement_policy=None,
+                )
+            )
+
+            require(
+                mesh_artifact
+                .definitions
+                .mesh_id
+                == reuse_identity.mesh_id,
+                f"{case_id}: generated mesh identity drift.",
+            )
+
+            quality = (
+                validate_fem_case_grouped_mesh_quality(
+                    mesh_artifact,
+                    mesh_quality,
+                )
+            )
+
+            mesh_path = (
+                mesh_artifact.msh_path
+            )
+
+            source_case_id = (
+                reuse.geometry_record.get(
+                    "source_case_id"
+                )
+            )
+
+            source_case_hash_value = (
+                source_case_hash(
+                    source_case_id,
+                    proposal_by_id,
+                )
+            )
+
+            geometry_mode = (
+                "REUSED_ACCEPTED_EXACT_GEOMETRY"
+            )
+
+            mesh_mode = (
+                f"GENERATED_FOR_{wave_token}"
+            )
+
+
+        else:
+
+            require(
+                reuse.geometry_record
+                is not None
+                and reuse.mesh_record
+                is not None,
+                f"{case_id}: full Atlas reuse incomplete.",
+            )
+
+            step_path = verify_atlas_artifact(
+                reuse.geometry_record
+            )
+
+            mesh_path = verify_atlas_artifact(
+                reuse.mesh_record
+            )
+
+            source_case_id = (
+                reuse.mesh_record.get(
+                    "source_case_id"
+                )
+                or reuse.geometry_record.get(
+                    "source_case_id"
+                )
+            )
+
+            source_case_hash_value = (
+                source_case_hash(
+                    source_case_id,
+                    proposal_by_id,
+                )
+            )
+
+            geometry_mode = (
+                "REUSED_ACCEPTED_EXACT_GEOMETRY"
+            )
+
+            mesh_mode = (
+                "REUSED_ACCEPTED_EXACT_MESH"
+            )
+
+
+        require(
+            mesh_path.is_file()
+            and mesh_path.stat().st_size > 0,
+            f"{case_id}: governed mesh missing.",
+        )
+
+
+        step_sha = sha256(
+            step_path
+        )
+
+        mesh_sha = sha256(
+            mesh_path
+        )
+
+
+        # ==============================================================
+        # 3. Diversified analytical V2 seed
+        # ==============================================================
+
+        seed = (
+            derive_analytical_thermal_preload_seed_v2(
+                resolved,
+                material_catalog=(
+                    DIVERSIFIED_CANDIDATE_MATERIAL_CATALOG
+                ),
+            )
+        )
+
+        require(
+            math.isfinite(
+                seed.predicted_delta_temperature_c
+            )
+            and (
+                seed.predicted_delta_temperature_c
+                < 0.0
+            ),
+            f"{case_id}: invalid analytical V2 seed.",
+        )
+
+
+        # ==============================================================
+        # 4. Governed Trial-1 predictor
+        # ==============================================================
+
+        geometry_realization = (
+            FemGeometryRealizationIdentity(
+                generation_id=(
+                    GEOMETRY_GENERATION_ID
+                ),
+                realization_id=(
+                    reuse_identity.geometry_id
+                ),
+            )
+        )
+
+        target_feature = (
+            build_fem_calibration_feature_vector(
+                resolved,
+                seed,
+                geometry_realization,
+                args.execution_generation_id,
+            )
+        )
+
+        prediction = (
+            predict_trial1_from_observations(
+                target_case_hash=(
+                    resolved.case_hash
+                ),
+                target_resolution_hash=(
+                    resolved.resolution_hash
+                ),
+                target_feature=(
+                    target_feature
+                ),
+                analytical_delta_temperature_c=(
+                    seed.predicted_delta_temperature_c
+                ),
+                observations=observations,
+                policy=predictor_policy,
+            )
+        )
+
+        prediction_source = enum_value(
+            prediction.source
+        )
+
+        prediction_applicability = enum_value(
+            prediction.applicability
+        )
+
+        require(
+            math.isfinite(
+                prediction.predicted_delta_temperature_c
+            )
+            and (
+                prediction.predicted_delta_temperature_c
+                < 0.0
+            ),
+            f"{case_id}: invalid Trial-1 prediction.",
+        )
+
+
+        observations_by_case = {}
+
+        for observation in observations:
+            observations_by_case.setdefault(
+                observation.case_id,
+                observation,
+            )
+
+
+        for neighbor_case_id in (
+            prediction.neighbor_case_ids
+        ):
+            evidence = observations_by_case.get(
+                neighbor_case_id
+            )
+
+            require(
+                evidence is not None,
+                (
+                    f"{case_id}: predictor returned unknown "
+                    f"neighbor {neighbor_case_id}."
+                ),
+            )
+
+            require(
+                evidence.execution_generation_id
+                == args.execution_generation_id,
+                (
+                    f"{case_id}: predictor crossed execution "
+                    f"generation via {neighbor_case_id}."
+                ),
+            )
+
+
+        # ==============================================================
+        # 5. Generic FEM bundle
+        #
+        # Keep the historical runner-compatible bundle identity surface.
+        # Canonical Atlas identities remain separately recorded.
+        # ==============================================================
+
+        token = case_hash[
+            :16
+        ]
+
+        bundle = (
+            build_generic_fem_definition_bundle(
+                resolved,
+                mesh_id=(
+                    f"mesh-{token}"
+                ),
+                geometry_id=(
+                    f"geometry-{token}"
+                ),
+                classification_id=(
+                    f"classification-{token}"
+                ),
+                source_mesh_name=(
+                    mesh_path.name
+                ),
+                transfer_template=(
+                    transfer_template
+                ),
+                contact_template=(
+                    contact_template
+                ),
+                boundary_template=(
+                    boundary_template
+                ),
+                material_catalog=(
+                    DIVERSIFIED_CANDIDATE_MATERIAL_CATALOG
+                ),
+            )
+        )
+
+        require(
+            bundle
+            .preparation
+            .identity
+            .run_id
+            == case_run_id,
+            (
+                f"{case_id}: generic FEM bundle "
+                "run identity drift."
+            ),
+        )
+
+        require(
+            bundle.calibration_seed
+            == seed,
+            (
+                f"{case_id}: generic FEM bundle "
+                "calibration-seed drift."
+            ),
+        )
+
+
+        mesh_data = (
+            read_grouped_complete_joint_mesh(
+                mesh_path,
+                bundle.transfer,
+            )
+        )
+
+
+        # ==============================================================
+        # 6. Construct CAL_01 with truthful provenance
+        # ==============================================================
+
+        if (
+            prediction_source
+            == "analytical_fallback"
+        ):
+
+            trial = (
+                derive_initial_preload_calibration_trial(
+                    seed=seed,
+                    case_run_id=case_run_id,
+                )
+            )
+
+            require(
+                math.isclose(
+                    trial.delta_temperature_c,
+                    prediction.predicted_delta_temperature_c,
+                    rel_tol=0.0,
+                    abs_tol=1.0e-10,
+                ),
+                (
+                    f"{case_id}: analytical fallback "
+                    "Trial-1 temperature drift."
+                ),
+            )
+
+        else:
+
+            trial = (
+                derive_fem_warm_start_preload_calibration_trial(
+                    predicted_delta_temperature_c=(
+                        prediction
+                        .predicted_delta_temperature_c
+                    ),
+                    case_run_id=case_run_id,
+                )
+            )
+
+
+        require(
+            trial.trial_index
+            == 1,
+            f"{case_id}: generated trial is not CAL_01.",
+        )
+
+        require(
+            trial.run_id
+            == trial_run_id,
+            f"{case_id}: CAL_01 run identity drift.",
+        )
+
+        require(
+            math.isclose(
+                trial.delta_temperature_c,
+                prediction.predicted_delta_temperature_c,
+                rel_tol=0.0,
+                abs_tol=1.0e-10,
+            ),
+            (
+                f"{case_id}: Trial-1 / predictor "
+                "temperature drift."
+            ),
+        )
+
+
+        # ==============================================================
+        # 7. CAL_01 deck - preparation only
+        # ==============================================================
+
+        run_dir = (
+            solver_root
+            / case_run_id
+            / trial_run_id
+        )
+
+        run_dir.mkdir(
+            parents=True,
+            exist_ok=True,
+        )
+
+
+        # Existing solver evidence is an absolute stop.
+        prohibited = []
+
+        for suffix in (
+            ".dat",
+            ".frd",
+            ".sta",
+            ".cvg",
+            ".rout",
+        ):
+            candidate = (
+                run_dir
+                / f"{trial_run_id}{suffix}"
+            )
+
+            if candidate.exists():
+                prohibited.append(
+                    candidate
+                )
+
+
+        manifest_path = (
+            run_dir
+            / "fem_run_manifest.json"
+        )
+
+        if manifest_path.exists():
+            prohibited.append(
+                manifest_path
+            )
+
+
+        require(
+            not prohibited,
+            (
+                f"{case_id}: solver evidence already "
+                "exists before execution authority:\n"
+                + "\n".join(
+                    str(path)
+                    for path in prohibited
+                )
+            ),
+        )
+
+
+        input_path = (
+            run_dir
+            / f"{trial_run_id}.inp"
+        )
+
+        candidate_path = (
+            run_dir
+            / f"{trial_run_id}.candidate.inp"
+        )
+
+        if candidate_path.exists():
+            candidate_path.unlink()
+
+
+        deck = (
+            write_fem_preload_calibration_trial_deck(
+                mesh_data=mesh_data,
+                bundle=bundle,
+                trial=trial,
+                reference_temperature_c=(
+                    reference_temperature
+                ),
+                input_path=candidate_path,
+            )
+        )
+
+
+        require(
+            candidate_path.is_file()
+            and candidate_path.stat().st_size > 0,
+            f"{case_id}: CAL_01 candidate deck missing.",
+        )
+
+        require(
+            deck.trial_run_id
+            == trial_run_id,
+            f"{case_id}: deck/trial identity drift.",
+        )
+
+        require(
+            math.isclose(
+                deck.delta_temperature_c,
+                trial.delta_temperature_c,
+                rel_tol=0.0,
+                abs_tol=1.0e-10,
+            ),
+            f"{case_id}: deck/trial delta-T drift.",
+        )
+
+
+        candidate_sha = sha256(
+            candidate_path
+        )
+
+        require(
+            candidate_sha
+            == deck.sha256,
+            f"{case_id}: generated deck SHA drift.",
+        )
+
+
+        if input_path.exists():
+
+            existing_sha = sha256(
+                input_path
+            )
+
+            require(
+                existing_sha
+                == candidate_sha,
+                (
+                    f"{case_id}: immutable CAL_01 deck "
+                    "differs from regenerated candidate."
+                ),
+            )
+
+            candidate_path.unlink()
+
+        else:
+
+            candidate_path.replace(
+                input_path
+            )
+
+
+        deck_sha = sha256(
+            input_path
+        )
+
+        require(
+            deck_sha
+            == candidate_sha,
+            f"{case_id}: published CAL_01 deck SHA drift.",
+        )
+
+
+        # ==============================================================
+        # 8. Immutable preparation record
+        # ==============================================================
+
+        record = {
+            "schema":
+                "threadrom.phase3_diversified_doe_trial1_preparation.v1",
+
+            "record_status":
+                "FINAL",
+
+            "scope":
+                (
+                    "phase3_diversified_doe_"
+                    "TRM-DDOE-001_"
+                    f"{wave_token}_trial1"
+                ),
+
+            "campaign_id":
+                "TRM-DDOE-001",
+
+            "wave_id":
+                wave_id,
+
+            "wave_order":
+                selected[
+                    "wave_order"
+                ],
+
+            "overall_disposition":
+                (
+                    "DIVERSIFIED_DOE_"
+                    f"{wave_token}_"
+                    "TRIAL1_PREPARATION_PASS"
+                ),
+
+            "execution_generation_id":
+                args.execution_generation_id,
+
+            "authorization": {
+                "wave_plan_sha256":
+                    wave_sha,
+
+                "trial1_owner_authorization_sha256":
+                    trial_auth_sha,
+
+                "artifact_preparation_authorization_sha256":
+                    artifact_auth_sha,
+            },
+
+            "case": {
+                "case_id":
+                    case_id,
+
+                "case_hash":
+                    case_hash,
+
+                "case_run_id":
+                    case_run_id,
+
+                "thread_designation":
+                    proposal_row[
+                        "thread_designation"
+                    ],
+
+                "member_material_id":
+                    proposal_row[
+                        "member_material_id"
+                    ],
+
+                "normalized_coordinates":
+                    proposal_row[
+                        "normalized_coordinates"
+                    ],
+            },
+
+            "geometry": {
+                "mode":
+                    geometry_mode,
+
+                "relative_path":
+                    relative(
+                        step_path
+                    ),
+
+                "sha256":
+                    step_sha,
+
+                "canonical_geometry_id":
+                    reuse_identity.geometry_id,
+
+                "identity_sha256":
+                    (
+                        reuse_identity
+                        .geometry_identity_sha256
+                    ),
+
+                "source_case_id":
+                    source_case_id,
+
+                "source_case_hash":
+                    source_case_hash_value,
+            },
+
+            "mesh": {
+                "mode":
+                    mesh_mode,
+
+                "relative_path":
+                    relative(
+                        mesh_path
+                    ),
+
+                "sha256":
+                    mesh_sha,
+
+                "canonical_mesh_id":
+                    reuse_identity.mesh_id,
+
+                "identity_sha256":
+                    (
+                        reuse_identity
+                        .mesh_identity_sha256
+                    ),
+
+                "canonical_classification_id":
+                    reuse_identity.classification_id,
+
+                "classification_sha256":
+                    (
+                        reuse_identity
+                        .classification_sha256
+                    ),
+
+                "source_case_id":
+                    source_case_id,
+
+                "source_case_hash":
+                    source_case_hash_value,
+
+                "quality_gate":
+                    "PASS",
+
+                "quality_result":
+                    (
+                        None
+                        if quality is None
+                        else jsonable(
+                            quality
+                        )
+                    ),
+            },
+
+            "analytical_seed":
+                jsonable(
+                    seed
+                ),
+
+            "trial_1_prediction": {
+                "policy_id":
+                    prediction.policy_id,
+
+                "source":
+                    prediction_source,
+
+                "applicability":
+                    prediction_applicability,
+
+                "analytical_delta_temperature_c":
+                    (
+                        prediction
+                        .analytical_delta_temperature_c
+                    ),
+
+                "predicted_delta_temperature_c":
+                    (
+                        prediction
+                        .predicted_delta_temperature_c
+                    ),
+
+                "correction_factor":
+                    prediction.correction_factor,
+
+                "reused_case_count":
+                    prediction.reused_case_count,
+
+                "neighbor_case_ids":
+                    list(
+                        prediction.neighbor_case_ids
+                    ),
+
+                "neighbor_case_hashes":
+                    list(
+                        prediction.neighbor_case_hashes
+                    ),
+
+                "nearest_distance":
+                    prediction.nearest_distance,
+            },
+
+            "trial_1":
+                jsonable(
+                    trial
+                ),
+
+            "deck": {
+                "relative_path":
+                    relative(
+                        input_path
+                    ),
+
+                "sha256":
+                    deck_sha,
+
+                "size_bytes":
+                    input_path.stat().st_size,
+            },
+
+            "fem_preflight": {
+                "status":
+                    "PASS",
+
+                "case_resolution":
+                    "PASS",
+
+                "case_hash_binding":
+                    "PASS",
+
+                "geometry":
+                    "PASS",
+
+                "grouped_mesh":
+                    "PASS",
+
+                "mesh_read":
+                    "PASS",
+
+                "generic_fem_bundle":
+                    "PASS",
+
+                "analytical_seed":
+                    "PASS",
+
+                "trial1_predictor":
+                    "PASS",
+
+                "trial_identity":
+                    "PASS",
+
+                "deck_generation":
+                    "PASS",
+            },
+
+            "solve_authorization": {
+                "calculix_invoked":
+                    False,
+
+                "solver_authorized_by_this_script":
+                    False,
+
+                "trial1_execution_authority_exists":
+                    False,
+
+                "adaptive_continuation_authorized":
+                    False,
+
+                "additional_trials_authorized":
+                    False,
+
+                "dataset_admission_authorized":
+                    False,
+
+                "full_physics_certification_authorized":
+                    False,
+
+                "artifact_retirement_authorized":
+                    False,
+
+                "holdout_accessed":
+                    False,
+            },
+        }
+
+
+        record_path = (
+            run_dir
+            / "diversified_doe_trial1_preparation_record.json"
+        )
+
+        record_sha = (
+            write_immutable_json(
+                record_path,
+                record,
+            )
+        )
+
+
+        prepared.append(
+            {
+                "wave_order":
+                    selected[
+                        "wave_order"
+                    ],
+
+                "case_id":
+                    case_id,
+
+                "case_hash":
+                    case_hash,
+
+                "case_run_id":
+                    case_run_id,
+
+                "trial_run_id":
+                    trial_run_id,
+
+                "geometry_mode":
+                    geometry_mode,
+
+                "mesh_mode":
+                    mesh_mode,
+
+                "mesh_sha256":
+                    mesh_sha,
+
+                "deck_sha256":
+                    deck_sha,
+
+                "preparation_record":
+                    relative(
+                        record_path
+                    ),
+
+                "preparation_record_sha256":
+                    record_sha,
+            }
+        )
+
+
+        print()
+        print(
+            f"[{selected['wave_order']}] "
+            f"{case_id}"
+        )
+        print(
+            "  Atlas       :",
+            reuse.disposition,
+        )
+        print(
+            "  Geometry    :",
+            geometry_mode,
+        )
+        print(
+            "  Mesh        :",
+            mesh_mode,
+        )
+        print(
+            "  Predictor   :",
+            prediction_source,
+            "/",
+            prediction_applicability,
+        )
+        print(
+            "  CAL_01      :",
+            trial_run_id,
+        )
+        print(
+            "  Delta T [C] :",
+            f"{trial.delta_temperature_c:.12f}",
+        )
+        print(
+            "  Mesh SHA    :",
+            mesh_sha,
+        )
+        print(
+            "  Deck SHA    :",
+            deck_sha,
+        )
+        print(
+            "  Prep SHA    :",
+            record_sha,
+        )
+
+
+    # ------------------------------------------------------------------
+    # Final wave-level preparation contract
+    # ------------------------------------------------------------------
+
+    require(
+        len(
+            prepared
+        )
+        == 4,
+        "Prepared-case count drift.",
+    )
+
+
+    fresh_count = sum(
+        row[
+            "geometry_mode"
+        ].startswith(
+            "GENERATED_FOR_"
+        )
+        and row[
+            "mesh_mode"
+        ].startswith(
+            "GENERATED_FOR_"
+        )
+        for row in prepared
+    )
+
+    full_reuse_count = sum(
+        row[
+            "geometry_mode"
+        ]
+        == "REUSED_ACCEPTED_EXACT_GEOMETRY"
+        and row[
+            "mesh_mode"
+        ]
+        == "REUSED_ACCEPTED_EXACT_MESH"
+        for row in prepared
+    )
+
+
+    wave_preparation = {
+        "schema":
+            "threadrom.phase3_diversified_doe_wave_preparation.v1",
+
+        "record_status":
+            "FINAL",
+
+        "campaign_id":
+            "TRM-DDOE-001",
+
+        "wave_id":
+            wave_id,
+
+        "execution_generation_id":
+            args.execution_generation_id,
+
+        "wave_plan_sha256":
+            wave_sha,
+
+        "trial1_owner_authorization_sha256":
+            trial_auth_sha,
+
+        "artifact_preparation_authorization_sha256":
+            artifact_auth_sha,
+
+        "prepared_trial_count":
+            4,
+
+        "fresh_geometry_mesh_count":
+            fresh_count,
+
+        "reused_geometry_mesh_count":
+            full_reuse_count,
+
+        "prepared_trials":
+            prepared,
+
+        "factory_ready":
+            True,
+
+        "solver_launched":
+            False,
+
+        "adaptive_continuation_authorized":
+            False,
+
+        "holdouts_accessed":
+            False,
+
+        "overall_disposition":
+            (
+                f"{wave_token}_"
+                "ALL_FOUR_TRIAL1_PREPARED_FOR_FACTORY"
+            ),
+    }
+
+
+    index_sha = write_immutable_json(
+        index_path,
+        wave_preparation,
+    )
+
+
+    print()
+    print("=" * 108)
+    print(
+        "GOVERNED WAVE TRIAL-1 PREPARATION COMPLETE"
+    )
+    print("=" * 108)
+    print(
+        "Wave ID                  :",
+        wave_id,
+    )
+    print(
+        "Preparation SHA          :",
+        index_sha,
+    )
+    print(
+        "Prepared cases           :",
+        len(
+            prepared
+        ),
+    )
+    print(
+        "Fresh geometry+mesh      :",
+        fresh_count,
+    )
+    print(
+        "Full Atlas reuse         :",
+        full_reuse_count,
+    )
+    print(
+        "Factory ready            : YES"
+    )
+    print(
+        "Solver launched          : NO"
+    )
+    print(
+        "Execution authorized     : NO"
+    )
+    print(
+        "Adaptive continuation    : NO"
+    )
+    print(
+        "Holdouts accessed        : NO"
+    )
+    print("=" * 108)
+
+
+if __name__ == "__main__":
+    main()

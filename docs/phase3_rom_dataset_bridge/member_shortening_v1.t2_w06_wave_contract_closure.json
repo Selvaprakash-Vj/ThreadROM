@@ -1,0 +1,72 @@
+{
+  "authorities": {
+    "frozen_design_proposal_sha256": "a386da9648af88b5577386efdc16643b0b099fe2614c2bcc18c0e8973d141e1e",
+    "next_wave_builder_sha256": "92aa732de3ea7ed1dacbc10c7adedc198538738b0bde3cf359002bf1b432a609",
+    "t3_closure_sha256": "cdd53db7cdc823dd3036b4549bb81f12280916d40399e56f6d2098eef2af0150",
+    "w06_wave_plan_sha256": "ec0049b1bb98f2a0f950ae0fdc68cda6f91985c27102221e5ef6011fcc9427a7"
+  },
+  "closure_id": "TRM-P3-ROM-BRIDGE-MEMBER-SHORTENING-V1-T2",
+  "cohort": {
+    "case_hashes_unique": true,
+    "count": 4,
+    "dry_selection_matches_persisted_selection": true,
+    "native_plan_identity_fields": {
+      "base_run_identity": "preparation_run_id",
+      "case_hash": "case_hash",
+      "case_identity": "proposal_id",
+      "trial_1_identity": "trial_1_run_id"
+    },
+    "preparation_run_ids_unique": true,
+    "proposal_ids_unique": true,
+    "selected_cases": [
+      {
+        "case_hash": "bcd9030cbcf1314fd948829b91aae865d1c50840c1f67e1a51228299c0334d1f",
+        "preparation_run_id": "trm_fem_b750f908561d",
+        "proposal_id": "TRM-DDOE-D-M10x1_5__member_aluminium_en_aw_6082_t6-06",
+        "trial_1_run_id": "trm_fem_b750f908561d_cal_01"
+      },
+      {
+        "case_hash": "722a83f7122d79ad0cb32cddcd919b0597788c7e5a54016f886ab9a3f1e575d4",
+        "preparation_run_id": "trm_fem_b4cbff618f6e",
+        "proposal_id": "TRM-DDOE-D-M12x1_75__member_aluminium_en_aw_6082_t6-06",
+        "trial_1_run_id": "trm_fem_b4cbff618f6e_cal_01"
+      },
+      {
+        "case_hash": "3d0ac7f48a2ceb342c24785316a71b5ad48d960a0e06dc9999d5f43732cd0f1a",
+        "preparation_run_id": "trm_fem_aca6a42cf281",
+        "proposal_id": "TRM-DDOE-D-M8x1_25__member_aluminium_en_aw_6082_t6-06",
+        "trial_1_run_id": "trm_fem_aca6a42cf281_cal_01"
+      },
+      {
+        "case_hash": "04b4c5391962896926f4e09de1a62a5fec78f10cef52c73c8fce465d42aa518e",
+        "preparation_run_id": "trm_fem_2bc32fecabbc",
+        "proposal_id": "TRM-DDOE-D-M12x1_75__steel_member-06",
+        "trial_1_run_id": "trm_fem_2bc32fecabbc_cal_01"
+      }
+    ],
+    "trial_1_run_ids_unique": true
+  },
+  "disposition": "T2_W06_WAVE_CONTRACT_CLOSED",
+  "governance": {
+    "accepted_fem_rerun": false,
+    "dataset_created": false,
+    "duplicate_solver_execution": "FORBIDDEN",
+    "holdouts": "SEALED",
+    "partitions_assigned": false,
+    "rom_training_started": false
+  },
+  "next_stage": "T-1_W06_PREPARATION_AND_AUTHORIZATION",
+  "purpose": "Persist and freeze the exact governed W06 wave contract selected by the certified generic next-wave builder.",
+  "record_status": "FINAL",
+  "schema_version": 1,
+  "stage": "T-2",
+  "state": {
+    "execution_authorized": false,
+    "execution_preflight_created": false,
+    "factory_registry_created": false,
+    "solver_launched": false,
+    "trial1_preparation_created": false,
+    "wave_plan_created": true
+  },
+  "wave_id": "TRM-DDOE-001-W06"
+}

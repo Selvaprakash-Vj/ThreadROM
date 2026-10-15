@@ -1,0 +1,41 @@
+{
+  "authorities": {
+    "adaptive_campaign_owner_authorization_sha256": "4b0ade420647ea5db88757fefa731d91a46c35ac1483ff2788a1738413019958",
+    "factory_registry_sha256": "bbb9a9c73a4c66ba9e586ac4a1e27be2f8e2e6ac840530859aae3870fd6525e7",
+    "generic_runner_sha256": "b944340afe9c94d1b2f0e503913745c11d79d285883147520bed99479bf13128",
+    "generic_runtime_sha256": "7c147da95c002e1f11f7c4df0bcd047cf4225e0113d23cec4f8230d265746d15",
+    "generic_starter_sha256": "de613558113d5f8b49bfbadbe0ba8e2b25d48ddedb1b423ae9b904f5a4351718",
+    "governed_execution_preflight_sha256": "1f75b35ace05d0470debb4960953098ac8b934804c26e4ef9171a050f70db8b1",
+    "t1_closure_sha256": "55d4cea6d850c4a639c659ff24905c50bede60c1640c5f69087ba535f260f940",
+    "trial1_preparation_sha256": "1e0f7ef463aab532bd9fbeb3225e14ed525c32e78493a70d8a634784c4bb1385",
+    "wave_plan_sha256": "ec0049b1bb98f2a0f950ae0fdc68cda6f91985c27102221e5ef6011fcc9427a7"
+  },
+  "closure_id": "TRM-P3-ROM-BRIDGE-MEMBER-SHORTENING-V1-T0",
+  "disposition": "T0_W06_LAUNCH_READY_CLOSED",
+  "exact_launch_command": ".\\.venv\\Scripts\\python.exe -B scripts\\start_phase3_governed_wave_v1.py --wave-id TRM-DDOE-001-W06 --expected-wave-sha ec0049b1bb98f2a0f950ae0fdc68cda6f91985c27102221e5ef6011fcc9427a7 --expected-preparation-sha 1e0f7ef463aab532bd9fbeb3225e14ed525c32e78493a70d8a634784c4bb1385 --expected-authorization-sha 4b0ade420647ea5db88757fefa731d91a46c35ac1483ff2788a1738413019958 --expected-preflight-sha 1f75b35ace05d0470debb4960953098ac8b934804c26e4ef9171a050f70db8b1 --expected-registry-sha bbb9a9c73a4c66ba9e586ac4a1e27be2f8e2e6ac840530859aae3870fd6525e7 --execute",
+  "launch_contract": {
+    "automatic_governed_adaptation": true,
+    "case_count": 4,
+    "continue_until_physics_acceptance": true,
+    "dataset_admission": "BLOCKED",
+    "duplicate_solver_execution_forbidden": true,
+    "full_physics_certification": true,
+    "holdouts": "SEALED",
+    "maximum_concurrent_calculix": 4,
+    "maximum_trial_index_per_case": 6,
+    "rom_training": "NOT_AUTHORIZED"
+  },
+  "next_action": "EXECUTE_FROZEN_W06_GENERIC_START_COMMAND",
+  "prelaunch_state": {
+    "calculix_running": false,
+    "execute_performed_by_t0": false,
+    "generic_execute_command_frozen": true,
+    "registry_sha_matches_preflight": true,
+    "solver_evidence_present": false
+  },
+  "purpose": "Certify the exact frozen W06 generic execution boundary immediately before governed FEM launch.",
+  "record_status": "FINAL",
+  "schema_version": 1,
+  "stage": "T-0",
+  "wave_id": "TRM-DDOE-001-W06"
+}

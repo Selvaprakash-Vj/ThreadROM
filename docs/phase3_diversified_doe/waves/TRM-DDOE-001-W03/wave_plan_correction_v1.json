@@ -1,0 +1,30 @@
+{
+  "campaign_id": "TRM-DDOE-001",
+  "corrected_bindings": {
+    "anchor_inventory_count": 23,
+    "previous_wave_plan_sha256": "02f37a7515604b5c76e54aa69ed56991289eedd6100bc6448fd1c660e5bf5c67",
+    "selection_rule": "Continue each W02 thread/material lane to its deterministic next unused governed new-evidence state after completion of the pre-W03 hardening gate.",
+    "trial_1_predictor_requirement_changed": false
+  },
+  "corrected_wave_plan": {
+    "path": "docs/phase3_diversified_doe/waves/TRM-DDOE-001-W03/wave_plan.json",
+    "sha256": "3714441cb14386e2fcc3adf7b90300a1dcec6ebd2d4404212f2a1adbacb3b225"
+  },
+  "correction_reason": "Post-freeze read-only audit discovered that W02-only metadata fields had been cloned into W03 without rebinding the predecessor SHA or advancing the selection-basis evidence inventory. No W03 preparation, registry, solver execution, certification, dataset admission, or holdout access had occurred.",
+  "governance": {
+    "case_cohort_changed": false,
+    "case_hashes_changed": false,
+    "holdouts_accessed": false,
+    "preparation_created_before_correction": false,
+    "registry_created_before_correction": false,
+    "rom_dataset_touched": false,
+    "solver_executed_before_correction": false
+  },
+  "record_status": "FINAL",
+  "schema": "threadrom.phase3_diversified_doe_wave_plan_correction.v1",
+  "superseded_wave_plan": {
+    "path": "docs/phase3_diversified_doe/waves/TRM-DDOE-001-W03/wave_plan.superseded_a4f6a17a7390a69ba9764f6bc18af2b12b0f08fb282ad0761c06c35feaa61d7b.json",
+    "sha256": "a4f6a17a7390a69ba9764f6bc18af2b12b0f08fb282ad0761c06c35feaa61d7b"
+  },
+  "wave_id": "TRM-DDOE-001-W03"
+}

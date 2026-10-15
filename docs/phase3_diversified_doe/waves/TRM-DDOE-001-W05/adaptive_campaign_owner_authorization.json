@@ -1,0 +1,42 @@
+{
+  "approval_status": "OWNER_APPROVED",
+  "approved_at_utc": "2026-10-11T20:32:36.148951+00:00",
+  "approved_by": "Selva - ThreadROM project owner",
+  "authorization_type": "OWNER_BOUNDED_ADAPTIVE_WAVE_CAMPAIGN_AUTHORIZATION",
+  "bound_artifacts": {
+    "geometry_mesh_owner_authorization_sha256": "c40ab076aa429cc9e9c89f1c3ee853e5c4c3c7b5e5a848a75ccfb76210bdca81",
+    "trial1_owner_authorization_sha256": "9029a9f6c3d32164558c6b0834f696197a65bd0960b5a4b89a59df0962487d36",
+    "trial1_preparation_sha256": "3748eacc6e885811cfbb28c5b3cd8d9abda58f0dbc672e82947aef9d66f2ee7d",
+    "wave_plan_sha256": "f0e7087940c193e4e5f9a258cd1a6c4524a479f9b7e1556f604f8e6f58d1f29a"
+  },
+  "campaign_id": "TRM-DDOE-001",
+  "engineering_intent": "One owner launch authorizes the hardened generic ThreadROM governed-wave stack to execute and adapt only the 4 frozen W05 cases from CAL_01 through governed full-physics acceptance or a defined terminal condition. No manual approval is required between bounded CAL_n trials inside this authorization.",
+  "execution_contract": {
+    "automatic_governed_adaptation": true,
+    "continue_until_physics_acceptance": true,
+    "duplicate_solver_execution_forbidden": true,
+    "full_physics_certification": true,
+    "maximum_concurrent_calculix": 4,
+    "maximum_trial_index_per_case": 6,
+    "preload_calibration_continuation": true,
+    "preserve_all_valid_realized_trials": true,
+    "reuse_existing_valid_trials": true,
+    "stop_on_governed_terminal_condition": true,
+    "stop_on_non_monotonic_response": true,
+    "stop_on_provenance_or_identity_failure": true,
+    "stop_on_unrecoverable_solver_failure": true
+  },
+  "required_completion_state": "GOVERNED_FULL_PHYSICS_ACCEPTED",
+  "schema_version": 1,
+  "scope": {
+    "additional_doe_cases_authorized": false,
+    "additional_waves_authorized": false,
+    "artifact_retirement_authorized": false,
+    "authorized_case_count": 4,
+    "dataset_admission_authorized": false,
+    "holdout_access_authorized": false,
+    "independent_human_review_claimed": false,
+    "surrogate_training_authorized": false
+  },
+  "wave_id": "TRM-DDOE-001-W05"
+}

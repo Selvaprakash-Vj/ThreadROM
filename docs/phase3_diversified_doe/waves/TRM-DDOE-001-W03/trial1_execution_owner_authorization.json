@@ -1,0 +1,91 @@
+{
+  "approval_status": "OWNER_APPROVED",
+  "approved_at_utc": "2026-10-06T19:02:35.646230+00:00",
+  "approved_by": "Selva - ThreadROM project owner",
+  "authorization_type": "OWNER_WAVE_CAL_01_ONLY_EXECUTION_AUTHORIZATION",
+  "authorized_trials": [
+    {
+      "case_hash": "eac55af4d11fd8b23203f51c738cac5190cf203b637fb9f5be16169fdcbdfd12",
+      "case_id": "TRM-DDOE-D-M10x1_5__member_aluminium_en_aw_6082_t6-03",
+      "case_run_id": "trm_fem_a57f61f13b9d",
+      "deck_path": "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W03/solver_preparation/trm_fem_a57f61f13b9d/trm_fem_a57f61f13b9d_cal_01/trm_fem_a57f61f13b9d_cal_01.inp",
+      "deck_sha256": "e9db31052dbbeece34efe94adca08ee16fbd6f1d1d01c001c1ccae0be1a6b911",
+      "manifest_path": "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W03/solver_preparation/trm_fem_a57f61f13b9d/trm_fem_a57f61f13b9d_cal_01/fem_run_manifest.json",
+      "preparation_record": "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W03/solver_preparation/trm_fem_a57f61f13b9d/trm_fem_a57f61f13b9d_cal_01/diversified_doe_trial1_preparation_record.json",
+      "preparation_record_sha256": "1f116a833fad674fe38574df231b6ba04030f0da02826bd74189b34df221298a",
+      "trial_index": 1,
+      "trial_run_id": "trm_fem_a57f61f13b9d_cal_01",
+      "wave_order": 1
+    },
+    {
+      "case_hash": "602fde21267d63e3d3cb6c88b6b5757ef511506876f8c7c3a6b41ee199e81dad",
+      "case_id": "TRM-DDOE-D-M12x1_75__member_aluminium_en_aw_6082_t6-03",
+      "case_run_id": "trm_fem_22c109e1e52b",
+      "deck_path": "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W03/solver_preparation/trm_fem_22c109e1e52b/trm_fem_22c109e1e52b_cal_01/trm_fem_22c109e1e52b_cal_01.inp",
+      "deck_sha256": "6ce5dba3f4d6054e085162b0e04442e0816e4434aaaad5d422cc7dee80c4108b",
+      "manifest_path": "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W03/solver_preparation/trm_fem_22c109e1e52b/trm_fem_22c109e1e52b_cal_01/fem_run_manifest.json",
+      "preparation_record": "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W03/solver_preparation/trm_fem_22c109e1e52b/trm_fem_22c109e1e52b_cal_01/diversified_doe_trial1_preparation_record.json",
+      "preparation_record_sha256": "89e728f6041da894aac19396c240e887faffea60f63feb4902dac1bcba1bbcb0",
+      "trial_index": 1,
+      "trial_run_id": "trm_fem_22c109e1e52b_cal_01",
+      "wave_order": 2
+    },
+    {
+      "case_hash": "c3a38bcc699ebe5a031942a9d8a4a7c24f2151c0c7824de777623878793b89ed",
+      "case_id": "TRM-DDOE-D-M8x1_25__member_aluminium_en_aw_6082_t6-03",
+      "case_run_id": "trm_fem_c802d7334f6c",
+      "deck_path": "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W03/solver_preparation/trm_fem_c802d7334f6c/trm_fem_c802d7334f6c_cal_01/trm_fem_c802d7334f6c_cal_01.inp",
+      "deck_sha256": "29312f2c469a3a9d7ef88491b2440561fac8a2e1f57f8c58c2187cff17c99f00",
+      "manifest_path": "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W03/solver_preparation/trm_fem_c802d7334f6c/trm_fem_c802d7334f6c_cal_01/fem_run_manifest.json",
+      "preparation_record": "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W03/solver_preparation/trm_fem_c802d7334f6c/trm_fem_c802d7334f6c_cal_01/diversified_doe_trial1_preparation_record.json",
+      "preparation_record_sha256": "73f273384620b8f038502527c403bfdf5e60f685e29cd473068872e4fc0b727a",
+      "trial_index": 1,
+      "trial_run_id": "trm_fem_c802d7334f6c_cal_01",
+      "wave_order": 3
+    },
+    {
+      "case_hash": "e86a17501ebe95d56da60e49d195c75d21a8fd29199cfbcf48eb5f97b2bbcab6",
+      "case_id": "TRM-DDOE-D-M12x1_75__steel_member-03",
+      "case_run_id": "trm_fem_323293011028",
+      "deck_path": "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W03/solver_preparation/trm_fem_323293011028/trm_fem_323293011028_cal_01/trm_fem_323293011028_cal_01.inp",
+      "deck_sha256": "72fc829943d310807a07855ae1d6f60e01f6c93655b8152a5bc7a466886b9653",
+      "manifest_path": "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W03/solver_preparation/trm_fem_323293011028/trm_fem_323293011028_cal_01/fem_run_manifest.json",
+      "preparation_record": "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W03/solver_preparation/trm_fem_323293011028/trm_fem_323293011028_cal_01/diversified_doe_trial1_preparation_record.json",
+      "preparation_record_sha256": "9670ad8c86abaa54c8df852fae243acd5058b8e852ef56d46e029b22da7f9bec",
+      "trial_index": 1,
+      "trial_run_id": "trm_fem_323293011028_cal_01",
+      "wave_order": 4
+    }
+  ],
+  "bound_artifacts": {
+    "factory_registry_sha256": "51c6d63a0b99fbce88d9a2f2563857dc31ae44c47f47185c4fefe45200a10c7f",
+    "geometry_mesh_authorization_sha256": "b08c6b514046313fc96a131420425597a77f0738664576c6cb7e9f2997c1eb6d",
+    "trial1_preparation_authorization_sha256": "3dedf60b0bf5a8a40d83ee9525d6f4feffaffef7f91edcc2a88610807dc7365e",
+    "trial1_preparation_sha256": "813b602392dd66cf0b30e2089b3695c8e8ae0859946da775bfc1736efd404393",
+    "wave_plan_sha256": "3714441cb14386e2fcc3adf7b90300a1dcec6ebd2d4404212f2a1adbacb3b225"
+  },
+  "campaign_id": "TRM-DDOE-001",
+  "execution_contract": {
+    "adaptive_cal_02_plus_authorized": false,
+    "additional_trials_authorized": false,
+    "authorized_case_count": 4,
+    "authorized_trial_index": 1,
+    "certified_solver_backend_required": true,
+    "duplicate_solver_execution_forbidden": true,
+    "durable_lease_required": true,
+    "full_physics_certification_authorized": false,
+    "maximum_concurrent_calculix": 4,
+    "registry_claim_required": true
+  },
+  "record_status": "FINAL",
+  "schema": "threadrom.phase3_governed_wave_trial1_execution_authorization.v1",
+  "scope": {
+    "additional_doe_cases_authorized": false,
+    "additional_waves_authorized": false,
+    "artifact_retirement_authorized": false,
+    "dataset_admission_authorized": false,
+    "holdout_access_authorized": false,
+    "surrogate_training_authorized": false
+  },
+  "wave_id": "TRM-DDOE-001-W03"
+}

@@ -1,0 +1,98 @@
+{
+  "adaptive_continuation_authorized": false,
+  "artifact_retirement_authorized": false,
+  "campaign_id": "TRM-DDOE-001",
+  "dataset_admission_authorized": false,
+  "design_freeze_certificate_sha256": "cc94749e1a396fed22879b8a98f729dca15522674f8ba597e0553f7968419872",
+  "design_proposal_sha256": "a386da9648af88b5577386efdc16643b0b099fe2614c2bcc18c0e8973d141e1e",
+  "fem_execution_authorized": false,
+  "full_physics_certification_authorized": false,
+  "holdout_access_authorized": false,
+  "holdout_configurations_generated": false,
+  "initial_trial_index": 1,
+  "maximum_concurrent_solver_slots": 4,
+  "meaning": "Immutable four-case Wave-2 selection from the frozen Phase-3 diversified DOE. This record freezes selection only and grants no preparation, solver execution, adaptive continuation, dataset admission, physics certification, artifact retirement, or holdout access.",
+  "policy_sha256": "6d0e45c109b1ba0a279ec0f06467ea91392760171b9a91bf0467d763896108d9",
+  "preparation_authorized": false,
+  "previous_wave_plan_sha256": "7896622edb754e5ce970b1cc6b5ccf157b591ae826e78c0abb9f8e373382a79d",
+  "record_status": "FINAL",
+  "schema": "threadrom.phase3_diversified_doe_wave_plan.v1",
+  "selected_cases": [
+    {
+      "case_hash": "8da375401526a253cde3056662d358166dc3373f9200325c39ddf9514f6cb5f1",
+      "existing_same_group_anchor_count": 1,
+      "member_material_id": "member_aluminium_en_aw_6082_t6",
+      "nearest_existing_anchor_distance": 1.7320508075688772,
+      "normalized_coordinates": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "preparation_run_id": "trm_fem_d924d7c036b7",
+      "proposal_id": "TRM-DDOE-D-M10x1_5__member_aluminium_en_aw_6082_t6-02",
+      "selection_reason": "High-information development state: sparse thread/material family and farthest candidate from current accepted/reusable same-group evidence.",
+      "thread_designation": "M10x1.5",
+      "wave_order": 1
+    },
+    {
+      "case_hash": "91e86a0b0eef6ac09ea2a27379c74e94dcaebaa3579178226d9ca0fff6da7d3c",
+      "existing_same_group_anchor_count": 1,
+      "member_material_id": "member_aluminium_en_aw_6082_t6",
+      "nearest_existing_anchor_distance": 1.7320508075688772,
+      "normalized_coordinates": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "preparation_run_id": "trm_fem_bfb674d30aad",
+      "proposal_id": "TRM-DDOE-D-M12x1_75__member_aluminium_en_aw_6082_t6-02",
+      "selection_reason": "High-information development state: sparse thread/material family and farthest candidate from current accepted/reusable same-group evidence.",
+      "thread_designation": "M12x1.75",
+      "wave_order": 2
+    },
+    {
+      "case_hash": "2c2893c0baa941d67ea6540f5071e1a90ca0d2f3e60c98f0dfdaf1eaf5c7df8f",
+      "existing_same_group_anchor_count": 1,
+      "member_material_id": "member_aluminium_en_aw_6082_t6",
+      "nearest_existing_anchor_distance": 1.7320508075688772,
+      "normalized_coordinates": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "preparation_run_id": "trm_fem_6edeb234225b",
+      "proposal_id": "TRM-DDOE-D-M8x1_25__member_aluminium_en_aw_6082_t6-02",
+      "selection_reason": "High-information development state: sparse thread/material family and farthest candidate from current accepted/reusable same-group evidence.",
+      "thread_designation": "M8x1.25",
+      "wave_order": 3
+    },
+    {
+      "case_hash": "b4fcf74bc0e1faf2f04eab3a8f1af538723d783cd639ea41dadc6b331a98ba58",
+      "existing_same_group_anchor_count": 2,
+      "member_material_id": "steel_member",
+      "nearest_existing_anchor_distance": 1.4361406616345072,
+      "normalized_coordinates": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "preparation_run_id": "trm_fem_ef97f5aa38de",
+      "proposal_id": "TRM-DDOE-D-M12x1_75__steel_member-02",
+      "selection_reason": "High-information development state: sparse thread/material family and farthest candidate from current accepted/reusable same-group evidence.",
+      "thread_designation": "M12x1.75",
+      "wave_order": 4
+    }
+  ],
+  "selection_basis": {
+    "anchor_inventory_count": 19,
+    "anchor_inventory_meaning": "14 exact historical reuse states + 1 accepted diversified pilot + 4 W01 governed full-physics accepted states",
+    "selected_group_count": 4,
+    "selection_rule": "Prefer sparse thread/material families; within each family select the development candidate farthest from current same-group accepted/reusable evidence.",
+    "validation_reservation": "18 reserved; configurations not generated"
+  },
+  "selection_status": "FROZEN_SELECTION",
+  "trial_1_predictor_requirement": "Use governed calibration knowledge from valid existing FEM evidence where trustworthy; fall back to analytical seed only when governed history cannot support a better warm start.",
+  "wave_id": "TRM-DDOE-001-W02",
+  "wave_purpose": "high_information_sparse_family_expansion",
+  "wave_size": 4
+}

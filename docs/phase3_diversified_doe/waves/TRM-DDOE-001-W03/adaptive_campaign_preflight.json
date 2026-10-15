@@ -1,0 +1,32 @@
+{
+  "adaptive_owner_authorization_sha256": "ce533a356144d0d67d6c0e1ae6e9d524d998004146113e0682eb5a9de38369d6",
+  "campaign_id": "TRM-DDOE-001",
+  "execution_contract": {
+    "authorized_case_count": 4,
+    "automatic_governed_adaptation": true,
+    "duplicate_solver_execution_forbidden": true,
+    "full_physics_certification": true,
+    "maximum_concurrent_calculix": 4,
+    "maximum_trial_index_per_case": 6
+  },
+  "expected_first_cycle": {
+    "adaptive_cal_02_plus": 1,
+    "calibration_accepted_pending_physics": 2,
+    "existing_prepared_cal_01": 1
+  },
+  "factory_registry_sha256": "9280fed3afa13f26bc766dc6ee1d2724c4f07332d0e71c2af4b6bd6b1143ee1e",
+  "overall_disposition": "W03_GENERIC_ADAPTIVE_PREFLIGHT_PASS_EXECUTION_NOT_STARTED",
+  "preparation_index_sha256": "813b602392dd66cf0b30e2089b3695c8e8ae0859946da775bfc1736efd404393",
+  "record_status": "FINAL",
+  "runner_sha256": "b944340afe9c94d1b2f0e503913745c11d79d285883147520bed99479bf13128",
+  "safety": {
+    "calculix_launched": false,
+    "dataset_admission_authorized": false,
+    "holdout_access_authorized": false,
+    "registry_mutated": false
+  },
+  "schema": "threadrom.phase3_governed_wave_adaptive_preflight.v1",
+  "trial1_execution_owner_authorization_sha256": "60afcb826a2c8228ac405d4d0c772e7cfb2a6a625a18685b32d8c661c56b59fc",
+  "wave_id": "TRM-DDOE-001-W03",
+  "wave_plan_sha256": "3714441cb14386e2fcc3adf7b90300a1dcec6ebd2d4404212f2a1adbacb3b225"
+}

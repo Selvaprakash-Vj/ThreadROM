@@ -1,0 +1,23 @@
+{
+  "accepted_fem_atlas_sha256": "eed5e52f4e9baaad5e2eb89634de48bbdf53c14c584921d8afb0df00631ffc60",
+  "campaign_id": "TRM-DDOE-001",
+  "dataset_admission_authorized": false,
+  "design_state_count": 72,
+  "design_status": "FROZEN_DESIGN",
+  "fem_execution_authorized": false,
+  "geometry_execution_authorized": false,
+  "historical_reuse_candidates": 14,
+  "large_upfront_batch_authorized": false,
+  "meaning": "This certificate freezes the exact Phase-3 diversified DOE design and its governing provenance. Execution authority, dataset admission, holdout access and ROM training remain separate governed decisions.",
+  "mesh_execution_authorized": false,
+  "new_design_states_requiring_evidence": 58,
+  "policy_sha256": "6d0e45c109b1ba0a279ec0f06467ea91392760171b9a91bf0467d763896108d9",
+  "proposal_sha256": "a386da9648af88b5577386efdc16643b0b099fe2614c2bcc18c0e8973d141e1e",
+  "record_status": "FINAL",
+  "schema": "threadrom.phase3_diversified_doe_design_freeze.v1",
+  "sealed_holdout_access_authorized": false,
+  "sealed_validation_state_count": 18,
+  "source_commit": "31ba80b8425926ecea81aaaad14f2ef7d430ba05",
+  "source_proposal_remains_non_executable": true,
+  "surrogate_training_authorized": false
+}

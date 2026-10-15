@@ -1,0 +1,51 @@
+{
+  "atlas": {
+    "case_binding_count": 8,
+    "distinct_geometry_count": 8,
+    "distinct_mesh_count": 8,
+    "path": "docs/phase3_geometry_mesh_atlas/atlas.json",
+    "sha256": "29b39b7da47bf96410fd4d6af3b6780ecb25f06047d333aef9076f54c2c84ff4"
+  },
+  "governance": {
+    "canonical_identity_reconstruction": true,
+    "existing_artifact_sha_verification": true,
+    "fem_executed": false,
+    "future_reuse_lookup_api_available": true,
+    "holdouts_accessed": false,
+    "new_geometry_generated": false,
+    "new_mesh_generated": false,
+    "rom_dataset_admission_authorized": false,
+    "w03_execution_authorized": false
+  },
+  "overall_disposition": "SLICE_1_GEOMETRY_MESH_ATLAS_V1_CLOSED",
+  "record_status": "FINAL",
+  "schema": "threadrom.pre_w03_geometry_mesh_atlas_slice1_closure.v1",
+  "scope": "PRE_W03_HARDENING_SLICE_1",
+  "scope_boundary": "Slice 1 establishes deterministic geometry/mesh identity, persistent reusable-artifact lookup, and W01/W02 governed backfill. It does not launch W03, admit ROM data, access holdouts, or authorize FEM.",
+  "source_evidence": {
+    "TRM-DDOE-001-W01": {
+      "nut_mesh_policy_path": "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W01/w01_targeted_nut_mesh_levels.toml",
+      "nut_mesh_policy_sha256": "d62a3753af24db2f92b9d4f130329292be315c6ac30c0f79afb0bbd535e2b6df",
+      "preparation_index_path": "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W01/w01_trial1_preparation.json",
+      "preparation_index_sha256": "7e6114c2f78957f01f7ad568a0f90fa6372ef03e88545ad759b0407b83791b75"
+    },
+    "TRM-DDOE-001-W02": {
+      "nut_mesh_policy_path": "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W02/w02_targeted_nut_mesh_levels.toml",
+      "nut_mesh_policy_sha256": "d62a3753af24db2f92b9d4f130329292be315c6ac30c0f79afb0bbd535e2b6df",
+      "preparation_index_path": "simulations/staging/phase3_diversified_doe/TRM-DDOE-001/W02/w02_trial1_preparation.json",
+      "preparation_index_sha256": "80f14936394ac4cc713f6628f10630e4805a0531b3624de4cb6f60cc293b8ff2"
+    },
+    "accepted_fem_atlas_guard": {
+      "path": "docs/phase3_fem_atlas/atlas.json",
+      "sha256": "eed5e52f4e9baaad5e2eb89634de48bbdf53c14c584921d8afb0df00631ffc60"
+    },
+    "design_policy": {
+      "path": "config/phase3_diversified_doe.toml",
+      "sha256": "6d0e45c109b1ba0a279ec0f06467ea91392760171b9a91bf0467d763896108d9"
+    },
+    "design_proposal": {
+      "path": "docs/phase3_diversified_doe/design_proposal.json",
+      "sha256": "a386da9648af88b5577386efdc16643b0b099fe2614c2bcc18c0e8973d141e1e"
+    }
+  }
+}

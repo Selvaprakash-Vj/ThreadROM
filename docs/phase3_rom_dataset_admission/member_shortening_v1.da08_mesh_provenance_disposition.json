@@ -1,0 +1,157 @@
+{
+  "authorization": {
+    "existing_fine_reference_reuse_check_required": true,
+    "fine_fem_authorized": false,
+    "holdout_clearance_required_before_fine_fem": true,
+    "holdout_unsealing_authorized": false,
+    "rom_training_authorized": false
+  },
+  "cohorts": [
+    {
+      "da08_certification_mode": "DIRECT_CERTIFICATION_ONLY_NO_TRANSFER",
+      "da10_applicable_population_count": 2,
+      "frozen_sentinel_count": 2,
+      "member_material_id": "member_aluminium_en_aw_6082_t6",
+      "mesh_identity_status": "HISTORICAL_POLICY_IDENTITY_NOT_PERSISTED",
+      "radial_regime": "BASELINE_RADIAL_ENDPOINT",
+      "thread_designation": "M10x1.5",
+      "transfer_authorized_after_all_direct_sentinels_pass": false
+    },
+    {
+      "da08_certification_mode": "DIRECT_CERTIFICATION_ONLY_NO_TRANSFER",
+      "da10_applicable_population_count": 3,
+      "frozen_sentinel_count": 3,
+      "member_material_id": "member_aluminium_en_aw_6082_t6",
+      "mesh_identity_status": "HISTORICAL_POLICY_IDENTITY_NOT_PERSISTED",
+      "radial_regime": "RADIAL_VARIATION",
+      "thread_designation": "M10x1.5",
+      "transfer_authorized_after_all_direct_sentinels_pass": false
+    },
+    {
+      "da08_certification_mode": "DIRECT_CERTIFICATION",
+      "da10_applicable_population_count": 1,
+      "frozen_sentinel_count": 1,
+      "member_material_id": "steel_member",
+      "mesh_identity_status": "PROVEN_MEDIUM",
+      "radial_regime": "BASELINE_RADIAL_ENDPOINT",
+      "thread_designation": "M10x1.5",
+      "transfer_authorized_after_all_direct_sentinels_pass": false
+    },
+    {
+      "da08_certification_mode": "DIRECT_SENTINELS_WITH_GOVERNED_TRANSFER",
+      "da10_applicable_population_count": 19,
+      "frozen_sentinel_count": 3,
+      "member_material_id": "steel_member",
+      "mesh_identity_status": "PROVEN_MEDIUM_PLUS_V1",
+      "radial_regime": "RADIAL_VARIATION",
+      "thread_designation": "M10x1.5",
+      "transfer_authorized_after_all_direct_sentinels_pass": true
+    },
+    {
+      "da08_certification_mode": "DIRECT_CERTIFICATION_ONLY_NO_TRANSFER",
+      "da10_applicable_population_count": 1,
+      "frozen_sentinel_count": 1,
+      "member_material_id": "member_aluminium_en_aw_6082_t6",
+      "mesh_identity_status": "HISTORICAL_POLICY_IDENTITY_NOT_PERSISTED",
+      "radial_regime": "BASELINE_RADIAL_ENDPOINT",
+      "thread_designation": "M12x1.75",
+      "transfer_authorized_after_all_direct_sentinels_pass": false
+    },
+    {
+      "da08_certification_mode": "DIRECT_CERTIFICATION_ONLY_NO_TRANSFER",
+      "da10_applicable_population_count": 2,
+      "frozen_sentinel_count": 2,
+      "member_material_id": "member_aluminium_en_aw_6082_t6",
+      "mesh_identity_status": "HISTORICAL_POLICY_IDENTITY_NOT_PERSISTED",
+      "radial_regime": "RADIAL_VARIATION",
+      "thread_designation": "M12x1.75",
+      "transfer_authorized_after_all_direct_sentinels_pass": false
+    },
+    {
+      "da08_certification_mode": "DIRECT_CERTIFICATION_ONLY_NO_TRANSFER",
+      "da10_applicable_population_count": 1,
+      "frozen_sentinel_count": 1,
+      "member_material_id": "steel_member",
+      "mesh_identity_status": "HISTORICAL_POLICY_IDENTITY_NOT_PERSISTED",
+      "radial_regime": "BASELINE_RADIAL_ENDPOINT",
+      "thread_designation": "M12x1.75",
+      "transfer_authorized_after_all_direct_sentinels_pass": false
+    },
+    {
+      "da08_certification_mode": "DIRECT_CERTIFICATION_ONLY_NO_TRANSFER",
+      "da10_applicable_population_count": 2,
+      "frozen_sentinel_count": 2,
+      "member_material_id": "steel_member",
+      "mesh_identity_status": "HISTORICAL_POLICY_IDENTITY_NOT_PERSISTED",
+      "radial_regime": "RADIAL_VARIATION",
+      "thread_designation": "M12x1.75",
+      "transfer_authorized_after_all_direct_sentinels_pass": false
+    },
+    {
+      "da08_certification_mode": "DIRECT_CERTIFICATION_ONLY_NO_TRANSFER",
+      "da10_applicable_population_count": 2,
+      "frozen_sentinel_count": 2,
+      "member_material_id": "member_aluminium_en_aw_6082_t6",
+      "mesh_identity_status": "HISTORICAL_POLICY_IDENTITY_NOT_PERSISTED",
+      "radial_regime": "BASELINE_RADIAL_ENDPOINT",
+      "thread_designation": "M8x1.25",
+      "transfer_authorized_after_all_direct_sentinels_pass": false
+    },
+    {
+      "da08_certification_mode": "DIRECT_CERTIFICATION_ONLY_NO_TRANSFER",
+      "da10_applicable_population_count": 1,
+      "frozen_sentinel_count": 1,
+      "member_material_id": "member_aluminium_en_aw_6082_t6",
+      "mesh_identity_status": "HISTORICAL_POLICY_IDENTITY_NOT_PERSISTED",
+      "radial_regime": "RADIAL_VARIATION",
+      "thread_designation": "M8x1.25",
+      "transfer_authorized_after_all_direct_sentinels_pass": false
+    },
+    {
+      "da08_certification_mode": "DIRECT_CERTIFICATION_ONLY_NO_TRANSFER",
+      "da10_applicable_population_count": 1,
+      "frozen_sentinel_count": 1,
+      "member_material_id": "steel_member",
+      "mesh_identity_status": "HISTORICAL_POLICY_IDENTITY_NOT_PERSISTED",
+      "radial_regime": "BASELINE_RADIAL_ENDPOINT",
+      "thread_designation": "M8x1.25",
+      "transfer_authorized_after_all_direct_sentinels_pass": false
+    }
+  ],
+  "coverage": {
+    "da10_applicable_states": 35,
+    "direct_comparisons_maximum": 19,
+    "direct_only_states_due_to_unresolved_historical_mesh_identity": 15,
+    "m10_steel_baseline_direct_states": 1,
+    "m10_steel_radial_direct_sentinels": 3,
+    "m10_steel_radial_population": 19,
+    "m10_steel_radial_transfer_population_after_all_sentinels_pass": 16
+  },
+  "disposition": "MESH_PROVENANCE_GOVERNED_WITH_DIRECT_ONLY_FALLBACK_PRE_SOLVE",
+  "governance_basis": {
+    "fem_atlas_sha256": "2f491e19c248c13986c195a0161d00ab69c787f34998cb57c2e1b2d172d19515",
+    "geometry_mesh_atlas_sha256": "282b78266063d91c3621f6311e1139a9d29aca3ee8276c9bcf371d2ff9d9bc55",
+    "sentinel_protocol_sha256": "540e4ec8087bb11a622322ef9733e03a65cbcfc8ea4b62d228eaba5524b12d54"
+  },
+  "governance_decision": {
+    "additional_sentinels_required_due_to_missing_identity": 0,
+    "historical_artifact_mutation_authorized": false,
+    "historical_identity_inference_authorized": false,
+    "m10_steel_radial_transfer_mesh_policy": "medium_plus_v1",
+    "member_shortening_relative_limit": 0.02,
+    "numerical_acceptance_limit_changed": false,
+    "sentinel_selection_changed": false,
+    "transfer_rule": "TRANSFER_REQUIRES_PRE_SOLVE_PROVEN_COMMON_MESH_IDENTITY_AND_ALL_FROZEN_SENTINELS_PASS",
+    "unresolved_identity_rule": "DIRECT_CERTIFICATION_ONLY_NO_TRANSFER"
+  },
+  "observed_provenance_state": {
+    "explicit_mesh_identity_proven": 4,
+    "frozen_sentinels": 19,
+    "historical_mesh_policy_identity_not_persisted": 15,
+    "proven_medium": 1,
+    "proven_medium_plus_v1": 3
+  },
+  "record_status": "FINAL_PRE_SOLVE",
+  "schema": "threadrom.da08_mesh_provenance_disposition.v1",
+  "target_id": "member_shortening_v1"
+}

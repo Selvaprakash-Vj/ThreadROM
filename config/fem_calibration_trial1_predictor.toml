@@ -1,0 +1,16 @@
+[identity]
+policy_id = "phase3_calibration_observation_trial1_predictor_v1"
+
+[neighbors]
+maximum_neighbors = 4
+maximum_distance = 0.45
+inverse_distance_power = 2.0
+
+[applicability]
+minimum_neighbors_for_reuse = 2
+require_target_preload_bracketing = true
+maximum_correction_factor_relative_spread = 0.25
+
+[correction]
+minimum_factor = 0.75
+maximum_factor = 2.25

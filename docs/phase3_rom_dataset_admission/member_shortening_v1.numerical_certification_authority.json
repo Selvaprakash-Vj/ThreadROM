@@ -1,0 +1,79 @@
+{
+  "authority_id": "TRM-ROM-NUMCERT-MEMBER-SHORTENING-V1",
+  "certifications": [
+    {
+      "certification_id": "TRM-DA08-P04-MEDIUM-PLUS-PASS",
+      "decision": "PASS",
+      "extrapolation_authorized": false,
+      "governing_preloads_kn": [
+        18.0,
+        19.0,
+        19.5
+      ],
+      "match": {
+        "case_hash": "ae87c6fcba1140a8e3b7ca4d7d170e4f0531fe3c931f0a28b6d9148ae8f0705d",
+        "case_id": "P04_RADIAL_GEOMETRY",
+        "mesh_policy_name": "medium_plus_v1"
+      },
+      "relative_limit": 0.02,
+      "scope": "EXACT_P04_CASE_AND_MEDIUM_PLUS_MESH_POLICY_ONLY",
+      "source_disposition": "MEDIUM_PLUS_SUPPORTED_FOR_P04"
+    },
+    {
+      "certification_id": "TRM-DA08-P04-MEDIUM-REJECT",
+      "decision": "REJECTED",
+      "match": {
+        "case_hash": "ae87c6fcba1140a8e3b7ca4d7d170e4f0531fe3c931f0a28b6d9148ae8f0705d",
+        "case_id": "P04_RADIAL_GEOMETRY",
+        "mesh_policy_name": "medium"
+      },
+      "scope": "EXACT_P04_CASE_AND_BASE_MEDIUM_MESH_POLICY_ONLY",
+      "source_disposition": "S1_REJECTS_MEDIUM_FOR_P04"
+    }
+  ],
+  "governance": {
+    "absence_of_authority_defers": true,
+    "dataset_mutation_authorized": false,
+    "domain_expansion_forbidden": true,
+    "extrapolation_forbidden": true,
+    "fem_execution_authorized": false,
+    "holdout_access_authorized": false,
+    "rom_training_authorized": false
+  },
+  "meaning": "Target-specific numerical-certification authority for member_shortening ROM admission. Existing P04 evidence is bound only to the exact governed P04 case and mesh-policy identity. No cross-size, cross-material, cross-geometry or parameter-space extrapolation is authorized.",
+  "record_status": "FINAL",
+  "relative_limit": 0.02,
+  "schema": "threadrom.rom_numerical_certification_authority.v1",
+  "source_evidence": {
+    "admission_contract": {
+      "path": "docs/phase3_rom_dataset_admission/member_shortening_v1.admission_contract.json",
+      "sha256": "5d7b127345b89327624db560cf03c49fa40346a01491188540ffc797b44f5c11"
+    },
+    "p04_medium_plus_certification": {
+      "path": "simulations/staging/phase3_cp8_p04/vv06_medium_plus/p04_medium_plus_certification_record.json",
+      "sha256": "ea36aae7c7e7c9214af6ebbf50f31799d10f924e359d93b270f76a91aaee4880"
+    },
+    "p04_medium_plus_quality_record": {
+      "path": "simulations/staging/phase3_cp8_p04/trm_fem_ae87c6fcba11/mesh/complete_joint_grouped_medium_plus_v1_quality.json",
+      "sha256": "215f982302d0312ea6fa1ca5b0bba98c3a8748b635d43d9ecc8a648fe49f5269"
+    },
+    "phase3_production_doe_policy": {
+      "path": "config/phase3_production_doe.toml",
+      "sha256": "43032557cb2abead0118362bcfc6a9b2e5246a7d363ca83eef5fcf35054befc1"
+    },
+    "resolver": {
+      "path": "src/threadrom/factory/rom_dataset_numerical_certification.py",
+      "sha256": "94f432ad18f068f650786e4c521a877af9ccded5d189e51bd48cde7f200e4a13"
+    },
+    "target_contract": {
+      "path": "docs/phase3_rom_targets/member_shortening_v1.target_contract.json",
+      "sha256": "b8fcf7519e1fe805f5093b9f3a0d01f53b64ba705b118e4d271677895e47a2bf"
+    },
+    "vv06_s1_policy": {
+      "path": "config/fem_vv06_s1.toml",
+      "sha256": "8db299eec9cf653fdbc15454b34d885f9b97382443d176b024ae11bb9307e671"
+    }
+  },
+  "target_field": "member_shortening_mm",
+  "unit": "mm"
+}

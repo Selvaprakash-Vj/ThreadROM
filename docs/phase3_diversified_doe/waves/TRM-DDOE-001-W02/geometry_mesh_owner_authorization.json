@@ -1,0 +1,63 @@
+{
+  "approval_status": "OWNER_APPROVED",
+  "approved_at_utc": "2026-09-30T16:35:56.238703+00:00",
+  "approved_by": "Selva - ThreadROM project owner",
+  "authorization_type": "OWNER_BOUNDED_GEOMETRY_MESH_PREPARATION_AUTHORIZATION",
+  "authorized_case_count": 4,
+  "campaign_id": "TRM-DDOE-001",
+  "cases": [
+    {
+      "case_hash": "8da375401526a253cde3056662d358166dc3373f9200325c39ddf9514f6cb5f1",
+      "geometry_action": "GENERATE_FRESH_GOVERNED_GEOMETRY",
+      "mesh_action": "GENERATE_FRESH_GOVERNED_MESH",
+      "preparation_run_id": "trm_fem_d924d7c036b7",
+      "proposal_id": "TRM-DDOE-D-M10x1_5__member_aluminium_en_aw_6082_t6-02",
+      "reuse_claimed": false,
+      "wave_order": 1
+    },
+    {
+      "case_hash": "91e86a0b0eef6ac09ea2a27379c74e94dcaebaa3579178226d9ca0fff6da7d3c",
+      "geometry_action": "GENERATE_FRESH_GOVERNED_GEOMETRY",
+      "mesh_action": "GENERATE_FRESH_GOVERNED_MESH",
+      "preparation_run_id": "trm_fem_bfb674d30aad",
+      "proposal_id": "TRM-DDOE-D-M12x1_75__member_aluminium_en_aw_6082_t6-02",
+      "reuse_claimed": false,
+      "wave_order": 2
+    },
+    {
+      "case_hash": "2c2893c0baa941d67ea6540f5071e1a90ca0d2f3e60c98f0dfdaf1eaf5c7df8f",
+      "geometry_action": "GENERATE_FRESH_GOVERNED_GEOMETRY",
+      "mesh_action": "GENERATE_FRESH_GOVERNED_MESH",
+      "preparation_run_id": "trm_fem_6edeb234225b",
+      "proposal_id": "TRM-DDOE-D-M8x1_25__member_aluminium_en_aw_6082_t6-02",
+      "reuse_claimed": false,
+      "wave_order": 3
+    },
+    {
+      "case_hash": "b4fcf74bc0e1faf2f04eab3a8f1af538723d783cd639ea41dadc6b331a98ba58",
+      "geometry_action": "GENERATE_FRESH_GOVERNED_GEOMETRY",
+      "mesh_action": "GENERATE_FRESH_GOVERNED_MESH",
+      "preparation_run_id": "trm_fem_ef97f5aa38de",
+      "proposal_id": "TRM-DDOE-D-M12x1_75__steel_member-02",
+      "reuse_claimed": false,
+      "wave_order": 4
+    }
+  ],
+  "engineering_intent": "Prepare governed geometry and grouped meshes for exactly the four frozen W02 development cases. No unproven geometry/mesh reuse is claimed. This authorization does not launch CalculiX.",
+  "record_status": "FINAL",
+  "schema": "threadrom.phase3_diversified_doe_geometry_mesh_owner_authorization.v2",
+  "schema_version": 2,
+  "scope": {
+    "adaptive_continuation_authorized": false,
+    "artifact_retirement_authorized": false,
+    "dataset_admission_authorized": false,
+    "fresh_geometry_authorized": true,
+    "fresh_mesh_authorized": true,
+    "full_physics_certification_authorized": false,
+    "holdout_access_authorized": false,
+    "reuse_without_exact_governed_proof_authorized": false,
+    "solver_execution_authorized": false
+  },
+  "wave_id": "TRM-DDOE-001-W02",
+  "wave_plan_sha256": "02f37a7515604b5c76e54aa69ed56991289eedd6100bc6448fd1c660e5bf5c67"
+}

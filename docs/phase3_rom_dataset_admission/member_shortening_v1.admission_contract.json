@@ -1,0 +1,225 @@
+{
+  "admission_gates": [
+    {
+      "gate_id": "DA01_TARGET_BINDING",
+      "requirement": "Exact frozen member-shortening target contract identity and SHA match."
+    },
+    {
+      "gate_id": "DA02_CASE_IDENTITY",
+      "requirement": "case_id and case_hash are present and exactly bound to the certified source evidence."
+    },
+    {
+      "gate_id": "DA03_EXECUTION_IDENTITY",
+      "requirement": "case_run_id, accepted run_id and trial_index exactly match the governing accepted FEM evidence."
+    },
+    {
+      "gate_id": "DA04_ENGINEERING_INPUTS",
+      "requirement": "Canonical engineering inputs are fully resolved, unit-defined and free of unresolved adapter status."
+    },
+    {
+      "gate_id": "DA05_PHYSICS_ACCEPTANCE",
+      "requirement": "The governing FEM state is FINAL and full-physics accepted with all applicable hard gates passed."
+    },
+    {
+      "gate_id": "DA06_TARGET_EXTRACTION",
+      "requirement": "member_shortening_mm is deterministically extracted from the final accepted nonlinear FEM state under the frozen target-extraction contract."
+    },
+    {
+      "gate_id": "DA07_TARGET_VALUE",
+      "requirement": "The extracted target is finite and nonzero."
+    },
+    {
+      "gate_id": "DA08_NUMERICAL_CERTIFICATION",
+      "requirement": "Target-specific numerical certification passes the predeclared relative limit of 0.02."
+    },
+    {
+      "gate_id": "DA09_PROVENANCE",
+      "requirement": "Required source artifacts, certificates, extraction implementation and governing hashes are reproducible."
+    },
+    {
+      "gate_id": "DA10_APPLICABILITY",
+      "requirement": "The sample lies within the documented governed engineering applicability envelope."
+    },
+    {
+      "gate_id": "DA11_HOLDOUT_PROTECTION",
+      "requirement": "A sealed blind-holdout identity may not be inspected or admitted through the training-candidate workflow."
+    },
+    {
+      "gate_id": "DA12_PARTITION_BOUNDARY",
+      "requirement": "Dataset admission does not itself assign training, validation or independent-evaluation membership."
+    }
+  ],
+  "admission_states": {
+    "ADMITTED": "All target-specific eligibility gates passed.",
+    "DEFERRED": "Admission cannot yet be decided because required governed evidence or canonical input resolution is absent.",
+    "NOT_EVALUATED": "No target-specific dataset-admission decision exists.",
+    "REJECTED": "A definitive admission gate failed."
+  },
+  "canonical_sample_schema": {
+    "applicability": {
+      "domain_expansion_by_admission_forbidden": true,
+      "supported_domain_record_required": true
+    },
+    "engineering_inputs": {
+      "canonical_units_required": true,
+      "complete_case_resolution_required": true,
+      "minimum_semantic_fields": [
+        "thread_designation",
+        "bolt_material_id",
+        "nut_material_id",
+        "head_member_material_id",
+        "nut_member_material_id",
+        "head_member_thickness_mm",
+        "nut_member_thickness_mm",
+        "member_outer_diameter_mm",
+        "member_clearance_hole_diameter_mm",
+        "thread_friction_coefficient",
+        "head_bearing_friction_coefficient",
+        "nut_bearing_friction_coefficient",
+        "member_interface_friction_coefficient",
+        "target_preload_n",
+        "external_axial_load_n"
+      ],
+      "required": true,
+      "unresolved_or_placeholder_inputs_forbidden": true
+    },
+    "exclusions": {
+      "explicit_reason_required_when_not_admitted": true
+    },
+    "identity": {
+      "required": [
+        "sample_id",
+        "case_id",
+        "case_hash",
+        "case_run_id",
+        "run_id",
+        "trial_index",
+        "target_contract_id",
+        "target_contract_sha256",
+        "admission_contract_id",
+        "admission_contract_sha256"
+      ],
+      "sample_id_semantics": "Deterministic identity derived from the canonical source-case identity, accepted FEM execution identity, target-contract identity and immutable source evidence."
+    },
+    "partition": {
+      "assignment_is_separate_governed_action": true,
+      "field_required": true,
+      "value_at_admission": null
+    },
+    "reproducibility": {
+      "admission_contract_sha_required": true,
+      "extractor_sha_required": true,
+      "source_artifact_hashes_required": true,
+      "target_contract_sha_required": true
+    },
+    "schema": "threadrom.rom_dataset_sample.v1",
+    "source_evidence": {
+      "exact_case_identity_required": true,
+      "exact_execution_identity_required": true,
+      "governing_physics_certificate_required": true,
+      "immutable_hashes_required": true,
+      "target_extraction_provenance_required": true
+    },
+    "target": {
+      "field": "member_shortening_mm",
+      "finite_required": true,
+      "nonzero_required": true,
+      "source_state": "FINAL_ACCEPTED_NONLINEAR_FEM_STATE",
+      "unit": "mm"
+    },
+    "validation": {
+      "all_applicable_hard_gates_required": true,
+      "full_physics_acceptance_required": true,
+      "numerical_certification_relative_limit": 0.02,
+      "target_specific_numerical_certification_required": true
+    }
+  },
+  "contract_id": "TRM-ROM-DATASET-ADMISSION-MEMBER-SHORTENING-V1",
+  "contract_status": "FROZEN_PRE_ADMISSION",
+  "current_state_boundary": {
+    "accepted_fem_evidence_cases": 26,
+    "currently_admitted_rows": 0,
+    "currently_partitioned_rows": 0,
+    "meaning": "This contract creation does not retroactively admit any historical or W03 case."
+  },
+  "dataset_population_requirements": {
+    "all_holdout_rows_require_valid_fem_physics": true,
+    "all_training_rows_require_valid_fem_physics": true,
+    "existing_certified_rows_may_count": true,
+    "required_blind_holdout_rows": 6,
+    "required_training_rows": 24
+  },
+  "governance": {
+    "created_before_dataset_admission": true,
+    "created_before_partition_assignment": true,
+    "created_before_rom_training": true,
+    "dataset_admission_performed": false,
+    "holdout_access_authorized": false,
+    "partition_assignment_performed": false,
+    "rom_training_performed": false,
+    "solver_launch_authorized": false,
+    "w04_execution_authorized": false
+  },
+  "holdout_governance": {
+    "access_authorized": false,
+    "blind_scoring_authorized": false,
+    "future_unseal_requires_separate_governance": true,
+    "inspection_authorized": false,
+    "sealed_holdouts": 6,
+    "training_membership_authorized": false
+  },
+  "partition_boundary": {
+    "admission_assigns_partition": false,
+    "allowed_value_at_admission": null,
+    "sealed_holdout_membership": "PRE_REGISTERED_AND_NOT_TOUCHED_BY_THIS_CONTRACT",
+    "training_validation_partitioning": "SEPARATE_FUTURE_GOVERNED_ACTION"
+  },
+  "purpose": {
+    "dataset_admission_is_target_specific": true,
+    "meaning": "Defines whether one engineering-accepted FEM case is eligible to become one canonical ROM sample for the frozen member-shortening target.",
+    "physics_acceptance_is_not_dataset_admission": true,
+    "target_definition_is_not_dataset_admission": true
+  },
+  "reason_codes": [
+    "TARGET_CONTRACT_MISMATCH",
+    "CASE_IDENTITY_MISMATCH",
+    "EXECUTION_IDENTITY_MISMATCH",
+    "ENGINEERING_INPUTS_UNRESOLVED",
+    "PHYSICS_NOT_ACCEPTED",
+    "TARGET_EXTRACTION_UNAVAILABLE",
+    "TARGET_VALUE_INVALID",
+    "NUMERICAL_CERTIFICATION_FAILED",
+    "PROVENANCE_INCOMPLETE",
+    "OUTSIDE_APPLICABILITY",
+    "SEALED_HOLDOUT_FORBIDDEN",
+    "OTHER_GOVERNED_EXCLUSION"
+  ],
+  "record_status": "FINAL",
+  "schema": "threadrom.rom_dataset_admission_contract.v1",
+  "sources": {
+    "current_accepted_fem_atlas": {
+      "path": "docs/phase3_fem_atlas/atlas.json",
+      "sha256": "c14e0c6dc087ea56c45c8e05517633ae6b1ac33910a8aae12d2425f8a5ab86b4"
+    },
+    "dataset_sufficiency": {
+      "path": "config/phase3_dataset_sufficiency.toml",
+      "sha256": "cc3f228cf1ae5e44441d6744eaaf628169d40ba2efeea0c56cc86588458a8812"
+    },
+    "production_baseline": {
+      "path": "docs/phase3_production_baseline/post_w03_repaired_runner_baseline_amendment.json",
+      "sha256": "719f7a943cef3fe27aee6ebe2af352656e7d7950494a6a57633936877dd418a2"
+    },
+    "target_contract": {
+      "path": "docs/phase3_rom_targets/member_shortening_v1.target_contract.json",
+      "sha256": "b8fcf7519e1fe805f5093b9f3a0d01f53b64ba705b118e4d271677895e47a2bf"
+    }
+  },
+  "target_binding": {
+    "contract_id": "TRM-ROM-TARGET-MEMBER-SHORTENING-V1",
+    "dataset_field": "member_shortening_mm",
+    "path": "docs/phase3_rom_targets/member_shortening_v1.target_contract.json",
+    "response_id": "member_shortening",
+    "sha256": "b8fcf7519e1fe805f5093b9f3a0d01f53b64ba705b118e4d271677895e47a2bf",
+    "unit": "mm"
+  }
+}

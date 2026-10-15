@@ -1,0 +1,1023 @@
+from __future__ import annotations
+
+import hashlib
+import json
+
+from pathlib import Path
+
+
+ROOT = Path(
+    r"D:\ThreadROM"
+).resolve()
+
+DOC_ROOT = (
+    ROOT
+    / "docs"
+    / "phase3_governed_wave_closure"
+)
+
+REPLAY_ROOT = (
+    DOC_ROOT
+    / "historical_replay"
+)
+
+STATUS_PATH = (
+    DOC_ROOT
+    / "status_snapshot_v1.json"
+)
+
+CLOSURE_PATH = (
+    DOC_ROOT
+    / "slice5_closure.json"
+)
+
+
+SLICE4_CLOSURE_SHA256 = (
+    "c1d3240cfde6a0f0fcb0d9d8dc595f8"
+    "578d4234ebff9c805663e05086b8bf401"
+)
+
+
+HISTORICAL = {
+    "W01": {
+        "auth": (
+            "7c825c4fc91745ef5c52f36c699ecf9"
+            "ac580cd4fb9f62692c387c7ede560217f"
+        ),
+        "prep": (
+            "7e6114c2f78957f01f7ad568a0f90fa"
+            "6372ef03e88545ad759b0407b83791b75"
+        ),
+        "contract": (
+            "80c7df034e6d466b5eb512935bdaa6b1"
+            "df25989a90e095017da6be467106a96a"
+        ),
+        "database": (
+            "simulations/staging/"
+            "phase3_diversified_doe/"
+            "TRM-DDOE-001/W01/factory/"
+            "w01_trial1_factory.sqlite3"
+        ),
+        "database_sha256": (
+            "00f6cdff8617689b1d29103acfa1a177"
+            "4b6dab7348bd2cac4ccffa533a4c2e34"
+        ),
+        "certificates": {
+            (
+                "TRM-DDOE-D-M12x1_75__"
+                "member_aluminium_en_aw_6082_t6-01"
+            ): (
+                "ce4a118f279766608003bbe2acb402b4"
+                "2b69abe0bc9d4b925753a4d347958920"
+            ),
+            (
+                "TRM-DDOE-D-M12x1_75__"
+                "steel_member-12"
+            ): (
+                "91238bb5eaba821cf5e1354d405382ba"
+                "0c159c8fec99559fdf3988949632bb8e"
+            ),
+            (
+                "TRM-DDOE-D-M8x1_25__"
+                "member_aluminium_en_aw_6082_t6-01"
+            ): (
+                "c1e37029566dd9fa44a834ca7795a937"
+                "df49a628c9e5e44974c9b57e62fa59b7"
+            ),
+            (
+                "TRM-DDOE-D-M8x1_25__"
+                "steel_member-12"
+            ): (
+                "2f0b7cd642b6b6203849a452c7b6df15"
+                "5aed7e2db15094471c12c715395f696c"
+            ),
+        },
+    },
+    "W02": {
+        "auth": (
+            "19f5fa4bcd31eb8a1bff992f17d2c60"
+            "a5ff70fdcf741521cc834401c99e6890a"
+        ),
+        "prep": (
+            "80f14936394ac4cc713f6628f10630e4"
+            "805a0531b3624de4cb6f60cc293b8ff2"
+        ),
+        "contract": (
+            "6c57bd5f0929015f1478a9e6725596b3"
+            "0ba37234875318c99ca3eff2fafc8f1b"
+        ),
+        "database": (
+            "simulations/staging/"
+            "phase3_diversified_doe/"
+            "TRM-DDOE-001/W02/factory/"
+            "w02_trial1_factory.sqlite3"
+        ),
+        "database_sha256": (
+            "892fe09fdd3d463cbb1888f0184086a9"
+            "79b3f52d064f53c7ea4b2f59466fabd1"
+        ),
+        "certificates": {
+            (
+                "TRM-DDOE-D-M10x1_5__"
+                "member_aluminium_en_aw_6082_t6-02"
+            ): (
+                "887944a98cf80a7708784da27cd67ec6c"
+                "adc704f97f9bff21d49078c56d8054f"
+            ),
+            (
+                "TRM-DDOE-D-M12x1_75__"
+                "member_aluminium_en_aw_6082_t6-02"
+            ): (
+                "46c29d266cda74fd8b4bce003c9884aa"
+                "afc2e76e35b71eb5b6072d018079e91f"
+            ),
+            (
+                "TRM-DDOE-D-M12x1_75__"
+                "steel_member-02"
+            ): (
+                "2bdee2af99db204bdf30fea23b34ae5c"
+                "125ddb7fa9f94f85a2f3c72f9662b397"
+            ),
+            (
+                "TRM-DDOE-D-M8x1_25__"
+                "member_aluminium_en_aw_6082_t6-02"
+            ): (
+                "f6c0fcde73659d7a54ccb5cd29ab5001"
+                "c9803cfa9683200b750ced1c79d83dc7"
+            ),
+        },
+    },
+}
+
+
+def require(
+    condition: bool,
+    message: str,
+) -> None:
+    if not condition:
+        raise RuntimeError(
+            message
+        )
+
+
+def sha256_file(
+    path: Path,
+) -> str:
+    require(
+        path.is_file(),
+        f"Missing required file: {path}",
+    )
+
+    digest = hashlib.sha256()
+
+    with path.open(
+        "rb"
+    ) as stream:
+        for chunk in iter(
+            lambda: stream.read(
+                8 * 1024 * 1024
+            ),
+            b"",
+        ):
+            digest.update(
+                chunk
+            )
+
+    return digest.hexdigest()
+
+
+def canonical_bytes(
+    payload: dict,
+) -> bytes:
+    return (
+        json.dumps(
+            payload,
+            sort_keys=True,
+            separators=(
+                ",",
+                ":",
+            ),
+            ensure_ascii=True,
+            allow_nan=False,
+        )
+        + "\n"
+    ).encode(
+        "utf-8"
+    )
+
+
+def write_immutable_json(
+    path: Path,
+    payload: dict,
+) -> str:
+    encoded = canonical_bytes(
+        payload
+    )
+
+    digest = hashlib.sha256(
+        encoded
+    ).hexdigest()
+
+    path.parent.mkdir(
+        parents=True,
+        exist_ok=True,
+    )
+
+    if path.exists():
+        require(
+            path.read_bytes()
+            == encoded,
+            (
+                "Immutable Slice-5 artifact drift: "
+                f"{path}"
+            ),
+        )
+
+        return digest
+
+    path.write_bytes(
+        encoded
+    )
+
+    return digest
+
+
+def concrete_repo_path(
+    value,
+) -> Path:
+    candidate = Path(
+        str(
+            value
+        )
+    )
+
+    if not candidate.is_absolute():
+        candidate = (
+            ROOT
+            / candidate
+        )
+
+    candidate = candidate.resolve(
+        strict=True
+    )
+
+    try:
+        candidate.relative_to(
+            ROOT
+        )
+    except ValueError as exc:
+        raise RuntimeError(
+            "Governed path escapes repository root."
+        ) from exc
+
+    return candidate
+
+
+def contract_sha(
+    contract,
+) -> str:
+    value = getattr(
+        contract,
+        "contract_sha256",
+    )
+
+    if callable(
+        value
+    ):
+        value = value()
+
+    return str(
+        value
+    )
+
+
+# ==============================================================================
+# Dependency pin
+# ==============================================================================
+
+slice4_path = (
+    ROOT
+    / "docs"
+    / "phase3_governed_wave_state_machine"
+    / "slice4_closure.json"
+)
+
+require(
+    sha256_file(
+        slice4_path
+    )
+    == SLICE4_CLOSURE_SHA256,
+    "Slice-4 closure SHA drift.",
+)
+
+
+# ==============================================================================
+# Imports after closure dependency validation
+# ==============================================================================
+
+from threadrom.factory.governed_wave_closure import (
+    GovernedWaveExpectedCase,
+    build_governed_wave_closure_record,
+    persist_governed_wave_closure,
+    recover_governed_wave_acceptance_evidence,
+    recover_governed_wave_closure,
+)
+
+from threadrom.factory.governed_wave_contract import (
+    build_governed_wave_execution_contract,
+)
+
+from threadrom.factory.governed_wave_runner import (
+    build_governed_wave_runner,
+)
+
+from threadrom.factory.governed_wave_state_machine import (
+    GovernedCaseCampaignSnapshot,
+    GovernedWaveAction,
+    GovernedWaveCampaignSnapshot,
+    GovernedWavePhase,
+    decide_governed_wave_campaign,
+)
+
+
+# ==============================================================================
+# Replay and freeze W01 + W02 wave closure evidence
+# ==============================================================================
+
+wave_results = {}
+
+
+for wave_token in (
+    "W01",
+    "W02",
+):
+    data = HISTORICAL[
+        wave_token
+    ]
+
+    contract = (
+        build_governed_wave_execution_contract(
+            campaign_id="TRM-DDOE-001",
+            wave_token=wave_token,
+            expected_owner_authorization_sha256=(
+                data[
+                    "auth"
+                ]
+            ),
+            expected_preparation_index_sha256=(
+                data[
+                    "prep"
+                ]
+            ),
+            authorized_case_count=4,
+            maximum_concurrent_solver_slots=4,
+            maximum_trial_index=6,
+        )
+    )
+
+    actual_contract_sha = (
+        contract_sha(
+            contract
+        )
+    )
+
+    require(
+        actual_contract_sha
+        == data[
+            "contract"
+        ],
+        (
+            f"{wave_token}: execution-contract SHA drift."
+        ),
+    )
+
+    runner = build_governed_wave_runner(
+        repository_root=ROOT,
+        contract=contract,
+    )
+
+    runner.call(
+        "verify_owner_authorization"
+    )
+
+    contexts = (
+        runner.build_case_contexts()
+    )
+
+    require(
+        len(
+            contexts
+        )
+        == 4,
+        (
+            f"{wave_token}: authorized context count drift."
+        ),
+    )
+
+    expected_cases = tuple(
+        GovernedWaveExpectedCase(
+            case_id=context[
+                "case_id"
+            ],
+            case_hash=context[
+                "case_hash"
+            ],
+            case_run_id=context[
+                "case_run_id"
+            ],
+        )
+        for context in contexts
+    )
+
+    database_path = (
+        concrete_repo_path(
+            data[
+                "database"
+            ]
+        )
+    )
+
+    database_before = (
+        sha256_file(
+            database_path
+        )
+    )
+
+    require(
+        database_before
+        == data[
+            "database_sha256"
+        ],
+        (
+            f"{wave_token}: historical registry SHA drift "
+            "before closure replay."
+        ),
+    )
+
+    evidence = (
+        recover_governed_wave_acceptance_evidence(
+            repo_root=ROOT,
+            wave_id=contract.wave_id,
+            factory_database_path=(
+                contract.factory_database_path
+            ),
+            expected_cases=expected_cases,
+        )
+    )
+
+    require(
+        len(
+            evidence.cases
+        )
+        == 4,
+        (
+            f"{wave_token}: expected 4 accepted cases."
+        ),
+    )
+
+    certificate_set = {
+        case.case_id: (
+            case.certificate_sha256
+        )
+        for case in evidence.cases
+    }
+
+    require(
+        certificate_set
+        == data[
+            "certificates"
+        ],
+        (
+            f"{wave_token}: governed certificate-set drift."
+        ),
+    )
+
+    require(
+        all(
+            case.hard_gate_count
+            == 13
+            for case in evidence.cases
+        ),
+        (
+            f"{wave_token}: governed hard-gate count drift."
+        ),
+    )
+
+    require(
+        all(
+            case.accepted_increment_count
+            == 20
+            for case in evidence.cases
+        ),
+        (
+            f"{wave_token}: accepted increment count drift."
+        ),
+    )
+
+    require(
+        all(
+            case.rotational_moment_equilibrium_status
+            == "not_assessed"
+            for case in evidence.cases
+        ),
+        (
+            f"{wave_token}: rotational equilibrium "
+            "scope unexpectedly changed."
+        ),
+    )
+
+    record = (
+        build_governed_wave_closure_record(
+            evidence=evidence,
+            execution_contract_sha256=(
+                actual_contract_sha
+            ),
+            owner_authorization_sha256=(
+                data[
+                    "auth"
+                ]
+            ),
+            preparation_index_sha256=(
+                data[
+                    "prep"
+                ]
+            ),
+        )
+    )
+
+    replay_path = (
+        REPLAY_ROOT
+        / (
+            contract.wave_id
+            + ".wave_closure.json"
+        )
+    )
+
+    closure_sha = (
+        persist_governed_wave_closure(
+            path=replay_path,
+            record=record,
+        )
+    )
+
+    recovered = (
+        recover_governed_wave_closure(
+            path=replay_path,
+            expected_wave_id=(
+                contract.wave_id
+            ),
+            expected_evidence=evidence,
+        )
+    )
+
+    require(
+        recovered is not None,
+        (
+            f"{wave_token}: persisted closure "
+            "could not be recovered."
+        ),
+    )
+
+    require(
+        recovered.get(
+            "execution_contract_sha256"
+        )
+        == actual_contract_sha,
+        (
+            f"{wave_token}: closure contract SHA drift."
+        ),
+    )
+
+    require(
+        recovered.get(
+            "owner_authorization_sha256"
+        )
+        == data[
+            "auth"
+        ],
+        (
+            f"{wave_token}: closure owner-auth SHA drift."
+        ),
+    )
+
+    require(
+        recovered.get(
+            "preparation_index_sha256"
+        )
+        == data[
+            "prep"
+        ],
+        (
+            f"{wave_token}: closure preparation SHA drift."
+        ),
+    )
+
+    snapshot = (
+        GovernedWaveCampaignSnapshot(
+            wave_id=contract.wave_id,
+            authority_verified=True,
+            authorized_case_count=4,
+            cases=tuple(
+                GovernedCaseCampaignSnapshot(
+                    case_id=case.case_id,
+                    full_physics_accepted=True,
+                )
+                for case in evidence.cases
+            ),
+            closure_verified=True,
+        )
+    )
+
+    decision = (
+        decide_governed_wave_campaign(
+            snapshot
+        )
+    )
+
+    require(
+        decision.phase
+        is GovernedWavePhase.CLOSED,
+        (
+            f"{wave_token}: state machine did not "
+            "enter CLOSED."
+        ),
+    )
+
+    require(
+        decision.action
+        is GovernedWaveAction.NONE,
+        (
+            f"{wave_token}: closed wave still "
+            "requests an action."
+        ),
+    )
+
+    database_after = (
+        sha256_file(
+            database_path
+        )
+    )
+
+    require(
+        database_after
+        == database_before,
+        (
+            f"{wave_token}: registry mutated "
+            "during closure integration."
+        ),
+    )
+
+    wave_results[
+        wave_token
+    ] = {
+        "wave_id": (
+            contract.wave_id
+        ),
+        "execution_contract_sha256": (
+            actual_contract_sha
+        ),
+        "owner_authorization_sha256": (
+            data[
+                "auth"
+            ]
+        ),
+        "preparation_index_sha256": (
+            data[
+                "prep"
+            ]
+        ),
+        "registry_sha256": (
+            database_after
+        ),
+        "authorized_case_count": 4,
+        "accepted_case_count": 4,
+        "certificate_sha256": (
+            certificate_set
+        ),
+        "hard_gate_count_per_case": 13,
+        "accepted_increment_count_per_case": 20,
+        "rotational_moment_equilibrium_status": (
+            "not_assessed"
+        ),
+        "closure_path": str(
+            replay_path.relative_to(
+                ROOT
+            )
+        ).replace(
+            "\\",
+            "/",
+        ),
+        "closure_sha256": (
+            closure_sha
+        ),
+        "state_machine_phase": (
+            decision.phase.value
+        ),
+        "registry_mutated": False,
+    }
+
+
+# ==============================================================================
+# Slice-5 source identity
+# ==============================================================================
+
+SOURCE_PATHS = {
+    "wave_closure": (
+        ROOT
+        / "src"
+        / "threadrom"
+        / "factory"
+        / "governed_wave_closure.py"
+    ),
+    "wave_closure_unit_test": (
+        ROOT
+        / "tests"
+        / "unit"
+        / "test_governed_wave_closure.py"
+    ),
+    "wave_closure_historical_replay": (
+        ROOT
+        / "tests"
+        / "test_governed_wave_closure_historical_replay.py"
+    ),
+    "wave_state_machine": (
+        ROOT
+        / "src"
+        / "threadrom"
+        / "factory"
+        / "governed_wave_state_machine.py"
+    ),
+    "wave_controller": (
+        ROOT
+        / "src"
+        / "threadrom"
+        / "factory"
+        / "governed_wave_controller.py"
+    ),
+    "generic_wave_runner": (
+        ROOT
+        / "src"
+        / "threadrom"
+        / "factory"
+        / "governed_wave_runner.py"
+    ),
+    "physics_certificate": (
+        ROOT
+        / "src"
+        / "threadrom"
+        / "factory"
+        / "diversified_fem_physics_certificate.py"
+    ),
+}
+
+
+source_hashes = {
+    name: sha256_file(
+        path
+    )
+    for name, path
+    in SOURCE_PATHS.items()
+}
+
+
+# ==============================================================================
+# Slice-5 immutable status + closure
+# ==============================================================================
+
+status = {
+    "schema": (
+        "threadrom.phase3_governed_wave_"
+        "closure_integration_status.v1"
+    ),
+    "campaign_id": "TRM-DDOE-001",
+    "slice": 5,
+    "component": (
+        "CERTIFICATION_EVIDENCE_"
+        "WAVE_CLOSURE_INTEGRATION_V1"
+    ),
+    "historical_wave_replay": (
+        wave_results
+    ),
+    "certificate_contract": {
+        "schema": (
+            "threadrom.diversified_"
+            "governed_physics_certificate.v1"
+        ),
+        "record_status": "FINAL",
+        "accepted_disposition": (
+            "GOVERNED_FULL_PHYSICS_ACCEPTED"
+        ),
+        "artifact_fingerprints_replayed": True,
+        "source_fingerprints_replayed": True,
+        "authorized_cohort_exactness_enforced": True,
+        "case_identity_cross_checked": True,
+        "certificate_identity_cross_checked": True,
+    },
+    "wave_closure_contract": {
+        "schema": (
+            "threadrom.governed_wave_closure.v1"
+        ),
+        "record_status": "FINAL",
+        "disposition": (
+            "GOVERNED_WAVE_FULL_PHYSICS_CLOSED"
+        ),
+        "immutable_persistence": True,
+        "conflicting_rewrite_rejected": True,
+        "state_machine_closed_integration": True,
+    },
+    "physics_scope": {
+        "translational_equilibrium": "PASS",
+        "rotational_moment_equilibrium": (
+            "NOT_ASSESSED"
+        ),
+        "rotational_moment_equilibrium_certified": False,
+    },
+    "test_evidence": {
+        "slice5_unit_and_historical_replay": (
+            "8 PASSED"
+        ),
+    },
+    "governance": {
+        "new_fem_authorized": False,
+        "additional_wave_authorized": False,
+        "dataset_admission_authorized": False,
+        "holdout_access_authorized": False,
+        "artifact_retirement_authorized": False,
+        "w03_execution_authorized": False,
+        "w03_launched": False,
+        "calculix_launched_by_closure": False,
+        "historical_registry_mutation": False,
+    },
+    "dependencies": {
+        "slice4_closure_sha256": (
+            SLICE4_CLOSURE_SHA256
+        ),
+    },
+    "source_hashes": (
+        source_hashes
+    ),
+}
+
+
+status_sha = write_immutable_json(
+    STATUS_PATH,
+    status,
+)
+
+
+closure = {
+    "schema": (
+        "threadrom.phase3_pre_w03_hardening_"
+        "slice5_closure.v1"
+    ),
+    "slice": 5,
+    "title": (
+        "Certification Evidence and "
+        "Wave Closure Integration"
+    ),
+    "disposition": (
+        "SLICE_5_CERTIFICATION_EVIDENCE_"
+        "WAVE_CLOSURE_INTEGRATION_V1_CLOSED"
+    ),
+    "status_snapshot": {
+        "path": str(
+            STATUS_PATH.relative_to(
+                ROOT
+            )
+        ).replace(
+            "\\",
+            "/",
+        ),
+        "sha256": (
+            status_sha
+        ),
+    },
+    "certified_claims": {
+        "case_certificate_recovery_integrated": True,
+        "artifact_source_replay_verified": True,
+        "authorized_wave_cohort_exact": True,
+        "w01_case_certificates_verified": 4,
+        "w02_case_certificates_verified": 4,
+        "w01_wave_closure_recovered": True,
+        "w02_wave_closure_recovered": True,
+        "state_machine_closed_integration": True,
+        "rotational_moment_equilibrium_status": (
+            "NOT_ASSESSED"
+        ),
+        "historical_registry_mutation": False,
+        "w03_execution_authorized": False,
+        "w03_launched": False,
+        "calculix_launched_by_closure": False,
+        "holdouts_sealed": True,
+        "rom_dataset_untouched": True,
+    },
+    "wave_closures": {
+        token: {
+            "path": (
+                result[
+                    "closure_path"
+                ]
+            ),
+            "sha256": (
+                result[
+                    "closure_sha256"
+                ]
+            ),
+        }
+        for token, result
+        in wave_results.items()
+    },
+    "test_evidence": {
+        "slice5_regression": (
+            "8 PASSED"
+        ),
+    },
+    "source_hashes": (
+        source_hashes
+    ),
+}
+
+
+closure_sha = write_immutable_json(
+    CLOSURE_PATH,
+    closure,
+)
+
+
+print()
+print("=" * 108)
+print(
+    "THREADROM - PRE-W03 HARDENING - "
+    "SLICE 5 CLOSURE"
+)
+print("=" * 108)
+
+for wave_token in (
+    "W01",
+    "W02",
+):
+    result = wave_results[
+        wave_token
+    ]
+
+    print()
+    print(
+        wave_token,
+        ":",
+        result[
+            "wave_id"
+        ],
+    )
+    print(
+        "  cases        : 4/4"
+    )
+    print(
+        "  hard gates   : 13/13 per case"
+    )
+    print(
+        "  increments   : 20 per case"
+    )
+    print(
+        "  rotation     : NOT_ASSESSED"
+    )
+    print(
+        "  wave state   : CLOSED"
+    )
+    print(
+        "  closure SHA  :",
+        result[
+            "closure_sha256"
+        ],
+    )
+    print(
+        "  DB mutated   : NO"
+    )
+
+print()
+print(
+    "Status SHA     :",
+    status_sha,
+)
+print(
+    "Closure SHA    :",
+    closure_sha,
+)
+print(
+    "W03 execution  : NOT AUTHORIZED"
+)
+print(
+    "CalculiX       : NOT LAUNCHED"
+)
+print(
+    "Holdouts       : SEALED"
+)
+print(
+    "ROM dataset    : UNTOUCHED"
+)
+print()
+print(
+    "DISPOSITION    : "
+    "SLICE_5_CERTIFICATION_EVIDENCE_"
+    "WAVE_CLOSURE_INTEGRATION_V1_CLOSED"
+)
+print("=" * 108)

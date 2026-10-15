@@ -1,0 +1,676 @@
+{
+  "cohorts": [
+    {
+      "candidate_count": 2,
+      "extrema_requirements": {
+        "GRIP_MAX": 1.0,
+        "GRIP_MIN": 0.0,
+        "PRELOAD_MAX": 0.5,
+        "PRELOAD_MIN": 0.0,
+        "RADIAL_CONSTANT": 0.0
+      },
+      "member_material_id": "member_aluminium_en_aw_6082_t6",
+      "normalized_envelope": {
+        "maximum": [
+          0.5,
+          1.0,
+          0.0
+        ],
+        "minimum": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "radial_regime": "BASELINE_RADIAL_ENDPOINT",
+      "sentinels": [
+        {
+          "case_hash": "db4f5abb0986d0527a06fd72849bfc948041448f6a8a320a4aad0a0858028d53",
+          "case_id": "TRM-DDOE-D-M10x1_5__member_aluminium_en_aw_6082_t6-01",
+          "covers": [
+            "GRIP_MIN",
+            "PRELOAD_MIN",
+            "RADIAL_CONSTANT"
+          ],
+          "normalized_coordinates": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "case_hash": "a833df6408f7587d3f6d28d467390b624748b71c6c4d0a2b558f9410624f7706",
+          "case_id": "TRM-DDOE-D-M10x1_5__member_aluminium_en_aw_6082_t6-04",
+          "covers": [
+            "GRIP_MAX",
+            "PRELOAD_MAX",
+            "RADIAL_CONSTANT"
+          ],
+          "normalized_coordinates": [
+            0.5,
+            1.0,
+            0.0
+          ]
+        }
+      ],
+      "thread_designation": "M10x1.5"
+    },
+    {
+      "candidate_count": 3,
+      "extrema_requirements": {
+        "GRIP_MAX": 1.0,
+        "GRIP_MIN": 0.0,
+        "PRELOAD_MAX": 1.0,
+        "PRELOAD_MIN": 0.0,
+        "RADIAL_MAX": 1.0,
+        "RADIAL_MIN": 0.5
+      },
+      "member_material_id": "member_aluminium_en_aw_6082_t6",
+      "normalized_envelope": {
+        "maximum": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "minimum": [
+          0.0,
+          0.0,
+          0.5
+        ]
+      },
+      "radial_regime": "RADIAL_VARIATION",
+      "sentinels": [
+        {
+          "case_hash": "eac55af4d11fd8b23203f51c738cac5190cf203b637fb9f5be16169fdcbdfd12",
+          "case_id": "TRM-DDOE-D-M10x1_5__member_aluminium_en_aw_6082_t6-03",
+          "covers": [
+            "PRELOAD_MIN",
+            "RADIAL_MAX"
+          ],
+          "normalized_coordinates": [
+            0.0,
+            0.5,
+            1.0
+          ]
+        },
+        {
+          "case_hash": "dfb44775d3ad128f7d14d4410a65ddc062f2d22e8b2f79c846cae4d8d41247a2",
+          "case_id": "TRM-DDOE-D-M10x1_5__member_aluminium_en_aw_6082_t6-05",
+          "covers": [
+            "GRIP_MIN",
+            "PRELOAD_MAX",
+            "RADIAL_MIN"
+          ],
+          "normalized_coordinates": [
+            1.0,
+            0.0,
+            0.5
+          ]
+        },
+        {
+          "case_hash": "8da375401526a253cde3056662d358166dc3373f9200325c39ddf9514f6cb5f1",
+          "case_id": "TRM-DDOE-D-M10x1_5__member_aluminium_en_aw_6082_t6-02",
+          "covers": [
+            "GRIP_MAX",
+            "PRELOAD_MAX",
+            "RADIAL_MAX"
+          ],
+          "normalized_coordinates": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        }
+      ],
+      "thread_designation": "M10x1.5"
+    },
+    {
+      "candidate_count": 1,
+      "extrema_requirements": {
+        "GRIP_CONSTANT": 0.0,
+        "PRELOAD_CONSTANT": 0.0,
+        "RADIAL_CONSTANT": 0.0
+      },
+      "member_material_id": "steel_member",
+      "normalized_envelope": {
+        "maximum": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "minimum": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "radial_regime": "BASELINE_RADIAL_ENDPOINT",
+      "sentinels": [
+        {
+          "case_hash": "a5e86e9150fbed8b3b17cd9617c9b78d919124baaa373310fa997f7c9bc72799",
+          "case_id": "D-BND-001",
+          "covers": [
+            "GRIP_CONSTANT",
+            "PRELOAD_CONSTANT",
+            "RADIAL_CONSTANT"
+          ],
+          "normalized_coordinates": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        }
+      ],
+      "thread_designation": "M10x1.5"
+    },
+    {
+      "candidate_count": 19,
+      "extrema_requirements": {
+        "GRIP_MAX": 1.0,
+        "GRIP_MIN": 0.0,
+        "PRELOAD_MAX": 1.0,
+        "PRELOAD_MIN": 0.0,
+        "RADIAL_MAX": 1.0,
+        "RADIAL_MIN": 0.01236462569490667
+      },
+      "member_material_id": "steel_member",
+      "normalized_envelope": {
+        "maximum": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "minimum": [
+          0.0,
+          0.0,
+          0.01236462569490667
+        ]
+      },
+      "radial_regime": "RADIAL_VARIATION",
+      "sentinels": [
+        {
+          "case_hash": "132f5f2b979503889a4f5a463a705b1f19699adcf55b5ec6cf0df9db48628b3b",
+          "case_id": "D-BND-003",
+          "covers": [
+            "GRIP_MAX",
+            "PRELOAD_MIN",
+            "RADIAL_MAX"
+          ],
+          "normalized_coordinates": [
+            0.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "case_hash": "06046fe91597028e6aa098c1e3d22f8f94e1b50d16b573f89399b8b7a046d396",
+          "case_id": "D-INT-011",
+          "covers": [
+            "RADIAL_MIN"
+          ],
+          "normalized_coordinates": [
+            0.7809134146524127,
+            0.29783572300257255,
+            0.01236462569490667
+          ]
+        },
+        {
+          "case_hash": "9d11902c8c53632a573986b9a62c63be9299500a32b43698f353fd55a05f5fdc",
+          "case_id": "D-BND-004",
+          "covers": [
+            "GRIP_MIN",
+            "PRELOAD_MAX",
+            "RADIAL_MAX"
+          ],
+          "normalized_coordinates": [
+            1.0,
+            0.0,
+            1.0
+          ]
+        }
+      ],
+      "thread_designation": "M10x1.5"
+    },
+    {
+      "candidate_count": 1,
+      "extrema_requirements": {
+        "GRIP_CONSTANT": 1.0,
+        "PRELOAD_CONSTANT": 0.49999976405706087,
+        "RADIAL_CONSTANT": 0.0
+      },
+      "member_material_id": "member_aluminium_en_aw_6082_t6",
+      "normalized_envelope": {
+        "maximum": [
+          0.49999976405706087,
+          1.0,
+          0.0
+        ],
+        "minimum": [
+          0.49999976405706087,
+          1.0,
+          0.0
+        ]
+      },
+      "radial_regime": "BASELINE_RADIAL_ENDPOINT",
+      "sentinels": [
+        {
+          "case_hash": "33136e856536ffeeaf27ce77012828a0247234bfcac104f739d6503caab9e562",
+          "case_id": "TRM-DDOE-D-M12x1_75__member_aluminium_en_aw_6082_t6-04",
+          "covers": [
+            "GRIP_CONSTANT",
+            "PRELOAD_CONSTANT",
+            "RADIAL_CONSTANT"
+          ],
+          "normalized_coordinates": [
+            0.49999976405706087,
+            1.0,
+            0.0
+          ]
+        }
+      ],
+      "thread_designation": "M12x1.75"
+    },
+    {
+      "candidate_count": 2,
+      "extrema_requirements": {
+        "GRIP_MAX": 1.0,
+        "GRIP_MIN": 0.0,
+        "PRELOAD_CONSTANT": 0.9999997303509268,
+        "RADIAL_MAX": 1.0,
+        "RADIAL_MIN": 0.499999999999999
+      },
+      "member_material_id": "member_aluminium_en_aw_6082_t6",
+      "normalized_envelope": {
+        "maximum": [
+          0.9999997303509268,
+          1.0,
+          1.0
+        ],
+        "minimum": [
+          0.9999997303509268,
+          0.0,
+          0.499999999999999
+        ]
+      },
+      "radial_regime": "RADIAL_VARIATION",
+      "sentinels": [
+        {
+          "case_hash": "3b214bccddd6f64d2931b14082fcd9deadced612f3c5e3091ee3dfe4890e1675",
+          "case_id": "TRM-DDOE-D-M12x1_75__member_aluminium_en_aw_6082_t6-05",
+          "covers": [
+            "GRIP_MIN",
+            "PRELOAD_CONSTANT",
+            "RADIAL_MIN"
+          ],
+          "normalized_coordinates": [
+            0.9999997303509268,
+            0.0,
+            0.499999999999999
+          ]
+        },
+        {
+          "case_hash": "91e86a0b0eef6ac09ea2a27379c74e94dcaebaa3579178226d9ca0fff6da7d3c",
+          "case_id": "TRM-DDOE-D-M12x1_75__member_aluminium_en_aw_6082_t6-02",
+          "covers": [
+            "GRIP_MAX",
+            "PRELOAD_CONSTANT",
+            "RADIAL_MAX"
+          ],
+          "normalized_coordinates": [
+            0.9999997303509268,
+            1.0,
+            1.0
+          ]
+        }
+      ],
+      "thread_designation": "M12x1.75"
+    },
+    {
+      "candidate_count": 1,
+      "extrema_requirements": {
+        "GRIP_CONSTANT": 1.0,
+        "PRELOAD_CONSTANT": 0.24999978091012837,
+        "RADIAL_CONSTANT": 0.0
+      },
+      "member_material_id": "steel_member",
+      "normalized_envelope": {
+        "maximum": [
+          0.24999978091012837,
+          1.0,
+          0.0
+        ],
+        "minimum": [
+          0.24999978091012837,
+          1.0,
+          0.0
+        ]
+      },
+      "radial_regime": "BASELINE_RADIAL_ENDPOINT",
+      "sentinels": [
+        {
+          "case_hash": "3170c5437c9679e35180f3a720cb8e1cf436c12f3cdff86470e9bd2942a0f9e1",
+          "case_id": "TRM-DDOE-D-M12x1_75__steel_member-12",
+          "covers": [
+            "GRIP_CONSTANT",
+            "PRELOAD_CONSTANT",
+            "RADIAL_CONSTANT"
+          ],
+          "normalized_coordinates": [
+            0.24999978091012837,
+            1.0,
+            0.0
+          ]
+        }
+      ],
+      "thread_designation": "M12x1.75"
+    },
+    {
+      "candidate_count": 2,
+      "extrema_requirements": {
+        "GRIP_MAX": 1.0,
+        "GRIP_MIN": 0.0,
+        "PRELOAD_MAX": 0.9999997303509268,
+        "PRELOAD_MIN": 0.49999976405706087,
+        "RADIAL_MAX": 1.0,
+        "RADIAL_MIN": 0.499999999999999
+      },
+      "member_material_id": "steel_member",
+      "normalized_envelope": {
+        "maximum": [
+          0.9999997303509268,
+          1.0,
+          1.0
+        ],
+        "minimum": [
+          0.49999976405706087,
+          0.0,
+          0.499999999999999
+        ]
+      },
+      "radial_regime": "RADIAL_VARIATION",
+      "sentinels": [
+        {
+          "case_hash": "5d18f718ece649c3a9288bbd600fdc7bacf5be218f25ffba37429216a55b6f2e",
+          "case_id": "TRM-DDOE-D-M12x1_75__steel_member-04",
+          "covers": [
+            "GRIP_MAX",
+            "PRELOAD_MIN",
+            "RADIAL_MAX"
+          ],
+          "normalized_coordinates": [
+            0.49999976405706087,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "case_hash": "a684e642f0017811e2f557faccc02af596d7e65a768c3e321fb1e21122cc20e5",
+          "case_id": "TRM-DDOE-D-M12x1_75__steel_member-05",
+          "covers": [
+            "GRIP_MIN",
+            "PRELOAD_MAX",
+            "RADIAL_MIN"
+          ],
+          "normalized_coordinates": [
+            0.9999997303509268,
+            0.0,
+            0.499999999999999
+          ]
+        }
+      ],
+      "thread_designation": "M12x1.75"
+    },
+    {
+      "candidate_count": 2,
+      "extrema_requirements": {
+        "GRIP_MAX": 1.0,
+        "GRIP_MIN": 0.0,
+        "PRELOAD_MAX": 0.5000003579673333,
+        "PRELOAD_MIN": 3.0682914280665405e-07,
+        "RADIAL_CONSTANT": 0.0
+      },
+      "member_material_id": "member_aluminium_en_aw_6082_t6",
+      "normalized_envelope": {
+        "maximum": [
+          0.5000003579673333,
+          1.0,
+          0.0
+        ],
+        "minimum": [
+          3.0682914280665405e-07,
+          0.0,
+          0.0
+        ]
+      },
+      "radial_regime": "BASELINE_RADIAL_ENDPOINT",
+      "sentinels": [
+        {
+          "case_hash": "02bb37591d1a9b386abba4b01092f89d842faa7f3288bd29de579107ee98e0ee",
+          "case_id": "TRM-DDOE-D-M8x1_25__member_aluminium_en_aw_6082_t6-01",
+          "covers": [
+            "GRIP_MIN",
+            "PRELOAD_MIN",
+            "RADIAL_CONSTANT"
+          ],
+          "normalized_coordinates": [
+            3.0682914280665405e-07,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "case_hash": "77b0399abf1ca260bc822e78e0761e8f66c706a4899eb0e1b93b03c747a9c405",
+          "case_id": "TRM-DDOE-D-M8x1_25__member_aluminium_en_aw_6082_t6-04",
+          "covers": [
+            "GRIP_MAX",
+            "PRELOAD_MAX",
+            "RADIAL_CONSTANT"
+          ],
+          "normalized_coordinates": [
+            0.5000003579673333,
+            1.0,
+            0.0
+          ]
+        }
+      ],
+      "thread_designation": "M8x1.25"
+    },
+    {
+      "candidate_count": 1,
+      "extrema_requirements": {
+        "GRIP_CONSTANT": 0.5,
+        "PRELOAD_CONSTANT": 3.0682914280665405e-07,
+        "RADIAL_CONSTANT": 1.0
+      },
+      "member_material_id": "member_aluminium_en_aw_6082_t6",
+      "normalized_envelope": {
+        "maximum": [
+          3.0682914280665405e-07,
+          0.5,
+          1.0
+        ],
+        "minimum": [
+          3.0682914280665405e-07,
+          0.5,
+          1.0
+        ]
+      },
+      "radial_regime": "RADIAL_VARIATION",
+      "sentinels": [
+        {
+          "case_hash": "c3a38bcc699ebe5a031942a9d8a4a7c24f2151c0c7824de777623878793b89ed",
+          "case_id": "TRM-DDOE-D-M8x1_25__member_aluminium_en_aw_6082_t6-03",
+          "covers": [
+            "GRIP_CONSTANT",
+            "PRELOAD_CONSTANT",
+            "RADIAL_CONSTANT"
+          ],
+          "normalized_coordinates": [
+            3.0682914280665405e-07,
+            0.5,
+            1.0
+          ]
+        }
+      ],
+      "thread_designation": "M8x1.25"
+    },
+    {
+      "candidate_count": 1,
+      "extrema_requirements": {
+        "GRIP_CONSTANT": 1.0,
+        "PRELOAD_CONSTANT": 0.2500003323982378,
+        "RADIAL_CONSTANT": 0.0
+      },
+      "member_material_id": "steel_member",
+      "normalized_envelope": {
+        "maximum": [
+          0.2500003323982378,
+          1.0,
+          0.0
+        ],
+        "minimum": [
+          0.2500003323982378,
+          1.0,
+          0.0
+        ]
+      },
+      "radial_regime": "BASELINE_RADIAL_ENDPOINT",
+      "sentinels": [
+        {
+          "case_hash": "b75820842977f376b9adc4ad9525a32155464467b6ecbcbfe3a06d048cdedeab",
+          "case_id": "TRM-DDOE-D-M8x1_25__steel_member-12",
+          "covers": [
+            "GRIP_CONSTANT",
+            "PRELOAD_CONSTANT",
+            "RADIAL_CONSTANT"
+          ],
+          "normalized_coordinates": [
+            0.2500003323982378,
+            1.0,
+            0.0
+          ]
+        }
+      ],
+      "thread_designation": "M8x1.25"
+    }
+  ],
+  "disposition": "SENTINEL_DESIGN_FROZEN_NOT_AUTHORIZED",
+  "existing_p04_evidence": {
+    "certificate_path": "simulations/staging/phase3_cp8_p04/vv06_medium_plus/p04_medium_plus_certification_record.json",
+    "certificate_sha256": "ea36aae7c7e7c9214af6ebbf50f31799d10f924e359d93b270f76a91aaee4880",
+    "counts_as_one_of_19_selected_atlas_sentinels": false,
+    "reason": "The certified P04 identity is not an exact identity match to any current FEM-Atlas state; its bounded evidence remains preserved but is not silently substituted for an Atlas sentinel.",
+    "status": "SUPPORTING_EVIDENCE_ONLY"
+  },
+  "future_direct_comparison_protocol": {
+    "all_selected_sentinels_must_pass": true,
+    "any_failed_sentinel_blocks_cohort_transfer": true,
+    "any_indeterminate_sentinel_defers_cohort_transfer": true,
+    "comparison_basis": "matched realized clamp force using accepted monotonic response histories; extrapolation is forbidden",
+    "duplicate_fine_solve_forbidden": true,
+    "fine_reference_solve_reuse_required": true,
+    "reference": "fine-mesh realization of the same governed physical case",
+    "relative_limit": 0.02,
+    "response": "member_shortening_mm"
+  },
+  "future_region_transfer_rule": {
+    "automatic_transfer_on_extrema_geometry_alone": false,
+    "cross_material_transfer_forbidden": true,
+    "cross_mesh_policy_transfer_forbidden": true,
+    "cross_radial_regime_transfer_forbidden": true,
+    "cross_thread_transfer_forbidden": true,
+    "enabled_only_after_all_preconditions_pass": true,
+    "extrapolation_forbidden": true,
+    "note": "Extrema selection defines the candidate qualification campaign. It does not create DA08 PASS decisions. Region transfer becomes available only after the direct comparison and provenance preconditions above are satisfied.",
+    "preconditions": [
+      "Every selected sentinel in the cohort has direct target-specific numerical certification <= 0.02.",
+      "Every candidate receiving transfer has the same thread designation and member-material cohort.",
+      "Candidate and sentinels share one verified production mesh-policy identity and governed mesh-quality class.",
+      "Candidate normalized coordinates lie inside the closed pre-solve cohort envelope frozen in this record.",
+      "No extrapolation outside any frozen cohort coordinate minimum or maximum is permitted.",
+      "The actual mesh-policy identity must be resolved from governed provenance before FEM authorization.",
+      "Opaque holdout clearance is required before any pretraining sentinel is opened or re-solved."
+    ]
+  },
+  "generated_utc": "2026-10-14T16:21:22.124839+00:00",
+  "governance": {
+    "criteria_frozen_before_new_fine_results": true,
+    "dataset_mutated": false,
+    "fem_authorized": false,
+    "holdouts_accessed": false,
+    "partition_assigned": false,
+    "rom_training_authorized": false,
+    "w06_touched": false
+  },
+  "holdout_governance": {
+    "holdout_membership_not_accessed_during_protocol_freeze": true,
+    "opaque_clearance_required_before_pretraining_execution": true,
+    "sealed_holdout_use_as_pretraining_sentinel_forbidden": true
+  },
+  "mesh_governance": {
+    "actual_mesh_policy_resolution_required_before_authorization": true,
+    "current_cohort_radial_regime_is_not_a_mesh_identity": true,
+    "multiple_mesh_identities_inside_one_cohort": "SUBDIVIDE_COHORT_AND_REFREEZE_BEFORE_SOLVE"
+  },
+  "population": {
+    "certification_cohorts": 11,
+    "da10_applicable_cases": 35,
+    "da10_rejected_cases": 8,
+    "direct_case_reduction_vs_all_eligible": 16,
+    "fem_atlas_cases": 43,
+    "selected_extrema_sentinels": 19
+  },
+  "protocol_id": "TRM-ROM-DA08-MEMBER-SHORTENING-SENTINEL-V1",
+  "provenance": {
+    "admission_contract": {
+      "path": "docs/phase3_rom_dataset_admission/member_shortening_v1.admission_contract.json",
+      "sha256": "5d7b127345b89327624db560cf03c49fa40346a01491188540ffc797b44f5c11"
+    },
+    "da08_existing_authority": {
+      "path": "docs/phase3_rom_dataset_admission/member_shortening_v1.numerical_certification_authority.json",
+      "sha256": "ff80aa0a8c030c3c258d91c96a8fa5315be078b14b74203cfc9456d5b1de722d"
+    },
+    "da08_resolver": {
+      "path": "src/threadrom/factory/rom_dataset_numerical_certification.py",
+      "sha256": "94f432ad18f068f650786e4c521a877af9ccded5d189e51bd48cde7f200e4a13"
+    },
+    "da10_adapter": {
+      "path": "scripts/evaluate_phase3_governed_wave_rom_admission_v1.py",
+      "sha256": "53c570bcddacba3a6176fa89eae2fc2ad1e9a40bd710289cb0cab1a03525fbb3"
+    },
+    "da10_closure": {
+      "path": "docs/phase3_rom_dataset_admission/member_shortening_v1.da10_applicability_closure.json",
+      "sha256": "0603722f6c3558808f55b19e2b29d695412c00f75565333a22c3491a9871c30d"
+    },
+    "fem_atlas": {
+      "path": "docs/phase3_fem_atlas/atlas.json",
+      "sha256": "2f491e19c248c13986c195a0161d00ab69c787f34998cb57c2e1b2d172d19515"
+    },
+    "supported_domain": {
+      "path": "docs/phase3_rom_dataset_admission/member_shortening_v1.supported_domain.json",
+      "sha256": "8e299508ddff12f92fce4fcae59a2bf034eb91dbffcf0b46db3646a6e0ccfbd6"
+    },
+    "target_contract": {
+      "path": "docs/phase3_rom_targets/member_shortening_v1.target_contract.json",
+      "sha256": "b8fcf7519e1fe805f5093b9f3a0d01f53b64ba705b118e4d271677895e47a2bf"
+    }
+  },
+  "record_status": "FROZEN_PRE_SOLVE",
+  "relative_limit": 0.02,
+  "schema": "threadrom.rom_da08_sentinel_protocol.v1",
+  "selection_policy": {
+    "cohort_keys": [
+      "thread_designation",
+      "member_material_id",
+      "radial_regime"
+    ],
+    "radial_regime_definition": {
+      "BASELINE_RADIAL_ENDPOINT": "normalized radial coordinate == 0 within absolute tolerance 1e-8",
+      "RADIAL_VARIATION": "normalized radial coordinate > 0"
+    },
+    "sentinel_rule": "Choose the deterministic minimum subset of existing DA10-applicable FEM states covering every observed minimum/maximum normalized coordinate in preload, head-member thickness and radial geometry inside each cohort.",
+    "sentinel_selection_is_certification": false
+  },
+  "target": "member_shortening",
+  "target_field": "member_shortening_mm"
+}

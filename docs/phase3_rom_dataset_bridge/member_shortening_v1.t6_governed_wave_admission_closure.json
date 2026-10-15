@@ -1,0 +1,63 @@
+{
+  "authorities": {
+    "engineering_input_resolver_sha256": "988b076f408800336c43bb3009b40db8bd4a76709c84d299da401fc3c0597284",
+    "fem_atlas_sha256": "2f491e19c248c13986c195a0161d00ab69c787f34998cb57c2e1b2d172d19515",
+    "governed_wave_rom_adapter_sha256": "fb7a7c27346e32dbfc5e93f18fd214bbcbc165fe53fc78c01a418a442dda6254",
+    "post_target_admission_module_sha256": "3e5ae43faeb676d399e5cb99233aa71582ff2cbf67ff81eb37c3ed124ec82d13",
+    "t7_closure_sha256": "7e604c14146b5bae902ffa107288328044bae0c3e926bfa51e85b61e5da8f1ad"
+  },
+  "closure_id": "TRM-P3-ROM-BRIDGE-MEMBER-SHORTENING-V1-T6",
+  "disposition": "T6_GENERIC_GOVERNED_WAVE_ROM_CANDIDATE_PATH_CLOSED",
+  "proof": {
+    "accepted_fem_cases_evaluated": 4,
+    "expected_gate_state": {
+      "DEFERRED": [
+        "DA08_NUMERICAL_CERTIFICATION",
+        "DA10_APPLICABILITY"
+      ],
+      "PASS": [
+        "DA01_TARGET_BINDING",
+        "DA02_CASE_IDENTITY",
+        "DA03_EXECUTION_IDENTITY",
+        "DA04_ENGINEERING_INPUTS",
+        "DA05_PHYSICS_ACCEPTANCE",
+        "DA06_TARGET_EXTRACTION",
+        "DA07_TARGET_VALUE",
+        "DA09_PROVENANCE",
+        "DA11_HOLDOUT_PROTECTION",
+        "DA12_PARTITION_BOUNDARY"
+      ]
+    },
+    "expected_overall_decision": "DEFERRED",
+    "generic_case_specific_logic": false,
+    "generic_wave_specific_logic": false,
+    "reference_wave": "W05"
+  },
+  "purpose": "Certify the generic governed-wave post-target ROM-candidate evaluation path before W06.",
+  "record_status": "FINAL",
+  "safety": {
+    "atlas_mutated": false,
+    "blind_holdouts_opened": false,
+    "calculix_launched": false,
+    "dataset_created": false,
+    "partitions_assigned": false,
+    "rom_training_started": false
+  },
+  "schema_version": 1,
+  "scope": {
+    "claims": [
+      "A single generic governed-wave adapter can evaluate physically accepted wave FEM evidence through the member-shortening post-target admission state machine.",
+      "W05 proves canonical DA04 inputs can be transiently resolved without mutating the FEM Atlas.",
+      "DA08 and DA10 remain explicitly DEFERRED until their governed authorities are completed."
+    ],
+    "explicitly_not_claimed": [
+      "ROM dataset admission",
+      "dataset partition assignment",
+      "DA08 closure",
+      "DA10 closure",
+      "ROM training",
+      "Phase 4 start"
+    ]
+  },
+  "stage": "T-6"
+}
